@@ -27,6 +27,21 @@
 .App-link {
   color: #61dafb;
 }
+.logoDiv{
+  	border: 2px solid #bfb4b4;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 11px 0;
+}
+.invalid-feedback{
+	margin-top: 1.5rem !important;
+}
+.form-control.is-invalid, .was-validated .form-control:invalid{
+	padding-right: 0 !important;
+}
+.form-group{
+	margin: 2rem;
+}
 
 @keyframes App-logo-spin {
   from {

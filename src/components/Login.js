@@ -1,86 +1,83 @@
-import React from 'react';
-import {loginAction} from '../actions/LoginAction';
-import { connect } from 'react-redux';
-import UserList from '../components/UserList';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import GQLogo from '../assets/image/GQLogo.png';
+import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 
-class Login extends React.Component {
-    constructor(props) {
-        super(props);
-        // defult state
-        this.state = {
-            email: ''
-        };
 
-        // bind custom fn
-        // this.fn = this.fn.bind(this);
-        // this.handleSubmit = this.handleSubmit.bind(this);
-    }
+const useStyles = makeStyles((theme) => ({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+        width: '25ch',
+      },
+    },
+  }));
+//import { userActions } from '../_actions';
+//console.log(GQLogo,'logoss');
+function Login() {
+    const classes = useStyles();
+    const [inputs, setInputs] = useState({
+        username: '',
+        password: ''
+    });
+    const [submitted, setSubmitted] = useState(false);
+    const { username, password } = inputs;
+    // const loggingIn = useSelector(state => state.authentication.loggingIn);
+    const loggingIn = false;
+    const dispatch = useDispatch();
+    const location = useLocation();
 
-    //life cycle
-    // componentWillReceiveProps(nextProps) {
-    //     const { email} = nextProps;
-    //     console.log('todosreceve', email)
-    // }
+    // reset login status
+    useEffect(() => { 
+        //dispatch(userActions.logout()); 
+    }, []);
 
-    //custom fn
-    handleSubmit = async(e) => {
-        const { loginAction } = this.props;
-        const {email, password } = this.state;
-        e.preventDefault();
-        // debugger
-        console.log('e', e);
-        // let obj ={
-        //     "email":"test"
-        // }
-       const resp = await loginAction(this.state);
-       console.log('resp', resp)
-        // .then(resp => {
-        //     console.log('response', Response)
-        // });
-    }
-
-    handleChange = (e) => {
-        console.log('e', e.target)
+    function handleChange(e) {
         const { name, value } = e.target;
-        this.setState({ [name]: value });
+        setInputs(inputs => ({ ...inputs, [name]: value }));
     }
 
-    //render
-    render() {
-        console.log('consponent')
-        const { name } = this.state;
-        const {email } = this.props;
-        console.log('todoList', email)
-        console.log('mname', name, 'this.state', this.state)
-        return (
-            <div>
-            <h1>Arun</h1>
-                <p>form</p>
-                <form onSubmit={this.handleSubmit} >
-                    <label>
-                        Email:
-    <input type="text" name="email" onChange={this.handleChange} />
-                    </label>
-                    <label>
-                        password:
-    <input type="password" name="password" onChange={this.handleChange} />
-                    </label>
-                    <input type="submit" value="Submit" />
-                </form>
-                <UserList/>
-            </div>
-        )
+    function handleSubmit(e) {
+        e.preventDefault();
 
+        setSubmitted(true);
+        if (username && password) {
+            // get return url from location state or default to home page
+            const { from } = location.state || { from: { pathname: "/" } };
+            //dispatch(userActions.login(username, password, from));
+        }
     }
+
+    return (
+        <div className="col-lg-8 offset-lg-2">
+            <div><img src={GQLogo} alt="GQLogo" /></div>
+            <form name="form" onSubmit={handleSubmit}>
+                
+                <div className="form-group">
+                    <TextField id="outlined-basic" label="Username" variant="outlined" name="username" value={username} onChange={handleChange} className={'form-control' + (submitted && !username ? ' is-invalid' : '')} />
+                    {submitted && !username &&
+                            <div className="invalid-feedback">Username is required</div>
+                    }
+                </div>
+                <div className="form-group">
+                    <TextField id="outlined-basic" label="Password" variant="outlined" name="password" value={password} onChange={handleChange} className={'form-control' + (submitted && !password ? ' is-invalid' : '')} />
+                    {submitted && !password &&
+                        <div className="invalid-feedback">Password is required</div>
+                    }
+                </div>
+                <div className="form-group">
+                    <button className="btn btn-primary">
+                        {/* {<span className="spinner-border spinner-border-sm mr-1"></span>} */}
+                        {loggingIn && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                        Login
+                    </button>
+                    {/* <Link to="/register" className="btn btn-link">Register</Link> */}
+                </div>
+            </form>
+        </div>
+    );
 }
 
-const mapState = (state) => ({
-    email: state.todos.email
-});
-
-const mapDispatch = {
-    // login : loginAction.login
-    loginAction
-}
-
-export default connect(mapState, mapDispatch)(Login);
+export default Login;
