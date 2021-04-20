@@ -6,21 +6,14 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
+import {useTranslation} from "react-i18next";
 
 
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        '& > *': {
-            margin: theme.spacing(1),
-            width: '25ch',
-        },
-    },
-}));
 //import { userActions } from '../_actions';
 //console.log(GQLogo,'logoss');
 function Forgotpassword() {
-    const classes = useStyles();
+    const {t, i18n} = useTranslation('common');
     const [inputs, setInputs] = useState({
         username: '',
         password: ''
@@ -55,30 +48,33 @@ function Forgotpassword() {
 
     return (
         <Container className="mt-100">
+
             <Row className="justify-content-md-center">
-                <Col xs lg="12" className="justify-content-center text-center logo-div" ><img src={GQLogo} alt="GQLogo" /></Col>
-                <Col xs lg="6" className="logoDiv">
+                <Col sm="12" md="6" className="p-0"><img src={GQLogo} alt="GQLogo" /></Col>
+            </Row>
+            <Row className="justify-content-md-center">
+                <Col sm="12" md="6" className="logoDiv">
                     <form name="form" onSubmit={handleSubmit}>
 
-                        <h5 className="login-title">Password Recovery</h5>
-                        <p className="login-title">Please fill in the information below, and we will send the login info to the email address you registered with us:​</p>
+                        <h5 className="login-title">{t('pwdRecovery')}</h5>
+                        <p className="login-title">{t('pwdRecoveryTitle')}</p>
                         <div className="form-group">
-                            <TextField id="outlined-basic" label="Username" variant="outlined" name="username" value={username} onChange={handleChange} className={'form-control' + (submitted && !username ? ' is-invalid' : '')} />
+                            <TextField id="outlined-basic" label={t('username')} variant="outlined" name="username" value={username} onChange={handleChange} className={'form-control' + (submitted && !username ? ' is-invalid' : '')} />
                             {submitted && !username &&
-                                <div className="invalid-feedback">Username is required</div>
+                                <div className="invalid-feedback">{t('usernameReq')}</div>
                             }
                         </div>
                         <div className="form-group">
-                            <TextField id="outlined-basic" label="Enter the code shown below" variant="outlined" name="password" value={password} onChange={handleChange} className={'form-control' + (submitted && !password ? ' is-invalid' : '')} />
+                            <TextField id="outlined-basic" label={t('codeShown')} variant="outlined" name="password" value={password} onChange={handleChange} className={'form-control' + (submitted && !password ? ' is-invalid' : '')} />
                             {submitted && !password &&
-                                <div className="invalid-feedback">Code is required</div>
+                                <div className="invalid-feedback">{t('codeReq')}</div>
                             }
                         </div>
                         <div className="form-group">
                             <Button variant="contained" color="primary" className="float-right login-submit text-capitalize" type="submit">
                                 {loggingIn && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                                    Submit
-                                </Button>
+                                {t('submit')}
+                            </Button>
                         </div>
                     </form>
                 </Col>

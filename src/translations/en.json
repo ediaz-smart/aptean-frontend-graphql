@@ -1,0 +1,13 @@
+{
+   "loginAccount": "Login into your Account",
+   "username":"Username",
+   "usernameReq":"Username is required",
+   "password":"Password",
+   "passwordReq":"Password is required",
+   "submit":"Submit",
+   "forgotLogin":"Forgot your login details?",
+   "pwdRecovery":"Password Recovery",
+   "pwdRecoveryTitle":"Please fill in the information below, and we will send the login info to the email address you registered with us:​",
+   "codeShown":"Enter the code shown below",
+   "codeReq":"Code is required"
+}
