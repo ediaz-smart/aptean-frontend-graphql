@@ -33,6 +33,10 @@
     padding: 20px;
     margin: 11px 0;
 }
+.login-title{
+	color: #505F5F;
+	margin-left: 30px;
+}
 .invalid-feedback{
 	margin-top: 1.5rem !important;
 }
@@ -41,6 +45,15 @@
 }
 .form-group{
 	margin: 2rem;
+}
+.mt-100{
+	margin-top: 10%;
+}
+.logo-div{
+	margin-right: 33%;
+}
+.login-submit{
+	background-color: #DB862D !important;
 }
 
 @keyframes App-logo-spin {
