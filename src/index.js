@@ -8,7 +8,7 @@ import { Provider } from 'react-redux'
 import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
 import en from "./translations/en.json";
-import { ToastContainer, toast,Slide, Zoom, Flip, Bounce } from 'react-toastify';
+import { ToastContainer, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 i18next.init({

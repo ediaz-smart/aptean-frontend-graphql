@@ -9,5 +9,9 @@
    "pwdRecovery":"Password Recovery",
    "pwdRecoveryTitle":"Please fill in the information below, and we will send the login info to the email address you registered with us:​",
    "codeShown":"Enter the code shown below",
-   "codeReq":"Code is required"
+   "codeReq":"Code is required",
+   "thankYou":"Thank you.",
+   "loginInfoText":"Login info will be sent to the email address you registered with us.",
+   "pleaseContactText":"Please contact support@gqlifesciences.com should you require further assistance.",
+   "newsandupdates":"News and Updates"
 }

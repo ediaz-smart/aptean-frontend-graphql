@@ -27,15 +27,20 @@
 .App-link {
   color: #61dafb;
 }
-.logoDiv{
+.loginDiv{
   	border: 2px solid #bfb4b4;
     border-radius: 6px;
     padding: 20px;
-    margin: 11px 0;
+	height: 100%;
 }
 .login-title{
 	color: #505F5F;
 	margin-left: 30px;
+}
+.passwordRecoverDiv{
+	padding: 15px 0 6px;
+	border: 2px solid #bfb4b4;
+    border-radius: 6px;
 }
 .invalid-feedback{
 	margin-top: 1.5rem !important;
@@ -44,7 +49,7 @@
 	padding-right: 0 !important;
 }
 .form-group{
-	margin: 2rem;
+	margin: 1.5rem;
 }
 .mt-100{
 	margin-top: 10%;
@@ -52,7 +57,23 @@
 .login-submit{
 	background-color: #DB862D !important;
 }
+.forgotLink{
+	margin-top: 10px;
+}
+.forgotLink > a{
+	color:#0C90C6;
+}
 
+.newsContent {
+	text-align: justify;
+    line-height: 22px;
+}
+.headerPipe{
+	display: none;
+}
+.mainContent {
+    margin: 3px 30px;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -60,4 +81,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+@media only screen and (min-width: 768px) {
+	.newsContent{
+		margin-left: 1.5rem;
+		padding-left: 42px;
+		border-left: 1px solid #d8d4d4;
+	}
+	.headerPipe{
+		display: block;
+	}
 }

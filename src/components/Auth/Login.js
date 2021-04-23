@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
+import Newsupdate from '../../shared/newspdate';
 
 
 
@@ -47,12 +48,12 @@ function Login() {
 
     return (
         <Container className="mt-100">
-            <Row className="justify-content-md-center">
-                <Col sm="12" md="6" className="p-0"><img src={GQLogo} alt="GQLogo" /></Col>
+            <Row className="justify-content-md-center mb-3">
+                <Col sm="12" md="11" className="p-0 ml-4"><img src={GQLogo} alt="GQLogo" /></Col>
             </Row>
             <Row className="justify-content-md-center">
-                <Col sm="12" md="6" className="logoDiv">
-                    <form name="form" onSubmit={handleSubmit}>
+                <Col sm="12" md="6" className="mb-5 mt-4">
+                    <form name="form" onSubmit={handleSubmit} className="loginDiv">
 
                         <h5 className="login-title">{t('loginAccount')}</h5>
                         <div className="form-group">
@@ -74,9 +75,12 @@ function Login() {
                             </Button>
                         </div>
                     </form>
+                    <p className="forgotLink">
+                        <Link to="/forgot" className="m-0">{t('forgotLogin')}</Link>
+                    </p>
                 </Col>
-                <Col sm="12" md="7">
-                    <Link to="/forgot" className="btn btn-link ml-3">{t('forgotLogin')}</Link>
+                <Col sm="12" md="5">
+                    <Newsupdate />
                 </Col>
             </Row>
         </Container>
