@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import {useTranslation} from "react-i18next";
-
+import { toast } from 'react-toastify';
 
 
 //import { userActions } from '../_actions';
@@ -37,7 +37,7 @@ function Forgotpassword() {
 
     function handleSubmit(e) {
         e.preventDefault();
-
+        toast.info("BAD Request Found!");
         setSubmitted(true);
         if (username && password) {
             // get return url from location state or default to home page
@@ -48,8 +48,9 @@ function Forgotpassword() {
 
     return (
         <Container className="mt-100">
-
+            
             <Row className="justify-content-md-center">
+            
                 <Col sm="12" md="6" className="p-0"><img src={GQLogo} alt="GQLogo" /></Col>
             </Row>
             <Row className="justify-content-md-center">

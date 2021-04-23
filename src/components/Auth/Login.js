@@ -3,11 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import GQLogo from '../../assets/image/GQLogo.png';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-
 
 
 
@@ -18,6 +16,7 @@ function Login() {
         username: '',
         password: ''
     });
+
     const { t, i18n } = useTranslation('common');
     const [submitted, setSubmitted] = useState(false);
     const { username, password } = inputs;
@@ -30,7 +29,6 @@ function Login() {
     useEffect(() => {
         //dispatch(userActions.logout()); 
     }, []);
-
     function handleChange(e) {
         const { name, value } = e.target;
         setInputs(inputs => ({ ...inputs, [name]: value }));
@@ -49,7 +47,6 @@ function Login() {
 
     return (
         <Container className="mt-100">
-
             <Row className="justify-content-md-center">
                 <Col sm="12" md="6" className="p-0"><img src={GQLogo} alt="GQLogo" /></Col>
             </Row>
