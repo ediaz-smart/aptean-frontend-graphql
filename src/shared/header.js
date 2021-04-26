@@ -1,65 +1,185 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import GQLogo from '../assets/image/GQLogo.png';
-import { Row, Col, Navbar, Nav,NavItem } from 'react-bootstrap'
-
-import {
-    BrowserRouter as Router,
-    useParams,
-} from "react-router-dom";
+import { fade, makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import Button from '@material-ui/core/Button';
+
+import GQLogo from '../assets/image/GQLogo.png';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    grow: {
         flexGrow: 1,
     },
     menuButton: {
-        marginRight: theme.spacing(1),
-        borderColor: theme.palette.success.main,
-        color: theme.palette.success.main
+        marginRight: theme.spacing(2),
     },
+    inputRoot: {
+        color: 'inherit',
+    },
+    sectionDesktop: {
+        display: 'none',
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+        },
+        span: {
+            'font-weight': '400'
+        }
+    },
+    sectionMobile: {
+        display: 'flex',
+        [theme.breakpoints.up('md')]: {
+            display: 'none',
+        },
+    },
+    profileText: {
+        color: '#5A6868'
+    },
+    headerNav: {
+        borderBottom: '1px solid #cec7c7',
+        paddingBottom: '35px',
+        paddingLeft: '0',
+        backgroundColor: '#fff !important',
+        boxShadow: 'none !important',
+        color: '#0C90C6 !important',
+        margin: 'auto',
+        width: '96% !important'
+    },
+    headerPipe:{
+        display: 'none',
+	    margin: '5px 0'
+    },
+    '@media (min-width: 780px)' : {
+        headerPipe:{
+            display: 'block'
+        }
+    }
 }));
-function Header() {
+
+export default function Header() {
     const classes = useStyles();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+    const isMenuOpen = Boolean(anchorEl);
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const handleProfileMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMobileMenuClose = () => {
+        setMobileMoreAnchorEl(null);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        handleMobileMenuClose();
+    };
+
+    const handleMobileMenuOpen = (event) => {
+        setMobileMoreAnchorEl(event.currentTarget);
+    };
+
+    const menuId = 'primary-search-account-menu';
+    const renderMenu = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+        </Menu>
+    );
+
+    const mobileMenuId = 'primary-search-account-menu-mobile';
+    const renderMobileMenu = (
+        <Menu
+            anchorEl={mobileMoreAnchorEl}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            id={mobileMenuId}
+            keepMounted
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={isMobileMenuOpen}
+            onClose={handleMobileMenuClose}
+        >
+            <MenuItem>
+                <Button
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    //   onClick={handleProfileMenuOpen}
+                    color="inherit"
+                >
+                    <AccountCircle />
+                    <span className={'text-capitalize appTextFont ' + classes.profileText} >Admin</span>
+                </Button>
+            </MenuItem>
+            <MenuItem>
+                <Button color="inherit"><span className="appTextColor text-initial appTextFont" >Log out</span></Button>
+            </MenuItem>
+            <MenuItem onClick={handleProfileMenuOpen}>
+                <Button color="inherit"><span className="appTextColor text-capitalize appTextFont" >Documentation</span></Button>
+            </MenuItem>
+        </Menu>
+    );
+
     return (
+        <div className={classes.grow}>
+            <AppBar position="static" className={classes.headerNav}>
+                <Toolbar>
+                    <IconButton
+                        edge="start"
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="open drawer"
+                    >
+                        <a href="/login"><img src={GQLogo} alt="GQLogo" /></a>
 
-        <div >
-            <Row>
-                <Col>
-                    <Router>
-                        <Navbar expand="lg" sticky="top">
-                            <Col sm="12" md="3">
-                                <Navbar.Brand href="#home"><img src={GQLogo} alt="GQLogo" /></Navbar.Brand>
-                                <Navbar.Toggle aria-controls="basic-navbar-nav" className="float-right" />
-                            </Col>
-                            <Col sm="12" md="9">
-                                <Navbar.Collapse id="basic-navbar-nav" className="float-right">
-                                    <NavItem className="mr-3">
-                                    <AccountCircle className={classes.menuButton} /><span>Admin</span>
-                                    </NavItem>
-                                    <span className="headerPipe">|</span>
-                                    <Nav.Link href="/">Logout</Nav.Link>
-                                    <span className="headerPipe">|</span>
-                                    <Nav.Link href="/">Documentation</Nav.Link>
-                                    {/* <Nav className="mr-auto">
-                                    <Nav.Link href="/">Home</Nav.Link>
-                                    <Nav.Link href="/about-us">Contact Us</Nav.Link>
-                                    <Nav.Link href="/contact-us">About Us</Nav.Link>
-                                </Nav>
-                                <Form inline>
-                                    <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                                    <Button variant="outline-success">Search</Button>
-                                </Form> */}
-                                </Navbar.Collapse>
-                            </Col>
-
-                        </Navbar>
-                        <br />
-                    </Router>
-                </Col>
-            </Row>
+                    </IconButton>
+                    <div className={classes.grow} />
+                    <div className={classes.sectionDesktop}>
+                        <Button
+                            edge="end"
+                            aria-label="account of current user"
+                            aria-controls={menuId}
+                            aria-haspopup="true"
+                            onClick={handleProfileMenuOpen}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                            <span className={'text-capitalize appTextFont ' + classes.profileText} >Admin</span>
+                        </Button>
+                        <span className={classes.headerPipe}>|</span>
+                        <Button color="inherit"><span className="appTextColor text-initial appTextFont" >Log out</span></Button>
+                        <span className={classes.headerPipe}>|</span>
+                        <Button color="inherit"><span className="appTextColor text-capitalize appTextFont" >Documentation</span></Button>
+                    </div>
+                    <div className={classes.sectionMobile}>
+                        <IconButton
+                            aria-label="show more"
+                            aria-controls={mobileMenuId}
+                            aria-haspopup="true"
+                            onClick={handleMobileMenuOpen}
+                            color="inherit"
+                        >
+                            <MoreIcon />
+                        </IconButton>
+                    </div>
+                </Toolbar>
+            </AppBar>
+            {renderMobileMenu}
+            {renderMenu}
         </div>
     );
 }
-
-export default Header;

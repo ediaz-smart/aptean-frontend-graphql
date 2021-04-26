@@ -3,16 +3,26 @@ import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import GQLogo from '../../assets/image/GQLogo.png';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import {useTranslation} from "react-i18next";
 import { toast } from 'react-toastify';
 import Newsupdate from '../../shared/newspdate';
+import { makeStyles } from '@material-ui/core/styles';
 
-//import { userActions } from '../_actions';
-//console.log(GQLogo,'logoss');
+
+const useStyles = makeStyles((theme) => ({
+   
+    passwordRecoverDiv:{
+        padding: '15px 0 6px',
+        border: '2px solid #bfb4b4',
+        borderRadius: '6px'
+    }
+}));
+
+
 function Forgotpassword() {
+    const classes = useStyles();
     const {t, i18n} = useTranslation('common');
     const [inputs, setInputs] = useState({
         username: '',
@@ -57,10 +67,10 @@ function Forgotpassword() {
             </Row>
             <Row className="justify-content-md-center">
                 {/* <Col sm="12" md="6" className="loginDiv"> */}
-                <Col sm="12" md="6" className="mb-5 mt-4 passwordRecoverDiv">
+                <Col sm="12" md="6" className={'mb-5 mt-4 '+classes.passwordRecoverDiv}>
                     <form name="form" onSubmit={handleSubmit} className={(passwordForm ? 'd-block' : 'd-none')}>
-                        <h5 className="login-title">{t('pwdRecovery')}</h5>
-                        <p className="login-title mb-0">{t('pwdRecoveryTitle')}</p>
+                        <h5 className="loginTitle">{t('pwdRecovery')}</h5>
+                        <p className="loginTitle mb-0">{t('pwdRecoveryTitle')}</p>
                         <div className="form-group">
                             <TextField id="outlined-basic" label={t('username')} variant="outlined" name="username" value={username} onChange={handleChange} className={'form-control' + (submitted && !username ? ' is-invalid' : '')} />
                             {submitted && !username &&
@@ -74,7 +84,7 @@ function Forgotpassword() {
                             }
                         </div>
                         <div className="form-group">
-                            <Button variant="contained" color="primary" className="float-right login-submit text-capitalize" type="submit">
+                            <Button variant="contained" color="primary" className="float-right loginSubmittext-capitalize" type="submit">
                                 {loggingIn && <span className="spinner-border spinner-border-sm mr-1"></span>}
                                 {t('submit')}
                             </Button>

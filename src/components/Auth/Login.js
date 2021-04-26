@@ -7,12 +7,28 @@ import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import Newsupdate from '../../shared/newspdate';
+import { makeStyles } from '@material-ui/core/styles';
 
 
+const useStyles = makeStyles((theme) => ({
+    loginDiv:{
+        border: '2px solid #bfb4b4',
+        borderRadius: '6px',
+        padding: '20px',
+        height: '100%'
+    },
+    forgotLink:{
+        marginTop: '10px',
+        a:{
+            color:'#008EC5'
+        }
+    }
+}));
 
 //import { userActions } from '../_actions';
 //console.log(GQLogo,'logoss');
 function Login() {
+    const classes = useStyles();
     const [inputs, setInputs] = useState({
         username: '',
         password: ''
@@ -53,9 +69,9 @@ function Login() {
             </Row>
             <Row className="justify-content-md-center">
                 <Col sm="12" md="6" className="mb-5 mt-4">
-                    <form name="form" onSubmit={handleSubmit} className="loginDiv">
+                    <form name="form" onSubmit={handleSubmit} className={classes.loginDiv}>
 
-                        <h5 className="login-title">{t('loginAccount')}</h5>
+                        <h5 className="loginTitle">{t('loginAccount')}</h5>
                         <div className="form-group">
                             <TextField id="outlined-basic" label={t('username')} variant="outlined" name="username" value={username} onChange={handleChange} className={'form-control' + (submitted && !username ? ' is-invalid' : '')} />
                             {submitted && !username &&
@@ -69,13 +85,13 @@ function Login() {
                             }
                         </div>
                         <div className="form-group">
-                            <Button variant="contained" color="primary" className="float-right login-submit text-capitalize" type="submit">
+                            <Button variant="contained" color="primary" className="float-right loginSubmit text-capitalize" type="submit">
                                 {loggingIn && <span className="spinner-border spinner-border-sm mr-1"></span>}
                                 {t('submit')}
                             </Button>
                         </div>
                     </form>
-                    <p className="forgotLink">
+                    <p className={classes.forgotLink}>
                         <Link to="/forgot" className="m-0">{t('forgotLogin')}</Link>
                     </p>
                 </Col>
