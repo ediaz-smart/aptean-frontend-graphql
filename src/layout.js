@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './shared/header';
+import Footer from './shared/footer';
 import { makeStyles } from '@material-ui/core/styles';
 
 
@@ -16,7 +17,7 @@ function Layout() {
 
         <div className={classes.mainContent}>
             <Header />
-            
+            <Footer />
         </div>
     );
 }

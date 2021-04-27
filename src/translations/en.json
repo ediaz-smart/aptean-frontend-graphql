@@ -36,5 +36,8 @@
    "ftoMrnaDefaults": "FTO mRNA defaults",
    "domainCheckSearch": "Domain check search",
    "primerFto": "Primer FTO",
-   "more": "More ..."
+   "more": "More ...",
+   "logout":"Log out",
+   "documentation":"Documentation",
+   "copyRightText":"Aptean GenomeQuestTM version 9.5.19619 [2020.12.17] - Copyright © 2021 All rights reserved."
 }

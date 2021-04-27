@@ -8,6 +8,7 @@ import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
+import {useTranslation} from "react-i18next";
 
 import GQLogo from '../assets/image/GQLogo.png';
 
@@ -63,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const {t, i18n} = useTranslation('common');
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
     const isMenuOpen = Boolean(anchorEl);
@@ -126,10 +128,10 @@ export default function Header() {
                 </Button>
             </MenuItem>
             <MenuItem>
-                <Button color="inherit"><span className="appTextColor text-initial appTextFont" >Log out</span></Button>
+                <Button color="inherit"><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
-                <Button color="inherit"><span className="appTextColor text-capitalize appTextFont" >Documentation</span></Button>
+                <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>
             </MenuItem>
         </Menu>
     );
@@ -161,9 +163,9 @@ export default function Header() {
                             <span className={'text-capitalize appTextFont ' + classes.profileText} >Admin</span>
                         </Button>
                         <span className={classes.headerPipe}>|</span>
-                        <Button color="inherit"><span className="appTextColor text-initial appTextFont" >Log out</span></Button>
+                        <Button color="inherit"><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
                         <span className={classes.headerPipe}>|</span>
-                        <Button color="inherit"><span className="appTextColor text-capitalize appTextFont" >Documentation</span></Button>
+                        <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>
                     </div>
                     <div className={classes.sectionMobile}>
                         <IconButton

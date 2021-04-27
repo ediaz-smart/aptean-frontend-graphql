@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation,useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
+
 import GQLogo from '../../assets/image/GQLogo.png';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -24,10 +26,11 @@ const useStyles = makeStyles((theme) => ({
         }
     }
 }));
-
 //import { userActions } from '../_actions';
 //console.log(GQLogo,'logoss');
-function Login() {
+function Login(props) {
+
+    const history = useHistory();
     const classes = useStyles();
     const [inputs, setInputs] = useState({
         username: '',
@@ -59,6 +62,7 @@ function Login() {
             // get return url from location state or default to home page
             const { from } = location.state || { from: { pathname: "/" } };
             //dispatch(userActions.login(username, password, from));
+            history.push('/home');
         }
     }
 

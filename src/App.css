@@ -32,7 +32,7 @@
 .mt-100{
 	margin-top: 10%;
 }
-.appTextColor{
+.appLinkColor{
 	color:#008EC5;
 }
 
@@ -63,6 +63,9 @@
 }
 .appTextFont{
 	font-size: 14px;
+}
+.appTextColor{
+	color:#5A6868;
 }
 
 @keyframes App-logo-spin {
