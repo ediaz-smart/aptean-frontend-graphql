@@ -67,7 +67,16 @@
 .appTextColor{
 	color:#5A6868;
 }
-
+.borderless {
+    border-top-style: none;
+    border-left-style: none;
+    border-right-style: none;
+    border-bottom-style: none;
+}
+.pipeText{
+	margin: 0 10px;
+    font-weight: 600;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

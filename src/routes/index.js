@@ -5,9 +5,8 @@ import Login from '../components/Auth/Login';
 import Forgotpassword from '../components/Auth/Forgotpassword';
 // import Header from '../components/Header';
 import Layout from '../layout' 
-import Header from '../components/Header/Header';
-import ApplicationPanel from '../components/ApplicationPanel';
-import Recent from '../components/RecentResults/RecentResults' 
+import ApplicationPanel from '../components/Home/ApplicationPanel';
+import Recent from '../components/Home/RecentResults' 
 
 class Routes extends React.Component {
     render() {
@@ -21,7 +20,6 @@ class Routes extends React.Component {
                     <Route exact path="/home" component={Layout} />
                     
                     <Route exact path="/recent" component={Recent} />
-                    <Route exact path="/head" component={Header} />
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                 </Switch>
             </Router>)

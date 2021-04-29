@@ -3,7 +3,7 @@ import { Link, useLocation,useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 
-import GQLogo from '../../assets/image/GQLogo.png';
+import GQLogo from '../../assets/image/GenomeQuest.svg';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
@@ -23,6 +23,18 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '10px',
         a:{
             color:'#008EC5'
+        }
+    },
+    loginLogoDiv:{
+        position: 'relative',
+        left: '0px',
+        width: '200px'
+    },
+    '@media (min-width: 768px)' : {
+        loginLogoDiv:{
+            position: 'relative',
+            left: '36px',
+            width:'100%'
         }
     }
 }));
@@ -68,8 +80,8 @@ function Login(props) {
 
     return (
         <Container className="mt-100">
-            <Row className="justify-content-md-center mb-3">
-                <Col sm="12" md="11" className="p-0 ml-4"><img src={GQLogo} alt="GQLogo" /></Col>
+            <Row className={classes.loginLogoDiv}>
+                <Col sm="12" md="2" className="p-0 ml-4"><Link to="/login"><img src={GQLogo} alt="GQLogo" /></Link></Col>
             </Row>
             <Row className="justify-content-md-center">
                 <Col sm="12" md="6" className="mb-5 mt-4">

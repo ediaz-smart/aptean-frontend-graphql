@@ -10,7 +10,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import {useTranslation} from "react-i18next";
 
-import GQLogo from '../assets/image/GQLogo.png';
+import GQLogo from '../assets/image/GenomeQuest.svg';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -146,7 +146,7 @@ export default function Header() {
                         color="inherit"
                         aria-label="open drawer"
                     >
-                        <a href="/login"><img src={GQLogo} alt="GQLogo" /></a>
+                        <a href="/login" className="text-left"><img src={GQLogo} alt="GQLogo" className="w-75" /></a>
 
                     </IconButton>
                     <div className={classes.grow} />
