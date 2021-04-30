@@ -7,22 +7,14 @@ import GQLogo from '../../assets/image/GenomeQuest.svg';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
-import { useTranslation } from "react-i18next";
+import { useTranslation, } from "react-i18next";
 import Newsupdate from '../../shared/newspdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import LoginAction from '../../actions/LoginAction'
 
+import Validate from '../../helpers/validate';
 
-const validationSchema = yup.object({
-    username: yup
-      .string('Enter your username')
-      .required('Username is required'),
-    password: yup
-      .string('Enter your password')
-      .min(8, 'Password should be of minimum 8 characters length')
-      .required('Password is required'),
-  });
 
 const useStyles = makeStyles((theme) => ({
     loginDiv:{
@@ -64,7 +56,7 @@ function Login(props) {
             username: '',
             password: '',
         },
-        validationSchema: validationSchema,
+        validationSchema: Validate.LoginValidate(),
         onSubmit: (values) => {
         //   alert(JSON.stringify(values, null, 2));
         LoginAction(values);

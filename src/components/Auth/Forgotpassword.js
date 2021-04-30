@@ -11,12 +11,13 @@ import Newsupdate from '../../shared/newspdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import Validate from '../../helpers/validate';
 
 
 const useStyles = makeStyles((theme) => ({
    
     passwordRecoverDiv:{
-        padding: '15px 25px 6px',
+        padding: '15px 25px 20px',
         border: '2px solid #bfb4b4',
         borderRadius: '6px'
     },
@@ -33,14 +34,6 @@ const useStyles = makeStyles((theme) => ({
         }
     }
 }));
-const validationSchema = yup.object({
-    username: yup
-      .string('Enter your username')
-      .required('Username is required'),
-    captchaCode: yup
-      .string('Enter the code shown below')
-      .required('Code is required'),
-  });
 
 function Forgotpassword() {
     const classes = useStyles();
@@ -52,7 +45,7 @@ function Forgotpassword() {
             username: '',
             captchaCode: '',
         },
-        validationSchema: validationSchema,
+        validationSchema: Validate.ForgotValidate(),
         onSubmit: (values) => {
             toast.error("BAD Request Found!");
             setPasswordForm(false);
