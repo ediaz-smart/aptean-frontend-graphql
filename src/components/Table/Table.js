@@ -91,7 +91,7 @@ export default function Table({ columns, data }) {
 	console.log(headerGroups,'headerGroupsss');
 	return (
 		<Styles>
-			<table class="w-100 borderless tableWrap" {...getTableProps()}>
+			<table className="w-100 borderless tableWrap" {...getTableProps()}>
 				<thead >
 					{headerGroups.map(headerGroup => (
 						<tr {...headerGroup.getHeaderGroupProps()}>

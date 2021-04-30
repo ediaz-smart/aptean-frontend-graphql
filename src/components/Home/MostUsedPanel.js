@@ -12,9 +12,11 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
-        margin: '30px auto',
+        margin: '117px auto 28px',
         minHeight: '260px',
-        borderBottom: '1px solid #cec7c7'
+        borderBottom: '1px solid #cec7c7',
+        borderTop: '1px solid #cec7c7',
+        padding: '23px 0 5px'
     },
     savedSearchForm: {
         backgroundColor: '#f5f2f2',
@@ -80,11 +82,11 @@ function MostUsedPanel() {
                     <Col md="3" sm="12" className={classes.columnPadding +' mb-3'}>
                         <div className={classes.savedSearchForm}>
                             <p className={'appTextColor '+classes.textHeading}>{t('savedSearchForms')}</p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('ipSequence')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('patentFullText')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('sequenceVariation')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('antibodySequence')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('patientnumlookup')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ipSequence')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('antibodySequence')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patientnumlookup')}</a></p>
                         </div>
                     </Col>
                 </Row>

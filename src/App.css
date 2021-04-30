@@ -39,7 +39,8 @@
 /* Login & Forgot */
 .loginTitle{
 	color: #505F5F;
-	margin-left: 30px;
+	margin: 0px 0 15px;
+  font-weight: 600;
 }
 .loginSubmit{
 	background-color: #DB862D !important;
@@ -47,9 +48,9 @@
 .text-initial{
 	text-transform: none;
 }
-.form-group{
+/* .form-group{
 	margin: 1.5rem;
-}
+} */
 .invalid-feedback{
 	margin-top: 1.5rem !important;
 }

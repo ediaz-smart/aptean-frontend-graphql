@@ -25,7 +25,7 @@ export default function Footer() {
     return (
         <div className={classes.grow}>
             <AppBar position="static" color="primary" className={classes.footerNav}>
-                <Container maxWidth="md">
+                <Container>
                     <Toolbar>
                         <p className="w-100 text-center appTextColor">{t('copyRightText')}</p>
                     </Toolbar>

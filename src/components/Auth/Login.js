@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation,useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Link,useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useFormik } from 'formik';
 
 import GQLogo from '../../assets/image/GenomeQuest.svg';
 import TextField from '@material-ui/core/TextField';
@@ -10,7 +10,17 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import Newsupdate from '../../shared/newspdate';
 import { makeStyles } from '@material-ui/core/styles';
+import * as yup from 'yup';
 
+const validationSchema = yup.object({
+    username: yup
+      .string('Enter your username')
+      .required('Username is required'),
+    password: yup
+      .string('Enter your password')
+      .min(8, 'Password should be of minimum 8 characters length')
+      .required('Password is required'),
+  });
 
 const useStyles = makeStyles((theme) => ({
     loginDiv:{
@@ -41,42 +51,28 @@ const useStyles = makeStyles((theme) => ({
 //import { userActions } from '../_actions';
 //console.log(GQLogo,'logoss');
 function Login(props) {
-
+    
     const history = useHistory();
     const classes = useStyles();
-    const [inputs, setInputs] = useState({
-        username: '',
-        password: ''
-    });
-
     const { t, i18n } = useTranslation('common');
-    const [submitted, setSubmitted] = useState(false);
-    const { username, password } = inputs;
-    // const loggingIn = useSelector(state => state.authentication.loggingIn);
-    const loggingIn = false;
     const dispatch = useDispatch();
-    const location = useLocation();
+
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            password: '',
+        },
+        validationSchema: validationSchema,
+        onSubmit: (values) => {
+          alert(JSON.stringify(values, null, 2));
+          history.push('/home');
+        },
+    });
 
     // reset login status
     useEffect(() => {
         //dispatch(userActions.logout()); 
     }, []);
-    function handleChange(e) {
-        const { name, value } = e.target;
-        setInputs(inputs => ({ ...inputs, [name]: value }));
-    }
-
-    function handleSubmit(e) {
-        e.preventDefault();
-
-        setSubmitted(true);
-        if (username && password) {
-            // get return url from location state or default to home page
-            const { from } = location.state || { from: { pathname: "/" } };
-            //dispatch(userActions.login(username, password, from));
-            history.push('/home');
-        }
-    }
 
     return (
         <Container className="mt-100">
@@ -85,28 +81,43 @@ function Login(props) {
             </Row>
             <Row className="justify-content-md-center">
                 <Col sm="12" md="6" className="mb-5 mt-4">
-                    <form name="form" onSubmit={handleSubmit} className={classes.loginDiv}>
-
-                        <h5 className="loginTitle">{t('loginAccount')}</h5>
-                        <div className="form-group">
-                            <TextField id="outlined-basic" label={t('username')} variant="outlined" name="username" value={username} onChange={handleChange} className={'form-control' + (submitted && !username ? ' is-invalid' : '')} />
-                            {submitted && !username &&
-                                <div className="invalid-feedback">{t('usernameReq')}</div>
-                            }
-                        </div>
-                        <div className="form-group">
-                            <TextField id="outlined-basic" label={t('password')} variant="outlined" name="password" value={password} onChange={handleChange} className={'form-control' + (submitted && !password ? ' is-invalid' : '')} />
-                            {submitted && !password &&
-                                <div className="invalid-feedback">{t('passwordReq')}</div>
-                            }
-                        </div>
-                        <div className="form-group">
-                            <Button variant="contained" color="primary" className="float-right loginSubmit text-capitalize" type="submit">
-                                {loggingIn && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                                {t('submit')}
-                            </Button>
-                        </div>
-                    </form>
+                
+                <form name="loginForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
+                    <h5 className="loginTitle">{t('loginAccount')}</h5>
+                    <div className="form-group">
+                        <TextField
+                        fullWidth
+                        id="username"
+                        name="username"
+                        label={t('username')}
+                        variant="outlined"
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                        error={formik.touched.username && Boolean(formik.errors.username)}
+                        helperText={formik.touched.username && formik.errors.username}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <TextField
+                        fullWidth
+                        variant="outlined"
+                        id="password"
+                        name="password"
+                        label={t('password')}
+                        type="password"
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        error={formik.touched.password && Boolean(formik.errors.password)}
+                        helperText={formik.touched.password && formik.errors.password}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
+                        {t('submit')}
+                        </Button>
+                    </div>
+                    
+                </form>
                     <p className={classes.forgotLink}>
                         <Link to="/forgot" className="m-0">{t('forgotLogin')}</Link>
                     </p>

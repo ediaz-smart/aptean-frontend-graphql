@@ -141,7 +141,7 @@ function RecentResults() {
 
 			<Row >
 						<Col>
-						<span className={'appTextColor '+classes.textHeading}>Most Recent Results</span><span className="pipeText appTextColor">|</span><span className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:void(0)">All Search Results</a></span>
+						<span className={'appTextColor '+classes.textHeading}>Most Recent Results</span><span className="pipeText appTextColor">|</span><span className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>All Search Results</a></span>
 						</Col>
 					</Row>
 					<Row >

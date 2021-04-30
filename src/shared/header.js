@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     menuButton: {
-        marginRight: theme.spacing(2),
+        // marginRight: theme.spacing(2),
     },
     inputRoot: {
         color: 'inherit',
@@ -41,14 +41,14 @@ const useStyles = makeStyles((theme) => ({
         color: '#5A6868'
     },
     headerNav: {
-        borderBottom: '1px solid #cec7c7',
-        paddingBottom: '35px',
+        padding: '10px 15px 20px',
+        left:0,
         paddingLeft: '0',
         backgroundColor: '#fff !important',
         boxShadow: 'none !important',
         color: '#0C90C6 !important',
         margin: 'auto',
-        width: '96% !important'
+        width: '92% !important'
     },
     headerPipe:{
         display: 'none',
@@ -138,7 +138,7 @@ export default function Header() {
 
     return (
         <div className={classes.grow}>
-            <AppBar position="static" className={classes.headerNav}>
+            <AppBar position="fixed" className={classes.headerNav}>
                 <Toolbar>
                     <IconButton
                         edge="start"

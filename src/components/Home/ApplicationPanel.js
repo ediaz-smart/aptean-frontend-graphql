@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
-import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
+import { AccessAlarm } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -69,12 +65,12 @@ function ApplicationPanel() {
                     <Col md="3" sm="12" className="mb-3">
                         <div className={classes.savedForm}>
                             <p className={'appTextColor '+classes.textHeading}>{t('savedSearchForms')}</p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('ftoMrnaDefaults')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('domainCheckSearch')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('primerFto')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ftoMrnaDefaults')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('domainCheckSearch')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('primerFto')}</a></p>
 
                             <br></br>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('more')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('more')}</a></p>
                         </div>
 
                     </Col>
@@ -83,25 +79,25 @@ function ApplicationPanel() {
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3" sm="12"><AccessAlarm className={classes.appIcon} /></Col>
                             <Col lg="10" md="9" sm="12">
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('ipSequence')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('sequenceVariation')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('antibodySequence')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ipSequence')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('antibodySequence')}</a></p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('documentSearch')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('patentFullText')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('patentNumbers')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentNumbers')}</a></p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('sequenceDatabases')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('browseDatabases')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('personalDatabases')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('browseDatabases')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('personalDatabases')}</a></p>
                             </Col>
                         </Row>
                     </Col>
@@ -110,23 +106,23 @@ function ApplicationPanel() {
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('allSearchResults')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('allSearchResults')}</a></p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('sequenceTools')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('alignSequencesDirectly')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('convertSequenceFormats')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('alignSequencesDirectly')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('myAccount')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('accountInformation')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href="javascript:">{t('changePassword')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('accountInformation')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('changePassword')}</a></p>
                             </Col>
                         </Row>
                     </Col>
