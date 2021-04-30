@@ -9,8 +9,9 @@ import { post } from '../helpers/fetchServicesMethods';
 //     return {
 //         type: "wewqewqe"
 //       };
-    export function loginAction(data){
-        console.log('data', data)
+    export default function loginAction(data){
+        console.log('Login Data From Action', data)
+        
     return (dispatch, getState) => {
         // const { posts } = getState()
         // if (posts[userId]) {
@@ -20,7 +21,7 @@ import { post } from '../helpers/fetchServicesMethods';
 
         dispatch({
             type: SET_USER,
-            payload: data.email
+            payload: data.username
         });
         let url = "users/login"
         const getData = post(url, data);

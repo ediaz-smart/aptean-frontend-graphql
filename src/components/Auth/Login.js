@@ -11,6 +11,8 @@ import { useTranslation } from "react-i18next";
 import Newsupdate from '../../shared/newspdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
+import LoginAction from '../../actions/LoginAction'
+
 
 const validationSchema = yup.object({
     username: yup
@@ -64,7 +66,8 @@ function Login(props) {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-          alert(JSON.stringify(values, null, 2));
+        //   alert(JSON.stringify(values, null, 2));
+        LoginAction(values);
           history.push('/home');
         },
     });

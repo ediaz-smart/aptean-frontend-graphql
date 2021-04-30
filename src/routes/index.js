@@ -7,7 +7,7 @@ import Forgotpassword from '../components/Auth/Forgotpassword';
 import Layout from '../layout' 
 import ApplicationPanel from '../components/Home/ApplicationPanel';
 import Recent from '../components/Home/RecentResults' 
-
+import SearchResult from '../components/SearchedResults/SearchedResults'
 class Routes extends React.Component {
     render() {
         console.log('qwdhijoiefhdoihdf')
@@ -18,7 +18,7 @@ class Routes extends React.Component {
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/forgot" component={Forgotpassword} />
                     <Route exact path="/home" component={Layout} />
-                    
+                    <Route exact path="/search" component={SearchResult} />
                     <Route exact path="/recent" component={Recent} />
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                 </Switch>

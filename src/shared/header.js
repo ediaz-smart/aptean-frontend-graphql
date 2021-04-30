@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import {useTranslation} from "react-i18next";
 
 import GQLogo from '../assets/image/GenomeQuest.svg';
+import ModalBox from '../components/Modal/ModalBox';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -66,6 +67,7 @@ export default function Header() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const {t, i18n} = useTranslation('common');
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+    const [modalShow, setModalShow] = React.useState(false);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -137,6 +139,7 @@ export default function Header() {
     );
 
     return (
+        
         <div className={classes.grow}>
             <AppBar position="fixed" className={classes.headerNav}>
                 <Toolbar>
@@ -163,7 +166,13 @@ export default function Header() {
                             <span className={'text-capitalize appTextFont ' + classes.profileText} >Admin</span>
                         </Button>
                         <span className={classes.headerPipe}>|</span>
-                        <Button color="inherit"><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
+                        <Button color="inherit" ><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
+                        {/* <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button> */}
+
+                        <ModalBox
+                                show={modalShow}
+                                onHide={() => setModalShow(false)}
+                            />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>
                     </div>
