@@ -1,9 +1,12 @@
 {
    "loginAccount": "Login into your Account",
    "username":"Username",
+   "enterUsername":"Enter Your Username",
    "usernameReq":"Username is required",
    "password":"Password",
    "passwordReq":"Password is required",
+   "enterPass":"Enter Your Password",
+   "passMinChar":"Password should be of minimum 8 characters length",
    "submit":"Submit",
    "forgotLogin":"Forgot your login details?",
    "pwdRecovery":"Password Recovery",
