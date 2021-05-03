@@ -20,7 +20,8 @@ const useStyles = makeStyles((theme) => ({
     },
     anchorTag: {
         textDecoration: 'none',
-        color: "#008EC5"
+        color: "#008EC5",
+        fontSize:"15px"
     },
     p: {
         color: "#008EC5",
@@ -36,7 +37,10 @@ const useStyles = makeStyles((theme) => ({
     },
     pTagMargin: {
         marginBottom: "0px",
-        fontWeight: "500"
+        fontWeight: "500",
+        '& span':{
+            color: "#5A6868",
+        }
     },
     applicationPanelRow: {
         marginBottom: "15px",
@@ -57,7 +61,14 @@ function ApplicationPanel() {
     useEffect(() => {
         //dispatch(userActions.logout()); 
     }, []);
-
+    function showString(str){
+        let getLength = str.length;
+        if(getLength > 23){
+            str = str.substring(0,23)+' ...';
+        }
+        return str;
+        
+    }
     return (
         <div className={classes.grow}>
             {/* <Container className="p-0 m-5"> */}
@@ -65,9 +76,13 @@ function ApplicationPanel() {
                     <Col md="3" sm="12" className="mb-3">
                         <div className={classes.savedForm}>
                             <p className={'appTextColor '+classes.textHeading}>{t('savedSearchForms')}</p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ftoMrnaDefaults')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('domainCheckSearch')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('primerFto')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('FTO mRNA defaults')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Domain check search')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Primer FTO')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Secondary Ag search')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Bovine growth hormone')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Immunoglobulin reactive information')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Calcification protocols in DNA Modules')}</a></p>
 
                             <br></br>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('more')}</a></p>
@@ -80,7 +95,10 @@ function ApplicationPanel() {
                             <Col lg="2" md="3" sm="12"><AccessAlarm className={classes.appIcon} /></Col>
                             <Col lg="10" md="9" sm="12">
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ipSequence')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a></p>
+                                <p className={classes.pTagMargin}>
+                                    {/* <a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a> */}
+                                    <span className={classes.pTagMargin}>{t('sequenceVariation')}</span>
+                                </p>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('antibodySequence')}</a></p>
                             </Col>
                         </Row>
