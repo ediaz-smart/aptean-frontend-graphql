@@ -12,7 +12,7 @@ import {useTranslation} from "react-i18next";
 import { Link,useHistory } from 'react-router-dom';
 
 import GQLogo from '../assets/image/GenomeQuest.svg';
-import ModalBox from '../components/Modal/ModalBox';
+import ModalBox from '../shared/Modal/ModalBox';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
