@@ -1,9 +1,9 @@
 import React from 'react';
-import Header from './shared/header';
-import Footer from './shared/footer';
-import ApplicationPanel from './components/Home/ApplicationPanel';
-import MostUsedPanel from './components/Home/MostUsedPanel';
-import RecentResults from './components/Home/RecentResults';
+import Header from '../../shared/header';
+import Footer from '../../shared/footer';
+import ApplicationPanel from '../Home/ApplicationPanel';
+import MostUsedPanel from '../Home/MostUsedPanel';
+import RecentResults from '../Home/RecentResults';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Layout() {
+function HomeLayout() {
     const classes = useStyles();
     return (
 
@@ -28,4 +28,4 @@ function Layout() {
     );
 }
 
-export default Layout;
+export default HomeLayout;

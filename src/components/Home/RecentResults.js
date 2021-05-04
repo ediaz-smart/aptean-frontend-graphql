@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 import ReactTable from 'react-table';
 import Table from "../../shared/Table/Table";
 import axios from "axios";
-import "../Table/Table.css";
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { makeStyles } from "@material-ui/core/styles";
 

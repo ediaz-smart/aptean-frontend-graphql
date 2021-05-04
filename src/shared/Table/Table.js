@@ -2,7 +2,7 @@ import React from "react";
 import { useTable } from "react-table";
 import styled from 'styled-components'
 
-
+import "./Table.css";
 
 const Styles = styled.div`
   /* This is required to make the table full-width */

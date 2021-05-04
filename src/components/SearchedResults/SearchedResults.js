@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
 import makeData from './makeData'
-import CheckboxTable from '../Table/CheckboxTable'
+import CheckboxTable from '../../shared/Table/CheckboxTable'
 
 const useStyles = makeStyles((theme) => ({
     loginDiv:{
