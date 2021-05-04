@@ -9,6 +9,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import {useTranslation} from "react-i18next";
+import { Link,useHistory } from 'react-router-dom';
 
 import GQLogo from '../assets/image/GenomeQuest.svg';
 import ModalBox from '../components/Modal/ModalBox';
@@ -49,7 +50,9 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: 'none !important',
         color: '#0C90C6 !important',
         margin: 'auto',
-        width: '92% !important'
+        width: '92% !important',
+        zIndex:999
+
     },
     headerPipe:{
         display: 'none',
@@ -63,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Header() {
+    const history = useHistory();
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const {t, i18n} = useTranslation('common');
@@ -83,6 +87,9 @@ export default function Header() {
     const handleMenuClose = () => {
         setAnchorEl(null);
         handleMobileMenuClose();
+    };
+    const logout = () => {
+       history.push('login')
     };
 
     const handleMobileMenuOpen = (event) => {
@@ -166,12 +173,13 @@ export default function Header() {
                             <span className={'text-capitalize appTextFont ' + classes.profileText} >Admin</span>
                         </Button>
                         <span className={classes.headerPipe}>|</span>
-                        <Button color="inherit" ><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
-                        {/* <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button> */}
+                        {/* <Button color="inherit" ><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button> */}
+                        <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
 
                         <ModalBox
                                 show={modalShow}
                                 onHide={() => setModalShow(false)}
+                                onLog ={() => logout()}
                             />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>

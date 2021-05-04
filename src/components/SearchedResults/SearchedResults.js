@@ -30,48 +30,39 @@ function SearchedResults(props) {
     const columns = React.useMemo(
         () => [
           {
-            Header: 'Name',
+            Header: ' ',
             columns: [
               {
-                Header: 'First Name',
+                Header: 'Type',
                 accessor: 'firstName',
               },
               {
-                Header: 'Last Name',
-                accessor: 'lastName',
-              },
-            ],
-          },
-          {
-            Header: 'Info',
-            columns: [
-              {
-                Header: 'Age',
-                accessor: 'age',
+                Header: 'Latest Search Date',
+                accessor: 'date',
               },
               {
-                Header: 'Visits',
-                accessor: 'visits',
-              },
-              {
-                Header: 'Status',
+                Header: 'Name',
                 accessor: 'status',
               },
-              {
-                Header: 'Profile Progress',
-                accessor: 'progress',
-              },
             ],
           },
+          
         ],
         []
       )
  
     return (
         <Container className="mt-100">
-            <h1>ARUN KUMAr</h1>
-            <CheckboxTable columns={columns} data={data} />
-
+            <Row >
+              <Col>
+          
+              </Col>
+            </Row>
+            <Row >
+              <Col>
+              <CheckboxTable className="w-100" columns={columns} data={data} />
+              </Col>
+            </Row>
          </Container>
 
     );

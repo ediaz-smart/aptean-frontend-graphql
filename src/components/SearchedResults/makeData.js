@@ -12,6 +12,7 @@ const newPerson = () => {
   return {
     firstName: 'Arun',
     lastName: 'Kumar',
+    date: 'Monday, 3 May 2021',
     age: Math.floor(Math.random() * 30),
     visits: Math.floor(Math.random() * 100),
     progress: Math.floor(Math.random() * 100),

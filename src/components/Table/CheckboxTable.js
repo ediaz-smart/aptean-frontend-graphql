@@ -5,33 +5,75 @@ import { useTable, useRowSelect } from 'react-table'
 
 
 const Styles = styled.div`
-  padding: 1rem;
+  /* This is required to make the table full-width */
+  display: block;
+  max-width: 100%;
+
+  /* This will make the table scrollable when it gets too small */
+  .tableWrap {
+    display: block;
+    max-width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+	color:#5A6868;
+  }
 
   table {
+    /* Make sure the inner table is always as wide as needed */
+    width: 100%;
     border-spacing: 0;
-    border: 1px solid black;
-
+	:last-child {
+		border-bottom: 0;
+	}
     tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
+		border-bottom: 1px solid #cec7c7;
+
+		:first-child {
+			border-bottom: 0;
+		}
+		
     }
 
-    th,
+    th{
+		margin: 0;
+		//padding: 0.5rem;
+		border-bottom: 1px solid #cec7c7;
+		border-right: 1px solid #cec7c7;
+  
+		/* The secret sauce */
+		/* Each cell should grow equally */
+		width: 1%;
+		/* But "collapsed" cells should be as small as possible */
+		&.collapse {
+		  width: 0.0000000001%;
+		}
+		:first-child {
+			border-bottom: 0;
+		}
+		:last-child {
+		  border-right: 0;
+		}
+	},
     td {
       margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
+     // padding: 0.5rem;
+      border-bottom: 1px solid #cec7c7;
+      border-right: 1px solid #cec7c7;
+
+      /* The secret sauce */
+      /* Each cell should grow equally */
+      width: 1%;
+      /* But "collapsed" cells should be as small as possible */
+      &.collapse {
+        width: 0.0000000001%;
+      }
 
       :last-child {
         border-right: 0;
       }
     }
-  }
-`
+  }`
+
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -93,8 +135,8 @@ export default function CheckboxTable({ columns, data }) {
 
   // Render the UI for your table
   return (
-    <>
-      <table {...getTableProps()}>
+    <Styles>
+      <table className="w-100 borderless tableWrap" {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -104,7 +146,7 @@ export default function CheckboxTable({ columns, data }) {
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>
+        <tbody {...getTableBodyProps()}> 
           {rows.slice(0, 10).map((row, i) => {
             prepareRow(row)
             return (
@@ -133,6 +175,6 @@ export default function CheckboxTable({ columns, data }) {
           )}
         </code>
       </pre>
-    </>
+    </Styles>
   )
 }
