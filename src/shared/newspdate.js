@@ -10,6 +10,9 @@ const useStyles = makeStyles((theme) => ({
     newsContent:{
         textAlign: 'justify',
         lineHeight: '22px',
+        '& p':{
+            fontSize: '15px'
+        }
     },
     '@media (min-width: 780px)' : {
         newsContent:{

@@ -34,6 +34,17 @@ const useStyles = makeStyles((theme) => ({
         left: '0px',
         width: '200px'
     },
+    materialUILabel: {
+        fontStyle: 'italic'
+    },
+    root: {
+        "& .Mui-error": {
+            fontStyle:'italic'
+        },
+        "& .MuiFormHelperText-root": {
+            fontStyle:'italic'
+        }
+    },
     '@media (min-width: 768px)' : {
         loginLogoDiv:{
             position: 'relative',
@@ -59,8 +70,8 @@ function Login(props) {
         validationSchema: Validate.LoginValidate(),
         onSubmit: (values) => {
         //   alert(JSON.stringify(values, null, 2));
-        LoginAction(values);
-          history.push('/home');
+            LoginAction(values);
+            history.push('/home');
         },
     });
 
@@ -90,6 +101,10 @@ function Login(props) {
                         onChange={formik.handleChange}
                         error={formik.touched.username && Boolean(formik.errors.username)}
                         helperText={formik.touched.username && formik.errors.username}
+                        InputLabelProps={{
+                            classes: {root:classes.materialUILabel}, 
+                        }}
+                        className={classes.root}
                         />
                     </div>
                     <div className="form-group">
@@ -104,6 +119,10 @@ function Login(props) {
                         onChange={formik.handleChange}
                         error={formik.touched.password && Boolean(formik.errors.password)}
                         helperText={formik.touched.password && formik.errors.password}
+                        InputLabelProps={{
+                            classes: {root:classes.materialUILabel}, 
+                        }}
+                        className={classes.root}
                         />
                     </div>
                     <div className="form-group">

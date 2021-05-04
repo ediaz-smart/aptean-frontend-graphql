@@ -42,7 +42,8 @@
    "more": "More ...",
    "logout":"Log out",
    "documentation":"Documentation",
-   "copyRightText":"Aptean GenomeQuestTM version 9.5.19619 [2020.12.17] - Copyright © 2021 All rights reserved.",
+   "copyRightText1":"Aptean GenomeQuestTM version 9.5.19619 [2020.12.17] - Copyright ©",
+   "copyRightText2":"All rights reserved.",
    "manageresults":"Manage Results",
    "patientnumlookup":"Patient Number Lookup"
 }
