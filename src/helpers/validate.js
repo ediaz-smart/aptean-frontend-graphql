@@ -10,9 +10,9 @@ const Validate = {
 function LoginValidate() {
     const { t, i18n } = useTranslation('common');
     const validationSchema = yup.object({
-        username: yup
-            .string(t('enterUsername'))
-            .required(t('usernameReq')),
+        userName: yup
+            .string(t('enteruserName'))
+            .required(t('userNameReq')),
         password: yup
             .string(t('enterPass'))
             .min(8, t('passMinChar'))
@@ -23,9 +23,9 @@ function LoginValidate() {
 function ForgotValidate() {
     const { t, i18n } = useTranslation('common');
     const validationSchema = yup.object({
-        username: yup
-            .string(t('enterUsername'))
-            .required(t('usernameReq')),
+        userName: yup
+            .string(t('enteruserName'))
+            .required(t('userNameReq')),
         captchaCode: yup
             .string(t('codeShown'))
             .required(t('codeReq')),

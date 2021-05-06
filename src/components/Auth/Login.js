@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link,useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 
@@ -11,25 +11,24 @@ import { useTranslation, } from "react-i18next";
 import Newsupdate from '../../shared/newspdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
-import LoginAction from '../../actions/LoginAction'
-
+import { submitLogin } from '../../reducers/slice/loginSlice';
 import Validate from '../../helpers/validate';
 
 
 const useStyles = makeStyles((theme) => ({
-    loginDiv:{
+    loginDiv: {
         border: '2px solid #bfb4b4',
         borderRadius: '6px',
         padding: '20px',
         height: '100%'
     },
-    forgotLink:{
+    forgotLink: {
         marginTop: '10px',
-        a:{
-            color:'#008EC5'
+        a: {
+            color: '#008EC5'
         }
     },
-    loginLogoDiv:{
+    loginLogoDiv: {
         position: 'relative',
         left: '0px',
         width: '200px'
@@ -49,14 +48,14 @@ const useStyles = makeStyles((theme) => ({
         loginLogoDiv:{
             position: 'relative',
             left: '36px',
-            width:'100%'
+            width: '100%'
         }
     }
 }));
 //import { userActions } from '../_actions';
 //console.log(GQLogo,'logoss');
 function Login(props) {
-    
+
     const history = useHistory();
     const classes = useStyles();
     const { t, i18n } = useTranslation('common');
@@ -64,13 +63,12 @@ function Login(props) {
 
     const formik = useFormik({
         initialValues: {
-            username: '',
+            userName: '',
             password: '',
         },
         validationSchema: Validate.LoginValidate(),
-        onSubmit: (values) => {
-        //   alert(JSON.stringify(values, null, 2));
-            LoginAction(values);
+        onSubmit: async(values) => {
+            dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password}));
             history.push('/home');
         },
     });
@@ -87,51 +85,43 @@ function Login(props) {
             </Row>
             <Row className="justify-content-md-center">
                 <Col sm="12" md="6" className="mb-5 mt-4">
-                
-                <form name="loginForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
-                    <h5 className="loginTitle">{t('loginAccount')}</h5>
-                    <div className="form-group">
-                        <TextField
-                        fullWidth
-                        id="username"
-                        name="username"
-                        label={t('username')}
-                        variant="outlined"
-                        value={formik.values.username}
-                        onChange={formik.handleChange}
-                        error={formik.touched.username && Boolean(formik.errors.username)}
-                        helperText={formik.touched.username && formik.errors.username}
-                        InputLabelProps={{
-                            classes: {root:classes.materialUILabel}, 
-                        }}
-                        className={classes.root}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <TextField
-                        fullWidth
-                        variant="outlined"
-                        id="password"
-                        name="password"
-                        label={t('password')}
-                        type="password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        error={formik.touched.password && Boolean(formik.errors.password)}
-                        helperText={formik.touched.password && formik.errors.password}
-                        InputLabelProps={{
-                            classes: {root:classes.materialUILabel}, 
-                        }}
-                        className={classes.root}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
-                        {t('submit')}
-                        </Button>
-                    </div>
-                    
-                </form>
+
+                    <form name="loginForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
+                        <h5 className="loginTitle">{t('loginAccount')}</h5>
+                        <div className="form-group">
+                            <TextField
+                                fullWidth
+                                id="userName"
+                                name="userName"
+                                label={t('userName')}
+                                variant="outlined"
+                                value={formik.values.userName}
+                                onChange={formik.handleChange}
+                                error={formik.touched.userName && Boolean(formik.errors.userName)}
+                                helperText={formik.touched.userName && formik.errors.userName}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                id="password"
+                                name="password"
+                                label={t('password')}
+                                type="password"
+                                value={formik.values.password}
+                                onChange={formik.handleChange}
+                                error={formik.touched.password && Boolean(formik.errors.password)}
+                                helperText={formik.touched.password && formik.errors.password}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
+                                {t('submit')}
+                            </Button>
+                        </div>
+
+                    </form>
                     <p className={classes.forgotLink}>
                         <Link to="/forgot" className="m-0">{t('forgotLogin')}</Link>
                     </p>

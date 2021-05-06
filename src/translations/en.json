@@ -1,8 +1,8 @@
 {
    "loginAccount": "Login into your Account",
-   "username":"Username",
-   "enterUsername":"Enter Your Username",
-   "usernameReq":"Username is required",
+   "userName":"Username",
+   "enterUserName":"Enter Your Username",
+   "userNameReq":"Username is required",
    "password":"Password",
    "passwordReq":"Password is required",
    "enterPass":"Enter Your Password",
@@ -45,5 +45,7 @@
    "copyRightText1":"Aptean GenomeQuestTM version 9.5.19619 [2020.12.17] - Copyright ©",
    "copyRightText2":"All rights reserved.",
    "manageresults":"Manage Results",
-   "patientnumlookup":"Patient Number Lookup"
+   "patientnumlookup":"Patient Number Lookup",
+   "loginSuccess": "Logged in successfully",
+   "loginFailed": "Login failed"
 }

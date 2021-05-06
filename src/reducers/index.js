@@ -1,12 +1,9 @@
 import { combineReducers } from 'redux'
 
-import todosReducer from './todo';
-// import filtersReducer from './features/filters/filtersSlice'
+import loginSlice from './slice/loginSlice';
 
 const rootReducer = combineReducers({
-  // Define a top-level state field named `todos`, handled by `todosReducer`
-  todos: todosReducer,
-//   filters: filtersReducer
+  user: loginSlice
 })
 
 export default rootReducer

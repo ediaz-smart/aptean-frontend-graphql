@@ -53,7 +53,7 @@ function Forgotpassword() {
     const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: {
-            username: '',
+            userName: '',
             captchaCode: '',
         },
         validationSchema: Validate.ForgotValidate(),
@@ -85,14 +85,14 @@ function Forgotpassword() {
                         <div className="form-group">
                             <TextField
                                 fullWidth
-                                id="username"
-                                name="username"
-                                label={t('username')}
+                                id="userName"
+                                name="userName"
+                                label={t('userName')}
                                 variant="outlined"
-                                value={formik.values.username}
+                                value={formik.values.userName}
                                 onChange={formik.handleChange}
-                                error={formik.touched.username && Boolean(formik.errors.username)}
-                                helperText={formik.touched.username && formik.errors.username}
+                                error={formik.touched.userName && Boolean(formik.errors.userName)}
+                                helperText={formik.touched.userName && formik.errors.userName}
                                 InputLabelProps={{
                                     classes: {root:classes.materialUILabel}, 
                                 }}

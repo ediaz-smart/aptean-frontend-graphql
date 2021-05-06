@@ -79,7 +79,7 @@ export function post(url, data) {
     return fetch(baseUrl+url, {
         method: 'post',
         headers: {
-            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json; charset=utf-8;application/x-www-form-urlencoded',
             // 'Access-Control-Allow-Origin': '*',
             // 'accept': '*/*'      
         },
