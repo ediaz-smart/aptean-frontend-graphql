@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
+import TextInput from '../../shared/Fields/TextInput';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,21 +27,17 @@ const useStyles = makeStyles((theme) => ({
         left: '0px',
         width: '200px'
     },
-    materialUILabel: {
-        fontStyle: 'italic'
-    },
-    root: {
-        "& .Mui-error": {
-            fontStyle:'italic'
-        },
-        "& .MuiFormHelperText-root": {
-            fontStyle:'italic'
-        }
-    },
     '@media (min-width: 768px)' : {
         loginLogoDiv:{
             position: 'relative',
-            left: '28px',
+            left: '50px',
+            width:'100%'
+        }
+    },
+    '@media (min-width: 1024px)' : {
+        loginLogoDiv:{
+            position: 'relative',
+            left: '80px',
             width:'100%'
         }
     }
@@ -73,35 +70,31 @@ function Forgotpassword() {
         <Container className="mt-100">
             
             <Row className={classes.loginLogoDiv}>
-                <Col sm="12" md="2" className="p-0 ml-4"><Link to="/login"><img src={GQLogo} alt="GQLogo" /></Link></Col>
+                <Col sm="12" md="3" className="p-0 ml-4"><Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link></Col>
 
             </Row>
             <Row className="justify-content-md-center">
                 {/* <Col sm="12" md="6" className="loginDiv"> */}
-                <Col sm="12" md="6" className={'mb-5 mt-4 '+classes.passwordRecoverDiv}>
+                <Col sm="12" md="5" className={'mb-5 mt-4 '+classes.passwordRecoverDiv}>
                     <form name="passwordForm" onSubmit={formik.handleSubmit} className={(passwordForm ? 'd-block' : 'd-none')}>
                         <h5 className="loginTitle">{t('pwdRecovery')}</h5>
                         <p className="appTextColor mb-4">{t('pwdRecoveryTitle')}</p>
                         <div className="form-group">
-                            <TextField
+                            <TextInput 
                                 fullWidth
                                 id="userName"
                                 name="userName"
                                 label={t('userName')}
                                 variant="outlined"
                                 value={formik.values.userName}
-                                onChange={formik.handleChange}
+                                onChange={formik.handleChange} 
                                 error={formik.touched.userName && Boolean(formik.errors.userName)}
                                 helperText={formik.touched.userName && formik.errors.userName}
-                                InputLabelProps={{
-                                    classes: {root:classes.materialUILabel}, 
-                                }}
-                                className={classes.root}
-                                />
+                            />
                         </div>
                         <div className="form-group">
                             
-                            <TextField
+                            <TextInput
                                 fullWidth
                                 id="captchaCode"
                                 name="captchaCode"
@@ -111,11 +104,7 @@ function Forgotpassword() {
                                 onChange={formik.handleChange}
                                 error={formik.touched.captchaCode && Boolean(formik.errors.captchaCode)}
                                 helperText={formik.touched.captchaCode && formik.errors.captchaCode}
-                                InputLabelProps={{
-                                    classes: {root:classes.materialUILabel}, 
-                                }}
-                                className={classes.root}
-                                />
+                            />
                         </div>
                         <div className="form-group">
                             <Button variant="contained" color="primary" className="float-right loginSubmit text-capitalize" type="submit">
@@ -132,8 +121,8 @@ function Forgotpassword() {
                         <p>{t('pleaseContactText')}</p>
                     </div>
                 </Col>
-                <Col sm="12" md="5">
-                    <Newsupdate />
+                <Col sm="12" md="5" className="ml-3">
+                    <Newsupdate isForgotPanel={true} />
                 </Col>
             </Row>
         </Container>

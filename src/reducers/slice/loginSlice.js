@@ -7,13 +7,14 @@ const initialState = { isLoggedIn: false }
 
 
 export const submitLogin = (data) => async (dispatch) => {
+    dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
     return post(url.login, data)
         .then((response) => {
             // if (response.status && response.data.sessionData.token) {
             //     jwtService.setSession(response.data.accessToken);
             //     jwtService.setUserObjSession(response.data);
             toast.success('loginSuccess');
-            dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
+            //dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
             // window.location.href = "/admin";
             // }
 

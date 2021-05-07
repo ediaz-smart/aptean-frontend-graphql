@@ -47,5 +47,6 @@
    "manageresults":"Manage Results",
    "patientnumlookup":"Patient Number Lookup",
    "loginSuccess": "Logged in successfully",
-   "loginFailed": "Login failed"
+   "loginFailed": "Login failed",
+   "mostusedlink":"Most Used Links"
 }

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState,useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@material-ui/core/styles';
+
+import ContentModal from './Modal/ContentModal';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -11,40 +13,62 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'justify',
         lineHeight: '22px',
         '& p':{
-            fontSize: '15px'
+            fontSize: '14px'
         }
     },
     '@media (min-width: 780px)' : {
         newsContent:{
             marginLeft: '1.5rem',
-            paddingLeft: '42px',
+            paddingLeft: '36px',
             borderLeft: '1px solid #d8d4d4',
+            height: '315px',
+            overflowX: 'scroll'
+        },
+        forgotNewsContent:{
+            height: '380px'
         },
         newsMostUsedContent:{
             marginLeft: '0',
             paddingLeft: '0',
             borderLeft: 'none',
-            padding: '12px 0'
+            padding: '12px 0',
+            height: '210px',
+            overflowX: 'unset'
         }
     }
 }));
 function Newsupdate(props) {
     const classes = useStyles();
     const { t, i18n } = useTranslation('common');
-
+    const [showMore, setShowMore] = useState(true);
+    const [modalShow, setModalShow] = React.useState(false);
     // reset login status
     useEffect(() => {
         //dispatch(userActions.logout()); 
+        const height = document.getElementById('newsUpdateDiv').clientHeight;
+        console.log(height,'height');
+        if(height > 195)
+        {
+            setShowMore(true);
+            document.getElementById("newsUpdateDiv").className = props.isMostUsedPanel ? "newsUpdateContent":"p-3"; 
+        }
     }, []);
-    console.log(props,'isMostUsedPanel');
+    const elementContent = <div><p className={"appTextColor"+' '+(props.isMostUsedPanel ? 'ml-2 mt-4' : '')}>2021 Jan 21 <b>Patent Family Updates – </b>The GenomeQuest content team has streamlined the patent family assignment process to increase accuracy and increase update frequency. The new process has resulted in a significant reduction of singletons, updates for newdocuments are now done weekly. Please contact support@gqlifesciences.com with questions or comments.</p>
+    <p className={"appTextColor"+' '+(props.isMostUsedPanel ? 'ml-2 ' : '')}>2020 Oct 27 <b>Antibody Module – </b>The new module has been released! Please join us in a <a href='#' onClick={e => e.preventDefault()}>webinar</a> on November 10th to learn about streamlining your antibody searches.</p></div>
     return (
-        
-        <div className={classes.newsContent+' '+(props.isMostUsedPanel ? classes.newsMostUsedContent : '')}>
+        <div>
+        <div  className={classes.newsContent+' '+(props.isMostUsedPanel ? classes.newsMostUsedContent : '')+(props.isForgotPanel ? classes.forgotNewsContent:'')}>
+            <div id="newsUpdateDiv" className="p-3">
             <h5 className="appTextColor"><b>{t('newsandupdates')}</b></h5>
-            <p className={"appTextColor"+' '+(props.isMostUsedPanel ? 'ml-2 mt-4' : '')}>2021 Jan 21 <b>Patent Family Updates – </b>The GenomeQuest content team has streamlined the patent family assignment process to increase accuracy and increase update frequency. The new process has resulted in a significant reduction of singletons, updates for newdocuments are now done weekly. Please contact support@gqlifesciences.com with questions or comments.</p>
-            <p className={"appTextColor"+' '+(props.isMostUsedPanel ? 'ml-2 ' : '')}>2020 Oct 27 <b>Antibody Module – </b>The new module has been released! Please join us in a <a href='#' onClick={e => e.preventDefault()}>webinar</a> on Nov ember 10th to learn about streamlining your antibody searches.</p>
+            {elementContent}
+            </div>
         </div>
-
+        
+        {props.isMostUsedPanel && showMore && 
+            <p className="moreLink ml-2"><a href="#" onClick={() => setModalShow(true)}>More...</a></p>
+        }
+        <ContentModal show={modalShow} onHide={() => setModalShow(false)} title={t('newsandupdates')} contentdata={elementContent} />
+        </div>
     );
 }
 

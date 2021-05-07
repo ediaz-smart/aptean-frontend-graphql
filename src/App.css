@@ -35,6 +35,10 @@
 .appLinkColor{
 	color:#008EC5;
 }
+.moreLink{
+  color:#008EC5;
+  font-style: italic;
+}
 
 /* Login & Forgot */
 .loginTitle{
@@ -66,7 +70,7 @@
 	font-size: 14px;
 }
 .appTextColor{
-	color:#5A6868;
+	color:#373c3c;
 }
 .borderless {
     border-top-style: none;
@@ -77,6 +81,16 @@
 .pipeText{
 	  margin: 0 10px;
     font-weight: 600;
+}
+.modalPromptContent{
+  width: 85% !important;
+  margin: 0 auto;
+}
+
+/* News and Update */
+.newsUpdateContent{
+    height:195px;
+    overflow:hidden
 }
 @keyframes App-logo-spin {
   from {

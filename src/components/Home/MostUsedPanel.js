@@ -12,10 +12,9 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
-        margin: '117px auto 28px',
+        margin: '135px auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',
-        borderTop: '1px solid #cec7c7',
         padding: '23px 0 5px'
     },
     savedSearchForm: {
@@ -81,7 +80,7 @@ function MostUsedPanel() {
                     </Col>
                     <Col md="3" sm="12" className={classes.columnPadding +' mb-3'}>
                         <div className={classes.savedSearchForm}>
-                            <p className={'appTextColor '+classes.textHeading}>{t('savedSearchForms')}</p>
+                            <p className={'appTextColor '+classes.textHeading}>{t('mostusedlink')}</p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ipSequence')}</a></p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a></p>

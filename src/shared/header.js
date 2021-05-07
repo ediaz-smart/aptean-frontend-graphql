@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useHistory } from 'react-router-dom';
 
 import GQLogo from '../assets/image/GenomeQuest.svg';
-import ModalBox from '../shared/Modal/ModalBox';
+import PromptModal from './Modal/PromptModal';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -43,15 +43,16 @@ const useStyles = makeStyles((theme) => ({
         color: '#5A6868'
     },
     headerNav: {
-        padding: '10px 15px 20px',
-        left: 0,
+        padding: '10px 15px 0px',
+        left:0,
         paddingLeft: '0',
         backgroundColor: '#fff !important',
         boxShadow: 'none !important',
         color: '#0C90C6 !important',
         margin: 'auto',
         width: '92% !important',
-        zIndex: 999
+        zIndex:999,
+        borderBottom: '1px solid #cec7c7'
 
     },
     headerPipe: {
@@ -177,13 +178,14 @@ export default function Header(props) {
                         {/* <Button color="inherit" ><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button> */}
                         <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
 
-                        <ModalBox
-                            show={modalShow}
-                            onHide={() => setModalShow(false)}
-                            onLog={() => logout()}
-                        />
+                        <PromptModal
+                                show={modalShow}
+                                onHide={() => setModalShow(false)}
+                                onLog ={() => logout()}
+                            />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>
+
                     </div>
                     <div className={classes.sectionMobile}>
                         <IconButton
@@ -197,7 +199,10 @@ export default function Header(props) {
                         </IconButton>
                     </div>
                 </Toolbar>
+                <br />
+                <h5 className="text-right appTextColor p-2"><b></b></h5>
             </AppBar>
+
             {renderMobileMenu}
             {renderMenu}
         </div>
