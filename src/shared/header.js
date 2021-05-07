@@ -8,8 +8,8 @@ import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
-import {useTranslation} from "react-i18next";
-import { Link,useHistory } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
+import { Link, useHistory } from 'react-router-dom';
 
 import GQLogo from '../assets/image/GenomeQuest.svg';
 import ModalBox from '../shared/Modal/ModalBox';
@@ -44,32 +44,33 @@ const useStyles = makeStyles((theme) => ({
     },
     headerNav: {
         padding: '10px 15px 20px',
-        left:0,
+        left: 0,
         paddingLeft: '0',
         backgroundColor: '#fff !important',
         boxShadow: 'none !important',
         color: '#0C90C6 !important',
         margin: 'auto',
         width: '92% !important',
-        zIndex:999
+        zIndex: 999
 
     },
-    headerPipe:{
+    headerPipe: {
         display: 'none',
-	    margin: '5px 0'
+        margin: '5px 0'
     },
-    '@media (min-width: 780px)' : {
-        headerPipe:{
+    '@media (min-width: 780px)': {
+        headerPipe: {
             display: 'block'
         }
     }
 }));
 
-export default function Header() {
+export default function Header(props) {
+    const { page } = props;
     const history = useHistory();
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const {t, i18n} = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const [modalShow, setModalShow] = React.useState(false);
 
@@ -89,7 +90,7 @@ export default function Header() {
         handleMobileMenuClose();
     };
     const logout = () => {
-       history.push('login')
+        history.push('login')
     };
 
     const handleMobileMenuOpen = (event) => {
@@ -144,9 +145,9 @@ export default function Header() {
             </MenuItem>
         </Menu>
     );
-
+    console.log('pageName', page.props.location.pathname)
     return (
-        
+
         <div className={classes.grow}>
             <AppBar position="fixed" className={classes.headerNav}>
                 <Toolbar>
@@ -177,10 +178,10 @@ export default function Header() {
                         <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
 
                         <ModalBox
-                                show={modalShow}
-                                onHide={() => setModalShow(false)}
-                                onLog ={() => logout()}
-                            />
+                            show={modalShow}
+                            onHide={() => setModalShow(false)}
+                            onLog={() => logout()}
+                        />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>
                     </div>

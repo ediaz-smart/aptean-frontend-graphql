@@ -14,18 +14,16 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function HomeLayout() {
+function Layout(props) {
     const classes = useStyles();
     return (
 
         <div className={classes.mainContent}>
-            <Header />
-            <MostUsedPanel />
-            <ApplicationPanel />
-            <RecentResults />
+            <Header page={props.children}/>
+            {props.children}
             <Footer />
         </div>
     );
 }
 
-export default HomeLayout;
+export default Layout;
