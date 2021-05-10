@@ -19,11 +19,11 @@ class Routes extends React.Component {
                     <Route exact path="/" title="login" component={Login} />
                     <Route exact path="/login" title="login" component={Login} />
                     <Route exact path="/forgot" title="forgot" component={Forgotpassword} />
-                    <Route exact path="/home" component={Home} />
+                    <Route exact path="/home" title="" component={Home} />
                     <Route exact path="/search" component={SearchResult} />
                     <Route exact path="/recent" component={Recent} />
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
-                    <Route exact path="/ipseqsearch" title="ipSequenceSearch" component={IpSequenceSearch} />
+                    <Route exact path="/ipseqsearch" title="ipseqsearch" component={IpSequenceSearch} />
                 </Switch>
             </HashRouter>)
     }

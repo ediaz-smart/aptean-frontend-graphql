@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 
 import GQLogo from '../../assets/image/GenomeQuest.svg';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation, } from "react-i18next";

@@ -19,7 +19,7 @@ function Layout(props) {
     return (
 
         <div className={classes.mainContent}>
-            <Header page={props.children}/>
+            <Header title={props.title}/>
             {props.children}
             <Footer />
         </div>

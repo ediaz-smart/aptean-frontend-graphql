@@ -199,7 +199,7 @@ export default function Header(props) {
                     </div>
                 </Toolbar>
                 <br />
-                <h5 className="text-right appTextColor p-2"><b></b></h5>
+                <h5 className={"text-right appTextColor "+(props.title != '' ? 'p-0':'p-2') }><b>{t(props.title)}</b></h5>
             </AppBar>
 
             {renderMobileMenu}
