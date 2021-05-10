@@ -7,6 +7,7 @@ import store from '../store/index.js'
 
 export default function Router({
 	component: Component,
+	title,
 	...rest
 }) {
 	const signed = true;
@@ -33,14 +34,12 @@ export default function Router({
 	/**
 	 * If not included on both previous cases, redirect user to the desired route.
 	 */
-	if (isLoginStatus) {
+	if (title == 'login' || title == 'forgot') {
 		return (
 			<Route
 				{...rest}
 				render={props => (
-					<Layout>
-						<Component {...props} />
-					</Layout>
+					<Component {...props} />
 
 				)}
 			/>
@@ -50,7 +49,9 @@ export default function Router({
 			<Route
 				{...rest}
 				render={props => (
-					<Component {...props} />
+					<Layout title={title}>
+						<Component {...props} />
+					</Layout>
 
 				)}
 			/>

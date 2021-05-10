@@ -146,7 +146,6 @@ export default function Header(props) {
             </MenuItem>
         </Menu>
     );
-    console.log('pageName', page.props.location.pathname)
     return (
 
         <div className={classes.grow}>
@@ -158,7 +157,7 @@ export default function Header(props) {
                         color="inherit"
                         aria-label="open drawer"
                     >
-                        <a href="/login" className="text-left"><img src={GQLogo} alt="GQLogo" className="w-75" /></a>
+                        <Link to="/login" className="text-left"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link>
 
                     </IconButton>
                     <div className={classes.grow} />

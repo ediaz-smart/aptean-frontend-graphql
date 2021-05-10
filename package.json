@@ -1,5 +1,6 @@
 {
     "name": "genomequest",
+    "homepage": ".",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -12,6 +13,7 @@
         "@testing-library/user-event": "^12.6.0",
         "axios": "^0.21.1",
         "bootstrap": "^4.6.0",
+        "env-cmd": "^10.1.0",
         "formik": "^2.2.6",
         "formik-material-ui": "^3.0.1",
         "i18next": "^20.2.1",
@@ -33,10 +35,13 @@
         "yup": "^0.32.9"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "env-cmd -f ./env/.env.development react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "start:development": "env-cmd -f ./env/.env.development react-scripts start",
+        "build:staging": "env-cmd -f ./env/.env.staging react-scripts build --prod",
+        "build:production": "env-cmd -f ./env/.env.production react-scripts build --prod"
     },
     "eslintConfig": {
         "extends": [

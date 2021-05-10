@@ -81,7 +81,9 @@ function MostUsedPanel() {
                     <Col md="3" sm="12" className={classes.columnPadding +' mb-3'}>
                         <div className={classes.savedSearchForm}>
                             <p className={'appTextColor '+classes.textHeading}>{t('mostusedlink')}</p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ipSequence')}</a></p>
+                            <p className={classes.pTagMargin}>
+                                <Link to="/ipseqsearch" className={classes.anchorTag}>{t('ipSequence')}</Link>
+                            </p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a></p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('antibodySequence')}</a></p>

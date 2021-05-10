@@ -4,11 +4,11 @@ import { toast } from 'react-toastify';
 import { url } from '../url';
 
 const initialState = { isLoggedIn: false }
-
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const submitLogin = (data) => async (dispatch) => {
     dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
-    return post(url.login, data)
+    return post(API_URL+url.login, data)
         .then((response) => {
             // if (response.status && response.data.sessionData.token) {
             //     jwtService.setSession(response.data.accessToken);
