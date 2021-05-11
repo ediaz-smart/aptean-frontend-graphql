@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 import { AccessAlarm } from '@material-ui/icons';
+import { Link, useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -54,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ApplicationPanel() {
     const { t, i18n } = useTranslation('common');
+    const history = useHistory();
 
     const classes = useStyles();
 
@@ -69,6 +71,10 @@ function ApplicationPanel() {
         return str;
         
     }
+    function searchForm() {
+       history.push('/search')
+       
+      }
     return (
         <div className={classes.grow}>
             {/* <Container className="p-0 m-5"> */}
@@ -85,7 +91,7 @@ function ApplicationPanel() {
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Calcification protocols in DNA Modules')}</a></p>
 
                             <br></br>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('more')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={searchForm}>{t('more')}</a></p>
                         </div>
 
                     </Col>

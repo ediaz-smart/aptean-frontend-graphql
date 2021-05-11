@@ -10,6 +10,9 @@ import Table from "../../shared/Table/Table";
 import axios from "axios";
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { makeStyles } from "@material-ui/core/styles";
+import DataTable from "react-data-table-component";
+import SortIcon from "@material-ui/icons/ArrowDownward";
+import movies from '../SearchedResults/movies'
 
 const Genres = ({ values }) => {
 	return (
@@ -65,6 +68,37 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const columns = [
+	{
+	  name: "Type",
+	  selector: "title",
+	  sortable: true
+	},
+	{
+	  name: "Date",
+	  selector: "year",
+	  sortable: true
+	},
+	{
+	  name: "Description",
+	  selector: "runtime",
+	  sortable: true,
+	},
+	{
+		name: " ",
+		selector: "director",
+		sortable: true
+	  },
+	  {
+		name: " ",
+		selector: "title",
+		sortable: false,
+	  }
+  ];
+   const isIndeterminate = indeterminate => indeterminate;
+  const selectableRowsComponentProps = { indeterminate: isIndeterminate };
+
+  
 function RecentResults() {
 
 	const [data, setData] = useState([]);
@@ -77,62 +111,7 @@ function RecentResults() {
 		})();
 	}, []);
 
-	const columns = useMemo(
-		() => [
-			{
-				// first group - TV Show
-				Header: " ",
-				hideHeader:false,
-				// First group columns
-				columns: [
-					{
-						Header: "Type",
-						accessor: "show.name"
-					},
-					{
-						Header: "Date",
-						accessor: "show.type"
-					},
-					{
-						Header: "Description",
-						accessor: "show.genres"
-					},
-					{
-						Header: " ",
-						accessor: "show.runtime"
-					},
-					{
-						Header: " ",
-						accessor: "show.status"
-					}
-				]
-			},
-			// {
-			//   // Second group - Details
-			//   Header: "Details",
-			//   // Second group columns
-			//   columns: [
-			//     {
-			//       Header: "Language",
-			//       accessor: "show.language"
-			//     },
-			//     {
-			//       Header: "Genre(s)",
-			//       accessor: "show.genres"
-			//     },
-			//     {
-			//       Header: "Runtime",
-			//       accessor: "show.runtime"
-			//     },
-			//     {
-			//       Header: "Statuss",
-			//       accessor: "show.status"
-			//     }
-			//   ]
-			// }
-		],
-		[]
-	);
+	
 
 	return (
 
@@ -145,7 +124,14 @@ function RecentResults() {
 					</Row>
 					<Row >
 						<Col>
-						<Table className="w-100" columns={columns} data={data} />
+						{/* <Table className="w-100" columns={columns} data={data} /> */}
+						<DataTable
+								columns={columns}
+								data={movies}
+								defaultSortField="title"
+								sortIcon={<SortIcon />}
+						
+						/>
 						</Col>
 					</Row>
 

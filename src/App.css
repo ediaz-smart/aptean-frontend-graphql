@@ -1,105 +1,131 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
+
 
 /* Common */
-.mt-100{
-	margin-top: 10%;
+
+.mt-100 {
+    margin-top: 10%;
 }
-.appLinkColor{
-	color:#008EC5;
+
+.appLinkColor {
+    color: #008EC5;
 }
-.moreLink{
-  color:#008EC5;
-  font-style: italic;
+
+.moreLink {
+    color: #008EC5;
+    font-style: italic;
 }
+
 
 /* Login & Forgot */
-.loginTitle{
-	color: #505F5F;
-	margin: 0px 0 15px;
-  font-weight: 600;
-}
-.loginSubmit{
-	background-color: #DB862D !important;
-}
-.text-initial{
-	text-transform: none;
-}
-/* .form-group{
-	margin: 1.5rem;
-} */
-.invalid-feedback{
-	margin-top: 1.5rem !important;
-}
-.form-control.is-invalid, .was-validated .form-control:invalid{
-	padding-right: 0 !important;
+
+.loginTitle {
+    color: #505F5F;
+    margin: 0px 0 15px;
+    font-weight: 600;
 }
 
+.loginSubmit {
+    background-color: #DB862D !important;
+}
+
+.changePassword {
+    background-color: #dadbe0 !important;
+}
+
+.text-initial {
+    text-transform: none;
+}
+
+
+/* .form-group{
+    margin: 1.5rem;
+} */
+
+.invalid-feedback {
+    margin-top: 1.5rem !important;
+}
+
+.form-control.is-invalid,
+.was-validated .form-control:invalid {
+    padding-right: 0 !important;
+}
+
+
 /* Header */
+
 .MuiToolbar-root.MuiToolbar-regular.MuiToolbar-gutters {
     padding: 0 !important;
 }
-.appTextFont{
-	font-size: 14px;
+
+.appTextFont {
+    font-size: 14px;
 }
-.appTextColor{
-	color:#4a5050
+
+.appTextColor {
+    color: #4a5050
 }
+
 .borderless {
     border-top-style: none;
     border-left-style: none;
     border-right-style: none;
     border-bottom-style: none;
 }
-.pipeText{
-	  margin: 0 10px;
+
+.pipeText {
+    margin: 0 10px;
     font-weight: 600;
 }
-.modalPromptContent{
-  width: 85% !important;
-  margin: 0 auto;
+
+.modalPromptContent {
+    width: 85% !important;
+    margin: 0 auto;
 }
 
+
 /* News and Update */
-.newsUpdateContent{
-    height:195px;
-    overflow:hidden
+
+.newsUpdateContent {
+    height: 195px;
+    overflow: hidden
 }
+
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
-@media only screen and (min-width: 768px) {
-	
-}
+
+@media only screen and (min-width: 768px) {}
