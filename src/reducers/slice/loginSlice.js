@@ -7,6 +7,7 @@ const initialState = { isLoggedIn: false }
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const submitLogin = (data) => async (dispatch) => {
+    console.log('API_URL+url.login', API_URL+url.login)
     dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
     return post(API_URL+url.login, data)
         .then((response) => {

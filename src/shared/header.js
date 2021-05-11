@@ -44,14 +44,14 @@ const useStyles = makeStyles((theme) => ({
     },
     headerNav: {
         padding: '10px 15px 0px',
-        left:0,
+        left: 0,
         paddingLeft: '0',
         backgroundColor: '#fff !important',
         boxShadow: 'none !important',
         color: '#0C90C6 !important',
         margin: 'auto',
         width: '92% !important',
-        zIndex:999,
+        zIndex: 999,
         borderBottom: '1px solid #cec7c7'
 
     },
@@ -178,10 +178,10 @@ export default function Header(props) {
                         <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
 
                         <PromptModal
-                                show={modalShow}
-                                onHide={() => setModalShow(false)}
-                                onLog ={() => logout()}
-                            />
+                            show={modalShow}
+                            onHide={() => setModalShow(false)}
+                            onLog={() => logout()}
+                        />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>
 

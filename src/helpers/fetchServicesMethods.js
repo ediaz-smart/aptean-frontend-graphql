@@ -76,7 +76,7 @@ function handleResponse(response) {
 
 export function post(url, data) {
    
-    return fetch(baseUrl+url, {
+    return fetch(url, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json; charset=utf-8;application/x-www-form-urlencoded',

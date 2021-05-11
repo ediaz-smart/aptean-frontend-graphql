@@ -114,6 +114,13 @@
     margin: 0 auto;
 }
 
+.rightAlign {
+    text-align: right
+}
+
+.leftAlign {
+      text-align: left
+}
 
 /* News and Update */
 

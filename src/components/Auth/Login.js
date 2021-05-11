@@ -71,7 +71,7 @@ function Login(props) {
         validationSchema: Validate.LoginValidate(),
         onSubmit: async(values) => {
             dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password}));
-            history.push('/home');
+            // history.push('/home');
         },
     });
 
