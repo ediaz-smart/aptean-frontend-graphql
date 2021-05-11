@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     materialUILabel: {
-        fontStyle: 'italic'
+        fontStyle: 'italic',
     }
 }));
 
@@ -29,11 +29,12 @@ export default function TextInput(props) {
         variant={props.variant}
         value={props.value}
         onChange={props.onChange}
-        className={classes.root} 
+        className={classes.root+' '+props.class} 
         error={props.error}
         helperText={props.helperText}
         InputLabelProps={{
             classes: {root:classes.materialUILabel}, 
-        }} />
+        }} 
+        />
     );
 }
