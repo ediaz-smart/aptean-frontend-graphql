@@ -157,7 +157,7 @@ export default function Header(props) {
                         color="inherit"
                         aria-label="open drawer"
                     >
-                        <Link to="/login" className="text-left"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link>
+                        <Link to="/home" className="text-left"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link>
 
                     </IconButton>
                     <div className={classes.grow} />

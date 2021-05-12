@@ -17,9 +17,9 @@ class Routes extends React.Component {
         return (
             <HashRouter history={history}>
                 <Switch>
-                    <Route exact path="/" component={Login} />
-                    <Route exact path="/login" component={Login} />
-                    <Route exact path="/forgot" component={Forgotpassword} />
+                    <Route exact path="/" title="login" component={Login} />
+                    <Route exact path="/login" title="login" component={Login} />
+                    <Route exact path="/forgot" title="forgot" component={Forgotpassword} />
                     <Route exact path="/home" component={Home} />
                     <Route exact path="/changePassword" component={ChangePassword} />
                     <Route exact path="/search" component={SearchResult} />

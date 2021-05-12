@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect,Fragment } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -12,13 +12,13 @@ import TextInput from '../../shared/Fields/TextInput';
 import Typography from '@material-ui/core/Typography';
 import CheckBox from '../../shared/Fields/CheckBox';
 import SelectBox from '../../shared/Fields/SelectBox';
+import DatePicker from '../../shared/Fields/DatePicker';
 import TextArea from '../../shared/Fields/TextArea';
 import { useFormik } from 'formik';
-
-
 import * as yup from 'yup';
 // import { submitLogin } from '../../reducers/slice/loginSlice';
 import Validate from '../../helpers/validate';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
         margin: '135px auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',
-        padding: '23px 0 5px'
+        padding: '23px 13px 5px'
     },
     arrowIcon: {
         fontSize: '2.5rem',
@@ -40,8 +40,25 @@ const useStyles = makeStyles((theme) => ({
     },
     seqText: {
         margin: '16px 10px'
+    },
+    '@media (min-width: 768px)': {
+        desktopHelpLink: {
+            display: 'block'
+        },
+        mobileHelpLink: {
+            display: 'none'
+        }
+    },
+    '@media (max-width: 760px)': {
+        desktopHelpLink: {
+            display: 'none'
+        },
+        mobileHelpLink: {
+            display: 'block'
+        }
     }
 }));
+
 const Accordion = withStyles({
     root: {
         boxShadow: 'none',
@@ -89,11 +106,10 @@ const AccordionDetails = withStyles((theme) => ({
     },
 }))(MuiAccordionDetails);
 
-function MostUsedPanel() {
+function IpSeqSearch() {
     const { t, i18n } = useTranslation('common');
 
     const classes = useStyles();
-
     const formik = useFormik({
         initialValues: {
             searchDetails: '',
@@ -104,12 +120,12 @@ function MostUsedPanel() {
             // history.push('/home');
         },
     });
-
     // reset login status
     useEffect(() => {
         //dispatch(userActions.logout()); 
     }, []);
     const [seqDBFilter, setSeqDBFilter] = React.useState(true);
+    const [specificDBFilter, setSpecificDBFilter] = React.useState(true);
     const maxResidues = '100,000';
     const docPublicSel = [
         {
@@ -129,13 +145,28 @@ function MostUsedPanel() {
             label: "Aftre or is empty"
         }
     ];
+    const GQSpecificSel = [
+        {
+            value: "islessthanequal",
+            label: "is less than or equal to"
+        },
+        {
+            value: "islessthan",
+            label: "is less than"
+        },
+        {
+            value: "equals",
+            label: "equals"
+        },
+        {
+            value: "doesnotequal",
+            label: "does not equal"
+        }
+    ];
     return (
-        <Fragment>
-            {/* viswes changes starts */}
-            <Container className="mt-100">
+            <div className={classes.grow}>
                 <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
-                    <Row>
-
+                 <Row>
                         <Col md="6">
                             <p className="loginTitle">{t('searchDetails')}</p>
                             <div className="form-group">
@@ -186,22 +217,17 @@ function MostUsedPanel() {
                         </Col>
                     </Row>
 
-                </form>
-
-            </Container>
-            {/* viswes changes ends */}
-            <div className={classes.grow}>
                 <Row>
                     <Col md="11">
                         <Accordion square expanded={seqDBFilter} onChange={() => setSeqDBFilter(prevState => !prevState)}>
-                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="appTextColor">
                                 <p className="appTextColor m-0">
                                     {seqDBFilter && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                     {!seqDBFilter && <ArrowRightIcon className={classes.arrowIcon} />}
                                     <b className={classes.arrowIconTitle}>General Sequence Database Filters​</b>
                                 </p>
                             </AccordionSummary>
-                            <AccordionDetails>
+                            <AccordionDetails className="appTextColor">
                                 <Col md="12">
                                     <Typography className={"float-left " + classes.seqText}>
                                         Search Only Sequence Between&nbsp;&nbsp;&nbsp;
@@ -257,19 +283,133 @@ function MostUsedPanel() {
                                         id="docPublicSel"
                                         value=""
                                         items={docPublicSel}
+                                        class={"float-left"}
                                     />
+                                    <DatePicker
+                                        margin="normal"
+                                        id="docPublicDate"
+                                        name="docPublicDate"
+                                        format="dd/MM/yyyy"
+                                        label="Date picker inline"
+                                        value
+                                        inputVariant="outlined"
+                                        class={"float-left m-0 ml-4"}
+                                    />
+                                    <CheckBox
+                                        defaultChecked
+                                        color="primary"
+                                        class={"float-left mx-2"}
+                                        name="includeGenUnknownDate"
+                                        id="includeGenUnknownDate"
+                                    />
+                                    <Typography className={"float-left mt-2"}>
+                                        Include unknown dates
+                                </Typography>
                                 </Col>
                             </AccordionDetails>
                         </Accordion>
                     </Col>
-                    <Col md="1">
+                    <Col md="1" className={classes.desktopHelpLink}>
+                        <Link className="float-right mr-2">Help</Link>
+                    </Col>
+                    <Col md="12">
+                        <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
+                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="appTextColor">
+                                <p className="appTextColor m-0">
+                                    {specificDBFilter && <ArrowDropDownIcon className={classes.arrowIcon} />}
+                                    {!specificDBFilter && <ArrowRightIcon className={classes.arrowIcon} />}
+                                    <b className={classes.arrowIconTitle}>GQ-Pat specific Database Filters​</b>
+                                </p>
+                            </AccordionSummary>
+                            <AccordionDetails className="appTextColor">
+                                <Col md="12">
+                                    <CheckBox
+                                        defaultChecked
+                                        color="primary"
+                                        class={"float-left"}
+                                        name="publishGenomeQuest"
+                                        id="publishGenomeQuest"
+                                    />
+                                    <Typography className={"float-left mt-2"}>
+                                        Published in GenomeQuest &nbsp;&nbsp;&nbsp;
+                                    </Typography>
+                                    <SelectBox
+                                        margin="normal"
+                                        variant="outlined"
+                                        name="publishGQSel"
+                                        id="publishGQSel"
+                                        value=""
+                                        items={docPublicSel}
+                                        class={"float-left"}
+                                    />
+                                    <DatePicker
+                                        margin="normal"
+                                        id="publishGQDate"
+                                        name="publishGQDate"
+                                        format="dd/MM/yyyy"
+                                        value
+                                        inputVariant="outlined"
+                                        class={"float-left m-0 ml-4"}
+                                    />
+                                    <CheckBox
+                                        defaultChecked
+                                        color="primary"
+                                        class={"float-left mx-2"}
+                                        name="includeGQSpecificDate"
+                                        id="includeGQSpecificDate"
+                                    />
+                                    <Typography className={"float-left mt-2"}>
+                                        Include unknown dates
+                                </Typography>
+                                </Col>
+                                <br clear="all"></br>
+                                <br clear="all"></br>
+                                <Col md="12">
+                                    <CheckBox
+                                        color="primary"
+                                        class={"float-left"}
+                                        name="isPatientDoc"
+                                        id="isPatientDoc"
+                                    />
+                                    <Typography className={"float-left mt-2"}>
+                                        Patient Document contains &nbsp;&nbsp;&nbsp;
+                                </Typography>
+                                    <SelectBox
+                                        margin="normal"
+                                        variant="outlined"
+                                        name="patientDocSel"
+                                        id="patientDocSel"
+                                        value=""
+                                        items={GQSpecificSel}
+                                        class={"float-left"}
+                                    />
+                                    <TextInput
+                                        fullWidth={false}
+                                        id="patientDocInp"
+                                        name="patientDocInp"
+                                        label={maxResidues}
+                                        variant="outlined"
+                                        // value={formik.values.minResidues}
+                                        // onChange={formik.handleChange} 
+                                        // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
+                                        // helperText={formik.touched.minResidues && formik.errors.minResidues}
+                                        class={"float-left mx-4"}
+                                    />
+                                    <Typography className={"float-left mt-2"}>
+                                        Sequences
+                                </Typography>
+                                </Col>
+                            </AccordionDetails>
+                        </Accordion>
+                    </Col>
+                    <Col md="12" className={classes.mobileHelpLink}>
                         <Link className="float-right mr-2">Help</Link>
                     </Col>
                 </Row>
-            </div>
-        </Fragment>
 
+                </form>
+            </div>
     );
 }
 
-export default MostUsedPanel;
+export default IpSeqSearch;

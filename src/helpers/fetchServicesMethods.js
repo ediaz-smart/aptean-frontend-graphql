@@ -115,7 +115,7 @@ export function post(url, data) {
 // axios get
  export function get(url, data) {
     try {
-       return axios.get(baseUrl+url).then(resp =>{
+       return axios.get(url).then(resp =>{
             console.log('response.data',resp);
             return resp
         });
