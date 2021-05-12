@@ -1,6 +1,10 @@
 import { environment } from '../config';
 import axios from 'axios';
-let baseUrl = environment.baseUrl;
+import loginError from '../tests/login-error.txt';
+import loginSuccess from '../tests/login-success.txt';
+import seqSearchInit from '../tests/seqSearchInit.txt';
+import seqSearchInitRedo from '../tests/seqSearchInit-redo.txt';
+let baseUrl = process.env.REACT_APP_API_URL;
 
 // import { Auth } from "../helpers/Auth";
 // import { environment } from "../helpers/config";
@@ -75,18 +79,32 @@ function handleResponse(response) {
     }
 
 export function post(url, data) {
-   
-    return fetch(url, {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json; charset=utf-8;application/x-www-form-urlencoded',
-            // 'Access-Control-Allow-Origin': '*',
-            // 'accept': '*/*'      
-        },
-        // body: obj
-        body: JSON.stringify(data)
-    })
-    .then(handleResponse);
+    if (window.location.hostname == 'localhost') {
+        let file;
+        if (url.includes('gquser.login')) {
+            file = loginSuccess;
+        } else if (url.includes('gqft.launch_seq_search')) {
+            file = seqSearchInit;
+        }
+        return fetch(file).then(r => r.text())
+            .then(text => {
+                console.log('text decoded:', text);
+                return JSON.parse(text);
+            });
+    } else {
+        return fetch(baseUrl + url, {
+            method: 'post',
+            headers: {
+                //'Content-Type': 'application/json; charset=utf-8;application/x-www-form-urlencoded',
+                //'Access-Control-Allow-Origin': '*',
+                'Accept': 'application/x-www-form-urlencoded'
+            },
+            // body: obj
+            body: JSON.stringify(data)
+        })
+            .then(handleResponse);
+    }
+    
         // .then(json)
         // .then(function (data) {
         //     console.log('Request succeeded with JSON response', data);
@@ -115,7 +133,7 @@ export function post(url, data) {
 // axios get
  export function get(url, data) {
     try {
-       return axios.get(url).then(resp =>{
+       return axios.get(baseUrl+url).then(resp =>{
             console.log('response.data',resp);
             return resp
         });

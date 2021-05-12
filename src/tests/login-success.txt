@@ -1,0 +1,6 @@
+{ 
+    "response_status": 0, 
+    "response_content": "LOGIN_SUCCESS", 
+    "response_content_type": "text/x-array", 
+    "response_id": null 
+} 

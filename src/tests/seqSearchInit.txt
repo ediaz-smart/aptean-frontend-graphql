@@ -1,0 +1,349 @@
+{
+	"response_status": 0,
+	"response_content": {
+		"nuc_defpat_refdb_list": ["p:GQPAT_NUC", "p:GENA"],
+		"pro_defpat_refdb_list": ["p:GQPAT_PRT", "p:GEAA"],
+		"nuc_def_refdb_list": ["p:GQPAT_NUC", "p:GENA", "p:GB_BCT", "p:GB_INV", "p:GB_PLN", "p:GB_ROD", "p:GB_SYN", "p:GB_HTC", "p:GB_MAM", "p:GB_PHG", "p:GB_PRI", "p:GB_UNA", "p:GB_VRL", "p:GB_VRT", "p:GB_EST", "p:PDB_NUC", "p:REGNP_NUC", "p:CASNP_NUC"],
+		"pro_def_refdb_list": ["p:GQPAT_PRT", "p:GEAA", "p:GP", "p:PDB_PRT", "p:REGNP_PRT", "p:CASNP_PRT"],
+		"sdb_nuc_tree": [{
+			"children": [],
+			"id": ":ROOT",
+			"label": "all nucleotide",
+			"status": "OPEN",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": null
+		}, {
+			"children": [],
+			"id": ":GqData",
+			"label": "GqData",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":ROOT"
+		}, {
+			"checked": false,
+			"id": "p:GQPAT_NUC",
+			"label": "GQ Pat GoldPlus Nucleotide - Patent sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_BCT",
+			"label": "Genbank - Bacterial division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_EST",
+			"label": "Genbank - Expressed Sequence Tags division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_HTC",
+			"label": "Genbank - High-throughput cDNA division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_INV",
+			"label": "Genbank - Invertebrate division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_PHG",
+			"label": "Genbank - Bacteriophage division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_PRI",
+			"label": "Genbank - Primate division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_SYN",
+			"label": "Genbank - Synthetic division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_VRL",
+			"label": "Genbank - Viral division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_GSS",
+			"label": "Genbank - Genome Survey Sequences division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_HTG",
+			"label": "Genbank - High-throughput Genomic sequences division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_MAM",
+			"label": "Genbank - Other Mammalian division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_PLN",
+			"label": "Genbank Plant division (plant fungal algal)",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_ROD",
+			"label": "Genbank - Rodent division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_STS",
+			"label": "Genbank - Sequence Tagged Sites division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_UNA",
+			"label": "Genbank - Unannotated division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GB_VRT",
+			"label": "Genbank - Other Vertebrate division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GENA",
+			"label": "Thomson-Reuters Geneseq - Nucleotide sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:RSM",
+			"label": "RefSeq - mRNA sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:ENSM",
+			"label": "ENSEMBL mRNA",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:REGPAT_NUC",
+			"label": "CAS Registry Nucleotide - Patent sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}],
+		"sdb_pro_tree": [{
+			"children": [],
+			"id": ":ROOT",
+			"label": "all protein",
+			"status": "OPEN",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": null
+		}, {
+			"children": [],
+			"id": ":GqData",
+			"label": "GqData",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":ROOT"
+		}, {
+			"checked": false,
+			"id": "p:GQPAT_PRT",
+			"label": "GQ Pat GoldPlus Protein - Patent sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GEAA",
+			"label": "Thomson-Reuters Geneseq - Protein sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:GP",
+			"label": "Genpept - Translated Genbank",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:ENSP",
+			"label": "ENSEMBL Protein",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:SP",
+			"label": "Swiss-Prot - from Expasy",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:RSP",
+			"label": "RefSeq - Protein",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:TREMBL",
+			"label": "Translated EMBL - from Expasy",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}, {
+			"checked": false,
+			"id": "p:REGPAT_PRT",
+			"label": "CAS Registry Protein - Patent sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":GqData"
+		}],
+		"has_extended_legal_status": false,
+		"nuc_mydb_list": {
+			"1505": {
+				"id": "1505",
+				"def_id": "LOCAL_105_89736600_1583250758",
+				"text_label": "fastaQ",
+				"nb_sequences": "5"
+			}
+		},
+		"pro_mydb_list": {
+			"1508": {
+				"id": "1508",
+				"def_id": "LOCAL_102_79845800_1583423500",
+				"text_label": "embl",
+				"nb_sequences": "2"
+			},
+			"1509": {
+				"id": "1509",
+				"def_id": "LOCAL_102_48314700_1583423579",
+				"text_label": "fasta",
+				"nb_sequences": "2"
+			},
+			"1493": {
+				"id": "1493",
+				"def_id": "LOCAL_101_28401800_1582232413",
+				"text_label": "test",
+				"nb_sequences": "1"
+			}
+		},
+		"default_preference": "testDef",
+		"preference_context": "GqWfIpSearch_launch",
+		"search_preferences": ["testDef", "testTpl"],
+		"group_search_preferences": [],
+		"is_group_admin": true,
+		"group_credits": null,
+		"queue_names": null,
+		"has_lva_access": true,
+		"syscontrol_search_submit": true,
+		"syscontrol_search_submit_txt": "Normal service will resume in a few minutes."
+	},
+	"response_content_type": "application\/json",
+	"response_id": ""
+}

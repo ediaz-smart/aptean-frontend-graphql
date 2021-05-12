@@ -1,0 +1,14 @@
+{
+	"response_status": 1,
+	"response_content": {
+		"exception_structure_type": 1,
+		"type": "GQLOGINEXCEPTION",
+		"message": "SESSION_EXPIRED",
+		"severity": 3,
+		"code": 1,
+		"id": "20210511140538609ac77202b22",
+		"triesLeft": null
+	},
+	"response_content_type": "text\/x-object",
+	"response_id": null
+}

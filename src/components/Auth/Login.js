@@ -70,7 +70,7 @@ function Login(props) {
         },
         validationSchema: Validate.LoginValidate(),
         onSubmit: async(values) => {
-            dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password}));
+            dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password},history));
             // history.push('/home');
         },
     });

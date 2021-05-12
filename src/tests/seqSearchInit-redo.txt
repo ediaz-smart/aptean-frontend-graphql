@@ -1,0 +1,927 @@
+{
+	"response_status": 0,
+	"response_content": {
+		"parent_id": "4076399",
+		"redoParams": {
+			"best_hit_keep_max": "5000",
+			"loadvmtables": "on",
+			"nucdbs": ["p:GQPAT_NUC", "p:GQPAT_PREMIUM_NUC", "p:GENA"],
+			"nucdb_type": "multiple",
+			"parent_folder_id": "4064731",
+			"ppu_type_1": "on",
+			"protdb_type": "multiple",
+			"qdb": "NUCLEOTIDE:fasta:\/disk\/GQ\/data\/GQdata\/userdata\/1910181426161805466138\/\/upload\/\/upload_5f725e79bef824.79085269",
+			"qdb_seq_type": "nucleotide",
+			"sdb_filters": "[]",
+			"searchtype": "FTO",
+			"seqlenrange_high": "100000",
+			"seqlenrange_low": "6",
+			"strat_blast_scoring_matrix_nuc": "NUC.3.1",
+			"strat_blast_word_size_nuc": "11",
+			"strat_fragment_perc_id_nuc": "96",
+			"strat_fragment_window_length_nuc": "50",
+			"strat_genepast_perc_id": "80",
+			"strat_genepast_perc_id_over": "QUERY",
+			"strat_name": "kerr",
+			"strat_sw_gape_nuc": "1",
+			"strat_sw_gapo_nuc": "1",
+			"strat_sw_scoring_matrix_nuc": "NUC.3.1",
+			"template_name": "",
+			"view_helper": "ObjectViewer::full",
+			"title": "test ssv (vm) (redo 1)",
+			"qdb_seq": ">test\nATCATATGCATGC\n",
+			"qdb_info": {
+				"gname": "query",
+				"seq_type": "NUCLEOTIDE",
+				"nb_sequences": 1,
+				"nb_residues": 13,
+				"max_len": 13,
+				"annotation_fields": ["ID", "DE"]
+			},
+			"protdbs": []
+		},
+		"nuc_defpat_refdb_list": ["p:GQPAT_NUC", "p:GQPAT_PREMIUM_NUC", "p:GENA", "p:CASPAT_NUC"],
+		"pro_defpat_refdb_list": ["p:GQPAT_PRT", "p:GQPAT_PREMIUM_PRT", "p:GEAA", "p:CASPAT_PRT"],
+		"nuc_def_refdb_list": ["p:GQPAT_NUC", "p:GQPAT_PREMIUM_NUC", "p:GENA", "p:CASPAT_NUC", "p:GB_BCT", "p:GB_INV", "p:GB_PLN", "p:GB_ROD", "p:GB_SYN", "p:GB_ENV", "p:GB_HTC", "p:GB_MAM", "p:GB_PHG", "p:GB_PRI", "p:GB_SET", "p:GB_UNA", "p:GB_VRL", "p:GB_VRT", "p:GB_EST", "p:PDB_NUC", "p:REGNP_NUC", "p:CASNP_NUC"],
+		"pro_def_refdb_list": ["p:GQPAT_PRT", "p:GQPAT_PREMIUM_PRT", "p:GEAA", "p:CASPAT_PRT", "p:GP", "p:PDB_PRT", "p:REGNP_PRT", "p:CASNP_PRT"],
+		"sdb_nuc_tree": [{
+			"children": [],
+			"id": ":ROOT",
+			"label": "all nucleotide",
+			"status": "OPEN",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": null
+		}, {
+			"children": [],
+			"id": ":Patents",
+			"label": "Patents",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":ROOT"
+		}, {
+			"checked": false,
+			"id": "p:GQPAT_NUC",
+			"label": "GQ-Pat GoldPlus Nucleotide - Patent sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Patents"
+		}, {
+			"checked": false,
+			"id": "p:GQPAT_PREMIUM_NUC",
+			"label": "GQ-Pat Platinum Nucleotide - Patent sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Patents"
+		}, {
+			"children": [],
+			"id": ":Reference Data",
+			"label": "Reference Data",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":ROOT"
+		}, {
+			"checked": false,
+			"id": "p:GB_BCT",
+			"label": "Genbank - Bacterial division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_EST",
+			"label": "Genbank - Expressed Sequence Tags division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_HTC",
+			"label": "Genbank - High-throughput cDNA division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_INV",
+			"label": "Genbank - Invertebrate division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_PHG",
+			"label": "Genbank - Bacteriophage division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_PRI",
+			"label": "Genbank - Primate division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_SET",
+			"label": "GB SET",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_SYN",
+			"label": "Genbank - Synthetic division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_VRL",
+			"label": "Genbank - Viral division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_ENV",
+			"label": "Genbank - Environmental Samples",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_GSS",
+			"label": "Genbank - Genome Survey Sequences division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_HTG",
+			"label": "Genbank - High-throughput Genomic sequences division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_MAM",
+			"label": "Genbank - Other Mammalian division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_PLN",
+			"label": "Genbank - Plant division (plant fungal algal)",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_ROD",
+			"label": "Genbank - Rodent division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_STS",
+			"label": "Genbank - Sequence Tagged Sites division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_UNA",
+			"label": "Genbank - Unannotated division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GB_VRT",
+			"label": "Genbank - Other Vertebrate division",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GENA",
+			"label": "Geneseq - Nucleotide sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Patents"
+		}, {
+			"checked": false,
+			"id": "p:RSM",
+			"label": "RefSeq - mRNA sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:ENSM",
+			"label": "ENSEMBL mRNA",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:PDB_NUC",
+			"label": "Protein Data Bank - nucleotide seqs",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:CASPAT_NUC",
+			"label": "CAS Biosequences\u2122 - Nucleotides from Patents",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Patents"
+		}, {
+			"checked": false,
+			"id": "p:CASNP_NUC",
+			"label": "CAS Biosequences\u2122 - Nucleotides from Journals and Proceedings",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"children": [],
+			"id": ":My Data",
+			"label": "My Data",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":ROOT"
+		}, {
+			"checked": false,
+			"id": "p:LOCAL_9322_04025900_1583180869",
+			"label": "fastaQ",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":My Data"
+		}, {
+			"checked": false,
+			"id": "p:LOCAL_9322_90339000_1578513310",
+			"label": "test",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":My Data"
+		}],
+		"sdb_pro_tree": [{
+			"children": [],
+			"id": ":ROOT",
+			"label": "all protein",
+			"status": "OPEN",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": null
+		}, {
+			"children": [],
+			"id": ":Patents",
+			"label": "Patents",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":ROOT"
+		}, {
+			"checked": false,
+			"id": "p:GQPAT_PRT",
+			"label": "GQ-Pat GoldPlus Protein - Patent sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Patents"
+		}, {
+			"checked": false,
+			"id": "p:GQPAT_PREMIUM_PRT",
+			"label": "GQ-Pat Platinum protein - Patent sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Patents"
+		}, {
+			"checked": false,
+			"id": "p:GEAA",
+			"label": "Geneseq - Protein sequences",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Patents"
+		}, {
+			"children": [],
+			"id": ":Reference Data",
+			"label": "Reference Data",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":ROOT"
+		}, {
+			"checked": false,
+			"id": "p:PDB_PRT",
+			"label": "Protein Data Bank - protein seqs",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:GP",
+			"label": "Genpept - Translated Genbank",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:ENSP",
+			"label": "ENSEMBL Protein",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:SP",
+			"label": "Swiss-Prot - from Expasy",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:RSP",
+			"label": "RefSeq - Protein",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:TREMBL",
+			"label": "Translated EMBL - from Expasy",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:CASPAT_PRT",
+			"label": "CAS Biosequences\u2122 - Proteins from Patents",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Patents"
+		}, {
+			"checked": false,
+			"id": "p:CASNP_PRT",
+			"label": "CAS Biosequences\u2122 - Proteins from Journals and Proceedings",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"checked": false,
+			"id": "p:LOCAL_9361_62226900_1581512497",
+			"label": "Genpept - 2019-nCoV Sequences (Wuhan coronavirus)",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":Reference Data"
+		}, {
+			"children": [],
+			"id": ":My Data",
+			"label": "My Data",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":ROOT"
+		}, {
+			"checked": false,
+			"id": "p:LOCAL_9322_52266500_1583165058",
+			"label": "multiFastaQuerySeqs",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":My Data"
+		}, {
+			"children": [],
+			"id": ":My Data|Regression Test",
+			"label": "Regression Test",
+			"status": "CLOSED",
+			"type": "folder",
+			"action": "",
+			"disabled": false,
+			"parent": ":My Data"
+		}, {
+			"checked": false,
+			"id": "p:LOCAL_9322_45120700_1600870102",
+			"label": "prtSeqs",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":My Data|Regression Test"
+		}, {
+			"checked": false,
+			"id": "p:LOCAL_9322_07507700_1583180521",
+			"label": "testEmbl",
+			"status": "UNCHECKED",
+			"type": "seqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":My Data"
+		}, {
+			"checked": false,
+			"id": "v:V_1618273269_4146",
+			"label": "test vdb",
+			"status": "UNCHECKED",
+			"type": "vseqdb",
+			"action": "",
+			"disabled": false,
+			"parent": ":My Data"
+		}],
+		"has_extended_legal_status": false,
+		"nuc_mydb_list": {
+			"4069030": {
+				"id": "4069030",
+				"def_id": "LOCAL_9373_32171500_1580415266",
+				"text_label": "5_seq",
+				"nb_sequences": "5"
+			},
+			"4072046": {
+				"id": "4072046",
+				"def_id": "LOCAL_9518_18681200_1593183570",
+				"text_label": "diplodia_short_nucleotide_sequences",
+				"nb_sequences": "5"
+			},
+			"4070083": {
+				"id": "4070083",
+				"def_id": "LOCAL_9322_04025900_1583180869",
+				"text_label": "fastaQ",
+				"nb_sequences": "5"
+			},
+			"4070887": {
+				"id": "4070887",
+				"def_id": "LOCAL_9361_66970100_1585742142",
+				"text_label": "ggg",
+				"nb_sequences": "436"
+			},
+			"4070434": {
+				"id": "4070434",
+				"def_id": "LOCAL_9361_50657600_1584356012",
+				"text_label": "nuc",
+				"nb_sequences": "162"
+			},
+			"4072442": {
+				"id": "4072442",
+				"def_id": "LOCAL_9518_87934800_1594595989",
+				"text_label": "nucleotide_multiple_sequences_fasta",
+				"nb_sequences": "4"
+			},
+			"4072439": {
+				"id": "4072439",
+				"def_id": "LOCAL_9518_88187400_1594595950",
+				"text_label": "nucleotide_single_sequence_fasta",
+				"nb_sequences": "1"
+			},
+			"4070884": {
+				"id": "4070884",
+				"def_id": "LOCAL_9361_42977900_1585664229",
+				"text_label": "nvv",
+				"nb_sequences": "115"
+			},
+			"4072013": {
+				"id": "4072013",
+				"def_id": "LOCAL_9518_20478100_1593024887",
+				"text_label": "reverse_complement_overhang_test_1",
+				"nb_sequences": "6"
+			},
+			"4072016": {
+				"id": "4072016",
+				"def_id": "LOCAL_9518_62975300_1593024923",
+				"text_label": "reverse_complement_overhang_test_2",
+				"nb_sequences": "1"
+			},
+			"4072004": {
+				"id": "4072004",
+				"def_id": "LOCAL_9518_97174100_1593024508",
+				"text_label": "reverse_complement_standard_test_1",
+				"nb_sequences": "1"
+			},
+			"4072007": {
+				"id": "4072007",
+				"def_id": "LOCAL_9518_26359400_1593024691",
+				"text_label": "reverse_complement_standard_test_2",
+				"nb_sequences": "3"
+			},
+			"4072010": {
+				"id": "4072010",
+				"def_id": "LOCAL_9518_38699800_1593024856",
+				"text_label": "reverse_complement_UT_replacement",
+				"nb_sequences": "1"
+			},
+			"4068544": {
+				"id": "4068544",
+				"def_id": "LOCAL_9355_99496400_1579633913",
+				"text_label": "shortNucSeqs",
+				"nb_sequences": "10000"
+			},
+			"4068334": {
+				"id": "4068334",
+				"def_id": "LOCAL_9322_90339000_1578513310",
+				"text_label": "test",
+				"nb_sequences": "1"
+			},
+			"4069243": {
+				"id": "4069243",
+				"def_id": "LOCAL_9418_03174300_1581101871",
+				"text_label": "UploadFile_Ellen",
+				"nb_sequences": "23"
+			},
+			"4069228": {
+				"id": "4069228",
+				"def_id": "LOCAL_9367_73118600_1581098777",
+				"text_label": "VijEndMismatch",
+				"nb_sequences": "23"
+			},
+			"4071058": {
+				"id": "4071058",
+				"def_id": "LOCAL_9361_99242600_1586176016",
+				"text_label": "vvv",
+				"nb_sequences": "255"
+			}
+		},
+		"pro_mydb_list": {
+			"4072433": {
+				"id": "4072433",
+				"def_id": "LOCAL_9352_63200200_1594576853",
+				"text_label": "5_results",
+				"nb_sequences": "5"
+			},
+			"4069465": {
+				"id": "4069465",
+				"def_id": "LOCAL_9361_52364400_1581671526",
+				"text_label": "coronavirusprot1",
+				"nb_sequences": "441"
+			},
+			"4071004": {
+				"id": "4071004",
+				"def_id": "LOCAL_1585929614",
+				"text_label": "Extracted queries Friday 03-Apr-20 120011 EDT",
+				"nb_sequences": "1"
+			},
+			"4071040": {
+				"id": "4071040",
+				"def_id": "LOCAL_1585940347",
+				"text_label": "Extracted queries Friday 03-Apr-20 145905 EDT",
+				"nb_sequences": "1"
+			},
+			"4071049": {
+				"id": "4071049",
+				"def_id": "LOCAL_1585942322",
+				"text_label": "Extracted queries Friday 03-Apr-20 153200 EDT",
+				"nb_sequences": "1"
+			},
+			"4071055": {
+				"id": "4071055",
+				"def_id": "LOCAL_1585943267",
+				"text_label": "Extracted queries Friday 03-Apr-20 154746 EDT",
+				"nb_sequences": "1"
+			},
+			"4070965": {
+				"id": "4070965",
+				"def_id": "LOCAL_1585846523",
+				"text_label": "Extracted queries Thursday 02-Apr-20 125521 EDT",
+				"nb_sequences": "1"
+			},
+			"4070992": {
+				"id": "4070992",
+				"def_id": "LOCAL_1585928267",
+				"text_label": "Extracted subjects Friday 03-Apr-20 113745 EDT",
+				"nb_sequences": "49"
+			},
+			"4070995": {
+				"id": "4070995",
+				"def_id": "LOCAL_1585928548",
+				"text_label": "Extracted subjects Friday 03-Apr-20 114225 EDT",
+				"nb_sequences": "49"
+			},
+			"4070998": {
+				"id": "4070998",
+				"def_id": "LOCAL_1585928760",
+				"text_label": "Extracted subjects Friday 03-Apr-20 114559 EDT",
+				"nb_sequences": "49"
+			},
+			"4071001": {
+				"id": "4071001",
+				"def_id": "LOCAL_1585928805",
+				"text_label": "Extracted subjects Friday 03-Apr-20 114644 EDT",
+				"nb_sequences": "49"
+			},
+			"4071010": {
+				"id": "4071010",
+				"def_id": "LOCAL_1585934081",
+				"text_label": "Extracted subjects Friday 03-Apr-20 131439 EDT",
+				"nb_sequences": "49"
+			},
+			"4071013": {
+				"id": "4071013",
+				"def_id": "LOCAL_1585934391",
+				"text_label": "Extracted subjects Friday 03-Apr-20 131949 EDT",
+				"nb_sequences": "49"
+			},
+			"4071016": {
+				"id": "4071016",
+				"def_id": "LOCAL_1585934497",
+				"text_label": "Extracted subjects Friday 03-Apr-20 132136 EDT",
+				"nb_sequences": "49"
+			},
+			"4071019": {
+				"id": "4071019",
+				"def_id": "LOCAL_1585934547",
+				"text_label": "Extracted subjects Friday 03-Apr-20 132225 EDT",
+				"nb_sequences": "49"
+			},
+			"4071022": {
+				"id": "4071022",
+				"def_id": "LOCAL_1585934767",
+				"text_label": "Extracted subjects Friday 03-Apr-20 132605 EDT",
+				"nb_sequences": "49"
+			},
+			"4071025": {
+				"id": "4071025",
+				"def_id": "LOCAL_1585935112",
+				"text_label": "Extracted subjects Friday 03-Apr-20 133150 EDT",
+				"nb_sequences": "49"
+			},
+			"4071028": {
+				"id": "4071028",
+				"def_id": "LOCAL_1585935402",
+				"text_label": "Extracted subjects Friday 03-Apr-20 133640 EDT",
+				"nb_sequences": "49"
+			},
+			"4071031": {
+				"id": "4071031",
+				"def_id": "LOCAL_1585936449",
+				"text_label": "Extracted subjects Friday 03-Apr-20 135408 EDT",
+				"nb_sequences": "49"
+			},
+			"4071034": {
+				"id": "4071034",
+				"def_id": "LOCAL_1585940222",
+				"text_label": "Extracted subjects Friday 03-Apr-20 145700 EDT",
+				"nb_sequences": "49"
+			},
+			"4071037": {
+				"id": "4071037",
+				"def_id": "LOCAL_1585940328",
+				"text_label": "Extracted subjects Friday 03-Apr-20 145846 EDT",
+				"nb_sequences": "49"
+			},
+			"4071043": {
+				"id": "4071043",
+				"def_id": "LOCAL_1585941629",
+				"text_label": "Extracted subjects Friday 03-Apr-20 152027 EDT",
+				"nb_sequences": "49"
+			},
+			"4071046": {
+				"id": "4071046",
+				"def_id": "LOCAL_1585941721",
+				"text_label": "Extracted subjects Friday 03-Apr-20 152159 EDT",
+				"nb_sequences": "49"
+			},
+			"4071052": {
+				"id": "4071052",
+				"def_id": "LOCAL_1585943261",
+				"text_label": "Extracted subjects Friday 03-Apr-20 154740 EDT",
+				"nb_sequences": "49"
+			},
+			"4070962": {
+				"id": "4070962",
+				"def_id": "LOCAL_1585846295",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 125132 EDT",
+				"nb_sequences": "49"
+			},
+			"4070968": {
+				"id": "4070968",
+				"def_id": "LOCAL_1585846760",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 125917 EDT",
+				"nb_sequences": "49"
+			},
+			"4070971": {
+				"id": "4070971",
+				"def_id": "LOCAL_1585847115",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 130513 EDT",
+				"nb_sequences": "49"
+			},
+			"4070974": {
+				"id": "4070974",
+				"def_id": "LOCAL_1585847498",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 131136 EDT",
+				"nb_sequences": "49"
+			},
+			"4070977": {
+				"id": "4070977",
+				"def_id": "LOCAL_1585856158",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 153556 EDT",
+				"nb_sequences": "49"
+			},
+			"4070980": {
+				"id": "4070980",
+				"def_id": "LOCAL_1585857140",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 155219 EDT",
+				"nb_sequences": "49"
+			},
+			"4070983": {
+				"id": "4070983",
+				"def_id": "LOCAL_1585857276",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 155434 EDT",
+				"nb_sequences": "49"
+			},
+			"4070986": {
+				"id": "4070986",
+				"def_id": "LOCAL_1585857658",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 160054 EDT",
+				"nb_sequences": "49"
+			},
+			"4070989": {
+				"id": "4070989",
+				"def_id": "LOCAL_1585858272",
+				"text_label": "Extracted subjects Thursday 02-Apr-20 161111 EDT",
+				"nb_sequences": "49"
+			},
+			"4069351": {
+				"id": "4069351",
+				"def_id": "LOCAL_9361_62226900_1581512497",
+				"text_label": "Genpept - 2019-nCoV Sequences (Wuhan coronavirus)",
+				"nb_sequences": "396"
+			},
+			"4068469": {
+				"id": "4068469",
+				"def_id": "LOCAL_9376_47543400_1579123453",
+				"text_label": "gg36protblast",
+				"nb_sequences": "1"
+			},
+			"4071007": {
+				"id": "4071007",
+				"def_id": "LOCAL_1585929934",
+				"text_label": "LOCAL_1585929934",
+				"nb_sequences": "49"
+			},
+			"4070053": {
+				"id": "4070053",
+				"def_id": "LOCAL_9322_52266500_1583165058",
+				"text_label": "multiFastaQuerySeqs",
+				"nb_sequences": "7"
+			},
+			"4072448": {
+				"id": "4072448",
+				"def_id": "LOCAL_9518_07886000_1594596048",
+				"text_label": "protein_multiple_sequences_fasta",
+				"nb_sequences": "4"
+			},
+			"4072445": {
+				"id": "4072445",
+				"def_id": "LOCAL_9518_32839100_1594596019",
+				"text_label": "protein_single_sequence_fasta",
+				"nb_sequences": "1"
+			},
+			"4070437": {
+				"id": "4070437",
+				"def_id": "LOCAL_9361_42722500_1584356037",
+				"text_label": "prt",
+				"nb_sequences": "1075"
+			},
+			"4075508": {
+				"id": "4075508",
+				"def_id": "LOCAL_9322_45120700_1600870102",
+				"text_label": "prtSeqs",
+				"nb_sequences": "2"
+			},
+			"4072049": {
+				"id": "4072049",
+				"def_id": "LOCAL_9518_12806100_1593184636",
+				"text_label": "steves_dog",
+				"nb_sequences": "1"
+			},
+			"4072052": {
+				"id": "4072052",
+				"def_id": "LOCAL_9518_62985000_1593184804",
+				"text_label": "subtilase_wild_type",
+				"nb_sequences": "1"
+			},
+			"4070080": {
+				"id": "4070080",
+				"def_id": "LOCAL_9322_07507700_1583180521",
+				"text_label": "testEmbl",
+				"nb_sequences": "4"
+			},
+			"4069693": {
+				"id": "4069693",
+				"def_id": "LOCAL_9355_28759500_1582223303",
+				"text_label": "uploadEmbl",
+				"nb_sequences": "315"
+			},
+			"4072055": {
+				"id": "4072055",
+				"def_id": "LOCAL_9518_39961400_1593184837",
+				"text_label": "velumizab_heavy_chain",
+				"nb_sequences": "1"
+			}
+		},
+		"preference_context": "GqWfIpSearch_launch",
+		"search_preferences": [],
+		"group_search_preferences": [],
+		"is_group_admin": false,
+		"group_credits": null,
+		"queue_names": null,
+		"has_lva_access": true,
+		"syscontrol_search_submit": true,
+		"syscontrol_search_submit_txt": "Normal service will resume in a few minutes."
+	},
+	"response_content_type": "application\/json",
+	"response_id": ""
+}

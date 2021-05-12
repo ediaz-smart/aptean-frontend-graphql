@@ -3,22 +3,28 @@ import { post } from '../../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
 import { url } from '../url';
 
+
 const initialState = { isLoggedIn: false }
-const API_URL = process.env.REACT_APP_API_URL;
 
-export const submitLogin = (data) => async (dispatch) => {
-    console.log('API_URL+url.login', API_URL+url.login)
-    dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
-    return post(API_URL+url.login, data)
+
+export const submitLogin = (data,history) => async (dispatch) => {
+    // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
+   // const history = useHistory();
+    return post(url.login, data)
         .then((response) => {
-            // if (response.status && response.data.sessionData.token) {
-            //     jwtService.setSession(response.data.accessToken);
-            //     jwtService.setUserObjSession(response.data);
-            toast.success('loginSuccess');
-            //dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
-            // window.location.href = "/admin";
-            // }
-
+            if(response && response.response_status == 0)
+            {
+                toast.success('loginSuccess');
+                dispatch(setUser({GQUSERID: data.GQUSERID,isLoggedIn: true }));
+                history.push('/home');
+            }else {
+                let errorMsg = 'Unable to Login';
+                if(response && typeof response.response_content === 'object' && response.response_content !== null){
+                    errorMsg = response.response_content.message;
+                }
+                toast.error(errorMsg);
+                dispatch(setUser({isLoggedIn: false }));
+            }
         })
         .catch((error) => {
             toast.error('loginFailed');
