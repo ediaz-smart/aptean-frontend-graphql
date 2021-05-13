@@ -34,10 +34,10 @@ export default function TextInput(props) {
             onChange={props.onChange}
             className={classes.root}
             error={props.error}
-            helperText={props.helperText}
-            InputLabelProps={{
-                classes: { root: classes.materialUILabel },
-            }}
+            // helperText={props.helperText}
+            // InputLabelProps={{
+            //     classes: { root: classes.materialUILabel },
+            // }}
         />
     );
 }

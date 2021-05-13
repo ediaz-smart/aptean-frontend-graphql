@@ -79,31 +79,34 @@ function handleResponse(response) {
     }
 
 export function post(url, data) {
-    if (window.location.hostname == 'localhost') {
-        let file;
-        if (url.includes('gquser.login')) {
-            file = loginSuccess;
-        } else if (url.includes('gqft.launch_seq_search')) {
-            file = seqSearchInit;
-        }
-        return fetch(file).then(r => r.text())
-            .then(text => {
-                console.log('text decoded:', text);
-                return JSON.parse(text);
-            });
-    } else {
+    // if (window.location.hostname == 'localhost') {
+    //     let file;
+    //     if (url.includes('gquser.login')) {
+    //         file = loginSuccess;
+    //     } else if (url.includes('gqft.launch_seq_search')) {
+    //         file = seqSearchInit;
+    //     }
+    //     return fetch(file).then(r => r.text())
+    //         .then(text => {
+    //             console.log('text decoded:', text);
+    //             return JSON.parse(text);
+    //         });
+    // } else {
+        const postdata = new FormData();
+        postdata.append("GQUSERID",data.GQUSERID);
+        postdata.append("GQPASSWORD",data.GQPASSWORD);
         return fetch(baseUrl + url, {
             method: 'post',
             headers: {
                 //'Content-Type': 'application/json; charset=utf-8;application/x-www-form-urlencoded',
                 //'Access-Control-Allow-Origin': '*',
-                'Accept': 'application/x-www-form-urlencoded'
+                // 'Accept': 'application/x-www-form-urlencoded'
             },
-            // body: obj
-            body: JSON.stringify(data)
+            body: postdata
+            //body: JSON.stringify(data)
         })
             .then(handleResponse);
-    }
+    // }
     
         // .then(json)
         // .then(function (data) {

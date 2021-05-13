@@ -14,19 +14,7 @@ import DataTable from "react-data-table-component";
 import SortIcon from "@material-ui/icons/ArrowDownward";
 import movies from '../SearchedResults/movies'
 
-const Genres = ({ values }) => {
-	return (
-		<>
-			{values.map((genre, idx) => {
-				return (
-					<span key={idx} className="badge">
-						{genre}
-					</span>
-				);
-			})}
-		</>
-	);
-};
+
 const useStyles = makeStyles((theme) => ({
 	grow: {
 		flexGrow: 1,
