@@ -28,7 +28,7 @@ ReactDOM.render(
 	// </React.StrictMode>,
 	<Provider store={store}>
 		<I18nextProvider i18n={i18next}>
-			<ToastContainer autoClose={3000} hideProgressBar={true} transition={Bounce}/>
+			<ToastContainer autoClose={2000} hideProgressBar={true} transition={Bounce}/>
 			<App />
 		</I18nextProvider>
 	</Provider>,

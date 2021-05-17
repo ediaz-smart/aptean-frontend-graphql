@@ -4,6 +4,8 @@ import loginError from '../tests/login-error.txt';
 import loginSuccess from '../tests/login-success.txt';
 import seqSearchInit from '../tests/seqSearchInit.txt';
 import seqSearchInitRedo from '../tests/seqSearchInit-redo.txt';
+import searchResultsData from '../tests/searchResults.txt';
+import searchResultsStatusData from '../tests/searchResultsStatus.txt';
 let baseUrl = process.env.REACT_APP_API_URL;
 
 // import { Auth } from "../helpers/Auth";
@@ -59,24 +61,24 @@ let baseUrl = process.env.REACT_APP_API_URL;
 function handleResponse(response) {
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.indexOf("application/json") !== -1) {
-    return response.text().then(text => {
-     const   data= text && JSON.parse(text);
-    if (!response.ok) {
-    if (response.status === 401) {
-    // logout();
+        return response.text().then(text => {
+            const data = text && JSON.parse(text);
+            if (!response.ok) {
+                if (response.status === 401) {
+                    // logout();
+                }
+                if (response.status === 503) {
+                    // history.push('/maintenanceMode')
+                }
+                const error = data;
+                // PubSub.publish('msg', false);
+                return Promise.reject(error);
+            }
+            // PubSub.publish('msg', false);
+            return data;
+        });
     }
-    if(response.status === 503){
-    // history.push('/maintenanceMode')
-    }
-    const error = data;
-    // PubSub.publish('msg', false);
-    return Promise.reject(error);
-    }
-    // PubSub.publish('msg', false);
-    return data;
-    });
 }
-    }
 
 export function post(url, data) {
     // if (window.location.hostname == 'localhost') {
@@ -92,30 +94,30 @@ export function post(url, data) {
     //             return JSON.parse(text);
     //         });
     // } else {
-        const postdata = new FormData();
-        postdata.append("GQUSERID",data.GQUSERID);
-        postdata.append("GQPASSWORD",data.GQPASSWORD);
-        return fetch(baseUrl + url, {
-            method: 'post',
-            headers: {
-                //'Content-Type': 'application/json; charset=utf-8;application/x-www-form-urlencoded',
-                //'Access-Control-Allow-Origin': '*',
-                // 'Accept': 'application/x-www-form-urlencoded'
-            },
-            body: postdata
-            //body: JSON.stringify(data)
-        })
-            .then(handleResponse);
+    const postdata = new FormData();
+    postdata.append("GQUSERID", data.GQUSERID);
+    postdata.append("GQPASSWORD", data.GQPASSWORD);
+    return fetch(baseUrl + url, {
+        method: 'post',
+        headers: {
+            //'Content-Type': 'application/json; charset=utf-8;application/x-www-form-urlencoded',
+            //'Access-Control-Allow-Origin': '*',
+            // 'Accept': 'application/x-www-form-urlencoded'
+        },
+        body: postdata
+        //body: JSON.stringify(data)
+    })
+        .then(handleResponse);
     // }
-    
-        // .then(json)
-        // .then(function (data) {
-        //     console.log('Request succeeded with JSON response', data);
-        //     return data;
-        // })
-        // .catch(function (error) {
-        //     console.log('Request failed', error);
-        // });
+
+    // .then(json)
+    // .then(function (data) {
+    //     console.log('Request succeeded with JSON response', data);
+    //     return data;
+    // })
+    // .catch(function (error) {
+    //     console.log('Request failed', error);
+    // });
 }
 
 
@@ -134,22 +136,33 @@ export function post(url, data) {
 // }
 
 // axios get
- export function get(url, data) {
+export function get(url, data) {
     try {
-       return axios.get(baseUrl+url).then(resp =>{
-            console.log('response.data',resp);
-            return resp
-        });
-        // return response;
-      } catch (error) {
+        if (window.location.hostname == 'localhost') {
+            let file;
+            if (url.includes('mygq.get_welcome_page_v2')) {
+                file = searchResultsData;
+            }
+            else if (url.includes('gqworkflow.get_status')) {
+                file = searchResultsStatusData;
+            }
+            return fetch(file).then(r => r.text())
+                .then(text => {
+                    console.log('text decoded:', text);
+                    return JSON.parse(text);
+                });
+        } else {
+            const headers = {
+                'Accept': 'application/json'
+            };
+            return axios.get(baseUrl + url, { headers })
+                .then(resp => {
+                    console.log('response.data', resp);
+                    return resp
+                });
+        }
+    } catch (error) {
         console.error(error);
-      }
-//     axios.get(baseUrl+url)
-//   .then(handleResponse)
-//   .catch(function (error) {
-//     // handle error
-//     console.log(error);
-//   })
-
+    }
 
 }

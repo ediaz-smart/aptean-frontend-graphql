@@ -28,6 +28,7 @@ export default function TextInput(props) {
         fullWidth={props.fullWidth}
         id={props.id}
         name={props.name}
+        type={props.type}
         label={props.label}
         variant={props.variant}
         value={props.value}

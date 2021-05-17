@@ -1,0 +1,11 @@
+{ 
+    "response_status": 0, 
+    "response_content": { 
+    "status": "STILL_RUNNING", 
+    "progress": " 85", 
+    "step": "create resdb v2", 
+    "nbres": null 
+    }, 
+    "response_content_type": "text/x-array", 
+    "response_id": "3952" 
+} 

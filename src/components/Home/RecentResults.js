@@ -8,11 +8,13 @@ import { useTranslation } from "react-i18next";
 import ReactTable from 'react-table';
 import Table from "../../shared/Table/Table";
 import axios from "axios";
-import ProgressBar from 'react-bootstrap/ProgressBar'
 import { makeStyles } from "@material-ui/core/styles";
 import DataTable from "react-data-table-component";
 import SortIcon from "@material-ui/icons/ArrowDownward";
-import movies from '../SearchedResults/movies'
+// import movies from '../SearchedResults/movies'
+import HomeService from '../../services/home'
+import { format } from 'date-fns';
+import ProgressBar from '../../shared/ProgressBar/Progress';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -55,31 +57,61 @@ const useStyles = makeStyles((theme) => ({
 		marginBottom: "15px"
 	}
 }));
-
+const customStyles = {
+	rows: {
+	  style: {
+		minHeight: '50px', // override the row height
+	  }
+	},
+	headCells: {
+	  style: {
+		paddingLeft: '8px', // override the cell padding for head cells
+		paddingRight: '8px',
+		borderLeft:'1px solid #0606061f',
+		'&:first-child': {
+			borderLeft: '0',
+		},
+		fontWeight:'bold',
+		color:'#4a5050'
+	  },
+	},
+	cells: {
+	  style: {
+		paddingLeft: '8px', // override the cell padding for data cells
+		paddingRight: '8px',
+		borderLeft:'1px solid #0606061f',
+		'&:first-child': {
+			borderLeft: '0',
+		},
+		display:'grid'
+	  },
+	  
+	},
+  };
 const columns = [
 	{
 	  name: "Type",
-	  selector: "title",
+	  selector: "type",
 	  sortable: true
 	},
 	{
 	  name: "Date",
-	  selector: "year",
+	  selector: "date",
 	  sortable: true
 	},
 	{
 	  name: "Description",
-	  selector: "runtime",
+	  selector: "description",
 	  sortable: true,
 	},
 	{
-		name: " ",
-		selector: "director",
+		name: "Results",
+		selector: "results",
 		sortable: true
 	  },
 	  {
 		name: " ",
-		selector: "title",
+		selector: "type",
 		sortable: false,
 	  }
   ];
@@ -89,13 +121,33 @@ const columns = [
   
 function RecentResults() {
 
-	const [data, setData] = useState([]);
+	const [searchResultData, setSearchResultData] = useState([]);
 
 	const classes = useStyles();
+	const dispatch = useDispatch();
 	useEffect(() => {
 		(async () => {
-			const result = await axios("https://api.tvmaze.com/search/shows?q=snow");
-			setData(result.data);
+			// const result = dispatch(getSearchResult());
+			const result = await HomeService.getSearchResults();
+			console.log(result,'result');
+			let tempArr = [];
+			if(result && result.response_content && result.response_content.length > 0)
+			{
+				result.response_content.forEach(datas => {
+					let tempObj = datas;
+					console.log(datas.date,'datas.date');
+					tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
+					if(datas.status == 'STILL_RUNNING')
+					{
+						tempObj['results'] = <ProgressBar datas={datas} />
+					}else {
+						tempObj['results'] = <Link to=''>{datas.results}</Link>
+					}
+					tempArr.push(tempObj);
+				})
+			}
+			
+			setSearchResultData(tempArr);
 		})();
 	}, []);
 
@@ -104,21 +156,22 @@ function RecentResults() {
 	return (
 
 		<div className={classes.grow}>
-
+			{/* <ProgressBar /> */}
 			<Row >
 						<Col>
 						<span className={'appTextColor '+classes.textHeading}>Most Recent Results</span><span className="pipeText appTextColor">|</span><span className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>All Search Results</a></span>
 						</Col>
 					</Row>
-					<Row >
+					<Row className="mt-4">
 						<Col>
 						{/* <Table className="w-100" columns={columns} data={data} /> */}
 						<DataTable
 								columns={columns}
-								data={movies}
-								defaultSortField="title"
+								data={searchResultData}
+								defaultSortField="type"
 								sortIcon={<SortIcon />}
-						
+								customStyles={customStyles}
+								noHeader={true}
 						/>
 						</Col>
 					</Row>
