@@ -105,7 +105,7 @@ const columns = [
 	  sortable: true,
 	},
 	{
-		name: "Results",
+		name: "",
 		selector: "results",
 		sortable: true
 	  },
