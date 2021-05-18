@@ -54,5 +54,6 @@
    "nameYourSearch": "Name your Search",
    "querySequences": "Query Sequences",
    "querySequencesPlaceHolder": "Multiple Sequences allowed using FASTA format",
-   "help": "Help"
+   "help": "Help",
+   "searchAlgorithmAndSetting": "Search Algorithm and Settings"
 }

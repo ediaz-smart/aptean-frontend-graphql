@@ -43,8 +43,9 @@ export default function SelectBox(props) {
         }}
         margin={props.margin}
         variant={props.variant}
+        onChange={props.onChange}
       >
-        {items.map((option) => (
+        {items && items.length > 0 && items.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
           </MenuItem>
