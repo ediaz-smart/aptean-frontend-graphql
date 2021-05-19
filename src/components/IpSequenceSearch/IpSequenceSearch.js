@@ -721,8 +721,8 @@ function IpSeqSearch() {
                 <Row>
                     <Col md="11">
                         <Accordion square expanded={seqDBFilter} onChange={() => setSeqDBFilter(prevState => !prevState)}>
-                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="appTextColor">
-                                <p className="appTextColor m-0">
+                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="loginTitle p-0">
+                                <p className="loginTitle m-0">
                                     {seqDBFilter && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                     {!seqDBFilter && <ArrowRightIcon className={classes.arrowIcon} />}
                                     <b className={classes.arrowIconTitle}>General Sequence Database Filters​</b>
@@ -810,19 +810,19 @@ function IpSeqSearch() {
                             </AccordionDetails>
                         </Accordion>
                     </Col>
-                    {/* <Col md="1" className={classes.desktopHelpLink}>
-                        <Link className="float-right mr-2">Help</Link>
-                    </Col> */}
+                    <Col md="1" className={classes.desktopHelpLink}>
+                        <Link className="appTextFont appLinkColor float-right mr-2">Help</Link>
+                    </Col>
                     <Col md="12">
                         <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
-                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="appTextColor">
-                                <p className="appTextColor m-0">
+                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="loginTitle p-0">
+                                <p className="loginTitle m-0">
                                     {specificDBFilter && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                     {!specificDBFilter && <ArrowRightIcon className={classes.arrowIcon} />}
                                     <b className={classes.arrowIconTitle}>GQ-Pat specific Database Filters​</b>
                                 </p>
                             </AccordionSummary>
-                            <AccordionDetails className="appTextColor">
+                            <AccordionDetails className="loginTitle">
                                 <Col md="12">
                                     <CheckBox
                                         defaultChecked
@@ -904,7 +904,7 @@ function IpSeqSearch() {
                         </Accordion>
                     </Col>
                     <Col md="12" className={classes.mobileHelpLink}>
-                        <Link className="float-right mr-2">Help</Link>
+                        <Link className="appTextFont appLinkColor float-right mr-2">Help</Link>
                     </Col>
                 </Row>
                 {/* <ColoredLine color="black" /> */}
@@ -914,9 +914,9 @@ function IpSeqSearch() {
                     <Row>
                         <Col md="6">
                             <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
-                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header">
+                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="loginTitle p-0">
 
-                                    <p>
+                                    <p className="loginTitle m-0">
 
                                         {formCheck1 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                         {!formCheck1 && <ArrowRightIcon className={classes.arrowIcon} />}
@@ -958,8 +958,8 @@ function IpSeqSearch() {
                         </Col>
                         <Col md="5">
                             <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
-                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header">
-                                    <p>
+                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
+                                    <p className="loginTitle m-0">
                                         {formCheck2 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                         {!formCheck2 && <ArrowRightIcon className={classes.arrowIcon} />}
 
@@ -999,15 +999,15 @@ function IpSeqSearch() {
 
                         </Col>
                         <Col md="1">
-                            <Link className="float-right mr-2">Help</Link>
+                            <Link className="appTextFont appLinkColor float-right mr-2">Help</Link>
                         </Col>
                     </Row>
                     <Row>
                         <Col md="6">
                             <Accordion expanded={formCheck3} onChange={() => setformCheck3(prevState => !prevState)}>
-                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header">
+                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
 
-                                    <p>
+                                    <p className="loginTitle m-0">
                                         {formCheck3 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                         {!formCheck3 && <ArrowRightIcon className={classes.arrowIcon} />}
 
@@ -1047,8 +1047,8 @@ function IpSeqSearch() {
                         </Col>
                         <Col md="5">
                             <Accordion expanded={formCheck4} onChange={() => setformCheck4(prevState => !prevState)}>
-                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header">
-                                    <p>
+                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
+                                    <p className="loginTitle m-0">
                                         {formCheck4 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                         {!formCheck4 && <ArrowRightIcon className={classes.arrowIcon} />}
 
@@ -1092,9 +1092,9 @@ function IpSeqSearch() {
                     <Row>
                         <Col md="6">
                             <Accordion expanded={formCheck5} onChange={() => setformCheck5(prevState => !prevState)}>
-                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header">
+                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
 
-                                    <p>
+                                    <p className="loginTitle m-0">
                                         {formCheck5 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                         {!formCheck5 && <ArrowRightIcon className={classes.arrowIcon} />}
                                         <b className={classes.arrowIconTitle}>GenBank ​Nucleotide Databases</b>
@@ -1112,8 +1112,8 @@ function IpSeqSearch() {
                         </Col>
                         <Col md="5">
                             <Accordion expanded={formCheck6} onChange={() => setformCheck6(prevState => !prevState)}>
-                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header">
-                                    <p>
+                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
+                                    <p className="loginTitle m-0">
                                         {formCheck6 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                         {!formCheck6 && <ArrowRightIcon className={classes.arrowIcon} />}
                                         <b className={classes.arrowIconTitle}>Personal Protein Databases</b>
@@ -1135,9 +1135,9 @@ function IpSeqSearch() {
                     <Row>
                         <Col md="6">
                             <Accordion expanded={formCheck7} onChange={() => setformCheck7(prevState => !prevState)}>
-                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header">
+                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
 
-                                    <p>
+                                    <p className="loginTitle m-0">
                                         {formCheck7 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                         {!formCheck7 && <ArrowRightIcon className={classes.arrowIcon} />}
                                         <b className={classes.arrowIconTitle}>Personal ​Nucleotide Databases</b>
@@ -1162,29 +1162,36 @@ function IpSeqSearch() {
                 <ColoredLine color="#f3f2f2" />
                 <div>
                     <Row>
-                        <Col md="12">
-                            <p>Executing this search will incur the following charges:</p>
-                            <h4 class={"ml-10"}>
+                        <Col md="11">
+                            <p className="ml-3">Executing this search will incur the following charges:</p>
+                            <p className={"loginTitle ml-5"}>
+                            <b>
                                 TOTAL 2 Credits
-                            </h4>
+                            </b>
+                            </p>
 
                         </Col>
-
+                        <Col md="1" className={classes.desktopHelpLink}>
+                            <Link className="appTextFont appLinkColor float-right mr-2">Help</Link>
+                        </Col>
                     </Row>
                     <Row>
-                        <CheckBox
-                            defaultChecked
-                            color="primary"
-                            class={"float-left mx-2"}
-                            name="check"
-                            id="check"
-                        />
-                        <Typography className={"float-left mt-2"}>
-                            By checking this box, I acknowledge and agree to these terms
-                        </Typography>
+                        <Col md="12">
+                            <CheckBox
+                                defaultChecked
+                                color="primary"
+                                class={"float-left mx-2"}
+                                name="check"
+                                id="check"
+                            />
+                            <Typography className={"float-left mt-2"}>
+                                By checking this box, I acknowledge and agree to these terms
+                            </Typography>
+                        </Col>
                     </Row>
                     <ColoredLine color="#f3f2f2" />
                     <Row>
+                        <Col md="12">
                         <CheckBox
                             defaultChecked
                             color="primary"
@@ -1195,6 +1202,7 @@ function IpSeqSearch() {
                         <Typography className={"float-left mt-2"}>
                             Send email when the search is done
                         </Typography>
+                        </Col>
                     </Row>
                     <Row>
                         <Col md='4' class={"pl-0"}>
