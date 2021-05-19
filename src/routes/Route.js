@@ -1,6 +1,6 @@
-import React from "react";
+import React,{useEffect} from "react";
 import PropTypes from "prop-types";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect,useHistory } from "react-router-dom";
 
 import Layout from "../components/Layout/Layout";
 import store from '../store/index.js'
@@ -12,7 +12,19 @@ export default function Router({
 }) {
 	const signed = true;
 	const { user } = store.getState();
-	const isLoginStatus = user.isLoggedIn;
+	const history = useHistory();
+	// const isLoginStatus = user.isLoggedIn;
+	const isUserLogin = localStorage.getItem('isLoggedIn');
+	
+	
+	// useEffect(() => {
+    //     //dispatch(userActions.logout()); 
+        
+	// 	if(isUserLogin == null || isUserLogin == undefined || isUserLogin == false){
+	// 		history.push('/login');
+	// 	}
+    // }, []);
+	// console.log(isUserLogin,'isUserLoginisUserLogin');
 	/**
 	 * Redirect user to SignIn page if he tries to access a private route
 	 * without authentication.
@@ -34,7 +46,7 @@ export default function Router({
 	/**
 	 * If not included on both previous cases, redirect user to the desired route.
 	 */
-	if (title == 'login' || title == 'forgot') {
+	if (isUserLogin == null || !isUserLogin) {
 		return (
 			<Route
 				{...rest}

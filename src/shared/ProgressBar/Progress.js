@@ -52,6 +52,7 @@ export default function ProgressBar(props) {
         // console.log(props.datas.id,'props');
         const result = await HomeService.getSearchResultsStatus(props.datas.id);
         setProgressData(result);
+        
         const timer = setInterval(async () => {
             // setProgress((prevProgress) => (prevProgress >= 100 ? 10 : prevProgress + 10));
             const result = await HomeService.getSearchResultsStatus(props.datas.id);

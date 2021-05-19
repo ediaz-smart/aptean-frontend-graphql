@@ -78,6 +78,11 @@ function Login(props) {
     // reset login status
     useEffect(() => {
         //dispatch(userActions.logout()); 
+        const isUserLogin = localStorage.getItem('isLoggedIn');
+        if(isUserLogin)
+        {
+            history.push('/home');
+        }
     }, []);
 
     return (

@@ -1,11 +1,17 @@
 import { environment } from '../config';
 import axios from 'axios';
+import { Redirect } from "react-router-dom";
 import loginError from '../tests/login-error.txt';
 import loginSuccess from '../tests/login-success.txt';
 import seqSearchInit from '../tests/seqSearchInit.txt';
 import seqSearchInitRedo from '../tests/seqSearchInit-redo.txt';
 import searchResultsData from '../tests/searchResults.txt';
 import searchResultsStatusData from '../tests/searchResultsStatus.txt';
+// import history from '../helpers/history';
+// import createBrowserHistory from 'history/createBrowserHistory';
+
+// const history = createBrowserHistory({forceRefresh:true});
+
 let baseUrl = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials = true
 const transport = axios.create({
@@ -62,11 +68,23 @@ const transport = axios.create({
 //     return fetch(url, requestOptions)
 //     .then(response => response.json())
 // }
-function handleResponse(response) {
+function HandleResponse(response,history) {
+    console.log(response,'response');
+    console.log(history,'history');
     const contentType = response.headers["content-type"];
     if (contentType && contentType.indexOf("application/json") !== -1) {
-        if(response.statusText == "OK")
+        if(response.status == 200)
         {
+            if(response.data.response_status == 1)
+            {
+                let getMsg = response.data.response_content.message;
+                if(getMsg == 'REQUIRED_LOGIN' || getMsg == 'SESSION_EXPIRED'){
+                    // var link=document.createElement("a");
+                    // link.href="/";
+                    // link.click();
+                    history.push("/");
+                }
+            }
             return response.data;
         }else {
             if (response.status === 401) {
@@ -79,10 +97,12 @@ function handleResponse(response) {
             // PubSub.publish('msg', false);
             return Promise.reject(error);
         }
+    }else if (contentType && contentType.indexOf("text/html") !== -1) {
+        return response.data;
     }
 }
 
-export function post(url, data) {
+export function post(url, data,history) {
     // if (window.location.hostname == 'localhost') {
     //     let file;
     //     if (url.includes('gquser.login')) {
@@ -110,7 +130,11 @@ export function post(url, data) {
         // body: postdata
         //body: JSON.stringify(data)
     })
-    .then(handleResponse);
+    .then(resp => {
+        console.log('response.data', resp);
+        return HandleResponse(resp,history)
+        // return resp
+    });
     
     // }
 
@@ -126,7 +150,7 @@ export function post(url, data) {
 
 
 // axios get
-export function get(url, data) {
+export function get(url, history) {
     try {
         // if (window.location.hostname == 'localhost') {
         //     let file;
@@ -149,7 +173,8 @@ export function get(url, data) {
             return axios.get(baseUrl + url, { headers })
                 .then(resp => {
                     console.log('response.data', resp);
-                    return resp
+                    return HandleResponse(resp,history)
+                    // return resp
                 });
         // }
     } catch (error) {

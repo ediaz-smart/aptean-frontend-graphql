@@ -3,9 +3,9 @@ import { toast } from 'react-toastify';
 import { url } from '../reducers/url';
 import { id } from 'date-fns/locale';
 
-async function getSearchResults() {
+async function getSearchResults(history) {
     try {
-        return await get(url.searchResult)
+        return await get(url.searchResult,history)
         .then((response) => {
             // if(response && response.data.response_status == 0)
             // {

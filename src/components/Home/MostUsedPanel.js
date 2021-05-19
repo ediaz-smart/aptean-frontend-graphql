@@ -7,6 +7,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 import Newsupdate from '../../shared/newspdate';
+import NewsService from '../../services/news'
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -63,11 +64,13 @@ const useStyles = makeStyles((theme) => ({
 
 function MostUsedPanel() {
     const { t, i18n } = useTranslation('common');
-
+    const [newsData, setNewsData] = useState(''); 
     const classes = useStyles();
 
     // reset login status
-    useEffect(() => {
+    useEffect(async () => {
+        const getNewsData = await NewsService.getNewsBullet();
+        console.log(getNewsData,'getNewsData');
         //dispatch(userActions.logout()); 
     }, []);
 

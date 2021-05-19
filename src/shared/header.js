@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState, useEffect }  from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     },
     menuButton: {
         // marginRight: theme.spacing(2),
+        '& img':{
+            height:'50px'
+        }
     },
     inputRoot: {
         color: 'inherit',
@@ -77,6 +80,7 @@ export default function Header(props) {
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const [userName, setUserName] = React.useState(null);;
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -91,13 +95,21 @@ export default function Header(props) {
         handleMobileMenuClose();
     };
     const logout = () => {
-        history.push('login')
+        localStorage.clear(); 
+        history.push('/login')
     };
 
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
-
+    useEffect(() => {
+        //dispatch(userActions.logout()); 
+        const isUserLogin = localStorage.getItem('isLoggedIn');
+        if(isUserLogin)
+        {
+            setUserName(localStorage.getItem('userName'));
+        }
+    }, []);
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -135,7 +147,7 @@ export default function Header(props) {
                     color="inherit"
                 >
                     <AccountCircle />
-                    <span className={'text-capitalize appTextFont ' + classes.profileText} >Admin</span>
+                    <span className={'text-capitalize appTextFont ' + classes.profileText} >{userName}</span>
                 </Button>
             </MenuItem>
             <MenuItem>
@@ -171,7 +183,7 @@ export default function Header(props) {
                             color="inherit"
                         >
                             <AccountCircle />
-                            <span className={'text-capitalize appTextFont ' + classes.profileText} >Admin</span>
+                            <span className={'text-capitalize appTextFont ' + classes.profileText} >{userName}</span>
                         </Button>
                         <span className={classes.headerPipe}>|</span>
                         {/* <Button color="inherit" ><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button> */}
@@ -180,7 +192,7 @@ export default function Header(props) {
                         <PromptModal
                             show={modalShow}
                             onHide={() => setModalShow(false)}
-                            onLog={() => logout()}
+                            onClick={() => logout()}
                         />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>

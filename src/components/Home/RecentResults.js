@@ -1,13 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation,useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
-import { useTranslation } from "react-i18next";
-import ReactTable from 'react-table';
-import Table from "../../shared/Table/Table";
-import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import DataTable from "react-data-table-component";
 import SortIcon from "@material-ui/icons/ArrowDownward";
@@ -15,6 +9,8 @@ import SortIcon from "@material-ui/icons/ArrowDownward";
 import HomeService from '../../services/home'
 import { format } from 'date-fns';
 import ProgressBar from '../../shared/ProgressBar/Progress';
+import { Fragment } from "react";
+import { url } from '../../reducers/url';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -23,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 		width: '96%',
 		margin: '30px auto',
 		minHeight: '260px',
-		borderBottom: '1px solid #cec7c7'
+		// borderBottom: '1px solid #cec7c7'
 	},
 	savedForm: {
 		backgroundColor: '#f5f2f2',
@@ -80,6 +76,7 @@ const customStyles = {
 		paddingLeft: '8px', // override the cell padding for data cells
 		paddingRight: '8px',
 		borderLeft:'1px solid #0606061f',
+		borderBottom:'1px solid #0606061f',
 		'&:first-child': {
 			borderLeft: '0',
 		},
@@ -111,7 +108,7 @@ const columns = [
 	  },
 	  {
 		name: " ",
-		selector: "type",
+		selector: "report",
 		sortable: false,
 	  }
   ];
@@ -122,26 +119,50 @@ const columns = [
 function RecentResults() {
 
 	const [searchResultData, setSearchResultData] = useState([]);
-
+	const history = useHistory();
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	useEffect(() => {
 		(async () => {
 			// const result = dispatch(getSearchResult());
-			const result = await HomeService.getSearchResults();
-			console.log(result,'result');
+			const result = await HomeService.getSearchResults(history);
 			let tempArr = [];
 			if(result && result.response_content && result.response_content.length > 0)
 			{
 				result.response_content.forEach(datas => {
 					let tempObj = datas;
-					console.log(datas.date,'datas.date');
+					let id = datas.id;
 					tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
+					const regex = /Fulltext/i;
+					const found = datas.type.match(regex);
+					let type = 'Alignments';
+					if(found && found.length >0){
+						type = 'Documents';
+					}
+					let typeUrl = process.env.REACT_APP_BASE_URL+url.mostRecentTypeUrl+'wf:'+id+'.resdb/1'
+
 					if(datas.status == 'STILL_RUNNING')
 					{
 						tempObj['results'] = <ProgressBar datas={datas} />
+					}
+					else if(datas.status == 'FAILED'){
+						tempObj['results'] = datas.status
+					}
+					else {
+						tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+					}
+					let classicLink = process.env.REACT_APP_API_URL+url.mostRecentClassicUrl+'&db=wf:'+id+'.resdb'
+					if(datas.type == "GqWfABIpSearch")
+					{
+						let reportLink = process.env.REACT_APP_BASE_URL+url.mostRecentReportUrl+id
+						tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
+											<span className="mx-2">|</span>
+											<a href={classicLink} target="_blank">Classic</a>
+											</Fragment>
 					}else {
-						tempObj['results'] = <Link to=''>{datas.results}</Link>
+						tempObj["report"] = <Fragment>
+											<a href={classicLink} target="_blank">Classic</a>
+											</Fragment>
 					}
 					tempArr.push(tempObj);
 				})

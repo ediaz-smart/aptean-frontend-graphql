@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import { post } from '../../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
 import { url } from '../url';
-import HomeService from '../../services/home'
 
 
 const initialState = { isLoggedIn: false }
@@ -11,15 +10,15 @@ const initialState = { isLoggedIn: false }
 export const submitLogin = (data,history) => async (dispatch) => {
     // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
    // const history = useHistory();
-    return post(url.login, data)
+    return post(url.login, data,history)
         .then(async (response) => {
             if(response && response.response_status == 0)
             {
                 toast.success('loginSuccess');
+                localStorage.setItem('isLoggedIn', true);
+                localStorage.setItem('userName', data.GQUSERID);
                 dispatch(setUser({GQUSERID: data.GQUSERID,isLoggedIn: true }));
-                const result = await HomeService.getSearchResults();
-                console.log(result,'resultresult');
-                //history.push('/home');
+                history.push('/home');
             }else {
                 let errorMsg = 'Unable to Login';
                 if(response && typeof response.response_content === 'object' && response.response_content !== null){
