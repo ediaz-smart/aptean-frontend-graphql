@@ -1,12 +1,11 @@
 import { environment } from '../config';
 import axios from 'axios';
-import { Redirect } from "react-router-dom";
-import loginError from '../tests/login-error.txt';
-import loginSuccess from '../tests/login-success.txt';
-import seqSearchInit from '../tests/seqSearchInit.txt';
-import seqSearchInitRedo from '../tests/seqSearchInit-redo.txt';
-import searchResultsData from '../tests/searchResults.txt';
-import searchResultsStatusData from '../tests/searchResultsStatus.txt';
+// import loginError from '../tests/login-error.txt';
+// import loginSuccess from '../tests/login-success.txt';
+// import seqSearchInit from '../tests/seqSearchInit.txt';
+// import seqSearchInitRedo from '../tests/seqSearchInit-redo.txt';
+// import searchResultsData from '../tests/searchResults.txt';
+// import searchResultsStatusData from '../tests/searchResultsStatus.txt';
 // import history from '../helpers/history';
 // import createBrowserHistory from 'history/createBrowserHistory';
 
