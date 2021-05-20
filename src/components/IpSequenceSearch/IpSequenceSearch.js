@@ -315,37 +315,55 @@ function IpSeqSearch() {
     const docPublicSel = [
         {
             value: "before",
-            label: "Before"
+            label: "Before",
+            id: "BEF"
         },
         {
             value: "beforeempty",
-            label: "Before or is empty"
+            label: "Before or is empty",
+            id: "BEF_IE"
         },
         {
             value: "after",
-            label: "After"
+            label: "After",
+            id: "AFT"
         },
         {
             value: "afterempty",
-            label: "Aftre or is empty"
+            label: "Aftre or is empty",
+            id: "AFT_IE"
         }
     ];
     const GQSpecificSel = [
         {
             value: "islessthanequal",
-            label: "is less than or equal to"
+            label: "is less than or equal to",
+            id: "LTE"
         },
         {
             value: "islessthan",
-            label: "is less than"
+            label: "is less than",
+            id: "LT"
         },
         {
             value: "equals",
-            label: "equals"
+            label: "equals",
+            id: "EQ"
         },
         {
             value: "doesnotequal",
-            label: "does not equal"
+            label: "does not equal",
+            id: "NEQ"
+        },
+        {
+            value: "isgreaterthan",
+            label: "is greater than",
+            id: "GT"
+        },
+        {
+            value: "isgreaterthanequal",
+            label: "is greater than or equal to",
+            id: "GTE"
         }
     ];
     const searchAlgorithmItems = [
@@ -946,7 +964,7 @@ function IpSeqSearch() {
                                                     onChange={handleSingleCheck}
                                                 />
                                                 &nbsp; &nbsp;
-                        <label style={{ fontSize: '14px' }}>{test.name}</label>
+                                                <label style={{ fontSize: '14px' }}>{test.name}</label>
                                             </div>
                                         ))
                                         }
@@ -988,7 +1006,7 @@ function IpSeqSearch() {
                                                     onChange={handleSingleCheck}
                                                 />
                                                 &nbsp; &nbsp;
-                        <label style={{ fontSize: '14px' }}>{test.name}</label>
+                                                <label style={{ fontSize: '14px' }}>{test.name}</label>
                                             </div>
                                         ))
                                         }
@@ -1035,7 +1053,7 @@ function IpSeqSearch() {
                                                     onChange={handleSingleCheck}
                                                 />
                                                 &nbsp; &nbsp;
-                        <label style={{ fontSize: '14px' }}>{test.name}</label>
+                                                <label style={{ fontSize: '14px' }}>{test.name}</label>
                                             </div>
                                         ))
                                         }
@@ -1077,7 +1095,7 @@ function IpSeqSearch() {
                                                     onChange={handleSingleCheck}
                                                 />
                                                 &nbsp; &nbsp;
-                        <label style={{ fontSize: '14px' }}>{test.name}</label>
+                                                <label style={{ fontSize: '14px' }}>{test.name}</label>
                                             </div>
                                         ))
                                         }
@@ -1165,8 +1183,8 @@ function IpSeqSearch() {
                         <Col md="11">
                             <p className="ml-3">Executing this search will incur the following charges:</p>
                             <p className={"loginTitle ml-5"}>
-                            <b>
-                                TOTAL 2 Credits
+                                <b>
+                                    TOTAL 2 Credits
                             </b>
                             </p>
 
@@ -1192,15 +1210,15 @@ function IpSeqSearch() {
                     <ColoredLine color="#f3f2f2" />
                     <Row>
                         <Col md="12">
-                        <CheckBox
-                            defaultChecked
-                            color="primary"
-                            class={"float-left mx-2"}
-                            name="check"
-                            id="check"
-                        />
-                        <Typography className={"float-left mt-2"}>
-                            Send email when the search is done
+                            <CheckBox
+                                defaultChecked
+                                color="primary"
+                                class={"float-left mx-2"}
+                                name="check"
+                                id="check"
+                            />
+                            <Typography className={"float-left mt-2"}>
+                                Send email when the search is done
                         </Typography>
                         </Col>
                     </Row>
@@ -1235,7 +1253,7 @@ function IpSeqSearch() {
                 <br></br>
                 <Row >
                     <Col>
-                        <Button color="primary" variant="contained" className={"float-right  text-capitalize "+ classes.marginLeftCancel} type="submit">
+                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginLeftCancel} type="submit">
                             Cancel
              </Button>
 

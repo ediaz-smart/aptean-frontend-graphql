@@ -13,10 +13,12 @@ const useStyles = makeStyles((theme) => ({
         },
         "& .MuiOutlinedInput-root": {
             borderRadius: "7px"
-        }
+        },
+        
     },
     materialUILabel: {
         fontStyle: 'italic',
+        lineHeight:'6px'
     }
 }));
 
@@ -39,6 +41,7 @@ export default function TextInput(props) {
         InputLabelProps={{
             classes: {root:classes.materialUILabel}, 
         }} 
+        InputProps={props.InputProps}
         />
     );
 }

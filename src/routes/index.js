@@ -10,6 +10,7 @@ import Recent from '../components/Home/RecentResults'
 import SearchResult from '../components/SearchedResults/SearchResults';
 import IpSequenceSearch from '../components/IpSequenceSearch/IpSequenceSearch';
 import ChangePassword from '../components/Auth/ChangePassword';
+import SearchManagement from '../components/SearchManagement/SearchManagement';
 
 class Routes extends React.Component {
     render() {
@@ -26,6 +27,7 @@ class Routes extends React.Component {
                     <Route exact path="/recent" component={Recent} />
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                     <Route exact path="/ipseqsearch" title="ipseqsearch" component={IpSequenceSearch} />
+                    <Route exact path="/searchResult" title="searchResMgmnt"  component={SearchManagement} />
                 </Switch>
             </HashRouter>)
     }

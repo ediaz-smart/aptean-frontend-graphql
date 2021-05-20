@@ -6,9 +6,13 @@ async function getNewsBullet() {
     try {
         return await get(url.news)
         .then((response) => {
+            if(response && response.response_content)
+            {
+                return response.response_content;
+            }else {
+                return response;
+            }
             
-            console.log(response,'newsresponse');
-            return response;
         })
         .catch((error) => {
             toast.error('Failed to retrieve news');

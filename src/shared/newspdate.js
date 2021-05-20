@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { makeStyles } from '@material-ui/core/styles';
 
 import ContentModal from './Modal/ContentModal';
+import NewsService from '../services/news'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -39,12 +40,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 function Newsupdate(props) {
     const classes = useStyles();
+    const [newsData, setNewsData] = useState(''); 
     const { t, i18n } = useTranslation('common');
     const [showMore, setShowMore] = useState(true);
     const [modalShow, setModalShow] = React.useState(false);
+    
     // reset login status
-    useEffect(() => {
+    useEffect(async () => {
         //dispatch(userActions.logout()); 
+        const getNewsData = await NewsService.getNewsBullet();
+        if(getNewsData && getNewsData != undefined)
+        {
+            setNewsData(getNewsData['news']);
+        }
+        
         const height = document.getElementById('newsUpdateDiv').clientHeight;
         console.log(height,'height');
         if(height > 195)
@@ -60,14 +69,15 @@ function Newsupdate(props) {
         <div  className={classes.newsContent+' '+(props.isMostUsedPanel ? classes.newsMostUsedContent : '')+(props.isForgotPanel ? classes.forgotNewsContent:'')}>
             <div id="newsUpdateDiv" className="p-3">
             <h5 className="appTextColor"><b>{t('newsandupdates')}</b></h5>
-            {elementContent}
+            <div dangerouslySetInnerHTML={{__html: newsData}}>
+            </div>
             </div>
         </div>
         
         {props.isMostUsedPanel && showMore && 
-            <p className="moreLink ml-2"><a href="#" onClick={() => setModalShow(true)}>More...</a></p>
+            <p className="moreLink ml-2"><a className="pointer" onClick={() => setModalShow(true)}>More...</a></p>
         }
-        <ContentModal show={modalShow} onHide={() => setModalShow(false)} title={t('newsandupdates')} contentdata={elementContent} />
+        <ContentModal show={modalShow} onHide={() => setModalShow(false)} title={t('newsandupdates')} contentdata={newsData} />
         </div>
     );
 }

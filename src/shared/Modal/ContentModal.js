@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal'
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
+import ReactHtmlParser from 'react-html-parser';
+
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -39,7 +41,7 @@ function ContentModal(props) {
 				<h4>{props.title}</h4>
 
 				<div className={classes.contentDiv}>
-				{props.contentdata}
+				{ReactHtmlParser(props.contentdata)}
 				<br></br>  <br></br>
 				</div>
 			</Modal.Body>
