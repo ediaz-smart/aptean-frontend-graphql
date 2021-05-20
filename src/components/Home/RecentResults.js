@@ -193,6 +193,7 @@ function RecentResults() {
 								columns={columns}
 								data={searchResultData}
 								defaultSortField="type"
+								noDataComponent="No Searches have been submitted."
 								sortIcon={<SortIcon />}
 								customStyles={customStyles}
 								noHeader={true}

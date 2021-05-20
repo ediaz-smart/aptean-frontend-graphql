@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 import { AccessAlarm } from '@material-ui/icons';
 import { Link, useHistory } from 'react-router-dom';
+import account from '../../assets/image/account.png';
+import docsearch from '../../assets/image/docsearch.png';
+import searchResultImg from '../../assets/image/searchResult.png';
+import seqDb from '../../assets/image/seqDb.png';
+import seqSearch from '../../assets/image/seqSearch.png';
+import seqTool from '../../assets/image/seqTool.png';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -98,7 +104,10 @@ function ApplicationPanel() {
                     <Col md="4" sm="12" className={classes.columnPadding}>
                         <p className={'appTextColor '+classes.textHeading}>{t('sequenceSearch')}</p>
                         <Row className={classes.applicationPanelRow}>
-                            <Col lg="2" md="3" sm="12"><AccessAlarm className={classes.appIcon} /></Col>
+                            <Col lg="2" md="3" sm="12" className="pr-0">
+                                {/* <AccessAlarm className={classes.appIcon} /> */}
+                                <img src={seqSearch} alt="seqSearch" className="w-100" />
+                            </Col>
                             <Col lg="10" md="9" sm="12">
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ipSequence')}</a></p>
                                 <p className={classes.pTagMargin}>
@@ -110,7 +119,9 @@ function ApplicationPanel() {
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('documentSearch')}</p>
                         <Row className={classes.applicationPanelRow}>
-                            <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
+                            <Col lg="2" md="3" className="pr-0">
+                                <img src={docsearch} alt="docsearch" className="w-100" />
+                            </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentNumbers')}</a></p>
@@ -118,7 +129,9 @@ function ApplicationPanel() {
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('sequenceDatabases')}</p>
                         <Row className={classes.applicationPanelRow}>
-                            <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
+                            <Col lg="2" md="3" className="pr-0">
+                                <img src={seqDb} alt="seqDb" className="w-100" />
+                            </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('browseDatabases')}</a></p>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('personalDatabases')}</a></p>
@@ -128,14 +141,18 @@ function ApplicationPanel() {
                     <Col md="4" sm="12" className={classes.columnPadding}>
                         <p className={'appTextColor '+classes.textHeading}>{t('searchResults')}</p>
                         <Row className={classes.applicationPanelRow}>
-                            <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
+                            <Col lg="2" md="3" className="pr-0">
+                                <img src={searchResultImg} alt="searchResult" className="w-100" />
+                            </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('allSearchResults')}</a></p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('sequenceTools')}</p>
                         <Row className={classes.applicationPanelRow}>
-                            <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
+                            <Col lg="2" md="3" className="pr-0">
+                                <img src={seqTool} alt="seqTool" className="w-100" />
+                            </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('alignSequencesDirectly')}</a></p>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p>
@@ -143,7 +160,9 @@ function ApplicationPanel() {
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('myAccount')}</p>
                         <Row className={classes.applicationPanelRow}>
-                            <Col lg="2" md="3"><AccessAlarm className={classes.appIcon} /></Col>
+                            <Col lg="2" md="3" className="pr-0">
+                                <img src={account} alt="account" className="w-100" />
+                            </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('accountInformation')}</a></p>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('changePassword')}</a></p>

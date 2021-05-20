@@ -164,6 +164,7 @@ function SearchManagement() {
 						defaultSortField="title"
 						sortIcon={<SortIcon />}
 						onSelectedRowsChange={updateVal}
+						noDataComponent="No Searches have been submitted."
 						//   pagination
 						// conditionalRowStyles={conditionalRowStyles}
 						selectableRows
