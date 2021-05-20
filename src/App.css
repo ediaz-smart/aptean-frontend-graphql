@@ -42,6 +42,7 @@
 .moreLink {
     color: #008EC5;
     font-style: italic;
+    cursor: pointer;
 }
 .MuiOutlinedInput-input {
   padding: 12px 14px !important;
