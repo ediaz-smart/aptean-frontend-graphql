@@ -8,15 +8,19 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import TextInput from '../../shared/Fields/TextInput';
+import { useFormik } from 'formik';
+import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
+
+//components
+import TextInput from '../../shared/Fields/TextInput';
 import CheckBox from '../../shared/Fields/CheckBox';
 import SelectBox from '../../shared/Fields/SelectBox';
 import DatePicker from '../../shared/Fields/DatePicker';
 import TextArea from '../../shared/Fields/TextArea';
 import RadioButton from '../../shared/Fields/RadioButton';
-import { useFormik } from 'formik';
-import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel } from '@material-ui/core';
+import { getSeqSearchResults } from '../../services/seqSearchService';
+import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStructure';
 
 
 import * as yup from 'yup';
@@ -245,10 +249,9 @@ function IpSeqSearch() {
             // history.push('/home');
         },
     });
-    // reset login status
-    useEffect(() => {
-        //dispatch(userActions.logout()); 
-    }, []);
+
+
+
     const [seqDBFilter, setSeqDBFilter] = React.useState(true);
     const [specificDBFilter, setSpecificDBFilter] = React.useState(true);
     const maxResidues = '100,000';
@@ -264,14 +267,135 @@ function IpSeqSearch() {
     const [allChecked, setAllChecked] = useState(false);
     // using an array to store the checked items
     const [isChecked, setIsChecked] = useState([]);
-    const [formData, setFormData] = useState(data);
-    const [formData1, setFormData1] = useState(data1);
-    const [formData2, setFormData2] = useState(data2);
-    const [formData3, setFormData3] = useState(data3);
+    const [proPatentData, setProPatentData] = useState([]);
+    const [proReferenceData, setProReferenceData] = useState([]);
+    const [proPersonalData, setProPersonalData] = useState([]);
+
+    const [nucPatentData, setNucPatentData] = useState([]);
+    const [nucReferenceData, setNucReferenceData] = useState([]);
+    const [nucPersonalData, setNucPersonalData] = useState([]);
+
     const [searchAlgorithmValue, setSearchAlgorithm] = useState("genepastSearch");
     const [scoringMatrixValue, setScoringMatrix] = useState("NUC3.1");
     const [sequenceTypeValue, setSequenceType] = useState("nucleotideSequence");
     const [wordSizeValue, setWordSize] = useState("11");
+    const [nucleotideData, setNucleotideData] = useState();
+    const [proteinData, setProteinData] = useState();
+    const [files, setFiles] = useState([]);
+
+    // reset login status
+    useEffect(() => {
+        (async () => {
+            //dispatch(userActions.logout()); 
+            const resp = await getSeqSearchResults();
+            // console.log('respqokweflwef', resp);
+            if (resp && resp.data && resp.data.response_content && resp.data.response_content.sdb_nuc_tree && resp.data.response_content.sdb_nuc_tree.length > 0) {
+                let nucData = resp.data.response_content.sdb_nuc_tree;
+                let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [];
+                // console.log('nuc', resp.data.response_content.sdb_nuc_tree.length)
+                let nucFormattedData = await list_to_tree(nucData);
+                // console.log('nucFormattedData', nucFormattedData);
+                let getNucChild=[];
+                if(nucFormattedData && nucFormattedData.length > 0 ) {
+                    getNucChild = nucFormattedData[0].children;
+                }
+                getNucChild && getNucChild.length > 0 && getNucChild.map((item, index) => {
+                    if (item && item.id == ':Patents') {
+                        nucleotidePatent = item.children;
+                    } else if (item && item.id == ':Reference Data') {
+                        nucleotideReferenceData = item.children ;
+                    } else if (item && item.id == ':Data Shared With Me') {
+                        nucDataShardWithMe = item;
+                    }
+                })
+                setNucleotideData(resp.data.response_content.sdb_nuc_tree);
+                
+                setNucPatentData(nucleotidePatent);
+                setNucReferenceData(nucleotideReferenceData);
+                setNucPersonalData(nucDataShardWithMe);
+            }
+            if (resp && resp.data && resp.data.response_content && resp.data.response_content.sdb_pro_tree && resp.data.response_content.sdb_pro_tree.length > 0) {
+                let proteinData = resp.data.response_content.sdb_pro_tree;
+                let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [];
+                // console.log('pro', resp.data.response_content.sdb_pro_tree.length)
+                let proFormattedData = await list_to_tree(proteinData);
+                // console.log('proFormattedData', proFormattedData);
+                let getProChild=[];
+                if(proFormattedData && proFormattedData.length > 0 ) {
+                    getProChild = proFormattedData[0].children;
+                }
+                getProChild && getProChild.length > 0 && getProChild.map((item, index) => {
+                    if (item && item.id == ':Patents') {
+                        proteinPatent = item.children;
+                    } else if (item && item.id == ':Reference Data') {
+                        proteinReferenceData = item.children;
+                    } else if (item && item.id == ':Data Shared With Me') {
+                        proDataShardWithMe = item;
+                    }
+                })
+                setProteinData(resp.data.response_content.sdb_pro_tree);
+                
+                setProPatentData(proteinPatent);
+                setProReferenceData(proteinReferenceData);
+                setProPersonalData(proDataShardWithMe);
+            }
+
+        })()
+    }, []);
+    console.log('nucPatentData', nucPatentData);
+    console.log('nucrefereData', nucReferenceData);
+    console.log('nucsharedData', nucPersonalData)
+    console.log('proPatentData', proPatentData);
+    console.log('prorefereData', proReferenceData);
+    console.log('prosharedData', proPersonalData)
+
+
+    function list_to_tree(list) {
+        var map = {}, node, roots = [], i;
+        
+        for (i = 0; i < list.length; i += 1) {
+          map[list[i].id] = i; // initialize the map
+          list[i].children = []; // initialize the children
+        }
+        
+        for (i = 0; i < list.length; i += 1) {
+          node = list[i];
+        //   console.log('node', node)
+          if (node.parent !== null) {
+            // if you have dangling branches check that map[node.parentId] exists
+            list[map[node.parent]].children.push(node);
+          } else {
+            roots.push(node);
+          }
+        }
+        return roots;
+      }
+
+//    if(nucleotideData && nucleotideData.length > 0) {
+//     console.log(list_to_tree(nucleotideData));
+   
+//    }
+
+    console.log('nucleotideData', nucleotideData);
+    console.log('proteinData', proteinData);
+    // let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [];
+    // if (nucleotideData && nucleotideData.length > 0) {
+    //     nucleotideData.map((item, index) => {
+    //         // if(item && item.children) {
+
+    //         // }
+    //         if (item && item.parent == ':Patents') {
+    //             nucleotidePatent.push(item);
+    //         } else if (item && item.parent == ':Reference Data') {
+    //             nucleotideReferenceData.push(item);
+    //         } else if (item && item.parent == ':Data Shared With Me') {
+    //             nucDataShardWithMe.push(item);
+    //         }
+    //     });
+    //     setFormData1(nucleotidePatent);
+    //     setFormData2(nucleotideReferenceData);
+    // }
+
 
 
     const handleAlgorithm = (event) => {
@@ -301,8 +425,9 @@ function IpSeqSearch() {
         }
         isChecked.push(name);
         setIsChecked([...isChecked]);
-        setAllChecked(isChecked.length === formData.length)
+        setAllChecked(isChecked.length === proPatentData.length)
     };
+    console.log('isChecked', isChecked)
     const ColoredLine = ({ color }) => (
         <hr
             style={{
@@ -459,6 +584,7 @@ function IpSeqSearch() {
             label: "3"
         }
     ];
+    console.log('formik.errors', formik)
 
 
     return (
@@ -953,14 +1079,14 @@ function IpSeqSearch() {
                                       checked={allChecked}
                                       onChange={handleAllCheck}
                                     /> */}
-                                        {formData1.map((test, index) => (
+                                        {nucPatentData.map((test, index) => (
                                             <div
                                                 key={index}
                                             >
                                                 <input
                                                     type="checkbox"
-                                                    name={test.name}
-                                                    checked={isChecked.includes(test.name)}
+                                                    name={test.label}
+                                                    checked={isChecked.includes(test.label)}
                                                     onChange={handleSingleCheck}
                                                 />
                                                 &nbsp; &nbsp;
@@ -995,14 +1121,14 @@ function IpSeqSearch() {
                                   checked={allChecked}
                                   onChange={handleAllCheck}
                                 /> */}
-                                        {formData.map((test, index) => (
+                                        {proPatentData.map((test, index) => (
                                             <div
                                                 key={index}
                                             >
                                                 <input
                                                     type="checkbox"
-                                                    name={test.name}
-                                                    checked={isChecked.includes(test.name)}
+                                                    name={test.label}
+                                                    checked={isChecked.includes(test.label)}
                                                     onChange={handleSingleCheck}
                                                 />
                                                 &nbsp; &nbsp;
@@ -1042,14 +1168,14 @@ function IpSeqSearch() {
                                       checked={allChecked}
                                       onChange={handleAllCheck}
                                     /> */}
-                                        {formData2.map((test, index) => (
+                                        {nucReferenceData.map((test, index) => (
                                             <div
                                                 key={index}
                                             >
                                                 <input
                                                     type="checkbox"
-                                                    name={test.name}
-                                                    checked={isChecked.includes(test.name)}
+                                                    name={test.label}
+                                                    checked={isChecked.includes(test.label)}
                                                     onChange={handleSingleCheck}
                                                 />
                                                 &nbsp; &nbsp;
@@ -1084,14 +1210,14 @@ function IpSeqSearch() {
                                     checked={allChecked}
                                     onChange={handleAllCheck}
                                   /> */}
-                                        {formData3.map((test, index) => (
+                                        {proReferenceData.map((test, index) => (
                                             <div
                                                 key={index}
                                             >
                                                 <input
                                                     type="checkbox"
-                                                    name={test.name}
-                                                    checked={isChecked.includes(test.name)}
+                                                    name={test.label}
+                                                    checked={isChecked.includes(test.label)}
                                                     onChange={handleSingleCheck}
                                                 />
                                                 &nbsp; &nbsp;
@@ -1138,13 +1264,14 @@ function IpSeqSearch() {
                                     </p>
 
                                 </AccordionSummary>
-                                <AccordionDetails>
+                                {/* <AccordionDetails>
                                     <Col md='6'>
 
                                         <p>No Data</p>
 
                                     </Col>
-                                </AccordionDetails>
+                                </AccordionDetails> */}
+                                <FolderTreeStructure treeData={proPersonalData}/>
                             </Accordion>
 
                         </Col>
@@ -1161,19 +1288,21 @@ function IpSeqSearch() {
                                         <b className={classes.arrowIconTitle}>Personal ​Nucleotide Databases</b>
                                     </p>
                                 </AccordionSummary>
-                                <AccordionDetails>
+                                {/* <AccordionDetails>
                                     <Col md='6'>
 
                                         <p>No Data</p>
 
                                     </Col>
-                                </AccordionDetails>
+                                </AccordionDetails> */}
+                                <FolderTreeStructure treeData={nucPersonalData}/>
                             </Accordion>
 
                         </Col>
 
 
                     </Row>
+
 
                 </div>
 

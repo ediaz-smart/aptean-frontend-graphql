@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TextInput(props) {
     const classes = useStyles();
-    console.log(props, 'propsss')
     return (
         <TextField 
         fullWidth={props.fullWidth}

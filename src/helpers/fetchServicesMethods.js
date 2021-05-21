@@ -15,7 +15,7 @@ let baseUrl = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials = true
 const transport = axios.create({
     withCredentials: true
-  })
+  });
   
 // import { Auth } from "../helpers/Auth";
 // import { environment } from "../helpers/config";

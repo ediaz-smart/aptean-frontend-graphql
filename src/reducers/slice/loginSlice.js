@@ -7,7 +7,7 @@ import { url } from '../url';
 const initialState = { isLoggedIn: false }
 
 
-export const submitLogin = (data,history) => async (dispatch) => {
+export const submitLogin = (data,history, t) => async (dispatch) => {
     // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
    // const history = useHistory();
     return post(url.login, data,history)
