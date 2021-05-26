@@ -101,7 +101,7 @@ function HandleResponse(response,history) {
     }
 }
 
-export function post(url, data,history) {
+export function post(url, postdata,history) {
     // if (window.location.hostname == 'localhost') {
     //     let file;
     //     if (url.includes('gquser.login')) {
@@ -115,9 +115,7 @@ export function post(url, data,history) {
     //             return JSON.parse(text);
     //         });
     // } else {
-    const postdata = new FormData();
-    postdata.append("GQUSERID", data.GQUSERID);
-    postdata.append("GQPASSWORD", data.GQPASSWORD);
+    
     return axios.post(baseUrl + url, postdata,{
         // method: 'post',
         // headers: {

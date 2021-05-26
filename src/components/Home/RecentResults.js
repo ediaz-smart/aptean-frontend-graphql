@@ -7,10 +7,7 @@ import DataTable from "react-data-table-component";
 import SortIcon from "@material-ui/icons/ArrowDownward";
 // import movies from '../SearchedResults/movies'
 import HomeService from '../../services/home'
-import { format } from 'date-fns';
-import ProgressBar from '../../shared/ProgressBar/Progress';
-import { Fragment } from "react";
-import { url } from '../../reducers/url';
+import UtilsService from '../../helpers/utils';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -129,45 +126,10 @@ function RecentResults() {
 			let tempArr = [];
 			if(result && result.response_content && result.response_content.length > 0)
 			{
-				result.response_content.forEach(datas => {
-					let tempObj = datas;
-					let id = datas.id;
-					tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
-					const regex = /Fulltext/i;
-					const found = datas.type.match(regex);
-					let type = 'Alignments';
-					if(found && found.length >0){
-						type = 'Documents';
-					}
-					let typeUrl = process.env.REACT_APP_BASE_URL+url.mostRecentTypeUrl+'wf:'+id+'.resdb/1'
-
-					if(datas.status == 'STILL_RUNNING')
-					{
-						tempObj['results'] = <ProgressBar datas={datas} />
-					}
-					else if(datas.status == 'FAILED'){
-						tempObj['results'] = datas.status
-					}
-					else {
-						tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
-					}
-					let classicLink = process.env.REACT_APP_API_URL+url.mostRecentClassicUrl+'&db=wf:'+id+'.resdb'
-					if(datas.type == "GqWfABIpSearch")
-					{
-						let reportLink = process.env.REACT_APP_BASE_URL+url.mostRecentReportUrl+id
-						tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
-											<span className="mx-2">|</span>
-											<a href={classicLink} target="_blank">Classic</a>
-											</Fragment>
-					}else {
-						tempObj["report"] = <Fragment>
-											<a href={classicLink} target="_blank">Classic</a>
-											</Fragment>
-					}
-					tempArr.push(tempObj);
-				})
+				tempArr = await UtilsService.mostRecentResCalculation(result,'home');
 			}
-			
+			// Getting only 9 array from the response as per the ppt documentation
+			tempArr = tempArr.slice(0, 9);
 			setSearchResultData(tempArr);
 		})();
 	}, []);

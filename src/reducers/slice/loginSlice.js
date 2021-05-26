@@ -10,7 +10,10 @@ const initialState = { isLoggedIn: false }
 export const submitLogin = (data,history, t) => async (dispatch) => {
     // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
    // const history = useHistory();
-    return post(url.login, data,history)
+   const postdata = new FormData();
+    postdata.append("GQUSERID", data.GQUSERID);
+    postdata.append("GQPASSWORD", data.GQPASSWORD);
+    return post(url.login, postdata,history)
         .then(async (response) => {
             if(response && response.response_status == 0)
             {

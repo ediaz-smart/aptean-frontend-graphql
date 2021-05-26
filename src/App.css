@@ -38,7 +38,18 @@
 .appLinkColor {
     color: #008EC5;
 }
-
+.primaryBtn{
+    background-color:#008EC5 !important;
+    border: 2px solid #008EC5 !important;
+}
+.disableBtnBorder{
+    border: 1.5px solid #a7acac !important;
+}
+.deleteBtnColor{
+    background-color:#db3838 !important;
+    border: 2px solid #db3838 !important;
+    color: #fff !important;
+}
 .moreLink {
     color: #008EC5;
     font-style: italic;
@@ -47,7 +58,12 @@
 .MuiOutlinedInput-input {
   padding: 12px 14px !important;
 }
-
+.cursorPointer{
+    cursor: pointer;
+}
+.MuiTreeItem-group{
+    margin-left:32px !important
+}
 
 /* Login & Forgot */
 
@@ -59,6 +75,7 @@
 
 .loginSubmit {
     background-color: #DB862D !important;
+    border: 2px solid #DB862D !important;
 }
 
 .changePassword {
