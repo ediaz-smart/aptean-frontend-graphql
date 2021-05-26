@@ -60,17 +60,29 @@ function Forgotpassword() {
             captchaCode: '',
         },
         validationSchema: Validate.ForgotValidate(),
-         onSubmit: (values) => {
+         onSubmit: async(values) => {
             console.log(values,"valessssssssss");
             if(values.captchaCode == verifycaptchaCode)
             {
-                 const result =  PasswordService.forgotPassword(values.userName);
+                 const result = await PasswordService.forgotPassword(values.userName);
                 // dispatch(forgotpasswordSlice({userId:values.userName},history));
-                setPasswordForm(false);
-                toast.success("Success");
+                //  checkflag = result.response_content.success;
+                console.log(result,"resultresultresult");
+                if(result.response_content.success == false)
+                {
+                    const error = result.response_content.errors[0];
+                    console.log(error,"errorerror")
+                    toast.error(error);
+                   
+                }
+                else{
+                    setPasswordForm(false);
+                    toast.success("Success");
+                }
+               
             }
             else{
-            toast.error("BAD Request Found!");
+            toast.error("Captcha InCorrect ! Try Again");
             // setPasswordForm(false);
             }
         },
