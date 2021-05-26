@@ -6,7 +6,7 @@ import SortIcon from "@material-ui/icons/ArrowDownward";
 import movies from "./movies";
 import "./styles.css";
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useMemo ,useCallback} from 'react';
+import React, { useState, useMemo ,useCallback ,useEffect} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Button  from '@material-ui/core/Button';
 import { toast } from 'react-toastify';
@@ -49,7 +49,41 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: '45px',
       }
 }));
-
+const customStyles = {
+	rows: {
+	  style: {
+		minHeight: '50px', // override the row height
+	  }
+	},
+	headCells: {
+	  style: {
+		paddingLeft: '8px', // override the cell padding for head cells
+		paddingRight: '8px',
+		borderLeft:'1px solid #0606061f',
+		'&:first-child': {
+			borderLeft: '0',
+		},
+		fontWeight:'bold',
+		color:'#4a5050'
+	  },
+	},
+	cells: {
+	  style: {
+		paddingLeft: '8px', // override the cell padding for data cells
+		paddingRight: '8px',
+		borderLeft:'1px solid #0606061f',
+		borderBottom:'1px solid #0606061f',
+		'&:first-child': {
+			borderLeft: '0',
+		},
+    '&:second-child': {
+			borderLeft: '0',
+		},
+		display:'grid'
+	  },
+	  
+	},
+  };
 const conditionalRowStyles = [
     {
       when: row => row.director < 300,
@@ -94,7 +128,7 @@ const selectableRowsComponentProps = { indeterminate: isIndeterminate };
 
 function SearchResults() {
     const classes = useStyles();
-    const [thing, setThing] = useState();
+    const [thing, setThing] = useState([]);
     const handleAction = value => setThing(value);
     // unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
     const updateState = useCallback(state =>  setThing(state));
@@ -102,13 +136,18 @@ function SearchResults() {
     {    
         setThing(state)
     }
+    useEffect(() => {
+      
+      // setThing([])
+      // document.title = `You clicked ${count} times`;
+    });
     function greetUser() {
         // console.log(updateState,"SAMple Data that enters")
         console.log(thing,"SAMple")
         const data = [];
-        const dataValues = thing && data.push(thing.selectedRows[0]);
+        const dataValues = thing  && thing.selectedRows && data.push(thing.selectedRows[0]);
         console.log(data,"data data data");
-        if(thing.selectedCount >= 1 && data && data.length > 0)
+        if(thing && thing.selectedCount >= 1 && data && data.length > 0)
         {
             toast.success("Successfully Deleted");
             console.log("Hi there, user!");
@@ -130,8 +169,10 @@ function SearchResults() {
           defaultSortField="title"
           sortIcon={<SortIcon />}
           onSelectedRowsChange={updateVal}
+          customStyles={customStyles}
+				   noHeader={true}
         //   pagination
-          conditionalRowStyles={conditionalRowStyles}
+          // conditionalRowStyles={conditionalRowStyles}
           selectableRows
           selectableRowsComponent={Checkbox}
           selectableRowsComponentProps={selectableRowsComponentProps}

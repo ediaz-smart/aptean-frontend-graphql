@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import GQLogo from '../../assets/image/GenomeQuest.svg';
 import TextField from '@material-ui/core/TextField';
@@ -13,9 +12,14 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
+import ClientCaptcha from "react-client-captcha"
+import "react-client-captcha/dist/index.css"
+import { Link, useHistory } from 'react-router-dom';
+import PasswordService from '../../services/forgotpassword'
 
 
 const useStyles = makeStyles((theme) => ({
+
    
     passwordRecoverDiv:{
         padding: '15px 25px 20px',
@@ -47,19 +51,35 @@ function Forgotpassword() {
     const classes = useStyles();
     const {t, i18n} = useTranslation('common');
     const [passwordForm, setPasswordForm] = useState(true);
+    const [verifycaptchaCode, setcaptchaCode] = useState();
     const dispatch = useDispatch();
-    const formik = useFormik({
+    const history = useHistory();
+     const formik = useFormik({
         initialValues: {
             userName: '',
             captchaCode: '',
         },
         validationSchema: Validate.ForgotValidate(),
-        onSubmit: (values) => {
+         onSubmit: (values) => {
+            console.log(values,"valessssssssss");
+            if(values.captchaCode == verifycaptchaCode)
+            {
+                 const result =  PasswordService.forgotPassword(values.userName);
+                // dispatch(forgotpasswordSlice({userId:values.userName},history));
+                setPasswordForm(false);
+                toast.success("Success");
+            }
+            else{
             toast.error("BAD Request Found!");
-            setPasswordForm(false);
+            // setPasswordForm(false);
+            }
         },
     });
-
+    function updateCode(captchaCode)
+    {    
+        setcaptchaCode(captchaCode);
+        console.log(captchaCode,"captchaCode");
+    }
     // reset login status
     useEffect(() => {
         //dispatch(userActions.logout()); 
@@ -106,6 +126,10 @@ function Forgotpassword() {
                                 helperText={formik.touched.captchaCode && formik.errors.captchaCode}
                             />
                         </div>
+                        <div className="form-group">
+                        <ClientCaptcha fontColor='#FC0202' backgroundColor='#BDCFF5' width='150' fontSize='32' charsCount='5' captchaCode={updateCode}/>
+                        </div>
+                       
                         <div className="form-group">
                             <Button variant="contained" color="primary" className="float-right loginSubmit text-capitalize" type="submit">
                                 {t('submit')}
