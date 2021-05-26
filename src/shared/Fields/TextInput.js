@@ -41,6 +41,9 @@ export default function TextInput(props) {
             classes: {root:classes.materialUILabel}, 
         }} 
         InputProps={props.InputProps}
+        multiline={props.multiline}
+        rows={props.rows}
+        rowsMax={props.rowsMax}
         />
     );
 }

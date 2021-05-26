@@ -130,6 +130,18 @@
     overflow: hidden
 }
 
+.MuiFormHelperText-root.Mui-error {
+width: 500px
+}
+
+.relativePosition {
+    position: relative;
+}
+
+.absolutePosition {
+    position: absolute;
+}
+
 @keyframes App-logo-spin {
     from {
         transform: rotate(0deg);

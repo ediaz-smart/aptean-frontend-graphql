@@ -13,113 +13,30 @@ import BlurCircularIcon from "@material-ui/icons/BlurCircular";
 
 const initialValues = {};
 
-const data = {
-  id: "root",
-  name: "Yellow Folder",
-  type: "yellow",
-  children: [
-    {
-      id: "pink-1",
-      name: "Pink Folder",
-      type: "pink",
-      children: [
-        {
-          id: "red-pink-1-1",
-          name: "Red Folder",
-          type: "red",
-          children: [
-            {
-              id: "file-red-1-1",
-              name: "file-1",
-              type: "file"
-            },
-            {
-              id: "file-red-1-2",
-              name: "file-2",
-              type: "file"
-            },
-            {
-              id: "file-red-1-3",
-              name: "file-3",
-              type: "file"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: "pink-2",
-      name: "Pink Folder 2",
-      type: "pink",
-      children: [
-        {
-          id: "red-pink-2-1",
-          name: "Red Folder 2",
-          type: "red",
-          children: [
-            {
-              id: "file-red-2-1",
-              name: "file-2-1",
-              type: "file"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
 const useStyles = makeStyles({
   root: {
     height: 110,
     flexGrow: 1,
     maxWidth: 400
-  }
+  },
+  // '& .MuiCheckbox-colorSecondary.Mui-checked':{
+  //   color: "#007bff !important"
+  // }
 });
 
-const FolderTreeStructure = (treeData) => {
+const FolderTreeStructure = ({treeData, parentCallBack}) => {
     console.log('treeData', treeData)
   const classes = useStyles();
-  const [yellow, setYellow] = useState("");
-  const [pink, setPink] = useState("");
-  const [red, setRed] = useState("");
   const [files, setFiles] = useState([]);
+  console.log('files', files)
 
   const renderTree = (nodes, onSelect) =>
-    nodes.type === "seqdb" ? (
-      <>
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="file"
-              onChange={e => onSelect(nodes.label, e.target.checked)}
-            />
-          }
-        //   label={
-        //     <>
-        //       <MemoryIcon /> {nodes.label}
-        //     </>
-        //   }
-        label={nodes.label}
-          key={nodes.id}
-        />
-        <br />
-      </>
-    ) : (
       <TreeItem
         key={nodes.id}
         nodeId={nodes.id}
         label={
           <div>
-            {nodes.type === "yellow" ? (
-              <>
-                <YellowCloseFolder /> {nodes.label}
-              </>
-            ) : nodes.type === "pink" ? (
-              <>
-                <PinkCloseFolder /> {nodes.label}
-              </>
-            ) : nodes.type === "folder" ? (
+            {/* { nodes.type === "folder" ? ( */}
               <>
                 <FormControlLabel
                   control={
@@ -127,49 +44,32 @@ const FolderTreeStructure = (treeData) => {
                       name="file"
                       onChange={e => {
                         onSelect(nodes.label, e.target.checked);
+                        parentCallBack(nodes.label, e.target.checked)
                       }}
                     />
                   }
-                //   label={
-                //     <>
-                //       <RedCloseFolder /> {nodes.label}
-                //     </>
-                //   }
                 label={nodes.label}
                   key={nodes.id}
                 />
               </>
-            ) : null}
+            {/* ) : null} */}
           </div>
         }
         onLabelClick={() => {
+          console.log('nodes.label', nodes.label)
           onSelect(nodes.type, nodes.label);
-          switch (nodes.type) {
-            case "yellow":
-              setYellow(nodes.label);
-              break;
-            case "pink":
-              setPink(nodes.label);
-              break;
-            case "red":
-              setRed(nodes.label);
-              break;
-            case "file":
-              let newFiles = files;
-              newFiles.push(nodes.label);
-              setFiles(newFiles);
-              break;
-            default:
-              break;
-          }
+          parentCallBack(nodes.label)
         }}
-        onIconClick={() => onSelect(nodes.type, nodes.label)}
+        onIconClick={() => {
+          onSelect(nodes.type, nodes.label)
+          parentCallBack(nodes.label)
+        }}
       >
         {Array.isArray(nodes.children)
           ? nodes.children.map(node => renderTree(node, onSelect))
           : null}
       </TreeItem>
-    );
+    // );
 
 //   initialValues["yellow"] = data.name;
 
@@ -178,20 +78,21 @@ const FolderTreeStructure = (treeData) => {
       {props => (
         <>
           <Tree
-            data={treeData.treeData}
+            data={treeData}
             setFieldValue={props.setFieldValue}
             renderTree={renderTree}
           />
-          <pre>{JSON.stringify(props.values, null, 2)}</pre>
+          {/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
         </>
       )}
     </Formik>
   );
+
 };
 
 export default FolderTreeStructure;
 
-const Tree = props => {
+const Tree = (props) => {
   return (
     <>
       <TreeView
@@ -205,14 +106,4 @@ const Tree = props => {
       {/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
     </>
   );
-};
-
-const YellowCloseFolder = () => {
-  return <FolderIcon style={{ color: "#ffc800" }} />;
-};
-const PinkCloseFolder = () => {
-  return <FolderIcon style={{ color: "#ff75ff" }} />;
-};
-const RedCloseFolder = () => {
-  return <FolderIcon style={{ color: "#ff0000" }} />;
 };

@@ -47,6 +47,10 @@ export default function DatePicker(props) {
             'aria-label': 'change date',
           }}
           className={classes.root+' '+props.class}
+          allowKeyboardControl={props.allowKeyboardControl}
+          onChange={props.onChange}
+          disablePast={true}
+          InputProps={{ readOnly: true }}
         />
       </Grid>
     </MuiPickersUtilsProvider>

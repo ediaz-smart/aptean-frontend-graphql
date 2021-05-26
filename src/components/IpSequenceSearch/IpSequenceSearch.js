@@ -17,7 +17,6 @@ import TextInput from '../../shared/Fields/TextInput';
 import CheckBox from '../../shared/Fields/CheckBox';
 import SelectBox from '../../shared/Fields/SelectBox';
 import DatePicker from '../../shared/Fields/DatePicker';
-import TextArea from '../../shared/Fields/TextArea';
 import RadioButton from '../../shared/Fields/RadioButton';
 import { getSeqSearchResults } from '../../services/seqSearchService';
 import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStructure';
@@ -55,6 +54,21 @@ const useStyles = makeStyles((theme) => ({
     },
     marginLeftCancel: {
         marginLeft: "10px"
+    },
+    checkBoxContent: {
+        fontSize: "14px",
+        width: "80%",
+        textAlign: "initial",
+        marginLeft: "10px",
+        marginBottom: "10px !important"
+    },
+    checkBox: {
+        marginTop: "3px",
+        width: "20px",
+        height: "20px"
+    },
+    theseAreText: {
+        margin: "7px 20px 10px 0px"
     },
     '@media (min-width: 768px)': {
         desktopHelpLink: {
@@ -242,8 +256,17 @@ function IpSeqSearch() {
     const formik = useFormik({
         initialValues: {
             searchDetails: '',
+            querySequence: '',
+            alignments: 5000,
+            genePastPercentage: 80,
+            expectCutoff: 10,
+            fragmentStretch: 50,
+            fragmentAminoAcid: 96,
+            docPublicSel: "before",
+            publishGQSel: "before",
+            patientDocSel:"islessthan"
         },
-        // validationSchema: Validate.LoginValidate(),
+        validationSchema: Validate.IpSeqSearchValidate(),
         onSubmit: async (values) => {
             // dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password}));
             // history.push('/home');
@@ -282,19 +305,24 @@ function IpSeqSearch() {
     const [nucleotideData, setNucleotideData] = useState();
     const [proteinData, setProteinData] = useState();
     const [files, setFiles] = useState([]);
+    // const [querySequenceValue, setQuerySequencyValue] = useState();
+    const [genePastValue, setGenePastValue] = useState("myQuery");
+    const [personalDataValue, setPersonalDataValue] = useState();
+
+    console.log('personalDataValue', personalDataValue)
 
     // reset login status
     useEffect(() => {
         (async () => {
             //dispatch(userActions.logout()); 
             const resp = await getSeqSearchResults();
-            // console.log('respqokweflwef', resp);
-            if (resp && resp.data && resp.data.response_content && resp.data.response_content.sdb_nuc_tree && resp.data.response_content.sdb_nuc_tree.length > 0) {
-                let nucData = resp.data.response_content.sdb_nuc_tree;
+            console.log('respqokweflwef', resp);
+            if (resp && resp.response_content && resp.response_content.sdb_nuc_tree && resp.response_content.sdb_nuc_tree.length > 0) {
+                let nucData = resp.response_content.sdb_nuc_tree;
                 let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [];
-                // console.log('nuc', resp.data.response_content.sdb_nuc_tree.length)
+                console.log('nuc', resp.response_content.sdb_nuc_tree.length)
                 let nucFormattedData = await list_to_tree(nucData);
-                // console.log('nucFormattedData', nucFormattedData);
+                console.log('nucFormattedData', nucFormattedData);
                 let getNucChild=[];
                 if(nucFormattedData && nucFormattedData.length > 0 ) {
                     getNucChild = nucFormattedData[0].children;
@@ -308,18 +336,18 @@ function IpSeqSearch() {
                         nucDataShardWithMe = item;
                     }
                 })
-                setNucleotideData(resp.data.response_content.sdb_nuc_tree);
+                setNucleotideData(resp.response_content.sdb_nuc_tree);
                 
                 setNucPatentData(nucleotidePatent);
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
             }
-            if (resp && resp.data && resp.data.response_content && resp.data.response_content.sdb_pro_tree && resp.data.response_content.sdb_pro_tree.length > 0) {
-                let proteinData = resp.data.response_content.sdb_pro_tree;
+            if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
+                let proteinData = resp.response_content.sdb_pro_tree;
                 let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [];
-                // console.log('pro', resp.data.response_content.sdb_pro_tree.length)
+                console.log('pro', resp.response_content.sdb_pro_tree.length)
                 let proFormattedData = await list_to_tree(proteinData);
-                // console.log('proFormattedData', proFormattedData);
+                console.log('proFormattedData', proFormattedData);
                 let getProChild=[];
                 if(proFormattedData && proFormattedData.length > 0 ) {
                     getProChild = proFormattedData[0].children;
@@ -333,7 +361,7 @@ function IpSeqSearch() {
                         proDataShardWithMe = item;
                     }
                 })
-                setProteinData(resp.data.response_content.sdb_pro_tree);
+                setProteinData(resp.response_content.sdb_pro_tree);
                 
                 setProPatentData(proteinPatent);
                 setProReferenceData(proteinReferenceData);
@@ -398,7 +426,7 @@ function IpSeqSearch() {
 
 
 
-    const handleAlgorithm = (event) => {
+    const handleSearchAlgorithm = (event) => {
         console.log('vent.target.value', event.target.value)
         setSearchAlgorithm(event.target.value);
     };
@@ -408,6 +436,9 @@ function IpSeqSearch() {
     const handleSequenceType = (event) => {
         console.log('vent.target.value', event.target.value)
         setSequenceType(event.target.value);
+        // setQuerySequencyValue('');
+        formik.setFieldValue("querySequence", '');
+
         if (event.target.value == "nucleotideSequence") {
             setScoringMatrix('NUC3.1');
             setWordSize('11');
@@ -428,6 +459,11 @@ function IpSeqSearch() {
         setAllChecked(isChecked.length === proPatentData.length)
     };
     console.log('isChecked', isChecked)
+
+    function handleDbChange(newDbValue) {
+        console.log('dbValue', newDbValue)
+        setPersonalDataValue(newDbValue);
+    }
     const ColoredLine = ({ color }) => (
         <hr
             style={{
@@ -622,18 +658,19 @@ function IpSeqSearch() {
                 <Row>
                     <Col sm="12" md="10">
                         <div className="form-group">
-                            <TextArea
+                            <TextInput
                                 rowsMax="8"
-                                rowsMin="8"
+                                rows="8"
+                                multiline={true}
                                 fullWidth
-                                id="querySequences"
-                                name="querySequences"
-                                placeholder={t('querySequencesPlaceHolder')}
+                                id="querySequence"
+                                name="querySequence"
+                                label={t('querySequencesPlaceHolder')}
                                 variant="outlined"
-                                value={formik.values.querySequences}
+                                value={formik.values.querySequence}
                                 onChange={formik.handleChange}
-                                error={formik.touched.querySequences && Boolean(formik.errors.querySequences)}
-                                helperText={formik.touched.querySequences && formik.errors.querySequences}
+                                error={formik.touched.querySequence && formik.errors.querySequence}
+                                helperText={formik.errors.querySequence}
                             />
                         </div>
                     </Col>
@@ -643,11 +680,13 @@ function IpSeqSearch() {
                     <Col md="9">
                         {/* <p> */}
                         <FormControl component="fieldset">
-                            <p>These are</p>
+
                             <RadioGroup row aria-label="These are" name="customized-radios" value={sequenceTypeValue} onChange={handleSequenceType}>
+                                <span className={classes.theseAreText}>These are</span>
                                 <FormControlLabel value="nucleotideSequence" control={<RadioButton />} label="Nucleotide Sequences" />
                                 <FormControlLabel value="proteinSequence" control={<RadioButton />} label="Protein Sequences" />
                             </RadioGroup>
+                            {/* </span> */}
                         </FormControl>
                         {/* </p> */}
                     </Col>
@@ -673,7 +712,7 @@ function IpSeqSearch() {
                                 value={searchAlgorithmValue}
                                 items={searchAlgorithmItems}
                                 // defaultValue={searchAlgorithm}
-                                onChange={handleAlgorithm}
+                                onChange={handleSearchAlgorithm}
                                 class={"float-left"}
                             />
                             {searchAlgorithmValue && searchAlgorithmValue == 'genepastSearch' && <Fragment>
@@ -687,10 +726,10 @@ function IpSeqSearch() {
                                     label={''}
                                     variant="outlined"
                                     class={classes.smallTextBox + " float-left"}
-                                // value={formik.values.minResidues}
-                                // onChange={formik.handleChange} 
-                                // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
-                                // helperText={formik.touched.minResidues && formik.errors.minResidues}
+                                    value={formik.values.genePastPercentage}
+                                    onChange={formik.handleChange} 
+                                    error={formik.touched.genePastPercentage && Boolean(formik.errors.genePastPercentage)}
+                                    helperText={formik.touched.genePastPercentage && formik.errors.genePastPercentage}
                                 />
                                 <Typography className={"float-left " + classes.seqText}>
                                     &nbsp;&nbsp;% Identity over the &nbsp;&nbsp;
@@ -700,10 +739,10 @@ function IpSeqSearch() {
                                     variant="outlined"
                                     name="searchType"
                                     id="searchType"
-                                    value={searchAlgorithmValue}
+                                    value={genePastValue}
                                     items={genePastItems}
                                     // defaultValue={searchAlgorithm}
-                                    onChange={handleAlgorithm}
+                                    // onChange={handleAlgorithm}
                                     class={"float-left"}
                                 />
                             </Fragment>
@@ -747,7 +786,7 @@ function IpSeqSearch() {
                                     value={wordSizeValue}
                                     items={nucleotidewordSizeItems}
                                     // defaultValue={searchAlgorithm}
-                                    onChange={handleAlgorithm}
+                                    // onChange={handleAlgorithm}
                                     class={"float-left " + classes.smallTextBox}
                                 />
                                 }
@@ -759,7 +798,7 @@ function IpSeqSearch() {
                                     value={wordSizeValue}
                                     items={proteinwordSizeItems}
                                     // defaultValue={searchAlgorithm}
-                                    onChange={handleAlgorithm}
+                                    // onChange={handleAlgorithm}
                                     class={"float-left " + classes.smallTextBox}
                                 />
                                 }
@@ -774,10 +813,10 @@ function IpSeqSearch() {
                                         label={''}
                                         variant="outlined"
                                         class={classes.smallTextBox + ' float-left'}
-                                    // value={formik.values.minResidues}
-                                    // onChange={formik.handleChange} 
-                                    // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
-                                    // helperText={formik.touched.minResidues && formik.errors.minResidues}
+                                        value={formik.values.expectCutoff}
+                                        onChange={formik.handleChange} 
+                                        error={formik.touched.expectCutoff && Boolean(formik.errors.expectCutoff)}
+                                        helperText={formik.touched.expectCutoff && formik.errors.expectCutoff}
                                     />
                                     <CheckBox
                                         defaultChecked
@@ -803,10 +842,10 @@ function IpSeqSearch() {
                                     label={''}
                                     variant="outlined"
                                     class={classes.smallTextBox + ' float-left'}
-                                // value={formik.values.minResidues}
-                                // onChange={formik.handleChange} 
-                                // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
-                                // helperText={formik.touched.minResidues && formik.errors.minResidues}
+                                    value={formik.values.fragmentStretch}
+                                    onChange={formik.handleChange} 
+                                    error={formik.touched.fragmentStretch && Boolean(formik.errors.fragmentStretch)}
+                                    helperText={formik.touched.fragmentStretch && formik.errors.fragmentStretch}
                                 />
                                 <Typography className={"float-left mt-2"}>
                                     &nbsp;&nbsp;Amino Acids with &nbsp;&nbsp;
@@ -818,8 +857,8 @@ function IpSeqSearch() {
                                     label={''}
                                     variant="outlined"
                                     class={classes.smallTextBox + ' float-left'}
-                                // value={formik.values.minResidues}
-                                // onChange={formik.handleChange} 
+                                    value={formik.values.fragmentAminoAcid}
+                                    onChange={formik.handleChange} 
                                 // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                 // helperText={formik.touched.minResidues && formik.errors.minResidues}
                                 />
@@ -847,10 +886,10 @@ function IpSeqSearch() {
                                 name="alignments"
                                 label={''}
                                 variant="outlined"
-                                // value={formik.values.minResidues}
-                                // onChange={formik.handleChange} 
-                                // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
-                                // helperText={formik.touched.minResidues && formik.errors.minResidues}
+                                value={formik.values.alignments}
+                                onChange={formik.handleChange} 
+                                error={formik.touched.alignments && Boolean(formik.errors.alignments)}
+                                helperText={formik.touched.alignments && formik.errors.alignments}
                                 class={"float-left"}
                             />
                             <Typography className={"float-left " + classes.seqText}>
@@ -926,7 +965,8 @@ function IpSeqSearch() {
                                         variant="outlined"
                                         name="docPublicSel"
                                         id="docPublicSel"
-                                        value=""
+                                        value={formik.values.docPublicSel}
+                                        onChange={formik.handleChange}
                                         items={docPublicSel}
                                         class={"float-left"}
                                     />
@@ -936,10 +976,14 @@ function IpSeqSearch() {
                                         name="docPublicDate"
                                         format="dd/MM/yyyy"
                                         label="Date picker inline"
-                                        value
+                                        value={formik.values.docPublicDate}
                                         inputVariant="outlined"
                                         class={"float-left m-0 ml-4"}
-                                    />
+                                        onChange={val => {
+                                            console.log("___", val);
+                                            formik.setFieldValue("docPublicDate", val);
+                                       }}      
+                                       />
                                     <CheckBox
                                         defaultChecked
                                         color="primary"
@@ -983,7 +1027,8 @@ function IpSeqSearch() {
                                         variant="outlined"
                                         name="publishGQSel"
                                         id="publishGQSel"
-                                        value=""
+                                        value={formik.values.publishGQSel}
+                                        onChange={formik.handleChange}
                                         items={docPublicSel}
                                         class={"float-left"}
                                     />
@@ -992,10 +1037,15 @@ function IpSeqSearch() {
                                         id="publishGQDate"
                                         name="publishGQDate"
                                         format="dd/MM/yyyy"
-                                        value
+                                        value={formik.values.publishGQDate}
                                         inputVariant="outlined"
                                         class={"float-left m-0 ml-4"}
-                                    />
+                                        allowKeyboardControl={false}
+                                        onChange={val => {
+                                            console.log("___", val);
+                                            formik.setFieldValue("publishGQDate", val);
+                                       }}        
+                                       />
                                     <CheckBox
                                         defaultChecked
                                         color="primary"
@@ -1024,7 +1074,8 @@ function IpSeqSearch() {
                                         variant="outlined"
                                         name="patientDocSel"
                                         id="patientDocSel"
-                                        value=""
+                                        value={formik.values.patientDocSel}
+                                        onChange={formik.handleChange}
                                         items={GQSpecificSel}
                                         class={"float-left"}
                                     />
@@ -1055,6 +1106,11 @@ function IpSeqSearch() {
                 <hr />
 
                 <div>
+                <Row>
+                    <Col sm="12" md="12">
+                        <Link className={"appTextFont appLinkColor float-right"} to="/help">{t('help')}</Link>
+                    </Col>
+                </Row>
                     <Row>
                         <Col md="6">
                             <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
@@ -1080,18 +1136,19 @@ function IpSeqSearch() {
                                       onChange={handleAllCheck}
                                     /> */}
                                         {nucPatentData.map((test, index) => (
-                                            <div
-                                                key={index}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    name={test.label}
-                                                    checked={isChecked.includes(test.label)}
-                                                    onChange={handleSingleCheck}
-                                                />
-                                                &nbsp; &nbsp;
-                                                <label style={{ fontSize: '14px' }}>{test.name}</label>
-                                            </div>
+                                           <div className="relativePosition"
+                                           key={index}
+                                       >
+                                           <input
+                                               type="checkbox"
+                                               name={test.label}
+                                               checked={isChecked.includes(test.label)}
+                                               onChange={handleSingleCheck}
+                                               className={"absolutePosition "+ classes.checkBox}
+                                           />
+                                           &nbsp; &nbsp;
+                                           <label className={classes.checkBoxContent}>{test.label}</label>
+                                       </div>
                                         ))
                                         }
 
@@ -1100,7 +1157,7 @@ function IpSeqSearch() {
                             </Accordion>
 
                         </Col>
-                        <Col md="5">
+                        <Col md="6">
                             <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
                                 <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                     <p className="loginTitle m-0">
@@ -1122,18 +1179,19 @@ function IpSeqSearch() {
                                   onChange={handleAllCheck}
                                 /> */}
                                         {proPatentData.map((test, index) => (
-                                            <div
-                                                key={index}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    name={test.label}
-                                                    checked={isChecked.includes(test.label)}
-                                                    onChange={handleSingleCheck}
-                                                />
-                                                &nbsp; &nbsp;
-                                                <label style={{ fontSize: '14px' }}>{test.name}</label>
-                                            </div>
+                                           <div className="relativePosition"
+                                           key={index}
+                                       >
+                                           <input
+                                               type="checkbox"
+                                               name={test.label}
+                                               checked={isChecked.includes(test.label)}
+                                               onChange={handleSingleCheck}
+                                               className={"absolutePosition "+ classes.checkBox}
+                                           />
+                                           &nbsp; &nbsp;
+                                           <label className={classes.checkBoxContent}>{test.label}</label>
+                                       </div>
                                         ))
                                         }
 
@@ -1142,9 +1200,9 @@ function IpSeqSearch() {
                             </Accordion>
 
                         </Col>
-                        <Col md="1">
+                        {/* <Col md="1">
                             <Link className="appTextFont appLinkColor float-right mr-2">Help</Link>
-                        </Col>
+                        </Col> */}
                     </Row>
                     <Row>
                         <Col md="6">
@@ -1169,7 +1227,7 @@ function IpSeqSearch() {
                                       onChange={handleAllCheck}
                                     /> */}
                                         {nucReferenceData.map((test, index) => (
-                                            <div
+                                            <div className="relativePosition"
                                                 key={index}
                                             >
                                                 <input
@@ -1177,19 +1235,20 @@ function IpSeqSearch() {
                                                     name={test.label}
                                                     checked={isChecked.includes(test.label)}
                                                     onChange={handleSingleCheck}
+                                                    className={"absolutePosition "+ classes.checkBox}
                                                 />
                                                 &nbsp; &nbsp;
-                                                <label style={{ fontSize: '14px' }}>{test.name}</label>
+                                                <label className={classes.checkBoxContent}>{test.label}</label>
                                             </div>
                                         ))
                                         }
 
-                                    </Col>
+                                    </Col>  
                                 </AccordionDetails>
                             </Accordion>
 
                         </Col>
-                        <Col md="5">
+                        <Col md="6">
                             <Accordion expanded={formCheck4} onChange={() => setformCheck4(prevState => !prevState)}>
                                 <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                     <p className="loginTitle m-0">
@@ -1211,18 +1270,19 @@ function IpSeqSearch() {
                                     onChange={handleAllCheck}
                                   /> */}
                                         {proReferenceData.map((test, index) => (
-                                            <div
-                                                key={index}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    name={test.label}
-                                                    checked={isChecked.includes(test.label)}
-                                                    onChange={handleSingleCheck}
-                                                />
-                                                &nbsp; &nbsp;
-                                                <label style={{ fontSize: '14px' }}>{test.name}</label>
-                                            </div>
+                                           <div className="relativePosition"
+                                           key={index}
+                                       >
+                                           <input
+                                               type="checkbox"
+                                               name={test.label}
+                                               checked={isChecked.includes(test.label)}
+                                               onChange={handleSingleCheck}
+                                               className={"absolutePosition "+ classes.checkBox}
+                                           />
+                                           &nbsp; &nbsp;
+                                           <label className={classes.checkBoxContent}>{test.label}</label>
+                                       </div>
                                         ))
                                         }
 
@@ -1254,7 +1314,7 @@ function IpSeqSearch() {
                             </Accordion>
 
                         </Col>
-                        <Col md="5">
+                        <Col md="6">
                             <Accordion expanded={formCheck6} onChange={() => setformCheck6(prevState => !prevState)}>
                                 <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                     <p className="loginTitle m-0">
@@ -1271,7 +1331,7 @@ function IpSeqSearch() {
 
                                     </Col>
                                 </AccordionDetails> */}
-                                <FolderTreeStructure treeData={proPersonalData}/>
+                                <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} />
                             </Accordion>
 
                         </Col>
