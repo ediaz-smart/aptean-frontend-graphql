@@ -132,7 +132,7 @@ const Tree = props => {
 			>
 				{props.renderTree(props.data, props.setFieldValue)}
 			</TreeView>
-			<pre>{JSON.stringify(props.values, null, 2)}</pre>
+			{/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
 		</>
 	);
 };

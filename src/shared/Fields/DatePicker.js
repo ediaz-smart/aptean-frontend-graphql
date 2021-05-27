@@ -46,7 +46,7 @@ export default function DatePicker(props) {
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}
-          className={classes.root+' '+props.class}
+          className={classes.root+' '+props.className}
           allowKeyboardControl={props.allowKeyboardControl}
           onChange={props.onChange}
           disablePast={true}

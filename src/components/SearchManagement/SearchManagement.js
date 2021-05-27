@@ -1,5 +1,4 @@
 import DataTable from "react-data-table-component";
-import Checkbox from "@material-ui/core/Checkbox";
 import SortIcon from "@material-ui/icons/ArrowDownward";
 // import movies from "./movies";
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,7 +12,7 @@ import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import ListGroup from 'react-bootstrap/ListGroup'
-
+import Modal from 'react-bootstrap/Modal'
 
 import TextInput from '../../shared/Fields/TextInput';
 import HomeService from '../../services/home'
@@ -22,6 +21,8 @@ import FolderTreeMenu from '../../shared/FolderTreeStructure/FolderTreeMenu';
 import UtilsService from '../../helpers/utils';
 import FolderIcon from '../../assets/image/folder.svg';
 import FolderPlusIcon from '../../assets/image/folder-plus.svg';
+import Checkbox from "@material-ui/core/Checkbox";
+// import CheckBox from '../../shared/Fields/CheckBox';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -75,8 +76,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	projectListItem: {
 		padding: '0.2rem 0.25rem !important',
-		border: 'none !important',
-		height: '35px'
+		border: 'none !important'
 	},
 	projTitleActive: {
 		backgroundColor: '#008EC5',
@@ -84,8 +84,17 @@ const useStyles = makeStyles((theme) => ({
 		padding: '3px',
 		borderRadius: '3px'
 	},
-	folderIcon:{
-		width:'8%'
+	folderIcon: {
+		width: '8%'
+	},
+	modalHeader: {
+		borderBottom: 'none !important'
+	},
+	footerDiv: {
+		padding: '0 30px'
+	},
+	checkBox: {
+		transform: "scale(0.9)",
 	}
 }));
 
@@ -166,10 +175,22 @@ function SearchManagement(props) {
 	const [disableDelete, setDisableDelete] = useState(true);
 	const [disableMergeBtn, setDisableMergeBtn] = useState(true);
 	const [searchResultData, setSearchResultData] = useState([]);
-	const [folderData, setFolderData] = useState([]);
 	const [defaultTitle, setDefaultTitle] = useState('Recent Search Results');
 	const [defaultTitleId, setDefaultTitleId] = useState('');
-	const [defaultTitleType, setDefaultTitleType] = useState('defaultText');
+
+	// Table Data Delete Variable
+	const [confirmContent, setConfirmContent] = useState(true);
+	const [delLoaderContent, setDelLoaderContent] = useState(false);
+	const [errorContent, setErrorContent] = useState(false);
+	const [modalShow, setModalShow] = React.useState(false);
+	const [termsDisable, setTermsDisable] = React.useState(false);
+
+	// Folder Delete Variable
+	const [folderModalShow,setFolderModalShow] = React.useState(false);
+	const [confirmFolderContent, setConfirmFolderContent] = useState(true);
+	const [delFolderLoaderContent, setFolderDelLoaderContent] = useState(false);
+	const [errorFolderContent, setFolderErrorContent] = useState(false);
+
 	const { t, i18n } = useTranslation('common');
 	const handleAction = value => setSelectData(value);
 	// unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
@@ -219,34 +240,82 @@ function SearchManagement(props) {
 		setDefaultTitleId(event.id);
 		// setTimeout(() => {
 		getDefaultSearchResult('folder', event.id);
+		setDisableDelete(true);
 		// }, 1000);
 
 	};
-	async function deleteSearch() {
-		console.log(defaultTitleId, "defaultTitleId")
-		if (selectData.selectedCount > 0) {
-			var getIds = selectData.selectedRows.map(function (a) { return a.id; }).join(',');
-			const response = await SearchManagementService.deleteSearchResult(getIds, history);
-			if (response && response.response_content && response.response_content.success.length > 0) {
-				toast.success('Deleted Successfully');
-				if (defaultTitle === 'Recent Search Results') {
-					getDefaultSearchResult('defaultText', '');
-				} else {
-					getDefaultSearchResult('folder', defaultTitleId);
-					getFolderResultData();
-				}
+	async function deleteSearch(type) {
 
-			} else {
-				toast.error('Unable to Delete Record');
+		// console.log(defaultTitleId, "defaultTitleId")
+		setModalShow(false);
+		setFolderModalShow(false);
+		setConfirmContent(false);
+		setConfirmFolderContent(false);
+		if(type === "record")
+		{
+			if (selectData.selectedCount > 0) {
+				setModalShow(true);
+				setDelLoaderContent(true);
+				var getIds = selectData.selectedRows.map(function (a) { return a.id; }).join(',');
+				deleteRecordFolder(getIds,type);
 			}
+		}else {
+			if(defaultTitleId)
+			{
+				setFolderModalShow(true);
+				setFolderDelLoaderContent(true);	
+				deleteRecordFolder(defaultTitleId,type);
+			}
+		}
+	}
+	async function deleteRecordFolder(getIds,type) {
+		const response = await SearchManagementService.deleteSearchResult(getIds, history);
+		if (response && response.response_content && response.response_content.success.length > 0) {
+			if(type === "record")
+			{
+				setModalShow(false);
+				setConfirmContent(true);
+				setDelLoaderContent(false);
+				setErrorContent(false);
+			}else {
+				setFolderModalShow(false);
+				setConfirmFolderContent(true);
+				setFolderDelLoaderContent(false);
+				setFolderErrorContent(false);
+			}
+			
+			toast.success('Deleted Successfully');
+			if (defaultTitle === 'Recent Search Results') {
+				getDefaultSearchResult('defaultText', '');
+			} else {
+				if(type === "record")
+				{
+					getDefaultSearchResult('folder', defaultTitleId);
+				}else{
+					setDefaultTitle('Recent Search Results');
+					getDefaultSearchResult('defaultText', '');
+				}
+				getFolderResultData();
+			}
+
+		} else {
+			if(type === "record")
+			{
+				setModalShow(true);
+				setDelLoaderContent(false);
+				setErrorContent(true);
+			}else {
+				setFolderModalShow(true);
+				setFolderDelLoaderContent(false);
+				setFolderErrorContent(true);
+			}
+			// toast.error('Unable to Delete');
 		}
 	}
 	async function getDefaultSearchResult(type, id) {
 		let tempArr = [];
 
 		// setSearchResultData([]);
-		console.log(searchResultData, 'searchResultData')
-		console.log(type, 'type');
 		if (type == "defaultText") {
 			const result = await HomeService.getSearchResults(history);
 			if (result && result.response_content && result.response_content.length > 0) {
@@ -279,7 +348,32 @@ function SearchManagement(props) {
 		setDefaultTitle(type);
 		setDefaultTitleId('')
 		getDefaultSearchResult('defaultText', '');
-		
+
+	}
+	// const deleteRecord = () => {
+	// 	console.log(deleteRecord,'deleteRecord');
+	// };
+	const closeModal = () => {
+		setModalShow(false);
+		setTermsDisable(false);
+		setConfirmContent(true);
+	}
+	const closeFolderModal = () => {
+		setFolderModalShow(false);
+		setTermsDisable(false);
+		setConfirmFolderContent(true);
+	}
+	const openModal = () => {
+		setModalShow(true);
+		setConfirmContent(true);
+		setDelLoaderContent(false);
+		setErrorContent(false);
+	}
+	const openFolderModal = () => {
+		setFolderModalShow(true);
+		setConfirmFolderContent(true);
+		setFolderDelLoaderContent(false);
+		setFolderErrorContent(false);
 	}
 	useEffect(() => {
 		(async () => {
@@ -321,18 +415,18 @@ function SearchManagement(props) {
 						<ListGroup defaultActiveKey="#link1" className={"projectList"}>
 							<ListGroup.Item className={classes.projectListItem} key="RecentSearch">
 								<a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Recent Search Results')}>
-									<img src={FolderIcon} className={classes.folderIcon} /> 
-									<span className={classes.projectTitle + ' ' + (defaultTitle === 'Recent Search Results' ? classes.projTitleActive : '')}>Recent Search Results</span></a>
-							</ListGroup.Item>
-						
-						{folderDetail.map((value, index) => {
-							return <ListGroup.Item key={value.id} className={classes.projectListItem}>
-								<FolderTreeMenu items={value} selectedTitle={defaultTitle} parentCallback={changeTitle} />
+									<img src={FolderIcon} className={classes.folderIcon} />
+									<span className={classes.projectTitle + ' ' + (defaultTitle === 'Recent Search Results' ? classes.projTitleActive : '')}>{t('recentSearchRes')}</span></a>
 							</ListGroup.Item>
 
-						})}
+							{folderDetail.map((value, index) => {
+								return <ListGroup.Item key={value.id} className={classes.projectListItem}>
+									<FolderTreeMenu items={value} selectedTitle={defaultTitle} parentCallback={changeTitle} />
+								</ListGroup.Item>
+
+							})}
 							<ListGroup.Item className={classes.projectListItem} key="createNewFolder">
-							<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="#" onClick={(e) => e.preventDefault()} className={"appLinkColor "+classes.projectTitle}>Add New Folder</a>
+								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="#" onClick={(e) => e.preventDefault()} className={"appLinkColor " + classes.projectTitle}>{t('addFolder')}</a>
 							</ListGroup.Item>
 
 						</ListGroup>
@@ -341,16 +435,16 @@ function SearchManagement(props) {
 						<ListGroup defaultActiveKey="#link1" className={"projectList"}>
 							<ListGroup.Item className={classes.projectListItem} key="search1">
 								<a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Search1')}>
-									<img src={FolderIcon} className={classes.folderIcon} /> 
+									<img src={FolderIcon} className={classes.folderIcon} />
 									<span className={classes.projectTitle + ' ' + (defaultTitle === 'Search1' ? classes.projTitleActive : '')}>Search1</span></a>
 							</ListGroup.Item>
 							<ListGroup.Item className={classes.projectListItem} key="search2">
 								<a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Search2')}>
-									<img src={FolderIcon} className={classes.folderIcon} /> 
+									<img src={FolderIcon} className={classes.folderIcon} />
 									<span className={classes.projectTitle + ' ' + (defaultTitle === 'Search2' ? classes.projTitleActive : '')}>Search2</span></a>
 							</ListGroup.Item>
 						</ListGroup>
-							
+
 
 
 					</Col>
@@ -373,16 +467,14 @@ function SearchManagement(props) {
 						// onRowClicked={getRowData}
 						onRowClicked={getRowData}
 					/>
-					<Col className={"float-left " + classes.columnPadding + (searchResultData.length >0 ? ' d-block':' d-none')} md="6">
-						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={deleteSearch} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} type="submit">Delete Selected</Button>
-						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">Move to Folder</Button>
-						<Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'disableBtnBorder' : 'primaryBtn')} type="submit">Merge Results</Button>
+					<Col className={"float-left " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
+						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} type="submit">{t('deleteSelected')}</Button>
+						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('moveToFolder')}</Button>
+						<Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('mergeResult')}</Button>
 					</Col>
-					<Col className={"float-right " + classes.columnPadding+ (searchResultData.length >0 ? ' d-block':' d-none')} md="6">
-
-						<Button color="primary" variant="contained" onClick={greetUser} className="loginSubmit text-capitalize mr-2" type="submit">Delete Entire Folder</Button>&nbsp;&nbsp;&nbsp;
-							<Button variant="contained" color="primary" className="text-capitalize mr-2 primaryBtn" type="submit">Create New Folder</Button>
-
+					<Col className={"float-right " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
+						<Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
+						<Button variant="contained" color="primary" className="text-capitalize mr-2 primaryBtn" type="submit">{t('createSubFolder')}</Button>
 					</Col>
 					{/* <Col className={classes.columnPadding} md="12"> */}
 
@@ -390,6 +482,86 @@ function SearchManagement(props) {
 				</Col>
 
 			</Row>
+			<Modal
+				show={modalShow}
+				size="md"
+				aria-labelledby="contained-modal-title-vcente"
+				centered
+				contentClassName='modalPromptContent'
+			>
+				<Modal.Body className="appTextColor">
+					<div className={(confirmContent ? 'd-block' : 'd-none')}>
+						<p className="mb-3"><b>{t('deleteSelItems')}</b></p>
+						<p className="mb-3">{t('deleteSelItemContent')}</p>
+						<div className="mb-5 h-100">
+							<Checkbox
+								color="primary"
+								className={"float-left p-0 " + classes.checkBox}
+								name="acceptTerms"
+								id="acceptTerms"
+								checked={termsDisable}
+								onClick={() => setTermsDisable(!termsDisable)}
+							/>
+							<p className={"float-left ml-1"}>{t('termsConditionText')}</p>
+						</div>
+						<div className={classes.footerDiv + " float-right"}>
+							<Button onClick={()=>deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'deleteBtnColor')} variant="contained">{t('deleteSelItems')}</Button>
+							<Button onClick={closeModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+						</div>
+					</div>
+					<div className={"text-center " + (delLoaderContent ? 'd-block' : 'd-none')}>
+						<p className="mb-3">{t('deletingItems')}</p>
+						<p className="mb-3">{t('takeTimeText')}</p>
+					</div>
+					<div className={(errorContent ? 'd-block' : 'd-none')}>
+						<p className="mb-3">{t('errorDeletTitle')}</p>
+						<p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
+						<div className={classes.footerDiv + " float-right"}>
+							<Button onClick={closeModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
+			<Modal
+				show={folderModalShow}
+				size="md"
+				aria-labelledby="contained-modal-title-vcente"
+				centered
+				contentClassName='modalPromptContent'
+			>
+				<Modal.Body className="appTextColor">
+					<div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
+						<p className="mb-3"><b>{t('deleteSelFolder')}</b></p>
+						<p className="mb-3">{t('deleteSelFolderContent')}</p>
+						<div className="mb-5 h-100">
+							<Checkbox
+								color="primary"
+								className={"float-left p-0 " + classes.checkBox}
+								name="acceptTerms"
+								id="acceptTerms"
+								checked={termsDisable}
+								onClick={() => setTermsDisable(!termsDisable)}
+							/>
+							<p className={"float-left ml-1"}>{t('termsConditionText')}</p>
+						</div>
+						<div className={classes.footerDiv + " float-right"}>
+							<Button onClick={()=>deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'deleteBtnColor')} variant="contained">{t('deleteSelFolder')}</Button>
+							<Button onClick={closeFolderModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+						</div>
+					</div>
+					<div className={"text-center " + (delFolderLoaderContent ? 'd-block' : 'd-none')}>
+						<p className="mb-3">{t('deletingFolder')}</p>
+						<p className="mb-3">{t('takeTimeText')}</p>
+					</div>
+					<div className={(errorFolderContent ? 'd-block' : 'd-none')}>
+						<p className="mb-3">{t('errorDeleteFolderTitle')}</p>
+						<p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
+						<div className={classes.footerDiv + " float-right"}>
+							<Button onClick={closeFolderModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
 		</div>
 
 	);

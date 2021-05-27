@@ -33,7 +33,7 @@ export default function SelectBox(props) {
         name={props.name}
         select
         // label={gender=== "" ? "Gender": ""}
-        className={classes.textField+' '+props.class}
+        className={classes.textField+' '+props.className}
         value={props.value}
         InputLabelProps={{ shrink: false }}
         SelectProps={{

@@ -713,7 +713,7 @@ function IpSeqSearch() {
                                 items={searchAlgorithmItems}
                                 // defaultValue={searchAlgorithm}
                                 onChange={handleSearchAlgorithm}
-                                class={"float-left"}
+                                className={"float-left"}
                             />
                             {searchAlgorithmValue && searchAlgorithmValue == 'genepastSearch' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
@@ -725,7 +725,7 @@ function IpSeqSearch() {
                                     name="genePastPercentage"
                                     label={''}
                                     variant="outlined"
-                                    class={classes.smallTextBox + " float-left"}
+                                    className={classes.smallTextBox + " float-left"}
                                     value={formik.values.genePastPercentage}
                                     onChange={formik.handleChange} 
                                     error={formik.touched.genePastPercentage && Boolean(formik.errors.genePastPercentage)}
@@ -743,7 +743,7 @@ function IpSeqSearch() {
                                     items={genePastItems}
                                     // defaultValue={searchAlgorithm}
                                     // onChange={handleAlgorithm}
-                                    class={"float-left"}
+                                    className={"float-left"}
                                 />
                             </Fragment>
                             }
@@ -760,7 +760,7 @@ function IpSeqSearch() {
                                     items={nucleotideMatrixItems}
                                     // defaultValue={searchAlgorithm}
                                     // onChange={handleAlgorithm}
-                                    class={"float-left"}
+                                    className={"float-left"}
                                 />
                                 }
                                 {sequenceTypeValue == 'proteinSequence' && <SelectBox
@@ -772,7 +772,7 @@ function IpSeqSearch() {
                                     items={proteinMatrixItems}
                                     // defaultValue={searchAlgorithm}
                                     // onChange={handleAlgorithm}
-                                    class={"float-left"}
+                                    className={"float-left"}
                                 />
                                 }
                                 <Typography className={"float-left " + classes.seqText}>
@@ -787,7 +787,7 @@ function IpSeqSearch() {
                                     items={nucleotidewordSizeItems}
                                     // defaultValue={searchAlgorithm}
                                     // onChange={handleAlgorithm}
-                                    class={"float-left " + classes.smallTextBox}
+                                    className={"float-left " + classes.smallTextBox}
                                 />
                                 }
                                 {sequenceTypeValue == 'proteinSequence' && <SelectBox
@@ -799,7 +799,7 @@ function IpSeqSearch() {
                                     items={proteinwordSizeItems}
                                     // defaultValue={searchAlgorithm}
                                     // onChange={handleAlgorithm}
-                                    class={"float-left " + classes.smallTextBox}
+                                    className={"float-left " + classes.smallTextBox}
                                 />
                                 }
                                 <div className={classes.blastMargin}>
@@ -812,7 +812,7 @@ function IpSeqSearch() {
                                         name="expectCutoff"
                                         label={''}
                                         variant="outlined"
-                                        class={classes.smallTextBox + ' float-left'}
+                                        className={classes.smallTextBox + ' float-left'}
                                         value={formik.values.expectCutoff}
                                         onChange={formik.handleChange} 
                                         error={formik.touched.expectCutoff && Boolean(formik.errors.expectCutoff)}
@@ -821,7 +821,7 @@ function IpSeqSearch() {
                                     <CheckBox
                                         defaultChecked
                                         color="primary"
-                                        class={"float-left ml-20 " + classes.processHsps}
+                                        className={"float-left ml-20 " + classes.processHsps}
                                         name="processHsps"
                                         id="processHsps"
                                     />
@@ -841,7 +841,7 @@ function IpSeqSearch() {
                                     name="fragmentStretch"
                                     label={''}
                                     variant="outlined"
-                                    class={classes.smallTextBox + ' float-left'}
+                                    className={classes.smallTextBox + ' float-left'}
                                     value={formik.values.fragmentStretch}
                                     onChange={formik.handleChange} 
                                     error={formik.touched.fragmentStretch && Boolean(formik.errors.fragmentStretch)}
@@ -856,7 +856,7 @@ function IpSeqSearch() {
                                     name="fragmentAminoAcid"
                                     label={''}
                                     variant="outlined"
-                                    class={classes.smallTextBox + ' float-left'}
+                                    className={classes.smallTextBox + ' float-left'}
                                     value={formik.values.fragmentAminoAcid}
                                     onChange={formik.handleChange} 
                                 // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
@@ -890,7 +890,7 @@ function IpSeqSearch() {
                                 onChange={formik.handleChange} 
                                 error={formik.touched.alignments && Boolean(formik.errors.alignments)}
                                 helperText={formik.touched.alignments && formik.errors.alignments}
-                                class={"float-left"}
+                                className={"float-left"}
                             />
                             <Typography className={"float-left " + classes.seqText}>
                                 &nbsp;&nbsp;best Alignments per Query Sequence&nbsp;&nbsp;
@@ -926,7 +926,7 @@ function IpSeqSearch() {
                                         // onChange={formik.handleChange} 
                                         // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         // helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        class={"float-left"}
+                                        className={"float-left"}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;and&nbsp;&nbsp;
@@ -941,7 +941,7 @@ function IpSeqSearch() {
                                         // onChange={formik.handleChange} 
                                         // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         // helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        class={"float-left"}
+                                        className={"float-left"}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;&nbsp;Residues in length
@@ -953,7 +953,7 @@ function IpSeqSearch() {
                                     <CheckBox
                                         defaultChecked
                                         color="primary"
-                                        class={"float-left"}
+                                        className={"float-left"}
                                         name="isDocumentPublic"
                                         id="isDocumentPublic"
                                     />
@@ -968,7 +968,7 @@ function IpSeqSearch() {
                                         value={formik.values.docPublicSel}
                                         onChange={formik.handleChange}
                                         items={docPublicSel}
-                                        class={"float-left"}
+                                        className={"float-left"}
                                     />
                                     <DatePicker
                                         margin="normal"
@@ -978,7 +978,7 @@ function IpSeqSearch() {
                                         label="Date picker inline"
                                         value={formik.values.docPublicDate}
                                         inputVariant="outlined"
-                                        class={"float-left m-0 ml-4"}
+                                        className={"float-left m-0 ml-4"}
                                         onChange={val => {
                                             console.log("___", val);
                                             formik.setFieldValue("docPublicDate", val);
@@ -987,7 +987,7 @@ function IpSeqSearch() {
                                     <CheckBox
                                         defaultChecked
                                         color="primary"
-                                        class={"float-left mx-2"}
+                                        className={"float-left mx-2"}
                                         name="includeGenUnknownDate"
                                         id="includeGenUnknownDate"
                                     />
@@ -1015,7 +1015,7 @@ function IpSeqSearch() {
                                     <CheckBox
                                         defaultChecked
                                         color="primary"
-                                        class={"float-left"}
+                                        className={"float-left"}
                                         name="publishGenomeQuest"
                                         id="publishGenomeQuest"
                                     />
@@ -1030,7 +1030,7 @@ function IpSeqSearch() {
                                         value={formik.values.publishGQSel}
                                         onChange={formik.handleChange}
                                         items={docPublicSel}
-                                        class={"float-left"}
+                                        className={"float-left"}
                                     />
                                     <DatePicker
                                         margin="normal"
@@ -1039,7 +1039,7 @@ function IpSeqSearch() {
                                         format="dd/MM/yyyy"
                                         value={formik.values.publishGQDate}
                                         inputVariant="outlined"
-                                        class={"float-left m-0 ml-4"}
+                                        className={"float-left m-0 ml-4"}
                                         allowKeyboardControl={false}
                                         onChange={val => {
                                             console.log("___", val);
@@ -1049,7 +1049,7 @@ function IpSeqSearch() {
                                     <CheckBox
                                         defaultChecked
                                         color="primary"
-                                        class={"float-left mx-2"}
+                                        className={"float-left mx-2"}
                                         name="includeGQSpecificDate"
                                         id="includeGQSpecificDate"
                                     />
@@ -1062,7 +1062,7 @@ function IpSeqSearch() {
                                 <Col md="12">
                                     <CheckBox
                                         color="primary"
-                                        class={"float-left"}
+                                        className={"float-left"}
                                         name="isPatientDoc"
                                         id="isPatientDoc"
                                     />
@@ -1077,7 +1077,7 @@ function IpSeqSearch() {
                                         value={formik.values.patientDocSel}
                                         onChange={formik.handleChange}
                                         items={GQSpecificSel}
-                                        class={"float-left"}
+                                        className={"float-left"}
                                     />
                                     <TextInput
                                         fullWidth={false}
@@ -1089,7 +1089,7 @@ function IpSeqSearch() {
                                         // onChange={formik.handleChange} 
                                         // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         // helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        class={"float-left mx-4"}
+                                        className={"float-left mx-4"}
                                     />
                                     <Typography className={"float-left mt-2"}>
                                         Sequences
@@ -1387,7 +1387,7 @@ function IpSeqSearch() {
                             <CheckBox
                                 defaultChecked
                                 color="primary"
-                                class={"float-left mx-2"}
+                                className={"float-left mx-2"}
                                 name="check"
                                 id="check"
                             />
@@ -1402,7 +1402,7 @@ function IpSeqSearch() {
                             <CheckBox
                                 defaultChecked
                                 color="primary"
-                                class={"float-left mx-2"}
+                                className={"float-left mx-2"}
                                 name="check"
                                 id="check"
                             />
@@ -1412,11 +1412,11 @@ function IpSeqSearch() {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md='4' class={"pl-0"}>
+                        <Col md='4' className="">
                             <CheckBox
                                 defaultChecked
                                 color="primary"
-                                class={"float-left mx-2"}
+                                className={"float-left mx-2"}
                                 name="check"
                                 id="check"
                             />

@@ -14,5 +14,6 @@ export const url = {
     projectFolderDetail:"do=gqfolder.get_info&format=json&form=dojo&depth=4&id=**",
     projectFolderData:"do=gqfolder.get_elements_v2&id=**&sort=-create_time&format=json",
     deleteSearchResult:"do=gqshareable.delete&format=json&id=**&is_recursive=true",
-    forgotPassword: "do=gquser.recover_password_V2&userid="
+    forgotPassword: "do=gquser.recover_password_V2&userid=",
+    searchResPaging: "do=gqfolder.get_elements&id=:id:&sort=:ST:&start=:S1:&stop=:S2:&nocache=:NC:&format=json"
 }

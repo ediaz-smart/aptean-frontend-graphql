@@ -69,5 +69,27 @@
    "fragmentStretchRequired": "Please specify the required number of residues to match in your search. A useful default is 50 nucleotides or 20 amino acids .",
    "fragmentStretchNotNumber": "Please specify a valid number of required residues to match in your search. A useful default is 50 nucleotides or 20 amino acids.",
    "searchResSet":"Search for a Result Set",
-   "noSearchSubmit":"No Searches have been submitted."
+   "noSearchSubmit":"No Searches have been submitted.",
+   "addFolder":"Add New Folder",
+   "recentSearchRes":"Recent Search Results",
+   "createSubFolder":"Create New Subfolder",
+   "deleteEntireFolder":"Delete Entire Folder",
+   "deleteSelected":"Delete Selected",
+   "mergeResult":"Merge Results",
+   "moveToFolder":"Move to Folder",
+   "deleteSelItems":"Delete Selected Items​",
+   "deleteSelItemContent":"This will permanently delete the results and folders you have selected. This action can not be undone.​",
+   "termsConditionText":"I have read and understood this message​",
+   "cancel":"Cancel",
+   "acceptTermsCondition":"Accept Terms & Conditions is required",
+   "errorDeletTitle":"An error was encountered when attempting to delete the selected items.",
+   "contactText1":"Please try again, or contact",
+   "contactText2":"for assistance",
+   "deletingItems":"Deleting the Selected Items",
+   "takeTimeText":"This may take a few minutes.",
+   "deleteSelFolder":"Delete Entire Folder",
+   "deleteSelFolderContent":"This will permanently delete this folder, including all results placed in it, its subfolders, and the results in these subfolders. This action can not be undone.",
+   "deletingFolder":"Deleting the Entire Folder",
+   "errorDeleteFolderTitle":"An error was encountered when attempting to delete the entire folder."
+
 }

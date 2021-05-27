@@ -18,7 +18,7 @@ export default function Checkboxes(props) {
             defaultChecked={props.defaultChecked}
             color={props.color}
             inputProps={{ 'aria-label': 'secondary checkbox' }}
-            className={classes.root + ' ' + props.class}
+            className={classes.root + ' ' + props.className}
             name={props.name}
             id={props.id}
         />
