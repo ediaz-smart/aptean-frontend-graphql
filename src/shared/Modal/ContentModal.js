@@ -32,13 +32,13 @@ function ContentModal(props) {
 			centered
 			contentClassName='modalPromptContent'
 		>
-			<Modal.Header closeButton className={classes.modalHeader}>
-				{/* <Modal.Title id="contained-modal-title-vcenter">
-           Logout
-          </Modal.Title> */}
+			<Modal.Header closeButton className={"pt-2 pb-0 "+classes.modalHeader}>
+				<Modal.Title id="contained-modal-title-vcenter" className={"text-center w-100"}>
+				{props.title}
+          </Modal.Title>
 			</Modal.Header>
-			<Modal.Body className={"text-center "}>
-				<h4>{props.title}</h4>
+			<Modal.Body className={"text-center "} closeButton>
+				{/* <h4>{props.title}</h4> */}
 
 				<div className={classes.contentDiv}>
 				{ReactHtmlParser(props.contentdata)}

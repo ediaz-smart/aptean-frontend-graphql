@@ -56,9 +56,8 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle }) => {
 	const classes = useStyles();
 	const [defaultTitle, setDefaultTitle] = useState('');
 	// console.log(items,'items');
-	console.log(selectedTitle, 'selectedTitle');
 	// console.log(parentCallback,'parentCallback');
-
+	items.text_label = 'My Searches';
 	useEffect(() => {
 		setDefaultTitle(selectedTitle);
 	});
@@ -80,7 +79,7 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle }) => {
 						{/* <FolderOpenIcon /> {nodes.text_label} */}
 						{/* <a className="cursorPointer text-decoration-none appTextColor" onClick={() => changeTitle(nodes.text_label)}> */}
 						<a className="cursorPointer text-decoration-none appTextColor">
-							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (defaultTitle === nodes.text_label ? classes.projTitleActive : '')} title={nodes.text_label}>{showString(nodes.text_label)}</span></a>
+							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (defaultTitle === nodes.text_label ? classes.projTitleActive : '')} title={nodes.text_label}>{nodes.text_label}</span></a>
 					</>
 				</div>
 			}

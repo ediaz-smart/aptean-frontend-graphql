@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 	grow: {
 		flexGrow: 1,
 		width: '96%',
-		margin: '115px auto',
+		margin: '130px auto',
 		minHeight: '260px',
 		padding: '23px 0 5px'
 	},
@@ -339,7 +339,7 @@ function SearchManagement(props) {
 			const getResult = await SearchManagementService.getProjectFolderData(getParentFolderId, history);
 			if (getResult && getResult.response_content) {
 				if (getResult.response_content.items && getResult.response_content.items.length > 0) {
-					setFolderDetail(getResult.response_content.items[0].children);
+					setFolderDetail(getResult.response_content.items[0]);
 				}
 			}
 		}
@@ -419,12 +419,12 @@ function SearchManagement(props) {
 									<span className={classes.projectTitle + ' ' + (defaultTitle === 'Recent Search Results' ? classes.projTitleActive : '')}>{t('recentSearchRes')}</span></a>
 							</ListGroup.Item>
 
-							{folderDetail.map((value, index) => {
-								return <ListGroup.Item key={value.id} className={classes.projectListItem}>
-									<FolderTreeMenu items={value} selectedTitle={defaultTitle} parentCallback={changeTitle} />
+							{/* {folderDetail.map((value, index) => { */}
+								<ListGroup.Item key={123} className={classes.projectListItem}>
+									<FolderTreeMenu items={folderDetail} selectedTitle={defaultTitle} parentCallback={changeTitle} />
 								</ListGroup.Item>
 
-							})}
+							{/* })} */}
 							<ListGroup.Item className={classes.projectListItem} key="createNewFolder">
 								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="#" onClick={(e) => e.preventDefault()} className={"appLinkColor " + classes.projectTitle}>{t('addFolder')}</a>
 							</ListGroup.Item>
@@ -454,7 +454,8 @@ function SearchManagement(props) {
 					<DataTable
 						columns={columns}
 						data={searchResultData}
-						defaultSortField="type"
+						defaultSortField="date"
+						defaultSortAsc={false}
 						sortIcon={<SortIcon />}
 						onSelectedRowsChange={updateVal}
 						noDataComponent={t('noSearchSubmit')}
@@ -467,7 +468,7 @@ function SearchManagement(props) {
 						// onRowClicked={getRowData}
 						onRowClicked={getRowData}
 					/>
-					<Col className={"float-left " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
+					<Col className={"float-left " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} type="submit">{t('deleteSelected')}</Button>
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('moveToFolder')}</Button>
 						<Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('mergeResult')}</Button>

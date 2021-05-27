@@ -154,7 +154,8 @@ function RecentResults() {
 						<DataTable
 								columns={columns}
 								data={searchResultData}
-								defaultSortField="type"
+								defaultSortField="date"
+								defaultSortAsc={false}
 								noDataComponent="No Searches have been submitted."
 								sortIcon={<SortIcon />}
 								customStyles={customStyles}

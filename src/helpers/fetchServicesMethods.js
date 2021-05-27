@@ -81,6 +81,7 @@ function HandleResponse(response,history) {
                     // var link=document.createElement("a");
                     // link.href="/";
                     // link.click();
+                    localStorage.clear();
                     history.push("/");
                 }
             }

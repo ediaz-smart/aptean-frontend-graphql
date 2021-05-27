@@ -268,6 +268,54 @@ function IpSeqSearch() {
         },
         validationSchema: Validate.IpSeqSearchValidate(),
         onSubmit: async (values) => {
+            let data = {
+                qdb_seq: formik.values.querySequence,
+                qdb_seq_type: "nucleotide", // nucleotide or protein, query sequence type based on the above query seq.
+                qdb_id: "", // will have such value for virtual query database, not included in this release yet
+                searchtype: "FTO", // leave it as always "FTO"
+                title: formik.values.searchDetails, // Workflow name
+                email: "", // When "Send email when the search is done" is checked, retrieve the email from the user info
+                nucandprot: "off", // "on" when selecting both NUC and PRO databases
+                strat_name: "kerr", // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
+                // Genepast parameters
+                strat_genepast_perc_id: formik.values.genePastPercentage,
+                strat_genepast_perc_id_over: "QUERY",
+                // Blast
+                strat_blast_word_size_nuc: "11", // Word Size - Nucleotide
+                strat_blast_word_size_pro: "3", // Word Size - Protein
+                strat_blast_scoring_matrix_nuc: "NUC.3.1", // Scoring matrix - Nucleotide
+                strat_blast_scoring_matrix_pro: "BLOSUM62", // Scoring matrix - Protein
+                strat_blast_eval_cutoff: "10", // Expect Cutoff
+                strat_blast_hsp: "on", // HSP handling, "on" when the checkbox is selected
+                // Fragment
+                strat_fragment_window_length_nuc: "50", // Window Length - Nuc
+                strat_fragment_window_length_pro: "20", // Window Length - Prt
+                strat_fragment_perc_id_nuc: "96", // Percentage Identity - Nuc
+                strat_fragment_perc_id_pro: "95", // Percentage Identity - Prt
+                /*
+                strat_sw_scoring_matrix_nuc: "NUC.3.1",
+                strat_sw_scoring_matrix_pro: "BLOSUM62",
+                strat_sw_gapo_nuc: "1",
+                strat_sw_gape_nuc: "1",
+                strat_sw_gapo_pro: "1",
+                strat_sw_gape_pro: "1",*/
+                seqlenrange_low: "6", // Limit subject length from
+                seqlenrange_high: "10000", // Limit subject length to
+                best_hit_keep_max: "50", // Keep a maximum of xxx results
+                // sdb_filters example, publication date before 2021/05/27
+                //                    & No. of Seq. is less than or equal to 100,000
+                //                    & Date of entry before 2021/05/27
+                // [{"P":"SEQUENCE_D1","O":"BEF","V":20210527},
+                //  {"P":"SEQUENCE_P9","O":"LTE","V":100000},
+                //  {"P":"SEQUENCE_D2","O":"BEF","V":20210527}]
+                sdb_filters: "",
+                nucdb_type: "multiple", // always multiple
+                nucdbs: "[\"p:GQPAT_NUC\", \"p:GENA\"]", // string array of databases
+                protdb_type: "multiple", // always multiple
+                protdbs: "", // Similar like nucdbs
+                template_name: "", // Set this value when selecting "Save this form for later use as"
+                parent_id: "" // When having the patent workflow, for the "redo" scenario
+            };
             // dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password}));
             // history.push('/home');
         },

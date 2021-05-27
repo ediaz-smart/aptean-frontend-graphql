@@ -13,6 +13,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import GQLogo from '../assets/image/GenomeQuest.svg';
 import PromptModal from './Modal/PromptModal';
+import LogoutService from '../services/logout';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -96,6 +97,7 @@ export default function Header(props) {
     };
     const logout = () => {
         localStorage.clear(); 
+        LogoutService.logout();
         history.push('/login')
     };
 

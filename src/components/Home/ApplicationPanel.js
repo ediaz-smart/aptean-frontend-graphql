@@ -118,7 +118,9 @@ function ApplicationPanel() {
                                 <img src={seqSearch} alt="seqSearch" className="w-100" />
                             </Col>
                             <Col lg="10" md="9" sm="12">
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('ipSequence')}</a></p>
+                                <p className={classes.pTagMargin}>
+                                    <Link to="/ipseqsearch" className={classes.anchorTag}>{t('ipSequence')}</Link>
+                                </p>
                                 <p className={classes.pTagMargin}>
                                     {/* <a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a> */}
                                     <span className={classes.pTagMargin}>{t('sequenceVariation')}</span>
@@ -154,7 +156,9 @@ function ApplicationPanel() {
                                 <img src={searchResultImg} alt="searchResult" className="w-100" />
                             </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('allSearchResults')}</a></p>
+                                <p className={classes.pTagMargin}>
+                                    <Link className={classes.anchorTag} to='/searchResult'>{t('allSearchResults')}</Link>
+                                </p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('sequenceTools')}</p>

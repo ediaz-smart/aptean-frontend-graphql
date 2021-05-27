@@ -15,5 +15,10 @@ export const url = {
     projectFolderData:"do=gqfolder.get_elements_v2&id=**&sort=-create_time&format=json",
     deleteSearchResult:"do=gqshareable.delete&format=json&id=**&is_recursive=true",
     forgotPassword: "do=gquser.recover_password_V2&userid=",
-    searchResPaging: "do=gqfolder.get_elements&id=:id:&sort=:ST:&start=:S1:&stop=:S2:&nocache=:NC:&format=json"
+    searchResPaging: "do=gqfolder.get_elements&id=:id:&sort=:ST:&start=:S1:&stop=:S2:&nocache=:NC:&format=json",
+    logout:"do=gquser.logout&format=json",
+    createFolder: "do=gqfolder.create_subfolder&format=json&id=**&text_label=",
+    //deleteFolder: "do=gqshareable.delete&format=json&is_recursive=true&id=**", // same as deleteItems
+    moveToFolder: "do=gqfolder.move_shareable_to&format=json&sharing_setting=inherit_recursive&id=**&shareable_id=",
+    deleteItems: "do=gqshareable.delete&format=json&is_recursive=true&id=**",
 }
