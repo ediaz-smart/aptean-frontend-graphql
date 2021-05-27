@@ -6,7 +6,9 @@ import { number } from "yup/lib/locale";
 const Validate = {
     LoginValidate,
     ForgotValidate,
-    IpSeqSearchValidate
+    IpSeqSearchValidate,
+    InformationDataValidate,
+    ChangePasswordValidate
 };
 
 function LoginValidate() {
@@ -31,6 +33,47 @@ function ForgotValidate() {
         captchaCode: yup
             .string(t('codeShown'))
             .required(t('codeReq')),
+    });
+    return validationSchema;
+}
+function InformationDataValidate() {
+    const { t, i18n } = useTranslation('common');
+    const validationSchema = yup.object({
+        firstName: yup
+            .string(t('enterfirstName'))
+            .required(t('firstNameReq')),
+        lastName: yup
+            .string(t('enterlastName'))
+            .required(t('lastNameReq')),
+        confirmPassword: yup
+            .string(t('enterconfirmPassword'))
+            .required(t('confirmPasswordReq')),
+
+    });
+    return validationSchema;
+}
+function ChangePasswordValidate() {
+    const { t, i18n } = useTranslation('common');
+    const validationSchema = yup.object({
+        currentPassword: yup
+            .string(t('entercurrentPassword'))
+            .required(t('currentPasswordReq')),
+        newPassword: yup
+             .string(t('enternewPassword'))
+             .min(9, 'Password is too short - should be 9 chars minimum.')
+             .matches("^(?=.*[a-z])", 'Password should contain at least one lowercase letter.')
+             .matches("^(?=.*[A-Z])", 'Password should contain at least one uppercase letter.')
+             .matches("^(?=.*[0-9])", 'Password should contain at least one numbers.')
+             .required(t('newPasswordReq')),
+        confirmPassword: yup
+            .string(t('enterconfirmPassword'))
+            .min(9, 'Password is too short - should be 9 chars minimum.')
+            .matches("^(?=.*[a-z])", 'Password should contain at least one lowercase letter.')
+             .matches("^(?=.*[A-Z])", 'Password should contain at least one uppercase letter.')
+             .matches("^(?=.*[0-9])", 'Password should contain at least one numbers.')
+            .required(t('confirmPasswordReq')),
+           
+
     });
     return validationSchema;
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import GQLogo from '../../assets/image/GenomeQuest.svg';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
@@ -12,10 +11,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
+import AccountService from '../../services/accountInfo';
 
 
 const useStyles = makeStyles((theme) => ({
-   
+    grow: {
+		flexGrow: 1,
+		width: '96%',
+		margin: '30px auto',
+		minHeight: '260px',
+        marginTop: '130px',
+	},
     passwordRecoverDiv:{
         padding: '15px 25px 20px',
         border: '2px solid #bfb4b4',
@@ -43,72 +49,118 @@ const useStyles = makeStyles((theme) => ({
             left: '28px',
             width:'100%'
         }
-    }
+    },rootButton:{
+        marginLeft:'232px',
+          '& > *': {
+            margin: theme.spacing(2),
+            textTransform:"capitalize",
+          },
+      },
+      formContent : {
+          marginBottom: '65px'
+      },
+      passwordContents:{
+        marginTop: '182px',
+        marginLeft: '17px',
+        padding:'10px',
+        fontSize:'14px',
+        backgroundColor: 'gainsboro'
+
+      },
+      conType:{
+        marginLeft: '30px',
+        fontSize:'14px',
+      }
 }));
 
 function ChangePassword() {
     const classes = useStyles();
     const {t, i18n} = useTranslation('common');
     const [passwordForm, setPasswordForm] = useState(true);
+    const [userId, setUserId] = useState(true);
+    const history = useHistory();
+
     const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: {
-            userName: '',
-            captchaCode: '',
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword:''
         },
-        validationSchema: Validate.ForgotValidate(),
-        onSubmit: (values) => {
-            toast.error("BAD Request Found!");
-            setPasswordForm(false);
+        validationSchema: Validate.ChangePasswordValidate(),
+        onSubmit: async(values) => {
+               if(values.newPassword == values.confirmPassword)
+               {
+                        const result = await AccountService.updatePass(userId,values.newPassword,values.confirmPassword,values.currentPassword);
+                        if(result.response_content.message)
+                        {
+                            toast.error(result.response_content.message);
+                        }else{
+                            toast.success("Successfully Updated");
+                            history.push('/home')
+                        }
+               }
+               else{
+                toast.error("Password MisMatch! Enter Valid Password.");
+
+               }
+       
         },
     });
 
-    // reset login status
-    useEffect(() => {
-        //dispatch(userActions.logout()); 
-    }, []);
-
-    
+     useEffect(() => {
+        async function fetchMyAPI() {
+          const result = await AccountService.getAccountInfo(history);
+          result && result.response_content ?  setUserId(result.response_content.id)  : setUserId('');
+          
+        }
+        fetchMyAPI()
+      }, [])
+      function homePage()
+      {
+        history.push('/home');
+      }
     return (
+      <div className={classes.grow}>
         <Container className="mt-100">
             
           
             <Row >
-                {/* <Col sm="12" md="6" className="loginDiv"> */}
                 <Col sm="12" md="6" >
-                    <form name="passwordForm" onSubmit={formik.handleSubmit} className={(passwordForm ? 'd-block' : 'd-none')}>
-                        <h5 className="loginTitle">Authorization</h5>
+                    <form name="changePasswordForm" onSubmit={formik.handleSubmit} className={(passwordForm ? 'd-block' : 'd-none')}>
+                    <div className={classes.formContent}>
+                        <h5 className="loginTitle">{t('cpauth')}</h5>
                         <div className="form-group">
                             <TextField
                                 fullWidth
-                                id="userName"
-                                name="userName"
+                                id="currentPassword"
+                                name="currentPassword"
                                 label={'Current Password'}
                                 variant="outlined"
-                                value={formik.values.userName}
+                                value={formik.values.currentPassword}
                                 onChange={formik.handleChange}
-                                error={formik.touched.userName && Boolean(formik.errors.userName)}
-                                helperText={formik.touched.userName && formik.errors.userName}
+                                error={formik.touched.currentPassword && Boolean(formik.errors.currentPassword)}
+                                helperText={formik.touched.currentPassword && formik.errors.currentPassword}
                                 InputLabelProps={{
                                     classes: {root:classes.materialUILabel}, 
                                 }}
                                 className={classes.root}
                                 />
                         </div>
-                        <h5 className="loginTitle">New Password</h5>
-
-                        {/* <p className="appTextColor mb-4">{t('pwdRecoveryTitle')}</p> */}
+                        </div>
+                        <div className={classes.formContent}>
+                        <h5 className="loginTitle">{t('cpnewpass')}</h5>
                         <div className="form-group">
                             <TextField
                                 fullWidth
-                                id="userName"
-                                name="userName"
+                                id="newPassword"
+                                name="newPassword"
                                 label={'New Password'}
                                 variant="outlined"
-                                value={formik.values.userName}
+                                value={formik.values.newPassword}
                                 onChange={formik.handleChange}
-                                error={formik.touched.userName && Boolean(formik.errors.userName)}
-                                helperText={formik.touched.userName && formik.errors.userName}
+                                error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
+                                helperText={formik.touched.newPassword && formik.errors.newPassword}
                                 InputLabelProps={{
                                     classes: {root:classes.materialUILabel}, 
                                 }}
@@ -118,43 +170,53 @@ function ChangePassword() {
                         <div className="form-group">
                             <TextField
                                 fullWidth
-                                id="captchaCode"
-                                name="captchaCode"
+                                id="confirmPassword"
+                                name="confirmPassword"
                                 label={'Re-enter New Password'}
                                 variant="outlined"
-                                value={formik.values.captchaCode}
+                                value={formik.values.confirmPassword}
                                 onChange={formik.handleChange}
-                                error={formik.touched.captchaCode && Boolean(formik.errors.captchaCode)}
-                                helperText={formik.touched.captchaCode && formik.errors.captchaCode}
+                                error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                                helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
                                 InputLabelProps={{
                                     classes: {root:classes.materialUILabel}, 
                                 }}
                                 className={classes.root}
                                 />
                         </div>
-                        <div className="form-group">
-                        <Row className="float-right">
-                            <Col  >
-                            <Button variant="secondary"  className="float-right changePassword text-capitalize">Cancel</Button>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
-
-                            </Col>
-                            <Col >
-                            <Button variant="secondary" color="primary" className="float-right changePassword text-capitalize" type="submit">
-                               a New Password
-                            </Button>
-                            </Col>
-                        </Row>
-
                         </div>
+                       
+                        <div className={classes.rootButton}>
+                            <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
+                                <Button variant="contained" type="submit">{t('cpsavenewpass')}</Button>
+                        </div>
+
                     </form>
                  
                 </Col>
-                <Col sm="12" md="5">
+                <Col sm="12" md="6">
+                  <div className={classes.passwordContents}>
+                      <div >
+                         <p>{t('cpconentstitle')}</p>
+                         <h6><strong>{t('cppassrules')}</strong></h6>
+                      </div>
+                     
+                       <div className={classes.conType}>
+                        <p>{t('cpsubtitle')}</p>
+                               <ul>
+                                <li>{t('cprule1')}</li>
+                                <li>{t('cprule2')}</li>
+                                <li>{t('cprule3')}</li>
+                                <li>{t('cprule4')}</li>
+                                </ul>
+                    </div>
+                      
 
+                  </div>
                 </Col>
             </Row>
         </Container>
-
+     </div>
     );
 }
 

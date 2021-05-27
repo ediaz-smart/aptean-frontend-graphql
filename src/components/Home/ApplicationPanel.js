@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     anchorTag: {
         textDecoration: 'none',
         color: "#008EC5",
-        fontSize:"15px"
+        fontSize:"15px",
+        cursor: 'pointer',
     },
     p: {
         color: "#008EC5",
@@ -76,6 +77,14 @@ function ApplicationPanel() {
         }
         return str;
         
+    }
+    function accountInfoForm()
+    {
+        history.push('/accountinfo')
+    }
+    function changePasswordForm()
+    {
+        history.push('/changepassword')
     }
     function searchForm() {
        history.push('/search')
@@ -164,8 +173,8 @@ function ApplicationPanel() {
                                 <img src={account} alt="account" className="w-100" />
                             </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('accountInformation')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('changePassword')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag}  onClick={accountInfoForm}>{t('accountInformation')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag}  onClick={changePasswordForm}>{t('changePassword')}</a></p>
                             </Col>
                         </Row>
                     </Col>
