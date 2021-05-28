@@ -14,6 +14,7 @@ import { Link, useHistory } from 'react-router-dom';
 import GQLogo from '../assets/image/GenomeQuest.svg';
 import PromptModal from './Modal/PromptModal';
 import LogoutService from '../services/logout';
+import AccountService from '../services/accountInfo';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -78,7 +79,7 @@ export default function Header(props) {
     const { t, i18n } = useTranslation('common');
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const [modalShow, setModalShow] = React.useState(false);
-
+    const [accountInfo, setAccountInfo] = useState([]);
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const [userName, setUserName] = React.useState(null);;
@@ -104,14 +105,19 @@ export default function Header(props) {
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
+    
     useEffect(() => {
-        //dispatch(userActions.logout()); 
-        const isUserLogin = localStorage.getItem('isLoggedIn');
-        if(isUserLogin)
-        {
-            setUserName(localStorage.getItem('userName'));
-        }
-    }, []);
+		(async () => {
+			//dispatch(userActions.logout()); 
+            const isUserLogin = localStorage.getItem('isLoggedIn');
+            const result = await AccountService.getAccountInfo(history);
+            result && result.response_content ?  setAccountInfo(result.response_content)   : setAccountInfo({});
+            if(isUserLogin)
+            {
+                setUserName(localStorage.getItem('userName'));
+            }
+		})();
+	}, []);
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -187,7 +193,7 @@ export default function Header(props) {
                             color="inherit"
                         >
                             <AccountCircle />
-                            <span className={'text-capitalize appTextFont ' + classes.profileText} >{userName}</span>
+                            <span className={'text-capitalize appTextFont ' + classes.profileText} >{accountInfo.first_name} {accountInfo.last_name}</span>
                         </Button>
                         <span className={classes.headerPipe}>|</span>
                         {/* <Button color="inherit" ><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button> */}

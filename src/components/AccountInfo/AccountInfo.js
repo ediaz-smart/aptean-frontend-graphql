@@ -113,11 +113,12 @@ function AccountInfo() {
 
     const formik = useFormik({
         initialValues: {
-            firstName:'',
-            lastName: '',
+            firstName:accountInfoData.first_name,
+            lastName: accountInfoData.last_name,
             confirmPassword: '',
            
         },
+        enableReinitialize:true,
         validationSchema: Validate.InformationDataValidate(),
         onSubmit: async (values) => {
             const result = await AccountService.updateUser(parseInt(userIdCon),values.firstName,values.lastName,values.confirmPassword);
@@ -177,7 +178,7 @@ function AccountInfo() {
                         className={classes.textBox}
                         id="firstName"
                                 name="firstName"
-                                label='First Name'
+                                // label='First Name'
                                 variant="outlined"
                                 value={formik.values.firstName}
                                 onChange={formik.handleChange} 
@@ -189,7 +190,7 @@ function AccountInfo() {
                          className={classes.textBox}
                            id="lastName"
                                 name="lastName"
-                                label='Last Name'
+                                // label='Last Name'
                                 variant="outlined"
                                 value={formik.values.lastName}
                                 onChange={formik.handleChange} 
