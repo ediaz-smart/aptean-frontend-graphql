@@ -52,11 +52,11 @@ const TreeItem = withStyles({
 	}
 })(MuiTreeItem);
 
-const FolderTreeMenu = ({ items, parentCallback, selectedTitle }) => {
+const FolderTreeMenu = ({ items, parentCallback, selectedTitle,type,moveFolderCallback,expandedIds }) => {
 	const classes = useStyles();
 	const [defaultTitle, setDefaultTitle] = useState('');
+	const [selectTitle, setSelectTitle] = useState('');
 	// console.log(items,'items');
-	// console.log(parentCallback,'parentCallback');
 	items.text_label = 'My Searches';
 	useEffect(() => {
 		setDefaultTitle(selectedTitle);
@@ -69,7 +69,7 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle }) => {
         return str;
         
     }
-	const renderTree = (nodes, onSelect) =>
+	const renderTree = (nodes, onSelect,type) =>
 		<TreeItem
 			key={nodes.id}
 			nodeId={nodes.id}
@@ -78,23 +78,42 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle }) => {
 					<>
 						{/* <FolderOpenIcon /> {nodes.text_label} */}
 						{/* <a className="cursorPointer text-decoration-none appTextColor" onClick={() => changeTitle(nodes.text_label)}> */}
-						<a className="cursorPointer text-decoration-none appTextColor">
+						{type === "selectFolder" && <a className="cursorPointer text-decoration-none appTextColor">
 							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (defaultTitle === nodes.text_label ? classes.projTitleActive : '')} title={nodes.text_label}>{nodes.text_label}</span></a>
+						}
+						{type === "moveFolder" && <a className="cursorPointer text-decoration-none appTextColor">
+							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (selectTitle === nodes.text_label ? classes.projTitleActive : '')} title={nodes.text_label}>{nodes.text_label}</span></a>
+						}
 					</>
 				</div>
 			}
 			onLabelClick={() => {
 				onSelect(nodes.id, nodes.text_label);
+				setSelectTitle(nodes.text_label);
 				console.log(nodes.text_label, 'nodes.text_label');
-				parentCallback(nodes);
+				console.log(nodes.id, 'nodes.id');
+				if(type === "selectFolder")
+				{
+					parentCallback(nodes);
+				}else if(type === "moveFolder"){
+					moveFolderCallback(nodes);
+
+				}	
+				
 			}}
 			onIconClick={() => {
 				onSelect(nodes.id, nodes.text_label)
-				parentCallback(nodes);
+				setSelectTitle(nodes.text_label);
+				if(type === "selectFolder")
+				{
+					parentCallback(nodes);
+				}else if(type === "moveFolder"){
+					moveFolderCallback(nodes);
+				}
 			}}
 		>
 			{Array.isArray(nodes.children)
-				? nodes.children.map(node => renderTree(node, onSelect))
+				? nodes.children.map(node => renderTree(node, onSelect,type))
 				: null}
 		</TreeItem>
 
@@ -109,7 +128,8 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle }) => {
 						data={items}
 						setFieldValue={props.setFieldValue}
 						renderTree={renderTree}
-
+						type={type}
+						expandedIds={expandedIds}
 					/>
 					{/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
 				</>
@@ -125,11 +145,12 @@ const Tree = props => {
 		<>
 			<TreeView
 				// defaultCollapseIcon={<ExpandMoreIcon />}
-				defaultExpanded={["root"]}
+				// defaultExpanded={["root"]}
+				defaultExpanded={props.expandedIds}
 			// defaultExpandIcon={<ChevronRightIcon />}
 			// multiSelect
 			>
-				{props.renderTree(props.data, props.setFieldValue)}
+				{props.renderTree(props.data, props.setFieldValue,props.type)}
 			</TreeView>
 			{/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
 		</>

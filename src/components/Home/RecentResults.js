@@ -86,22 +86,22 @@ const columns = [
 	{
 	  name: "Type",
 	  selector: "type",
-	  sortable: true
+	  sortable: false
 	},
 	{
 	  name: "Date",
 	  selector: "date",
-	  sortable: true
+	  sortable: false
 	},
 	{
 	  name: "Description",
 	  selector: "description",
-	  sortable: true,
+	  sortable: false,
 	},
 	{
 		name: "",
 		selector: "results",
-		sortable: true
+		sortable: false
 	  },
 	  {
 		name: " ",

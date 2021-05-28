@@ -123,8 +123,10 @@ export default function Header(props) {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            {/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem> */}
+            <MenuItem onClick={handleMenuClose}>
+                <Link to="/accountinfo" className={classes.anchorTag}>{t('myAccount')}</Link>
+            </MenuItem>
         </Menu>
     );
 

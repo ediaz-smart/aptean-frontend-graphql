@@ -125,8 +125,10 @@
     "cprule1": "is 9 to 20 characters long",
     "cprule2": "has one or more lowercase letters",
     "cprule3": "has one or more uppercase letters",
-    "cprule4": "has one or more numbers"
-
+    "cprule4": "has one or more numbers",
+    "selFolderToMove":"Select a folder to move the selected item(s) to.​",
+    "resSharedWithMe":"Results Shared with me",
+    "newFolder":"New Folder Name"
 
 
 }

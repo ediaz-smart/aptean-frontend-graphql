@@ -6,7 +6,7 @@ export const url = {
     seqSearchInit: "do=gqft.launch_seq_search&format=json",
     seqSearchSubmit: "do=gqworkflow.submit_seq_search&format=json",
     mostRecentTypeUrl:"resultsummNew/index.html#/resbrowse/wf:**.resdb/1",
-    mostRecentClassicUrl:"gqresult&db=wf:**.resdb&is_workspace_recognized=1&def_view=query",
+    mostRecentClassicUrl:"do=gqresult&db=wf:**.resdb&is_workspace_recognized=1&def_view=query",
     mostRecentReportUrl:"resultsummNew/index.html#/antibody/overview/**",
     progress: "do=gqworkflow.get_status&workflow=id:**&format=json",
     accountInfo: "do=gquser.get_info&format=json",
@@ -19,6 +19,8 @@ export const url = {
     logout:"do=gquser.logout&format=json",
     createFolder: "do=gqfolder.create_subfolder&format=json&id=**&text_label=",
     //deleteFolder: "do=gqshareable.delete&format=json&is_recursive=true&id=**", // same as deleteItems
-    moveToFolder: "do=gqfolder.move_shareable_to&format=json&sharing_setting=inherit_recursive&id=**&shareable_id=",
+    moveToFolder: "do=gqfolder.move_shareable_to&format=json&sharing_setting=inherit_recursive&id=WID&shareable_id=RID",
     deleteItems: "do=gqshareable.delete&format=json&is_recursive=true&id=**",
+    copyright: "do=gqft.get_server_info&format=json",
+    addFolder:"do=gqfolder.create_subfolder&format=json&id=PFID&text_label=FNAME"
 }

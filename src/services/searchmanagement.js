@@ -87,11 +87,32 @@ async function deleteSearchResult(ids,history) {
         console.error(error);
     }
 }
+async function moveToFolder(shareId,workflowId,history) {
+    try {
+        
+        let moveToFolder = url.moveToFolder
+        moveToFolder = moveToFolder.replace('RID', shareId);
+        moveToFolder = moveToFolder.replace('WID', workflowId);
+        let urlParam = moveToFolder;
+        // console.log(urlParam,'urlParam');
+        return await get(urlParam,history)
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            //toast.error('A');
+            console.log("error::", error);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
 const SearchManagementService = {
     getProjectFolders,
     getProjectFolderData,
     getFolderData,
-    deleteSearchResult
+    deleteSearchResult,
+    moveToFolder
 };
 
 export default SearchManagementService;

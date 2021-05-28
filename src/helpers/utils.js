@@ -47,23 +47,29 @@ async function mostRecentResCalculation(data,pagetype) {
             
             let mostRecentClassicUrl = url.mostRecentClassicUrl
             mostRecentClassicUrl = mostRecentClassicUrl.replace('**', id);
-            let classicLink = process.env.REACT_APP_API_URL+mostRecentTypeUrl
-            if(datas.type == "GqWfABIpSearch")
+            let classicLink = process.env.REACT_APP_API_URL+mostRecentClassicUrl
+            if(datas.status == 'FAILED')
             {
-                let mostRecentReportUrl = url.mostRecentReportUrl
-                mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
-                let reportLink = process.env.REACT_APP_BASE_URL+mostRecentReportUrl
-                tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
-                                    <span className="mx-2">|</span>
-                                    <a href={classicLink} target="_blank">Classic</a>
-                                    </Fragment>
-            }else if(datas.type !== "GqFolder"){
-                tempObj["report"] = <Fragment>
-                                    <a href={classicLink} target="_blank">Classic</a>
-                                    </Fragment>
-            }else {
                 tempObj["report"] = '';
+            }else{
+                if(datas.type == "GqWfABIpSearch")
+                {
+                    let mostRecentReportUrl = url.mostRecentReportUrl
+                    mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
+                    let reportLink = process.env.REACT_APP_BASE_URL+mostRecentReportUrl
+                    tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
+                                        <span className="mx-2">|</span>
+                                        <a href={classicLink} target="_blank">Classic</a>
+                                        </Fragment>
+                }else if(datas.type !== "GqFolder"){
+                    tempObj["report"] = <Fragment>
+                                        <a href={classicLink} target="_blank">Classic</a>
+                                        </Fragment>
+                }else {
+                    tempObj["report"] = '';
+                }
             }
+           
             if(pagetype === "searchmanagement" || pagetype === "searchfolder")
             {
                 tempObj["info"] = <Fragment>

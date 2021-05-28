@@ -13,6 +13,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import ListGroup from 'react-bootstrap/ListGroup'
 import Modal from 'react-bootstrap/Modal'
+import _ from "lodash";
 
 import TextInput from '../../shared/Fields/TextInput';
 import HomeService from '../../services/home'
@@ -135,27 +136,27 @@ const columns = [
 	{
 		name: "Type",
 		selector: "type",
-		sortable: true
+		sortable: false
 	},
 	{
 		name: "Date",
 		selector: "date",
-		sortable: true
+		sortable: false
 	},
 	{
 		name: "",
 		selector: "info",
-		sortable: true
+		sortable: false
 	},
 	{
 		name: "Description",
 		selector: "description",
-		sortable: true,
+		sortable: false,
 	},
 	{
 		name: "",
 		selector: "results",
-		sortable: true
+		sortable: false
 	},
 	{
 		name: " ",
@@ -190,6 +191,14 @@ function SearchManagement(props) {
 	const [confirmFolderContent, setConfirmFolderContent] = useState(true);
 	const [delFolderLoaderContent, setFolderDelLoaderContent] = useState(false);
 	const [errorFolderContent, setFolderErrorContent] = useState(false);
+
+	// Move To Folder Variable
+	const [moveFolderModalShow,setMoveFolderModalShow] = React.useState(false);
+	const [moveFolderId, setMoveFolderId] = useState('');
+	const [folderIds,setFolderIds] = useState([]);
+	
+	// create New Folder
+	const [showNewFolder, setShowNewFolder] = useState(false);
 
 	const { t, i18n } = useTranslation('common');
 	const handleAction = value => setSelectData(value);
@@ -235,15 +244,7 @@ function SearchManagement(props) {
 	const getRowData = (event) => {
 		// console.log(event, 'event');
 	};
-	const changeTitle = (event) => {
-		setDefaultTitle(event.text_label);
-		setDefaultTitleId(event.id);
-		// setTimeout(() => {
-		getDefaultSearchResult('folder', event.id);
-		setDisableDelete(true);
-		// }, 1000);
-
-	};
+	
 	async function deleteSearch(type) {
 
 		// console.log(defaultTitleId, "defaultTitleId")
@@ -339,6 +340,13 @@ function SearchManagement(props) {
 			const getResult = await SearchManagementService.getProjectFolderData(getParentFolderId, history);
 			if (getResult && getResult.response_content) {
 				if (getResult.response_content.items && getResult.response_content.items.length > 0) {
+					let res = getResult.response_content.items[0];
+					const ids = [];
+					JSON.stringify(res, (key, value) => {
+						if (key === 'id') ids.push(value);
+						return value;
+					});
+					setFolderIds(ids);
 					setFolderDetail(getResult.response_content.items[0]);
 				}
 			}
@@ -363,6 +371,10 @@ function SearchManagement(props) {
 		setTermsDisable(false);
 		setConfirmFolderContent(true);
 	}
+	const closeMoveFolderModal = () =>{
+		setMoveFolderModalShow(false);
+		setMoveFolderId('');
+	}
 	const openModal = () => {
 		setModalShow(true);
 		setConfirmContent(true);
@@ -374,6 +386,44 @@ function SearchManagement(props) {
 		setConfirmFolderContent(true);
 		setFolderDelLoaderContent(false);
 		setFolderErrorContent(false);
+	}
+	const openMoveFolderModal = () => {
+		setMoveFolderModalShow(true);
+	}
+	const changeTitle = (event) => {
+		setDefaultTitle(event.text_label);
+		setDefaultTitleId(event.id);
+		// setTimeout(() => {
+		getDefaultSearchResult('folder', event.id);
+		setDisableDelete(true);
+		// }, 1000);
+	};
+	const selectedFolder = (event) =>{
+		setMoveFolderId(event.id);
+	}
+	async function moveToFolder(){
+		var getIds = selectData.selectedRows.map(function (a) { return a.id; }).join(',');
+		setMoveFolderModalShow(false);
+		const getResponse = await SearchManagementService.moveToFolder(moveFolderId,getIds, history);
+		if(getResponse.response_status == 0)
+		{
+			if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
+				getDefaultSearchResult('folder', defaultTitleId);
+				toast.success('Folder Moved Successfully');
+			}
+		}else {
+			// getDefaultSearchResult('folder', defaultTitleId);
+			toast.error(getResponse.response_content.message);
+		}
+		
+		
+	}
+	const addNewFolder = (e)=>{
+		e.preventDefault();
+		setShowNewFolder(!showNewFolder);
+	}
+	const getNewFolderName = (e)=>{
+		console.log(e.target.value,'gettarget');
 	}
 	useEffect(() => {
 		(async () => {
@@ -421,17 +471,28 @@ function SearchManagement(props) {
 
 							{/* {folderDetail.map((value, index) => { */}
 								<ListGroup.Item key={123} className={classes.projectListItem}>
-									<FolderTreeMenu items={folderDetail} selectedTitle={defaultTitle} parentCallback={changeTitle} />
+									<FolderTreeMenu items={folderDetail} selectedTitle={defaultTitle} type="selectFolder" parentCallback={changeTitle} />
 								</ListGroup.Item>
 
 							{/* })} */}
+							<ListGroup.Item className={"my-2 "+(showNewFolder ? 'd-block ':'d-none ')+classes.projectListItem} key="addNewFolder">
+								<img src={FolderIcon} className={classes.folderIcon+" float-left mt-2"} />
+								<TextInput 
+									id="addFolder"
+									name="addFolder"
+									label={t('newFolder')}
+									variant="outlined"
+									className={"float-left ml-2"}
+									onChange={getNewFolderName}
+								/> 
+							</ListGroup.Item>
 							<ListGroup.Item className={classes.projectListItem} key="createNewFolder">
-								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="#" onClick={(e) => e.preventDefault()} className={"appLinkColor " + classes.projectTitle}>{t('addFolder')}</a>
+								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLinkColor " + classes.projectTitle}>{t('addFolder')}</a>
 							</ListGroup.Item>
 
 						</ListGroup>
 						{/* <p><a className="cursorPointer text-decoration-none appTextColor" onClick={() => changeTitle('Recent Search Results1')}><FolderOpenIcon /><span className={classes.projectTitle}>test1</span></a></p> */}
-						<h6 className="mt-4"><b>Results Shared with me</b></h6>
+						<h6 className="mt-4"><b>{t('resSharedWithMe')}</b></h6>
 						<ListGroup defaultActiveKey="#link1" className={"projectList"}>
 							<ListGroup.Item className={classes.projectListItem} key="search1">
 								<a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Search1')}>
@@ -450,13 +511,14 @@ function SearchManagement(props) {
 					</Col>
 				</Col>
 				<Col md="9">
-					<h6 className="appTextColor"><b><img src={FolderIcon} /> <span className={classes.projectTitle}>{defaultTitle}</span></b></h6>
+					<h6 className="appTextColor mb-4"><b><img src={FolderIcon} /> <span className={classes.projectTitle}>{defaultTitle}</span></b></h6>
 					<DataTable
 						columns={columns}
 						data={searchResultData}
 						defaultSortField="date"
 						defaultSortAsc={false}
-						sortIcon={<SortIcon />}
+						// sortServer={true}
+						// sortIcon={<SortIcon />}
 						onSelectedRowsChange={updateVal}
 						noDataComponent={t('noSearchSubmit')}
 						customStyles={customStyles}
@@ -470,7 +532,7 @@ function SearchManagement(props) {
 					/>
 					<Col className={"float-left " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} type="submit">{t('deleteSelected')}</Button>
-						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('moveToFolder')}</Button>
+						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('moveToFolder')}</Button>
 						<Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('mergeResult')}</Button>
 					</Col>
 					<Col className={"float-right " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
@@ -559,6 +621,27 @@ function SearchManagement(props) {
 						<p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
 						<div className={classes.footerDiv + " float-right"}>
 							<Button onClick={closeFolderModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
+			<Modal
+				show={moveFolderModalShow}
+				size="md"
+				aria-labelledby="contained-modal-title-vcente"
+				centered
+				contentClassName='modalPromptContent'
+			>
+				<Modal.Body className="appTextColor">
+					<div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
+						<p className="mb-3"><b>{t('moveToFolder')}</b></p>
+						<p className="mb-3">{t('selFolderToMove')}</p>
+						<div className="mb-5 h-100">
+							<FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderCallback={selectedFolder} type="moveFolder" />
+						</div>
+						<div className={classes.footerDiv + " float-right"}>
+							<Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true:false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelFolder')}</Button>
+							<Button onClick={closeMoveFolderModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
 						</div>
 					</div>
 				</Modal.Body>
