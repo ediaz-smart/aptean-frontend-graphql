@@ -128,7 +128,10 @@
     "cprule4": "has one or more numbers",
     "selFolderToMove":"Select a folder to move the selected item(s) to.​",
     "resSharedWithMe":"Results Shared with me",
-    "newFolder":"New Folder Name"
-
+    "newFolder":"New Folder Name",
+    "moveResult":"Move Results",
+    "folderNameNotAllowed":"Your new folder name is not allowed.​",
+    "tryAgain":"Please try again.​",
+    "ok":"Ok"
 
 }

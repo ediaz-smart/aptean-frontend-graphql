@@ -64,6 +64,11 @@
 .MuiTreeItem-group{
     margin-left:32px !important
 }
+.disabled {
+    pointer-events: none;
+    color: #ccc;
+    cursor: not-allowed;
+}
 
 /* Login & Forgot */
 

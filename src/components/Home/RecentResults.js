@@ -156,6 +156,8 @@ function RecentResults() {
 								data={searchResultData}
 								defaultSortField="date"
 								defaultSortAsc={false}
+								sortable={false}
+								sortServer={true}
 								noDataComponent="No Searches have been submitted."
 								sortIcon={<SortIcon />}
 								customStyles={customStyles}

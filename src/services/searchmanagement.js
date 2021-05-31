@@ -91,9 +91,30 @@ async function moveToFolder(shareId,workflowId,history) {
     try {
         
         let moveToFolder = url.moveToFolder
-        moveToFolder = moveToFolder.replace('RID', shareId);
+        moveToFolder = moveToFolder.replace('FID', shareId);
         moveToFolder = moveToFolder.replace('WID', workflowId);
         let urlParam = moveToFolder;
+        // console.log(urlParam,'urlParam');
+        return await get(urlParam,history)
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            //toast.error('A');
+            console.log("error::", error);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+async function addFolder(parentFolderId,folderName,history) {
+    try {
+        
+        let addFolder = url.addFolder
+        addFolder = addFolder.replace('FNAME', folderName);
+        addFolder = addFolder.replace('PFID', parentFolderId);
+        let urlParam = addFolder;
+        // console.log(urlParam,'urlParam');
         // console.log(urlParam,'urlParam');
         return await get(urlParam,history)
         .then((response) => {
@@ -112,7 +133,8 @@ const SearchManagementService = {
     getProjectFolderData,
     getFolderData,
     deleteSearchResult,
-    moveToFolder
+    moveToFolder,
+    addFolder
 };
 
 export default SearchManagementService;

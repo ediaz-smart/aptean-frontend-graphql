@@ -19,7 +19,7 @@ export const url = {
     logout:"do=gquser.logout&format=json",
     createFolder: "do=gqfolder.create_subfolder&format=json&id=**&text_label=",
     //deleteFolder: "do=gqshareable.delete&format=json&is_recursive=true&id=**", // same as deleteItems
-    moveToFolder: "do=gqfolder.move_shareable_to&format=json&sharing_setting=inherit_recursive&id=WID&shareable_id=RID",
+    moveToFolder: "do=gqfolder.move_shareable_to&format=json&sharing_setting=inherit_recursive&id=FID&shareable_id=WID",
     deleteItems: "do=gqshareable.delete&format=json&is_recursive=true&id=**",
     copyright: "do=gqft.get_server_info&format=json",
     addFolder:"do=gqfolder.create_subfolder&format=json&id=PFID&text_label=FNAME"

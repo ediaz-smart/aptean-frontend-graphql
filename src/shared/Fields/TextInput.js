@@ -34,6 +34,7 @@ export default function TextInput(props) {
         variant={props.variant}
         value={props.value}
         onChange={props.onChange}
+        onKeyDown={props.onKeyDown}
         className={classes.root+' '+props.className} 
         error={props.error}
         helperText={props.helperText}

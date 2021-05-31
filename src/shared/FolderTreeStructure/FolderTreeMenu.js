@@ -3,7 +3,7 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import TreeView from "@material-ui/lab/TreeView";
 import MuiTreeItem from "@material-ui/lab/TreeItem";
 import { Formik, useField } from "formik";
-import FolderIcon from '../../assets/image/folder.svg';
+import FolderIcon from '../../assets/image/folder.png';
 
 const initialValues = {};
 
@@ -52,7 +52,7 @@ const TreeItem = withStyles({
 	}
 })(MuiTreeItem);
 
-const FolderTreeMenu = ({ items, parentCallback, selectedTitle,type,moveFolderCallback,expandedIds }) => {
+const FolderTreeMenu = ({ items, parentCallback, selectedTitle,type,moveFolderCallback,expandedIds,expandableRows }) => {
 	const classes = useStyles();
 	const [defaultTitle, setDefaultTitle] = useState('');
 	const [selectTitle, setSelectTitle] = useState('');
@@ -130,6 +130,7 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle,type,moveFolderCa
 						renderTree={renderTree}
 						type={type}
 						expandedIds={expandedIds}
+						expandableRows={props.expandableRows}
 					/>
 					{/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
 				</>
