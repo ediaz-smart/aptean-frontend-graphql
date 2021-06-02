@@ -137,6 +137,7 @@ function ChangePassword() {
                                 name="currentPassword"
                                 label={'Current Password'}
                                 variant="outlined"
+                                type="password"
                                 value={formik.values.currentPassword}
                                 onChange={formik.handleChange}
                                 error={formik.touched.currentPassword && Boolean(formik.errors.currentPassword)}
@@ -157,6 +158,7 @@ function ChangePassword() {
                                 name="newPassword"
                                 label={'New Password'}
                                 variant="outlined"
+                                type="password"
                                 value={formik.values.newPassword}
                                 onChange={formik.handleChange}
                                 error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
@@ -174,6 +176,7 @@ function ChangePassword() {
                                 name="confirmPassword"
                                 label={'Re-enter New Password'}
                                 variant="outlined"
+                                type="password"
                                 value={formik.values.confirmPassword}
                                 onChange={formik.handleChange}
                                 error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}

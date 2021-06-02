@@ -14,6 +14,7 @@ import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
 import Modal from 'react-bootstrap/Modal'
 import Table from 'react-bootstrap/Table';
+import ModuleImage from '../../assets/image/module.png';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -22,6 +23,23 @@ const useStyles = makeStyles((theme) => ({
         padding: '15px 25px 20px',
         border: '2px solid #bfb4b4',
         borderRadius: '6px'
+    },
+    colDesign:{
+        marginLeft: '-65px'
+    },
+    colPading:{
+        padding: '3px !important'
+    },
+    colPading1 :{
+        padding: '3px !important'
+    },
+    colDesign1 :{
+        marginLeft: '-20px'
+    },
+    imageStyle:{
+        width: '114%',
+        marginLeft: '-53px',
+        marginTop: '28px',
     },
     loginLogoDiv:{
         position: 'relative',
@@ -114,7 +132,13 @@ function MergeResults() {
                 </Modal.Header>
                 <Modal.Body>
                 <Container className="mt-100">
-                <h6>Step 1 -</h6> <p>Name the new result set</p>
+                <Row>
+                    <Col  sm="12" md="2" className={classes.colPading1} >
+                    <h6>Step 1 -</h6>
+                    </Col>
+                    <Col  sm="12" md="10" className={classes.colDesign}> <p> Name the new result set</p></Col>
+                </Row>
+             
                 <div className="form-group">
                             <TextField
                                 fullWidth
@@ -126,9 +150,16 @@ function MergeResults() {
                                
                                 />
                         </div>
+                 
                 </Container>
                 <Container className="mt-100">
-                <h6>Step 2 -</h6> <p>Put the contributing result sets into one of two groups</p>
+                <Row>
+                    <Col  sm="12" md="2"  className={classes.colPading1} >
+                    <h6>Step 2 -</h6> 
+                    </Col>
+                    <Col  sm="12" md="10" className={classes.colDesign} > <p>Put the contributing result sets into one of two groups</p></Col>
+                </Row>
+                <Row>
                 <Table responsive bordered >
                 <tbody>
                     <tr>
@@ -138,30 +169,50 @@ function MergeResults() {
                     <td>Description</td>
                     </tr>
                     <tr>
-                    <td>O</td>
-                    <td>O</td>
+                    <td className='float:center'>
+                    <input type="radio" name="radio" id="radio1" className="k-radio" />
+                    </td>
+                    <td className='float:center'>
+                    <input type="radio" name="radio" id="radio1" className="k-radio" />
+                    </td>
                     <td>IP Sequence</td>
                     <td>Beta globulin search for Steve</td>
                     </tr> 
                     <tr>
-                    <td>O</td>
-                    <td>O</td>
+                    <td className='float:center'>
+                    <input type="radio" name="radio" id="radio2" className="k-radio" />
+                    </td>
+                    <td className='float:center'>
+                    <input type="radio" name="radio" id="radio2" className="k-radio" />
+                    </td>
                     <td>Antibody</td>
                     <td>Candidate CDRs</td>
                     </tr> 
                     <tr>
-                    <td>O</td>
-                    <td>O</td>
+                    <td className='float:center'>
+                    <input type="radio" name="radio" id="radio3" className="k-radio" />
+                    </td>
+                    <td className='float:center'>
+                    <input type="radio" name="radio" id="radio3" className="k-radio" />
+                    </td>
                     <td>Full Text</td>
                     <td>Cov id-19 US granted</td>
                     </tr> 
                     
                 </tbody>
                 </Table>
-   
+                </Row>
                 </Container>
                 <Container className="mt-100">
-                <h6>Step 3 -</h6> <p>Chose how these two groups are merged</p>
+                <Row >
+                <Col sm="12" md="8">
+                <Row>
+                    <Col  sm="12" md="2" className={classes.colPading}  >
+                    <h6>Step 3 -</h6> 
+                    </Col>
+                    <Col  sm="12" md="10" className={classes.colDesign1}>  <p>Choose how these two groups are merged</p></Col>
+                </Row>
+              
                 <div className="form-group">
                 {formData.map((test, index) => (
                                             <div
@@ -178,6 +229,12 @@ function MergeResults() {
                                             ))
                 }
                 </div>
+                </Col>
+                <Col sm="12" md="4" >
+                <img src={ModuleImage} alt="ModuleImage" className={classes.imageStyle} />
+                </Col>
+                </Row>
+             
                 </Container>
                  <div className='float-right'>
                      <Button>Merge Results</Button>

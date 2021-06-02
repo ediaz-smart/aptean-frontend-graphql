@@ -20,17 +20,17 @@ import { useFormik } from 'formik';
 import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel } from '@material-ui/core';
 import Validate from '../../helpers/validate';
 import { toast } from 'react-toastify';
-
+import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
 
 
 const useStyles = makeStyles((theme) => ({
     grow: {
-		flexGrow: 1,
-		width: '96%',
-		margin: '30px auto',
-		minHeight: '260px',
+    flexGrow: 1,
+    width: '96%',
+    margin: '30px auto',
+    minHeight: '260px',
     marginTop: '130px',
-	},
+  },
   rootButton:{
     marginLeft:'-14px',
       '& > *': {
@@ -59,11 +59,16 @@ const useStyles = makeStyles((theme) => ({
   }));
 function AccountInfo() {
     const [accountInfoData, setAccountInfoData] = useState([]);
-   	const history = useHistory();
+    const [accountInfoNames, setAccountInfoNames] = useState([]);
+    const [errorMessage, seterrorMessage] = useState("");
+    const history = useHistory();
     const {t, i18n} = useTranslation('common');
     const [prop1, setProp1] = useState("prop1");
+    const [modalShow, setModalShow] = React.useState(false);
     const [userIdCon, setuserIdCon] = useState("");
     const [userId, setuserId] = useState("");
+    const [userFirstName, setuserfirstName] = useState("");
+    const [userLastName, setuserlastName] = useState("");
     const [userEmail, setuserEmail] = useState("");
     const [userAccountingGroup, setuserAccountingGroup] = useState("");
     const [userAccountType, setuserAccountType] = useState("");
@@ -87,7 +92,7 @@ function AccountInfo() {
       if(data)
       {
         data.id ? setuserIdCon(data.id) : setuserIdCon(''); 
-        data.first_name ? setuserId(data.first_name) : setuserId('');
+        data.login_name ? setuserId(data.login_name) : setuserId('');
         data.email ? setuserEmail(data.email) : setuserEmail('');
         data.accounting_group_name ?  setuserAccountingGroup(data.accounting_group_name) : setuserAccountingGroup('');
         data.user_class_name ? setuserAccountType(data.user_class_name) : setuserAccountType('');
@@ -97,7 +102,15 @@ function AccountInfo() {
         data.dspace_workflow ?  setuserAnalyses(data.dspace_workflow) :  setuserAnalyses(0);
         data.dspace_seqdb ? setuserSeqDatabase(data.dspace_seqdb) : setuserSeqDatabase(0);
         data.dspace_uploaded ? setuserUploads(data.dspace_uploaded) : setuserUploads(0);
-        
+        console.log(userFirstName,"userFirstName");
+        console.log(userLastName,"userLastName");
+        console.log(accountInfoData,"accountInfoData accountInfoData");
+        data.first_name ? setuserfirstName(data.first_name) : accountInfoData && accountInfoData.first_name ? setuserfirstName(accountInfoData.first_name) :  setuserfirstName('');
+        data.last_name ? setuserlastName(data.last_name) :  accountInfoData && accountInfoData.last_name ? setuserlastName(accountInfoData.last_name) :  setuserlastName('');
+        console.log(userFirstName,"userFirstName");
+        console.log(userLastName,"userLastName");
+       
+
       }
 
     }
@@ -113,8 +126,8 @@ function AccountInfo() {
 
     const formik = useFormik({
         initialValues: {
-            firstName:accountInfoData.first_name,
-            lastName: accountInfoData.last_name,
+            firstName: String(accountInfoData.first_name),
+            lastName: String(accountInfoData.last_name),
             confirmPassword: '',
            
         },
@@ -124,7 +137,9 @@ function AccountInfo() {
             const result = await AccountService.updateUser(parseInt(userIdCon),values.firstName,values.lastName,values.confirmPassword);
             if(result.response_content.message)
             {
-              toast.error(result.response_content.message);
+              await seterrorMessage(result.response_content.message);
+              setModalShow(true);
+              // toast.error(result.response_content.message);
             }else{
               toast.success("Successfully Updated");
               history.push('/home')
@@ -167,7 +182,7 @@ function AccountInfo() {
       
     return(
 
-       	<div className={classes.grow}>
+        <div className={classes.grow}>
        <form name="accountInformationForm" onSubmit={formik.handleSubmit} >
         <div>
           <h5 style={GreyText}>{t('yourdetails')}</h5>
@@ -178,7 +193,7 @@ function AccountInfo() {
                         className={classes.textBox}
                         id="firstName"
                                 name="firstName"
-                                // label='First Name'
+                                label='First Name'
                                 variant="outlined"
                                 value={formik.values.firstName}
                                 onChange={formik.handleChange} 
@@ -189,8 +204,9 @@ function AccountInfo() {
                  <TextInput 
                          className={classes.textBox}
                            id="lastName"
+                              //  initialValues={userLastName}
                                 name="lastName"
-                                // label='Last Name'
+                                label='Last Name'
                                 variant="outlined"
                                 value={formik.values.lastName}
                                 onChange={formik.handleChange} 
@@ -293,6 +309,11 @@ function AccountInfo() {
           </div>
              
           </div>
+          <AccountInfoModal
+                            show={modalShow}
+                            onHide={() => setModalShow(false)}
+                            onMessage={errorMessage}
+                        />
         </Container>
         </div>
         </form>
