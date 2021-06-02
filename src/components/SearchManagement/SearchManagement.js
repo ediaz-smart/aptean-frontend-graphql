@@ -2,7 +2,7 @@ import DataTable from "react-data-table-component";
 import SortIcon from "@material-ui/icons/ArrowDownward";
 // import movies from "./movies";
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useCallback, useEffect } from 'react';
+import React,{ useState, useCallback, useEffect,Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
@@ -14,17 +14,22 @@ import SearchIcon from "@material-ui/icons/Search";
 import ListGroup from 'react-bootstrap/ListGroup'
 import Modal from 'react-bootstrap/Modal'
 import _ from "lodash";
+import InfoIcon from '@material-ui/icons/Info';
+import RedoIcon from '@material-ui/icons/Redo';
+import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
+import { format } from 'date-fns';
 
 import TextInput from '../../shared/Fields/TextInput';
 import HomeService from '../../services/home'
 import SearchManagementService from '../../services/searchmanagement'
 import FolderTreeMenu from '../../shared/FolderTreeStructure/FolderTreeMenu';
-import UtilsService from '../../helpers/utils';
+// import UtilsService from '../../helpers/utils';
 import FolderIcon from '../../assets/image/folder.png';
 import FolderPlusIcon from '../../assets/image/folder-plus.png';
 import Checkbox from "@material-ui/core/Checkbox";
 import Constant from '../../helpers/constant';
-// import CheckBox from '../../shared/Fields/CheckBox';
+import ProgressBar from '../../shared/ProgressBar/Progress';
+import { url } from '../../reducers/url';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -173,6 +178,7 @@ function SearchManagement(props) {
 	const [searchResultData, setSearchResultData] = useState([]);
 	const [defaultTitle, setDefaultTitle] = useState('Recent Search Results');
 	const [defaultTitleId, setDefaultTitleId] = useState('');
+	const [infoFolderIds, setInfoFolderIds] = useState([]);
 
 	// Table Data Delete Variable
 	const [confirmContent, setConfirmContent] = useState(true);
@@ -327,9 +333,10 @@ function SearchManagement(props) {
 		if (type == "defaultText") {
 			const result = await HomeService.getSearchResults(history);
 			if (result && result.response_content && result.response_content.length > 0) {
-				tempArr = await UtilsService.mostRecentResCalculation(result, 'searchmanagement');
+				// tempArr = await UtilsService.mostRecentResCalculation(result, 'searchmanagement');
+				tempArr = await getSearchDataArr(result, 'searchmanagement');
 				// tempArr = _.orderBy(tempArr, [(obj) => new Date(obj.date)], ['desc']);
-				console.log(tempArr,'tempArr');
+				// console.log(tempArr,'tempArr');
 
 			}
 		} else {
@@ -338,14 +345,105 @@ function SearchManagement(props) {
 				const result = await SearchManagementService.getFolderData(id, history);
 				if (result && result.response_content) {
 					if (result.response_content.results.length > 0) {
-						tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
+						// tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
+						tempArr = await getSearchDataArr(result, 'searchfolder');
 					}
 				}
 			}
 			
 		}
 		setSearchResultData(tempArr);
-
+	}
+	async function getSearchDataArr(data,pagetype){
+		let tempArr = [];
+        let resultData;
+        if(pagetype == 'searchfolder')
+        {
+            resultData = data.response_content.results;
+        }else {
+            resultData = data.response_content;
+        }
+        resultData.forEach(datas => {
+            let tempObj = datas;
+            let id = datas.id;
+            tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
+            const regex = /Fulltext/i;
+            if(datas.type !== null && datas.type !== '')
+            {
+                const found = datas.type.match(regex);
+                if(found && found.length >0){
+                    type = 'Documents';
+                }
+            }else{
+                datas.type = ' ' 
+            }
+            let type = 'Alignments';
+            
+            let mostRecentTypeUrl = url.mostRecentTypeUrl
+            mostRecentTypeUrl = mostRecentTypeUrl.replace('**', id);
+            let typeUrl = process.env.REACT_APP_BASE_URL+mostRecentTypeUrl;
+            if(datas.type != '')
+            {
+                if(datas.type !== 'GqFolder')
+                {
+                    if(datas.status == 'STILL_RUNNING')
+                    {
+                        tempObj['results'] = <ProgressBar datas={datas} />
+                    }
+                    else if(datas.status == 'FAILED'){
+                        tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
+                    }
+                    else {
+                        tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+                    }
+                }else{
+                    tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
+                }
+            }else {
+                tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
+            }
+            
+            let mostRecentClassicUrl = url.mostRecentClassicUrl
+            mostRecentClassicUrl = mostRecentClassicUrl.replace('**', id);
+            let classicLink = process.env.REACT_APP_API_URL+mostRecentClassicUrl
+            if(datas.status == 'FAILED')
+            {
+                tempObj["report"] = '';
+            }else{
+                if(datas.type != '')
+                {
+                    if(datas.type == "GqWfABIpSearch")
+                    {
+                        let mostRecentReportUrl = url.mostRecentReportUrl
+                        mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
+                        let reportLink = process.env.REACT_APP_BASE_URL+mostRecentReportUrl
+                        tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
+                                            <span className="mx-2">|</span>
+                                            <a href={classicLink} target="_blank">Classic</a>
+                                            </Fragment>
+                    }else if(datas.type !== "GqFolder"){
+                        tempObj["report"] = <Fragment>
+                                            <a href={classicLink} target="_blank">Classic</a>
+                                            </Fragment>
+                    }else {
+                        tempObj["report"] = '';
+                    }
+                }else {
+                    tempObj["report"] = '';
+                }
+            }
+            tempObj['type'] = Constant['searchType'][datas.type] ? Constant['searchType'][datas.type]: datas.type;
+            if(pagetype === "searchmanagement" || pagetype === "searchfolder")
+            {
+                tempObj["info"] = <Fragment>
+                                    <a href="#" className="infoIcon" onClick={(e)=>getInfoIconData(e,tempObj)}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
+                                    <a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLinkColor" /></a>
+                                    <a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
+                                </Fragment>
+            }
+            tempArr.push(tempObj);
+        })
+        return tempArr;
 	}
 	async function getFolderResultData() {
 		const folderData = await SearchManagementService.getProjectFolders(history);
@@ -361,7 +459,9 @@ function SearchManagement(props) {
 						if (key === 'id') ids.push(value);
 						return value;
 					});
+					// setFolderIds(["4086079","4087563","4087579"]);
 					setFolderIds(ids);
+					// setInfoFolderIds([res.id]);
 					setFolderDetail(getResult.response_content.items[0]);
 				}
 			}
@@ -412,6 +512,14 @@ function SearchManagement(props) {
 		// setTimeout(() => {
 		getDefaultSearchResult('folder', event.id);
 		setDisableDelete(true);
+		if(!_.includes(infoFolderIds, parentFolderId)){
+			infoFolderIds.push(parentFolderId)
+		}
+		infoFolderIds.push(event.id)
+		setInfoFolderIds(infoFolderIds);
+		if(event.text_label == "My Searches"){
+			setInfoFolderIds([]);
+		}
 		// }, 1000);
 	};
 	const selectedFolder = (event) =>{
@@ -443,40 +551,86 @@ function SearchManagement(props) {
 	}
 	const getFolderName=async(e)=>{
 		if(e.keyCode == 13){
-			if(_.includes(Constant.folderRestrictNames, e.target.value))
+			var regex = new RegExp(Constant.folderRestrictNames.join( "|" ), "i");
+			var isAvailable = regex.test( e.target.value ); 
+			// console.log(isAvailable,'isAvailable');
+			if(isAvailable)
 			{
 				setAddFolderModalShow(true);
+			}else if(e.target.value.length > 200){
+				setAddFolderModalShow(true);
 			}else {
-				// const addResp = await SearchManagementService.addFolder(parentFolderId,e.target.value, history);
-				// if(addResp.response_status == 0)
-				// {
-				// 	// if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
-				// 		getDefaultSearchResult('folder', defaultTitleId);
-				// 		getFolderResultData();
-				// 		e.target.value = '';
-				// 		setShowNewFolder(false);
-				// 		setAddFolderText(true);
-				// 		toast.success('Folder Added Successfully');
-				// 	// }
-				// }else {
-				// 	// getDefaultSearchResult('folder', defaultTitleId);
-				// 	toast.error(addResp.response_content.message);
-				// }
+				const addResp = await SearchManagementService.addFolder(parentFolderId,e.target.value, history);
+				if(addResp.response_status == 0)
+				{
+					// if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
+						getDefaultSearchResult('folder', defaultTitleId);
+						getFolderResultData();
+						e.target.value = '';
+						setShowNewFolder(false);
+						setAddFolderText(true);
+						toast.success('Folder Added Successfully');
+					// }
+				}else {
+					// getDefaultSearchResult('folder', defaultTitleId);
+					toast.error(addResp.response_content.message);
+				}
 			}
 			
 		}
-	 }
-	useEffect(() => {
-		(async () => {
-			// const result = dispatch(getSearchResult());
-			getDefaultSearchResult('defaultText', '');
-			getFolderResultData();
-			document.addEventListener("keydown", escFunction, false);
+	}
+	async function  getInfoIconData(e,data){
+		e.preventDefault();
+		console.log(data,'data');
+		if(data)
+		{
+			setDefaultTitle(data.description);
+			setDefaultTitleId(data.id);
+			let infoFId = [];
+			if(infoFolderIds && infoFolderIds.length == 0)
+			{
+				infoFolderIds.push(parentFolderId);
+			}
+			infoFolderIds.push(data.id)
 
+			console.log(infoFolderIds,'beforeinfoFolderIds')
+ 			setInfoFolderIds([...infoFolderIds]);
+			
+			
+
+			console.log(infoFolderIds,'checkinfoFolderIds')
+			getDefaultSearchResult('folder', data.id);
+			// getFolderResultData();
+		}
+		
+	};
+	useEffect(() => {
+		// (async () => {
+			// const result = dispatch(getSearchResult());
+			getFolderResultData();
+			getDefaultSearchResult('defaultText', '');
+			
+			document.addEventListener("keydown", escFunction, false);
+			// var elements = document.getElementsByClassName("infoIcon");
+			// for (var i = 0; i < elements.length; i++) {
+			// 	elements[i].addEventListener('click', getInfoIconData);
+			// }
+			// setTimeout(() => {
+				// document.querySelectorAll('.infoIcon').forEach(item => {
+				// 	item.addEventListener('click', event => {
+				// 		// setDefaultTitle(event.target.title);
+
+				// 		// getInfoIconData(event)
+				// 		// getDefaultSearchResult('folder', defaultTitleId);
+				// 	})
+				// })
+			// }, 2000);
+			
 			return () => {
 			  document.removeEventListener("keydown", escFunction, false);
+			  
 			};
-		})();
+		// })();
 	}, []);
 
 	return (
@@ -517,7 +671,7 @@ function SearchManagement(props) {
 
 							{/* {folderDetail.map((value, index) => { */}
 								<ListGroup.Item key={123} className={classes.projectListItem}>
-									<FolderTreeMenu items={folderDetail} selectedTitle={defaultTitle} type="selectFolder" parentCallback={changeTitle} />
+									<FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} type="selectFolder" parentCallback={changeTitle} />
 								</ListGroup.Item>
 
 							{/* })} */}
@@ -686,7 +840,7 @@ function SearchManagement(props) {
 						<p className="mb-3"><b>{t('moveToFolder')}</b></p>
 						<p className="mb-3">{t('selFolderToMove')}</p>
 						<div className="mb-5 h-100">
-							<FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderCallback={selectedFolder} expandableRows={false} type="moveFolder" />
+							<FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderCallback={selectedFolder} type="moveFolder" />
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
 							<Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true:false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('moveResult')}</Button>
@@ -706,9 +860,9 @@ function SearchManagement(props) {
 					<div>
 						<p className="mb-3">{t('folderNameNotAllowed')}</p>
 						<p className="mb-3">{t('tryAgain')}</p>
-						<div className={classes.footerDiv + " align-center"}>
-							<Button onClick={()=>setAddFolderModalShow(false)} className="mr-2 primaryBtn" color="primary" variant="contained">{t('ok')}</Button>
-						</div>
+					</div>
+					<div className={classes.footerDiv + " align-center"}>
+						<Button onClick={()=>setAddFolderModalShow(false)} className="mr-2 primaryBtn" color="primary" variant="contained">{t('ok')}</Button>
 					</div>
 				</Modal.Body>
 			</Modal>

@@ -7,6 +7,7 @@ import RedoIcon from '@material-ui/icons/Redo';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import Constant from '../helpers/constant';
 
+
 async function mostRecentResCalculation(data,pagetype) {
     try {
         let tempArr = [];
@@ -45,7 +46,7 @@ async function mostRecentResCalculation(data,pagetype) {
                         tempObj['results'] = <ProgressBar datas={datas} />
                     }
                     else if(datas.status == 'FAILED'){
-                        tempObj['results'] = datas.status
+                        tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
                     }
                     else {
                         tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
@@ -87,13 +88,12 @@ async function mostRecentResCalculation(data,pagetype) {
                 }
             }
             tempObj['type'] = Constant['searchType'][datas.type] ? Constant['searchType'][datas.type]: datas.type;
-
             if(pagetype === "searchmanagement" || pagetype === "searchfolder")
             {
                 tempObj["info"] = <Fragment>
-                                    <InfoIcon className="mr-2 appLinkColor"/>
-                                    <RedoIcon className="mr-2 appLinkColor" />
-                                    <AccessAlarmIcon className="appLinkColor" />
+                                    <a href="#" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
+                                    <a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLinkColor" /></a>
+                                    <a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
                                 </Fragment>
             }
             tempArr.push(tempObj);

@@ -68,8 +68,6 @@ const transport = axios.create({
 //     .then(response => response.json())
 // }
 function HandleResponse(response,history) {
-    console.log(response,'response');
-    console.log(history,'history');
     const contentType = response.headers["content-type"];
     if (contentType && contentType.indexOf("application/json") !== -1) {
         if(response.status == 200)
@@ -129,7 +127,6 @@ export function post(url, postdata,history) {
         //body: JSON.stringify(data)
     })
     .then(resp => {
-        console.log('response.data', resp);
         return HandleResponse(resp,history)
         // return resp
     });
@@ -170,7 +167,6 @@ export function get(url, history) {
             };
             return axios.get(baseUrl + url, { headers })
                 .then(resp => {
-                    console.log('response.data', resp);
                     return HandleResponse(resp,history)
                     // return resp
                 });

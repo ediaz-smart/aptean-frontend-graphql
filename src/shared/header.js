@@ -201,8 +201,8 @@ export default function Header(props) {
 
                         <PromptModal
                             show={modalShow}
-                            onHide={() => setModalShow(false)}
-                            onClick={() => logout()}
+                            hideModal={() => setModalShow(false)}
+                            modalCallback={logout}
                         />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>

@@ -17,18 +17,20 @@ export const submitLogin = (data,history, t) => async (dispatch) => {
         .then(async (response) => {
             if(response && response.response_status == 0)
             {
-                toast.success('loginSuccess');
+                toast.success(t('loginSuccess'));
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('userName', data.GQUSERID);
                 dispatch(setUser({GQUSERID: data.GQUSERID,isLoggedIn: true }));
                 history.push('/home');
             }else {
                 let errorMsg = 'Unable to Login';
+                dispatch(setUser({isLoggedIn: false }));
                 if(response && typeof response.response_content === 'object' && response.response_content !== null){
                     errorMsg = response.response_content.message;
                 }
-                toast.error(errorMsg);
-                dispatch(setUser({isLoggedIn: false }));
+                return errorMsg;
+                // toast.error(errorMsg);
+                
             }
         })
         .catch((error) => {

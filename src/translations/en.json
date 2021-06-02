@@ -132,6 +132,7 @@
     "moveResult":"Move Results",
     "folderNameNotAllowed":"Your new folder name is not allowed.​",
     "tryAgain":"Please try again.​",
-    "ok":"Ok"
+    "ok":"Ok",
+    "loginFailure":"Login unsuccessful, please try again​"
 
 }

@@ -60,6 +60,7 @@ function Login(props) {
 
     const history = useHistory();
     const classes = useStyles();
+    const [errorMsg,setErrorMsg] = useState(false);
     const { t, i18n } = useTranslation('common');
     const dispatch = useDispatch();
 
@@ -70,7 +71,12 @@ function Login(props) {
         },
         validationSchema: Validate.LoginValidate(),
         onSubmit: async(values) => {
-            dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password},history, t));
+            let resp = await dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password},history, t));
+            console.log(resp,'resp');
+            if(resp == "LOGIN_FAILED")
+            {
+                setErrorMsg(!errorMsg);
+            }
             // history.push('/home');
         },
     });
@@ -96,7 +102,8 @@ function Login(props) {
                 <Col sm="12" md="5" className="mb-5 mt-4">
                 
                 <form name="loginForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
-                    <h5 className="loginTitle">{t('loginAccount')}</h5>
+                    {!errorMsg && <h5 className="loginTitle">{t('loginAccount')}</h5>}
+                    {errorMsg && <h6 className="loginTitle failedTextColor">{t('loginFailure')}</h6>}
                     <div className="form-group">
                         <TextInput 
                         fullWidth

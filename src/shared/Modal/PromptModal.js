@@ -14,27 +14,27 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-function PromptModal(props) {
+function PromptModal({show,modalCallback,hideModal}) {
 	const classes = useStyles();
 	return (
 		<Modal
-			{...props}
 			size="lg"
 			aria-labelledby="contained-modal-title-vcente"
 			centered
 			contentClassName='modalPromptContent'
+			show={show}
 		>
-			<Modal.Header closeButton className={classes.modalHeader}>
+			<Modal.Header className={classes.modalHeader}>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
           </Modal.Title> */}
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
-				<h5>Please confirm that you want to logout.</h5>
+				<h5>Please confirm that you want to log out.</h5>
 				<br></br>  <br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.onHide} className="float-right m-2" color="primary" variant="contained">Logout</Button>
-					<Button onClick={props.onHide} className="float-right m-2"  color="default" variant="contained">Cancel</Button>
+					<Button onClick={modalCallback} className="float-right m-2 text-initial primaryBtn" color="primary" variant="contained">Log out</Button>
+					<Button onClick={hideModal} className="float-right m-2 text-capitalize appTextColor disableBtnBorder"  color="default" variant="contained">Cancel</Button>
 				</div>
 				
 			</Modal.Body>

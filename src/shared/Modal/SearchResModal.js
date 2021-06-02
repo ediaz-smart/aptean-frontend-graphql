@@ -47,7 +47,6 @@ function SearchResModal(props) {
 				<p className="mb-3">{props.content}</p>
 
                 <div className="mb-5 h-100">
-                    {disableDelete}ss
                     <CheckBox
                                 
                                 color="primary"

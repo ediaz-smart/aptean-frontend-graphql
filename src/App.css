@@ -61,6 +61,9 @@
 .cursorPointer{
     cursor: pointer;
 }
+.pe-none{
+    pointer-events: none;
+}
 .MuiTreeItem-group{
     margin-left:32px !important
 }
@@ -68,6 +71,12 @@
     pointer-events: none;
     color: #ccc;
     cursor: not-allowed;
+}
+.failedIconColor{
+    color: #d94f0a !important;
+}
+.failedTextColor{
+    color:#e17a47 !important;
 }
 
 /* Login & Forgot */
@@ -88,7 +97,7 @@
 }
 
 .text-initial {
-    text-transform: none;
+    text-transform: none !important;
 }
 
 
@@ -117,7 +126,7 @@
 }
 
 .appTextColor {
-    color: #4a5050
+    color: #4a5050 !important;
 }
 
 .borderless {
