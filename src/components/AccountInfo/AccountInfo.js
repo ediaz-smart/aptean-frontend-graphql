@@ -21,7 +21,7 @@ import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLa
 import Validate from '../../helpers/validate';
 import { toast } from 'react-toastify';
 import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
-
+import SaveContentModal from '../../shared/Modal/SaveContentModal'
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -64,7 +64,8 @@ function AccountInfo() {
     const history = useHistory();
     const {t, i18n} = useTranslation('common');
     const [prop1, setProp1] = useState("prop1");
-    const [modalShow, setModalShow] = React.useState(false);
+    const [modalShow, setModalShow] = React.useState(false); 
+    const [modalShowSaved, setmodalShowSaved] = React.useState(false); 
     const [userIdCon, setuserIdCon] = useState("");
     const [userId, setuserId] = useState("");
     const [userFirstName, setuserfirstName] = useState("");
@@ -87,6 +88,11 @@ function AccountInfo() {
       color: "black",
       textAlign: "left"
     };
+    function successMessage()
+    {
+      setmodalShowSaved(false);
+      history.push('/home')
+    }
     function setAccountInfo(data)
     {
       if(data)
@@ -126,8 +132,8 @@ function AccountInfo() {
 
     const formik = useFormik({
         initialValues: {
-            firstName: String(accountInfoData.first_name),
-            lastName: String(accountInfoData.last_name),
+            firstName: accountInfoData.first_name ? String(accountInfoData.first_name) : '',
+            lastName: accountInfoData.last_name ? String(accountInfoData.last_name) : '',
             confirmPassword: '',
            
         },
@@ -141,8 +147,9 @@ function AccountInfo() {
               setModalShow(true);
               // toast.error(result.response_content.message);
             }else{
-              toast.success("Successfully Updated");
-              history.push('/home')
+              // toast.success("Successfully Updated");
+              // history.push('/home')
+              setmodalShowSaved(true);
             }
         },
     });
@@ -296,6 +303,7 @@ function AccountInfo() {
                                 name="confirmPassword"
                                 label='Confirm Password'
                                 variant="outlined"
+                                type="password"
                                 value={formik.values.confirmPassword}
                                 onChange={formik.handleChange} 
                                 error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
@@ -314,6 +322,12 @@ function AccountInfo() {
                             onHide={() => setModalShow(false)}
                             onMessage={errorMessage}
                         />
+                         <SaveContentModal
+                            show={modalShowSaved}
+                            onHide={() => successMessage()}
+                            onMessage={'Your changes have been saved.'}
+                        />
+                     
         </Container>
         </div>
         </form>

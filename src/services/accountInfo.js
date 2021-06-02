@@ -1,17 +1,28 @@
 import { get } from '../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
 import { url } from '../reducers/url';
+import PubSub from 'pubsub-js';
+
+function showLoader() {
+	PubSub.publish('msg', true);
+}
+
+function hideLoader() {
+	PubSub.publish('msg', false);
+}
 
 async function getAccountInfo() {
     if(localStorage.getItem('isLoggedIn')){
         try {
+            showLoader();
             return await get(url.accountInfo)
             .then((response) => {
-                
+                hideLoader();
                 console.log(JSON.stringify(response));
                 return response;
             })
             .catch((error) => {
+                hideLoader();
                 toast.error('Failed to retrieve Account Info');
                 console.log("error::", error);
 
@@ -66,13 +77,15 @@ async function update(url) {
     if(localStorage.getItem('isLoggedIn') && url != "" ){
 
         try {
+            showLoader();
             return await get(url)
             .then((response) => {
-                
+                hideLoader();
                 console.log(JSON.stringify(response),"Password");
                 return response;
             })
             .catch((error) => {
+                hideLoader();
                 toast.error('Failed to change password');
                 console.log("error::", error);
 

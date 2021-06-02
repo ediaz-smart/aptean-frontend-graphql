@@ -12,6 +12,8 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
 import AccountService from '../../services/accountInfo';
+import SaveContentModal from '../../shared/Modal/SaveContentModal'
+import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
             width:'100%'
         }
     },rootButton:{
-        marginLeft:'232px',
+        marginLeft:'222px',
           '& > *': {
             margin: theme.spacing(2),
             textTransform:"capitalize",
@@ -77,10 +79,19 @@ function ChangePassword() {
     const classes = useStyles();
     const {t, i18n} = useTranslation('common');
     const [passwordForm, setPasswordForm] = useState(true);
+    const [modalShowSaved, setmodalShowSaved] = React.useState(false); 
+    const [modalShow, setModalShow] = React.useState(false); 
+    const [errorMessage, seterrorMessage] = useState("");
+
     const [userId, setUserId] = useState(true);
     const history = useHistory();
 
     const dispatch = useDispatch();
+    function successMessage()
+    {
+      setmodalShowSaved(false);
+      history.push('/home')
+    }
     const formik = useFormik({
         initialValues: {
             currentPassword: '',
@@ -93,12 +104,17 @@ function ChangePassword() {
                {
                         const result = await AccountService.updatePass(userId,values.newPassword,values.confirmPassword,values.currentPassword);
                         if(result.response_content.message)
-                        {
-                            toast.error(result.response_content.message);
+                        { 
+                            await seterrorMessage(result.response_content.message);
+                            setModalShow(true);
+                            // toast.error(result.response_content.message);
                         }else{
-                            toast.success("Successfully Updated");
-                            history.push('/home')
+                            // toast.success("Successfully Updated");
+                            // history.push('/home')
+                            setmodalShowSaved(true);
                         }
+                       
+           
                }
                else{
                 toast.error("Password MisMatch! Enter Valid Password.");
@@ -191,7 +207,7 @@ function ChangePassword() {
                        
                         <div className={classes.rootButton}>
                             <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
-                                <Button variant="contained" type="submit">{t('cpsavenewpass')}</Button>
+                             <Button variant="contained" type="submit">{t('cpsavenewpass')}</Button>
                         </div>
 
                     </form>
@@ -219,6 +235,16 @@ function ChangePassword() {
                 </Col>
             </Row>
         </Container>
+        <AccountInfoModal
+                            show={modalShow}
+                            onHide={() => setModalShow(false)}
+                            onMessage={errorMessage}
+                        />
+                         <SaveContentModal
+                            show={modalShowSaved}
+                            onHide={() => successMessage()}
+                            onMessage={'Your changes have been saved.'}
+                        />
      </div>
     );
 }

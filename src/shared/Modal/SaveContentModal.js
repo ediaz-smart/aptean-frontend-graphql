@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-function AccountInfoModal(props) {
+function SaveContentModal(props) {
 	const classes = useStyles();
     console.log(props,"props");
 	return (
@@ -36,8 +36,7 @@ function AccountInfoModal(props) {
 				<br></br>
 				<br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.onHide} className="float-right m-2" color="primary" variant="contained">Try Again</Button>
-					<Button onClick={props.onHide} className="float-right m-2"  color="default" variant="contained">Cancel</Button>
+					<Button onClick={props.onHide} className="float-right m-2" color="primary" variant="contained">OK</Button>
 				</div>
 				
 				
@@ -49,4 +48,4 @@ function AccountInfoModal(props) {
 	);
 }
 
-export default AccountInfoModal;
+export default SaveContentModal;

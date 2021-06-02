@@ -1,11 +1,21 @@
 import { get } from '../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
 import { url } from '../reducers/url';
+import PubSub from 'pubsub-js';
 
+function showLoader() {
+	PubSub.publish('msg', true);
+}
+
+function hideLoader() {
+	PubSub.publish('msg', false);
+}
 async function getCopyright() {
     try {
+        // showLoader();
         return await get(url.copyright)
         .then((response) => {
+            // hideLoader();
             if(response && response.response_content)
             {
                 return response.response_content;

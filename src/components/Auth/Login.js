@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { submitLogin } from '../../reducers/slice/loginSlice';
 import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
+import Footer from '../../shared/footer';
 
 const useStyles = makeStyles((theme) => ({
     loginDiv: {
@@ -20,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
         padding: '20px',
         height: '100%'
     },
+    navbarClass :{
+        marginBottom : '10px'
+    }
+    ,
     forgotLink: {
         marginTop: '10px',
         a: {
@@ -92,6 +97,7 @@ function Login(props) {
     }, []);
 
     return (
+        <div>
         <Container className="mt-100">
             <Row className={classes.loginLogoDiv}>
                 <Col md="3" className="p-0 ml-4">
@@ -147,7 +153,12 @@ function Login(props) {
                 </Col>
             </Row>
         </Container>
-
+        {/* <div className={classes.navbarClass}>
+            <Footer />
+        </div> */}
+        </div>
+           
+        
     );
 }
 
