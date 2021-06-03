@@ -45,6 +45,7 @@ export default function TextInput(props) {
         multiline={props.multiline}
         rows={props.rows}
         rowsMax={props.rowsMax}
+        disabled={props.disabled}
         />
     );
 }

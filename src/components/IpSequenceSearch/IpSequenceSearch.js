@@ -11,6 +11,8 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { useFormik } from 'formik';
 import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import moment from 'moment';
 
 //components
 import TextInput from '../../shared/Fields/TextInput';
@@ -18,14 +20,20 @@ import CheckBox from '../../shared/Fields/CheckBox';
 import SelectBox from '../../shared/Fields/SelectBox';
 import DatePicker from '../../shared/Fields/DatePicker';
 import RadioButton from '../../shared/Fields/RadioButton';
-import { getSeqSearchResults } from '../../services/seqSearchService';
+import { getSeqSearchResults, submitSeqSearch } from '../../services/seqSearchService';
 import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStructure';
+import SaveContentModal from '../../shared/Modal/SaveContentModal';
+import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModal';
 
-
-import * as yup from 'yup';
-// import { submitLogin } from '../../reducers/slice/loginSlice';
+//validation
 import Validate from '../../helpers/validate';
-import Button from '@material-ui/core/Button';
+
+
+//service
+import AccountInfo from '../../services/accountInfo';
+
+//reducer
+// import { submitSeq}
 
 
 
@@ -251,77 +259,9 @@ const data3 = [
 
 function IpSeqSearch() {
     const { t, i18n } = useTranslation('common');
+    const history = useHistory();
 
     const classes = useStyles();
-    const formik = useFormik({
-        initialValues: {
-            searchDetails: '',
-            querySequence: '',
-            alignments: 5000,
-            genePastPercentage: 80,
-            expectCutoff: 10,
-            fragmentStretch: 50,
-            fragmentAminoAcid: 96,
-            docPublicSel: "before",
-            publishGQSel: "before",
-            patientDocSel:"islessthan"
-        },
-        validationSchema: Validate.IpSeqSearchValidate(),
-        onSubmit: async (values) => {
-            let data = {
-                qdb_seq: formik.values.querySequence,
-                qdb_seq_type: "nucleotide", // nucleotide or protein, query sequence type based on the above query seq.
-                qdb_id: "", // will have such value for virtual query database, not included in this release yet
-                searchtype: "FTO", // leave it as always "FTO"
-                title: formik.values.searchDetails, // Workflow name
-                email: "", // When "Send email when the search is done" is checked, retrieve the email from the user info
-                nucandprot: "off", // "on" when selecting both NUC and PRO databases
-                strat_name: "kerr", // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
-                // Genepast parameters
-                strat_genepast_perc_id: formik.values.genePastPercentage,
-                strat_genepast_perc_id_over: "QUERY",
-                // Blast
-                strat_blast_word_size_nuc: "11", // Word Size - Nucleotide
-                strat_blast_word_size_pro: "3", // Word Size - Protein
-                strat_blast_scoring_matrix_nuc: "NUC.3.1", // Scoring matrix - Nucleotide
-                strat_blast_scoring_matrix_pro: "BLOSUM62", // Scoring matrix - Protein
-                strat_blast_eval_cutoff: "10", // Expect Cutoff
-                strat_blast_hsp: "on", // HSP handling, "on" when the checkbox is selected
-                // Fragment
-                strat_fragment_window_length_nuc: "50", // Window Length - Nuc
-                strat_fragment_window_length_pro: "20", // Window Length - Prt
-                strat_fragment_perc_id_nuc: "96", // Percentage Identity - Nuc
-                strat_fragment_perc_id_pro: "95", // Percentage Identity - Prt
-                /*
-                strat_sw_scoring_matrix_nuc: "NUC.3.1",
-                strat_sw_scoring_matrix_pro: "BLOSUM62",
-                strat_sw_gapo_nuc: "1",
-                strat_sw_gape_nuc: "1",
-                strat_sw_gapo_pro: "1",
-                strat_sw_gape_pro: "1",*/
-                seqlenrange_low: "6", // Limit subject length from
-                seqlenrange_high: "10000", // Limit subject length to
-                best_hit_keep_max: "50", // Keep a maximum of xxx results
-                // sdb_filters example, publication date before 2021/05/27
-                //                    & No. of Seq. is less than or equal to 100,000
-                //                    & Date of entry before 2021/05/27
-                // [{"P":"SEQUENCE_D1","O":"BEF","V":20210527},
-                //  {"P":"SEQUENCE_P9","O":"LTE","V":100000},
-                //  {"P":"SEQUENCE_D2","O":"BEF","V":20210527}]
-                sdb_filters: "",
-                nucdb_type: "multiple", // always multiple
-                nucdbs: "[\"p:GQPAT_NUC\", \"p:GENA\"]", // string array of databases
-                protdb_type: "multiple", // always multiple
-                protdbs: "", // Similar like nucdbs
-                template_name: "", // Set this value when selecting "Save this form for later use as"
-                parent_id: "" // When having the patent workflow, for the "redo" scenario
-            };
-            // dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password}));
-            // history.push('/home');
-        },
-    });
-
-
 
     const [seqDBFilter, setSeqDBFilter] = React.useState(true);
     const [specificDBFilter, setSpecificDBFilter] = React.useState(true);
@@ -346,46 +286,69 @@ function IpSeqSearch() {
     const [nucReferenceData, setNucReferenceData] = useState([]);
     const [nucPersonalData, setNucPersonalData] = useState([]);
 
-    const [searchAlgorithmValue, setSearchAlgorithm] = useState("genepastSearch");
+    const [searchAlgorithmValue, setSearchAlgorithm] = useState("kerr");
     const [scoringMatrixValue, setScoringMatrix] = useState("NUC3.1");
-    const [sequenceTypeValue, setSequenceType] = useState("nucleotideSequence");
+    const [sequenceTypeValue, setSequenceType] = useState("nucleotide");
     const [wordSizeValue, setWordSize] = useState("11");
     const [nucleotideData, setNucleotideData] = useState();
     const [proteinData, setProteinData] = useState();
     const [files, setFiles] = useState([]);
     // const [querySequenceValue, setQuerySequencyValue] = useState();
-    const [genePastValue, setGenePastValue] = useState("myQuery");
+    const [genePastValue, setGenePastValue] = useState("QUERY");
     const [personalDataValue, setPersonalDataValue] = useState();
+    const [isBothDbSelected, setIsBothDbSelected] = useState("off");
+    const [dbTypeArray, setDbTypeArray] = useState([]);
+    const [sendMailAfterSearch, setSendMailAfterSearch] = useState(false);
+    const [processHsp, setProcessHsp] = useState(false);
+    const [nucDb, setNucDb] = useState([]);
+    const [proDb, setProDb] = useState([]);
+    const [saveFormValue, setSaveFormValue] = useState(false);
+    const [isDocPubDate, setIsDocPubDate] = useState(false);
+    const [isPublished, setIsPublished] = useState(false);
+    const [isPatientDoc, setIsPatientDoc] = useState(false);
+    const [sdbFilters, setSdbFilters] = useState([]);
+    const [ppuType, setPpuType] = useState();
+    const [isSubmitActive, setIsSubmitActive] = useState(false);
+    const [isDocPubUnknownDates, setIsDocPubUnknownDates] = useState(false);
+    const [ispublishGQUnknownDates, setIspublishGQUnknownDates] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errorMsg, setErrorMsg] = useState();
+
+
 
     console.log('personalDataValue', personalDataValue)
+
+    console.log('sendMailAfterSearch', sendMailAfterSearch)
+    console.log('processHsp', processHsp)
 
     // reset login status
     useEffect(() => {
         (async () => {
             //dispatch(userActions.logout()); 
             const resp = await getSeqSearchResults();
-            console.log('respqokweflwef', resp);
+            // console.log('respqokweflwef', resp);
             if (resp && resp.response_content && resp.response_content.sdb_nuc_tree && resp.response_content.sdb_nuc_tree.length > 0) {
                 let nucData = resp.response_content.sdb_nuc_tree;
                 let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [];
-                console.log('nuc', resp.response_content.sdb_nuc_tree.length)
+                // console.log('nuc', resp.response_content.sdb_nuc_tree.length)
                 let nucFormattedData = await list_to_tree(nucData);
-                console.log('nucFormattedData', nucFormattedData);
-                let getNucChild=[];
-                if(nucFormattedData && nucFormattedData.length > 0 ) {
+                // console.log('nucFormattedData', nucFormattedData);
+                let getNucChild = [];
+                if (nucFormattedData && nucFormattedData.length > 0) {
                     getNucChild = nucFormattedData[0].children;
                 }
                 getNucChild && getNucChild.length > 0 && getNucChild.map((item, index) => {
                     if (item && item.id == ':Patents') {
                         nucleotidePatent = item.children;
                     } else if (item && item.id == ':Reference Data') {
-                        nucleotideReferenceData = item.children ;
+                        nucleotideReferenceData = item.children;
                     } else if (item && item.id == ':Data Shared With Me') {
                         nucDataShardWithMe = item;
                     }
                 })
                 setNucleotideData(resp.response_content.sdb_nuc_tree);
-                
+
                 setNucPatentData(nucleotidePatent);
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
@@ -393,11 +356,11 @@ function IpSeqSearch() {
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
                 let proteinData = resp.response_content.sdb_pro_tree;
                 let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [];
-                console.log('pro', resp.response_content.sdb_pro_tree.length)
+                // console.log('pro', resp.response_content.sdb_pro_tree.length)
                 let proFormattedData = await list_to_tree(proteinData);
-                console.log('proFormattedData', proFormattedData);
-                let getProChild=[];
-                if(proFormattedData && proFormattedData.length > 0 ) {
+                // console.log('proFormattedData', proFormattedData);
+                let getProChild = [];
+                if (proFormattedData && proFormattedData.length > 0) {
                     getProChild = proFormattedData[0].children;
                 }
                 getProChild && getProChild.length > 0 && getProChild.map((item, index) => {
@@ -410,12 +373,23 @@ function IpSeqSearch() {
                     }
                 })
                 setProteinData(resp.response_content.sdb_pro_tree);
-                
+
                 setProPatentData(proteinPatent);
                 setProReferenceData(proteinReferenceData);
                 setProPersonalData(proDataShardWithMe);
             }
 
+            const accountData = await AccountInfo.getAccountInfo();
+            console.log('accountData', accountData)
+            if (accountData && accountData.response_content && accountData.response_content.ppu_type) {
+                let userPpu = accountData.response_content.ppu_type;
+                setPpuType(accountData.response_content.ppu_type);
+                if (userPpu == "1" || userPpu == "2") {
+                    setIsSubmitActive(false);
+                } else {
+                    setIsSubmitActive(true);
+                }
+            }
         })()
     }, []);
     console.log('nucPatentData', nucPatentData);
@@ -424,33 +398,171 @@ function IpSeqSearch() {
     console.log('proPatentData', proPatentData);
     console.log('prorefereData', proReferenceData);
     console.log('prosharedData', proPersonalData)
+    console.log('accountData.response_content.ppu_type', ppuType)
+
+
+
+    const formik = useFormik({
+        initialValues: {
+            searchDetails: '',
+            querySequence: '',
+            alignments: 5000,
+            genePastPercentage: 80,
+            expectCutoff: 10,
+            fragmentStretch: 50,
+            fragmentAminoAcid: 96,
+            docPublicSel: "BEF",
+            publishGQSel: "BEF",
+            patientDocSel: "LTE",
+            docPublicDate: moment(),
+            publishGQDate: moment(),
+            genepastPercentageOver: "QUERY",
+            patientDocInp: 100000,
+            minResidues: 6,
+            maxResidues: 100000
+        },
+        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue),
+        onSubmit: async (values) => {
+            console.log('formikValues', values)
+
+            let sdbFilterData = [];
+            if (isDocPubDate) {
+                let docPubStatus;
+                if (isDocPubUnknownDates && values.docPublicSel == "BEF") {
+                    docPubStatus = "BEF_IE"
+                } else if (isDocPubUnknownDates && values.docPublicSel == "AFT") {
+                    docPubStatus = "AFT_IE"
+                } else {
+                    docPubStatus = values.docPublicSel.toString()
+                }
+                let obj = {
+                    "P": "SEQUENCE_D1",
+                    "O": docPubStatus,
+                    "V": moment(values.docPublicDate).format('YYYYMMDD')
+                }
+                sdbFilterData.push(obj);
+            }
+            if (isPublished) {
+                let publishedStatus;
+                if (ispublishGQUnknownDates && values.docPublicSel == "BEF") {
+                    publishedStatus = "BEF_IE"
+                } else if (ispublishGQUnknownDates && values.docPublicSel == "AFT") {
+                    publishedStatus = "AFT_IE"
+                } else {
+                    publishedStatus = values.publishGQSel.toString()
+                }
+                let obj = {
+                    "P": "SEQUENCE_D2",
+                    "O": publishedStatus,
+                    "V": moment(values.publishGQDate).format('YYYYMMDD')
+                }
+                sdbFilterData.push(obj);
+            }
+            if (isPatientDoc) {
+                let obj = {
+                    "P": "SEQUENCE_P9",
+                    "O": values.patientDocSel.toString(),
+                    "V": values.patientDocInp
+                }
+                sdbFilterData.push(obj);
+            }
+            console.log('sdbFilterData.toString()', sdbFilterData)
+            let data = {
+                qdb_seq: values.querySequence,
+                qdb_seq_type: sequenceTypeValue, // nucleotide or protein, query sequence type based on the above query seq.
+                qdb_id: "", // will have such value for virtual query database, not included in this release yet
+                searchtype: "FTO", // leave it as always "FTO"
+                title: values.searchDetails, // Workflow name
+                email: sendMailAfterSearch ? localStorage.getItem('userName') : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
+                nucandprot: isBothDbSelected, // "on" when selecting both NUC and PRO databases
+                strat_name: searchAlgorithmValue, // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
+                /*
+                strat_sw_scoring_matrix_nuc: "NUC.3.1",
+                strat_sw_scoring_matrix_pro: "BLOSUM62",
+                strat_sw_gapo_nuc: "1",
+                strat_sw_gape_nuc: "1",
+                strat_sw_gapo_pro: "1",
+                strat_sw_gape_pro: "1",*/
+                seqlenrange_low: values.minResidues, // Limit subject length from
+                seqlenrange_high: values.maxResidues, // Limit subject length to
+                best_hit_keep_max: values.alignments, // Keep a maximum of xxx results
+                // sdb_filters example, publication date before 2021/05/27
+                //                    & No. of Seq. is less than or equal to 100,000
+                //                    & Date of entry before 2021/05/27
+                // [{"P":"SEQUENCE_D1","O":"BEF","V":20210527},
+                //  {"P":"SEQUENCE_P9","O":"LTE","V":100000},
+                //  {"P":"SEQUENCE_D2","O":"BEF","V":20210527}]
+                sdb_filters: sdbFilterData && sdbFilterData.length > 0 ? sdbFilterData : "",
+                nucdb_type: "multiple", // always multiple
+                nucdbs: nucDb,
+                // nucdbs: "[\"p:GQPAT_NUC\", \"p:GENA\"]", // string array of databases
+                protdb_type: "multiple", // always multiple
+                protdbs: proDb, // Similar like nucdbs
+                template_name: saveFormValue ? values.formName : '', // Set this value when selecting "Save this form for later use as"
+                parent_id: "" // When having the patent workflow, for the "redo" scenario
+            };
+            if (searchAlgorithmValue == "kerr") {
+                // Genepast parameters
+                data.strat_genepast_perc_id = values.genePastPercentage;
+                data.strat_genepast_perc_id_over = values.genepastPercentageOver;
+            } else if (searchAlgorithmValue == "blast") {
+                // Blast
+                data.strat_blast_word_size_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? wordSizeValue : ""; // Word Size - Nucleotide
+                data.strat_blast_scoring_matrix_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? scoringMatrixValue : ""; // Scoring matrix - Nucleotide
+                data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : ""; // Word Size - Protein
+                data.strat_blast_scoring_matrix_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? scoringMatrixValue : ""; // Scoring matrix - Protein
+                data.strat_blast_eval_cutoff = values.expectCutoff; // Expect Cutoff
+                data.strat_blast_hsp = processHsp ? "on" : "off"; // HSP handling, "on" when the checkbox is selected
+            } else if (searchAlgorithmValue == "fragment") {
+                // Fragment
+                data.strat_fragment_window_length_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentStretch : ""; // Window Length - Nuc
+                data.strat_fragment_perc_id_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentAminoAcid : ""; // Percentage Identity - Nuc
+                data.strat_fragment_window_length_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentStretch : ""; // Window Length - Prt
+                data.strat_fragment_perc_id_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentAminoAcid : ""; // Percentage Identity - Prt
+            }
+
+
+            console.log('submitdata', data)
+            let resp = await submitSeqSearch(data, null, t);
+            if (resp && resp.response_status == 0) {
+                setShowSuccessModal(true);
+                closeSuccessModal();
+            } else {
+                let setMessage = resp && resp.response_content && resp.response_content.type ? resp.response_content.type : "Unknown"; 
+                setShowErrorModal(true);
+                setErrorMsg(setMessage);
+            }
+            // dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password}));
+            // history.push('/home');
+        },
+    });
 
 
     function list_to_tree(list) {
         var map = {}, node, roots = [], i;
-        
+
         for (i = 0; i < list.length; i += 1) {
-          map[list[i].id] = i; // initialize the map
-          list[i].children = []; // initialize the children
+            map[list[i].id] = i; // initialize the map
+            list[i].children = []; // initialize the children
         }
-        
+
         for (i = 0; i < list.length; i += 1) {
-          node = list[i];
-        //   console.log('node', node)
-          if (node.parent !== null) {
-            // if you have dangling branches check that map[node.parentId] exists
-            list[map[node.parent]].children.push(node);
-          } else {
-            roots.push(node);
-          }
+            node = list[i];
+            //   console.log('node', node)
+            if (node.parent !== null) {
+                // if you have dangling branches check that map[node.parentId] exists
+                list[map[node.parent]].children.push(node);
+            } else {
+                roots.push(node);
+            }
         }
         return roots;
-      }
+    }
 
-//    if(nucleotideData && nucleotideData.length > 0) {
-//     console.log(list_to_tree(nucleotideData));
-   
-//    }
+    //    if(nucleotideData && nucleotideData.length > 0) {
+    //     console.log(list_to_tree(nucleotideData));
+
+    //    }
 
     console.log('nucleotideData', nucleotideData);
     console.log('proteinData', proteinData);
@@ -472,11 +584,22 @@ function IpSeqSearch() {
     //     setFormData2(nucleotideReferenceData);
     // }
 
+    function closeSuccessModal() {
+        setTimeout(() => {
+            setShowSuccessModal(false);
+            history.push('/home')
+        }, 5000)
+    }
 
+    function handleErrorModal() {
+        console.log('handleErrorModal')
+        setShowErrorModal(!showErrorModal);
+    }
 
     const handleSearchAlgorithm = (event) => {
         console.log('vent.target.value', event.target.value)
         setSearchAlgorithm(event.target.value);
+
     };
 
     let scoringMatrixItems = [], wordSizeItems = [];
@@ -497,21 +620,132 @@ function IpSeqSearch() {
     };
 
     const handleSingleCheck = e => {
-        const { name } = e.target;
-        if (isChecked.includes(name)) {
-            setIsChecked(isChecked.filter(checked_name => checked_name !== name));
+        console.log('id123123123', e.target)
+        const { name, id } = e.target;
+        if (isChecked.includes(id)) {
+            setIsChecked(isChecked.filter(checked_name => checked_name !== id));
+            const index = dbTypeArray.indexOf(name);
+            if (index > -1) {
+                dbTypeArray.splice(index, 1);
+                setDbTypeArray([...dbTypeArray])
+            }
+            setTimeout(function () {
+                let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "off";
+                setIsBothDbSelected(twoDbSelected)
+            }, 3000);
+
+            name && name == "nuc" ? setNucDb(nucDb.filter(dbName => dbName !== id)) : setProDb(proDb.filter(dbName => dbName !== id));
             return setAllChecked(false);
         }
-        isChecked.push(name);
+        isChecked.push(id);
         setIsChecked([...isChecked]);
         setAllChecked(isChecked.length === proPatentData.length)
+        dbTypeArray.push(name)
+        setDbTypeArray([...dbTypeArray]);
+        if (name && name == "nuc") {
+            nucDb.push(id.toString());
+            setNucDb([...nucDb]);
+        } else if (name && name == "pro") {
+            proDb.push(id.toString());
+            setProDb([...proDb]);
+        }
+        setTimeout(function () {
+            let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "off";
+            setIsBothDbSelected(twoDbSelected)
+        }, 3000);
     };
-    console.log('isChecked', isChecked)
 
-    function handleDbChange(newDbValue) {
-        console.log('dbValue', newDbValue)
-        setPersonalDataValue(newDbValue);
+    function handleDbChange(id, name) {
+        console.log('dbValue', id, name)
+        // setPersonalDataValue(newDbValue);
+        if (name && name == "nuc") {
+            if (nucDb.includes(id)) {
+                setNucDb(nucDb.filter(dbName => dbName !== id));
+            } else {
+                nucDb.push(id.toString());
+                setNucDb([...nucDb]);
+            }
+        } else if (name && name == "pro") {
+            if (proDb.includes(id)) {
+                setProDb(proDb.filter(dbName => dbName !== id));
+            } else {
+                proDb.push(id.toString());
+                setProDb([...proDb]);
+            }
+        }
     }
+
+
+    console.log('isChecked', isChecked)
+    // console.log('isnucselecte', isNucSelected)
+    // console.log('isproselecte', isProSelected)
+    console.log('dbtypearray', dbTypeArray)
+    console.log('bothdbselected', isBothDbSelected)
+    console.log('nucDb', nucDb)
+    console.log('proDb', proDb)
+
+    // const handleSequenceDbFilters = (event) => {
+    //     const { name } = event.target;
+    //     if(name && name == "isDocumentPublic") {
+    //         let index = sdbFilters.findIndex(element => element.P == "SEQUENCE_D1")
+    //         console.log('index', index)
+    //         if (index > -1) {
+    //             sdbFilters.splice(index, 1);
+    //             setSdbFilters([...sdbFilters])
+    //         } else {
+    //             let obj = {
+    //                 "P":"SEQUENCE_D1",
+    //                 "O":formik.values.docPublicSel.toString(),
+    //                 "V":moment(formik.values.publishGQDate).format('YYYYMMDD')
+    //             }
+    //             sdbFilters.push(obj);
+    //             setSdbFilters([...sdbFilters]);
+    //         }
+    //         setIsDocPubDate(!isDocPubDate)
+
+    //     } else if(name == "publishGenomeQuest") {
+    //         setIsPublished(!isPublished)
+    //         let index = sdbFilters.findIndex(element => element.P == "SEQUENCE_D2")
+    //         console.log('index', index)
+    //         if (index > -1) {
+    //             sdbFilters.splice(index, 1);
+    //             setSdbFilters([...sdbFilters])
+    //         } else {
+    //             let obj = {
+    //                 "P":"SEQUENCE_D2",
+    //                 "O":formik.values.docPublicSel.toString(),
+    //                 "V":moment(formik.values.publishGQDate).format('YYYYMMDD')
+    //             }
+    //             sdbFilters.push(obj);
+    //             setSdbFilters([...sdbFilters]);
+    //         }
+    //     } else if(name == "isPatientDoc") {
+    //         setIsPatientDoc(!isPatientDoc)
+    //         let index = sdbFilters.findIndex(element => element.P == "SEQUENCE_P9")
+    //         console.log('index', index)
+    //         if (index > -1) {
+    //             sdbFilters.splice(index, 1);
+    //             setSdbFilters([...sdbFilters])
+    //         } else {
+    //             let obj = {
+    //                 "P":"SEQUENCE_P9",
+    //                 "O":formik.values.patientDocSel.toString(),
+    //                 "V":formik.values.patientDocInp
+    //             }
+    //             sdbFilters.push(obj);
+    //             setSdbFilters([...sdbFilters]);
+    //         }
+    //     }
+
+    //      // sdb_filters example, publication date before 2021/05/27
+    //             //                    & No. of Seq. is less than or equal to 100,000
+    //             //                    & Date of entry before 2021/05/27
+    //             // [{"P":"SEQUENCE_D1","O":"BEF","V":20210527},
+    //             //  {"P":"SEQUENCE_P9","O":"LTE","V":100000},
+    //             //  {"P":"SEQUENCE_D2","O":"BEF","V":20210527}]
+    // }
+    // console.log('sdbFilters', sdbFilters)
+
     const ColoredLine = ({ color }) => (
         <hr
             style={{
@@ -523,88 +757,88 @@ function IpSeqSearch() {
     );
     const docPublicSel = [
         {
-            value: "before",
+            value: "BEF",
             label: "Before",
             id: "BEF"
         },
         {
-            value: "beforeempty",
+            value: "BEF_IE",
             label: "Before or is empty",
             id: "BEF_IE"
         },
         {
-            value: "after",
+            value: "AFT",
             label: "After",
             id: "AFT"
         },
         {
-            value: "afterempty",
+            value: "AFT_IE",
             label: "Aftre or is empty",
             id: "AFT_IE"
         }
     ];
     const GQSpecificSel = [
         {
-            value: "islessthanequal",
+            value: "LTE",
             label: "is less than or equal to",
             id: "LTE"
         },
         {
-            value: "islessthan",
+            value: "LT",
             label: "is less than",
             id: "LT"
         },
         {
-            value: "equals",
+            value: "EQ",
             label: "equals",
             id: "EQ"
         },
         {
-            value: "doesnotequal",
+            value: "NEQ",
             label: "does not equal",
             id: "NEQ"
         },
         {
-            value: "isgreaterthan",
+            value: "GT",
             label: "is greater than",
             id: "GT"
         },
         {
-            value: "isgreaterthanequal",
+            value: "GTE",
             label: "is greater than or equal to",
             id: "GTE"
         }
     ];
     const searchAlgorithmItems = [
         {
-            value: "genepastSearch",
+            value: "kerr",
             label: "GenePast Search"
         },
         {
-            value: "blastSearch",
+            value: "blast",
             label: "BLAST Search"
         },
         {
-            value: "fragmentSearch",
+            value: "fragment",
             label: "Fragment Search"
         },
         {
-            value: "motifSearch",
+            value: "motif",
             label: "MOTIF Search"
         }
     ];
 
     const genePastItems = [
         {
-            value: "myQuery",
+            value: "QUERY",
             label: "my query"
         },
         {
-            value: "anySubject",
+            value: "SUBJECT",
             label: "any subject"
         },
         {
-            value: "queryOrSubject",
+            value: "SHORTER",
             label: "query or subject"
         }
     ];
@@ -670,9 +904,22 @@ function IpSeqSearch() {
     ];
     console.log('formik.errors', formik)
 
+    let subjectText = "GenomeQuest: Error updating account information [Error code: "+errorMsg+"]";
 
     return (
         <div className={classes.grow}>
+            <SaveContentModal
+                show={showSuccessModal}
+                onMessage={t('searchSubmitted')}
+                type="seqSearch"
+            />
+            <ContactSupportErrorModal
+                show={showErrorModal}
+                errorCode={errorMsg}
+                modalCallBack={handleErrorModal}
+                subjectText={subjectText}
+                errorContent={t("seqSearchErrorOccured")}
+             />
             <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
                 {/* viswes changes starts */}
                 <Row>
@@ -731,8 +978,8 @@ function IpSeqSearch() {
 
                             <RadioGroup row aria-label="These are" name="customized-radios" value={sequenceTypeValue} onChange={handleSequenceType}>
                                 <span className={classes.theseAreText}>These are</span>
-                                <FormControlLabel value="nucleotideSequence" control={<RadioButton />} label="Nucleotide Sequences" />
-                                <FormControlLabel value="proteinSequence" control={<RadioButton />} label="Protein Sequences" />
+                                <FormControlLabel value="nucleotide" control={<RadioButton />} label="Nucleotide Sequences" />
+                                <FormControlLabel value="protein" control={<RadioButton />} label="Protein Sequences" />
                             </RadioGroup>
                             {/* </span> */}
                         </FormControl>
@@ -763,7 +1010,7 @@ function IpSeqSearch() {
                                 onChange={handleSearchAlgorithm}
                                 className={"float-left"}
                             />
-                            {searchAlgorithmValue && searchAlgorithmValue == 'genepastSearch' && <Fragment>
+                            {searchAlgorithmValue && searchAlgorithmValue == 'kerr' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     Find atleast&nbsp;&nbsp;&nbsp;
                             </Typography>
@@ -775,7 +1022,7 @@ function IpSeqSearch() {
                                     variant="outlined"
                                     className={classes.smallTextBox + " float-left"}
                                     value={formik.values.genePastPercentage}
-                                    onChange={formik.handleChange} 
+                                    onChange={formik.handleChange}
                                     error={formik.touched.genePastPercentage && Boolean(formik.errors.genePastPercentage)}
                                     helperText={formik.touched.genePastPercentage && formik.errors.genePastPercentage}
                                 />
@@ -785,21 +1032,20 @@ function IpSeqSearch() {
                                 <SelectBox
                                     margin="normal"
                                     variant="outlined"
-                                    name="searchType"
-                                    id="searchType"
-                                    value={genePastValue}
+                                    name="genepastPercentageOver"
+                                    id="genepastPercentageOver"
+                                    value={formik.values.genepastPercentageOver}
                                     items={genePastItems}
-                                    // defaultValue={searchAlgorithm}
-                                    // onChange={handleAlgorithm}
+                                    onChange={formik.handleChange}
                                     className={"float-left"}
                                 />
                             </Fragment>
                             }
-                            {searchAlgorithmValue && searchAlgorithmValue == 'blastSearch' && <Fragment>
+                            {searchAlgorithmValue && searchAlgorithmValue == 'blast' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     Scoring Matrix&nbsp;&nbsp;&nbsp;
                             </Typography>
-                                {sequenceTypeValue == 'nucleotideSequence' && <SelectBox
+                                {sequenceTypeValue == 'nucleotide' && <SelectBox
                                     margin="normal"
                                     variant="outlined"
                                     name="scoringMatrix"
@@ -811,7 +1057,7 @@ function IpSeqSearch() {
                                     className={"float-left"}
                                 />
                                 }
-                                {sequenceTypeValue == 'proteinSequence' && <SelectBox
+                                {sequenceTypeValue == 'protein' && <SelectBox
                                     margin="normal"
                                     variant="outlined"
                                     name="scoringMatrix"
@@ -826,7 +1072,7 @@ function IpSeqSearch() {
                                 <Typography className={"float-left " + classes.seqText}>
                                     &nbsp;&nbsp;Word Size &nbsp;&nbsp;
                             </Typography>
-                                {sequenceTypeValue == 'nucleotideSequence' && <SelectBox
+                                {sequenceTypeValue == 'nucleotide' && <SelectBox
                                     margin="normal"
                                     variant="outlined"
                                     name="wordSize"
@@ -838,7 +1084,7 @@ function IpSeqSearch() {
                                     className={"float-left " + classes.smallTextBox}
                                 />
                                 }
-                                {sequenceTypeValue == 'proteinSequence' && <SelectBox
+                                {sequenceTypeValue == 'protein' && <SelectBox
                                     margin="normal"
                                     variant="outlined"
                                     name="wordSize"
@@ -862,16 +1108,17 @@ function IpSeqSearch() {
                                         variant="outlined"
                                         className={classes.smallTextBox + ' float-left'}
                                         value={formik.values.expectCutoff}
-                                        onChange={formik.handleChange} 
+                                        onChange={formik.handleChange}
                                         error={formik.touched.expectCutoff && Boolean(formik.errors.expectCutoff)}
                                         helperText={formik.touched.expectCutoff && formik.errors.expectCutoff}
                                     />
                                     <CheckBox
-                                        defaultChecked
+                                        // defaultChecked
                                         color="primary"
                                         className={"float-left ml-20 " + classes.processHsps}
                                         name="processHsps"
                                         id="processHsps"
+                                        onChange={() => setProcessHsp(!processHsp)}
                                     />
                                     <Typography className={"float-left mt-2"}>
                                         Process HSPs &nbsp;&nbsp;&nbsp;
@@ -879,7 +1126,7 @@ function IpSeqSearch() {
                                 </div>
                             </Fragment>
                             }
-                            {searchAlgorithmValue && searchAlgorithmValue == 'fragmentSearch' && <Fragment>
+                            {searchAlgorithmValue && searchAlgorithmValue == 'fragment' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     Find a stretch of at least&nbsp;&nbsp;&nbsp;
                             </Typography>
@@ -891,7 +1138,7 @@ function IpSeqSearch() {
                                     variant="outlined"
                                     className={classes.smallTextBox + ' float-left'}
                                     value={formik.values.fragmentStretch}
-                                    onChange={formik.handleChange} 
+                                    onChange={formik.handleChange}
                                     error={formik.touched.fragmentStretch && Boolean(formik.errors.fragmentStretch)}
                                     helperText={formik.touched.fragmentStretch && formik.errors.fragmentStretch}
                                 />
@@ -906,7 +1153,7 @@ function IpSeqSearch() {
                                     variant="outlined"
                                     className={classes.smallTextBox + ' float-left'}
                                     value={formik.values.fragmentAminoAcid}
-                                    onChange={formik.handleChange} 
+                                    onChange={formik.handleChange}
                                 // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                 // helperText={formik.touched.minResidues && formik.errors.minResidues}
                                 />
@@ -915,7 +1162,7 @@ function IpSeqSearch() {
                                 </Typography>
                             </Fragment>
                             }
-                            {searchAlgorithmValue && searchAlgorithmValue == 'motifSearch' && <Fragment>
+                            {searchAlgorithmValue && searchAlgorithmValue == 'motif' && <Fragment>
                                 <Link className={"float-left " + classes.seqText}>
                                     Examples of valid MOTIF queries&nbsp;&nbsp;&nbsp;
                             </Link>
@@ -935,7 +1182,7 @@ function IpSeqSearch() {
                                 label={''}
                                 variant="outlined"
                                 value={formik.values.alignments}
-                                onChange={formik.handleChange} 
+                                onChange={formik.handleChange}
                                 error={formik.touched.alignments && Boolean(formik.errors.alignments)}
                                 helperText={formik.touched.alignments && formik.errors.alignments}
                                 className={"float-left"}
@@ -968,12 +1215,12 @@ function IpSeqSearch() {
                                         fullWidth={false}
                                         id="minResidues"
                                         name="minResidues"
-                                        label={6}
+                                        // label={6}
                                         variant="outlined"
-                                        // value={formik.values.minResidues}
-                                        // onChange={formik.handleChange} 
-                                        // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
-                                        // helperText={formik.touched.minResidues && formik.errors.minResidues}
+                                        value={formik.values.minResidues}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
+                                        helperText={formik.touched.minResidues && formik.errors.minResidues}
                                         className={"float-left"}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
@@ -983,12 +1230,12 @@ function IpSeqSearch() {
                                         fullWidth={false}
                                         id="maxResidues"
                                         name="maxResidues"
-                                        label={maxResidues}
+                                        // label={maxResidues}
                                         variant="outlined"
-                                        // value={formik.values.minResidues}
-                                        // onChange={formik.handleChange} 
-                                        // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
-                                        // helperText={formik.touched.minResidues && formik.errors.minResidues}
+                                        value={formik.values.maxResidues}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.maxResidues && Boolean(formik.errors.maxResidues)}
+                                        helperText={formik.touched.maxResidues && formik.errors.maxResidues}
                                         className={"float-left"}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
@@ -999,11 +1246,12 @@ function IpSeqSearch() {
                                 <br clear="all"></br>
                                 <Col md="12">
                                     <CheckBox
-                                        defaultChecked
+                                        // defaultChecked
                                         color="primary"
                                         className={"float-left"}
                                         name="isDocumentPublic"
                                         id="isDocumentPublic"
+                                        onChange={() => setIsDocPubDate(!isDocPubDate)}
                                     />
                                     <Typography className={"float-left mt-2"}>
                                         Document Publication Date is &nbsp;&nbsp;&nbsp;
@@ -1017,6 +1265,7 @@ function IpSeqSearch() {
                                         onChange={formik.handleChange}
                                         items={docPublicSel}
                                         className={"float-left"}
+                                        disabled={isDocPubDate ? false : true}
                                     />
                                     <DatePicker
                                         margin="normal"
@@ -1030,14 +1279,16 @@ function IpSeqSearch() {
                                         onChange={val => {
                                             console.log("___", val);
                                             formik.setFieldValue("docPublicDate", val);
-                                       }}      
-                                       />
+                                        }}
+                                        disabled={isDocPubDate ? false : true}
+                                    />
                                     <CheckBox
-                                        defaultChecked
+                                        // defaultChecked
                                         color="primary"
                                         className={"float-left mx-2"}
                                         name="includeGenUnknownDate"
                                         id="includeGenUnknownDate"
+                                        onChange={() => { setIsDocPubUnknownDates(!isDocPubUnknownDates) }}
                                     />
                                     <Typography className={"float-left mt-2"}>
                                         Include unknown dates
@@ -1061,11 +1312,12 @@ function IpSeqSearch() {
                             <AccordionDetails className="loginTitle">
                                 <Col md="12">
                                     <CheckBox
-                                        defaultChecked
+                                        // defaultChecked
                                         color="primary"
                                         className={"float-left"}
                                         name="publishGenomeQuest"
                                         id="publishGenomeQuest"
+                                        onChange={() => setIsPublished(!isPublished)}
                                     />
                                     <Typography className={"float-left mt-2"}>
                                         Published in GenomeQuest &nbsp;&nbsp;&nbsp;
@@ -1079,6 +1331,7 @@ function IpSeqSearch() {
                                         onChange={formik.handleChange}
                                         items={docPublicSel}
                                         className={"float-left"}
+                                        disabled={isPublished ? false : true}
                                     />
                                     <DatePicker
                                         margin="normal"
@@ -1092,14 +1345,16 @@ function IpSeqSearch() {
                                         onChange={val => {
                                             console.log("___", val);
                                             formik.setFieldValue("publishGQDate", val);
-                                       }}        
-                                       />
+                                        }}
+                                        disabled={isPublished ? false : true}
+                                    />
                                     <CheckBox
-                                        defaultChecked
+                                        // defaultChecked
                                         color="primary"
                                         className={"float-left mx-2"}
                                         name="includeGQSpecificDate"
                                         id="includeGQSpecificDate"
+                                        onChange={() => { setIspublishGQUnknownDates(!ispublishGQUnknownDates) }}
                                     />
                                     <Typography className={"float-left mt-2"}>
                                         Include unknown dates
@@ -1113,6 +1368,7 @@ function IpSeqSearch() {
                                         className={"float-left"}
                                         name="isPatientDoc"
                                         id="isPatientDoc"
+                                        onChange={() => setIsPatientDoc(!isPatientDoc)}
                                     />
                                     <Typography className={"float-left mt-2"}>
                                         Patient Document contains &nbsp;&nbsp;&nbsp;
@@ -1126,18 +1382,20 @@ function IpSeqSearch() {
                                         onChange={formik.handleChange}
                                         items={GQSpecificSel}
                                         className={"float-left"}
+                                        disabled={isPatientDoc ? false : true}
                                     />
                                     <TextInput
                                         fullWidth={false}
                                         id="patientDocInp"
                                         name="patientDocInp"
-                                        label={maxResidues}
+                                        // label={maxResidues}
                                         variant="outlined"
-                                        // value={formik.values.minResidues}
-                                        // onChange={formik.handleChange} 
+                                        value={formik.values.patientDocInp}
+                                        onChange={formik.handleChange}
                                         // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         // helperText={formik.touched.minResidues && formik.errors.minResidues}
                                         className={"float-left mx-4"}
+                                        disabled={isPatientDoc ? false : true}
                                     />
                                     <Typography className={"float-left mt-2"}>
                                         Sequences
@@ -1154,11 +1412,11 @@ function IpSeqSearch() {
                 <hr />
 
                 <div>
-                <Row>
-                    <Col sm="12" md="12">
-                        <Link className={"appTextFont appLinkColor float-right"} to="/help">{t('help')}</Link>
-                    </Col>
-                </Row>
+                    <Row>
+                        <Col sm="12" md="12">
+                            <Link className={"appTextFont appLinkColor float-right"} to="/help">{t('help')}</Link>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col md="6">
                             <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
@@ -1184,19 +1442,20 @@ function IpSeqSearch() {
                                       onChange={handleAllCheck}
                                     /> */}
                                         {nucPatentData.map((test, index) => (
-                                           <div className="relativePosition"
-                                           key={index}
-                                       >
-                                           <input
-                                               type="checkbox"
-                                               name={test.label}
-                                               checked={isChecked.includes(test.label)}
-                                               onChange={handleSingleCheck}
-                                               className={"absolutePosition "+ classes.checkBox}
-                                           />
-                                           &nbsp; &nbsp;
+                                            <div className="relativePosition"
+                                                key={index}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    name="nuc"
+                                                    id={test.id}
+                                                    checked={isChecked.includes(test.id)}
+                                                    onChange={handleSingleCheck}
+                                                    className={"absolutePosition " + classes.checkBox}
+                                                />
+                                                &nbsp; &nbsp;
                                            <label className={classes.checkBoxContent}>{test.label}</label>
-                                       </div>
+                                            </div>
                                         ))
                                         }
 
@@ -1227,19 +1486,20 @@ function IpSeqSearch() {
                                   onChange={handleAllCheck}
                                 /> */}
                                         {proPatentData.map((test, index) => (
-                                           <div className="relativePosition"
-                                           key={index}
-                                       >
-                                           <input
-                                               type="checkbox"
-                                               name={test.label}
-                                               checked={isChecked.includes(test.label)}
-                                               onChange={handleSingleCheck}
-                                               className={"absolutePosition "+ classes.checkBox}
-                                           />
-                                           &nbsp; &nbsp;
+                                            <div className="relativePosition"
+                                                key={index}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    name="pro"
+                                                    id={test.id}
+                                                    checked={isChecked.includes(test.id)}
+                                                    onChange={handleSingleCheck}
+                                                    className={"absolutePosition " + classes.checkBox}
+                                                />
+                                                &nbsp; &nbsp;
                                            <label className={classes.checkBoxContent}>{test.label}</label>
-                                       </div>
+                                            </div>
                                         ))
                                         }
 
@@ -1280,10 +1540,11 @@ function IpSeqSearch() {
                                             >
                                                 <input
                                                     type="checkbox"
-                                                    name={test.label}
-                                                    checked={isChecked.includes(test.label)}
+                                                    name="nuc"
+                                                    id={test.id}
+                                                    checked={isChecked.includes(test.id)}
                                                     onChange={handleSingleCheck}
-                                                    className={"absolutePosition "+ classes.checkBox}
+                                                    className={"absolutePosition " + classes.checkBox}
                                                 />
                                                 &nbsp; &nbsp;
                                                 <label className={classes.checkBoxContent}>{test.label}</label>
@@ -1291,7 +1552,7 @@ function IpSeqSearch() {
                                         ))
                                         }
 
-                                    </Col>  
+                                    </Col>
                                 </AccordionDetails>
                             </Accordion>
 
@@ -1318,19 +1579,20 @@ function IpSeqSearch() {
                                     onChange={handleAllCheck}
                                   /> */}
                                         {proReferenceData.map((test, index) => (
-                                           <div className="relativePosition"
-                                           key={index}
-                                       >
-                                           <input
-                                               type="checkbox"
-                                               name={test.label}
-                                               checked={isChecked.includes(test.label)}
-                                               onChange={handleSingleCheck}
-                                               className={"absolutePosition "+ classes.checkBox}
-                                           />
-                                           &nbsp; &nbsp;
+                                            <div className="relativePosition"
+                                                key={index}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    name="pro"
+                                                    id={test.id}
+                                                    checked={isChecked.includes(test.id)}
+                                                    onChange={handleSingleCheck}
+                                                    className={"absolutePosition " + classes.checkBox}
+                                                />
+                                                &nbsp; &nbsp;
                                            <label className={classes.checkBoxContent}>{test.label}</label>
-                                       </div>
+                                            </div>
                                         ))
                                         }
 
@@ -1379,7 +1641,7 @@ function IpSeqSearch() {
 
                                     </Col>
                                 </AccordionDetails> */}
-                                <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} />
+                                <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" />
                             </Accordion>
 
                         </Col>
@@ -1403,7 +1665,7 @@ function IpSeqSearch() {
 
                                     </Col>
                                 </AccordionDetails> */}
-                                <FolderTreeStructure treeData={nucPersonalData}/>
+                                <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" />
                             </Accordion>
 
                         </Col>
@@ -1433,11 +1695,12 @@ function IpSeqSearch() {
                     <Row>
                         <Col md="12">
                             <CheckBox
-                                defaultChecked
+                                // defaultChecked
                                 color="primary"
                                 className={"float-left mx-2"}
-                                name="check"
-                                id="check"
+                                name="checkTerms"
+                                id="checkTerms"
+                                onChange={() => { setIsSubmitActive(!isSubmitActive) }}
                             />
                             <Typography className={"float-left mt-2"}>
                                 By checking this box, I acknowledge and agree to these terms
@@ -1448,11 +1711,12 @@ function IpSeqSearch() {
                     <Row>
                         <Col md="12">
                             <CheckBox
-                                defaultChecked
+                                // defaultChecked
                                 color="primary"
                                 className={"float-left mx-2"}
                                 name="check"
                                 id="check"
+                                onChange={() => { setSendMailAfterSearch(!sendMailAfterSearch) }}
                             />
                             <Typography className={"float-left mt-2"}>
                                 Send email when the search is done
@@ -1462,11 +1726,12 @@ function IpSeqSearch() {
                     <Row>
                         <Col md='4' className="">
                             <CheckBox
-                                defaultChecked
+                                // defaultChecked
                                 color="primary"
                                 className={"float-left mx-2"}
-                                name="check"
-                                id="check"
+                                name="saveForm"
+                                id="saveForm"
+                                onChange={() => { setSaveFormValue(!saveFormValue) }}
                             />
                             <Typography className={"float-left mt-2"}>
                                 Save this form for later use as
@@ -1474,16 +1739,15 @@ function IpSeqSearch() {
                         </Col>
                         <Col md='6'>
                             <TextInput
-                                id="saveforlater"
-                                name="saveforlater"
+                                id="formName"
+                                name="formName"
                                 label='Name the form'
                                 variant="outlined"
                                 onChange={formik.handleChange}
                                 fullWidth={true}
+                                disabled={!saveFormValue}
                             />
                         </Col>
-
-
 
                     </Row>
                 </div>
@@ -1492,11 +1756,14 @@ function IpSeqSearch() {
                     <Col>
                         <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginLeftCancel} type="submit">
                             Cancel
-             </Button>
+                        </Button>
 
-                        <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
+                        {isSubmitActive && <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
                             Submit
-             </Button>
+                        </Button>}
+                        {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>
+                            Disabled
+                        </Button>}
                     </Col>
                 </Row>
             </form>

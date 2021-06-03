@@ -859,7 +859,7 @@ function SearchManagement(props) {
 				<Modal.Body className="appTextColor text-center">
 					<div>
 						<p className="mb-3">{t('folderNameNotAllowed')}</p>
-						<p className="mb-3">{t('tryAgain')}</p>
+						<p className="mb-3">{t('plsTryAgain')}</p>
 					</div>
 					<div className={classes.footerDiv + " align-center"}>
 						<Button onClick={()=>setAddFolderModalShow(false)} className="mr-2 primaryBtn" color="primary" variant="contained">{t('ok')}</Button>

@@ -7,3 +7,5 @@ export const environment = {
   production: true,
   baseUrl: `${baseUrl}`
 };
+
+export const supportMail = "support@gqlifesciences.com";

@@ -24,19 +24,19 @@ const useStyles = makeStyles({
   // }
 });
 
-const FolderTreeStructure = ({treeData, parentCallBack}) => {
+const FolderTreeStructure = ({treeData, parentCallBack, dbName}) => {
     console.log('treeData', treeData)
   const classes = useStyles();
   const [files, setFiles] = useState([]);
   console.log('files', files)
 
-  const renderTree = (nodes, onSelect) =>
+  const renderTree = (nodes, onSelect, dbName) =>
       <TreeItem
         key={nodes.id}
         nodeId={nodes.id}
         label={
           <div>
-            {/* { nodes.type === "folder" ? ( */}
+            { nodes.type === "seqdb" ? (
               <>
                 <FormControlLabel
                   control={
@@ -44,7 +44,7 @@ const FolderTreeStructure = ({treeData, parentCallBack}) => {
                       name="file"
                       onChange={e => {
                         onSelect(nodes.label, e.target.checked);
-                        parentCallBack(nodes.label, e.target.checked)
+                        parentCallBack(nodes.id, dbName)
                       }}
                     />
                   }
@@ -52,21 +52,26 @@ const FolderTreeStructure = ({treeData, parentCallBack}) => {
                   key={nodes.id}
                 />
               </>
-            {/* ) : null} */}
+            ) : null}
+             { nodes.type === "folder" ? (
+              <span>
+                 {nodes.label}
+              </span>
+            ) : null}
           </div>
         }
-        onLabelClick={() => {
-          console.log('nodes.label', nodes.label)
-          onSelect(nodes.type, nodes.label);
-          parentCallBack(nodes.label)
-        }}
-        onIconClick={() => {
-          onSelect(nodes.type, nodes.label)
-          parentCallBack(nodes.label)
-        }}
+        // onLabelClick={() => {
+          // console.log('nodes.label', nodes.label)
+          // onSelect(nodes.type, nodes.label);
+          // parentCallBack(nodes.id, dbName)
+        // }}
+        // onIconClick={() => {
+          // onSelect(nodes.type, nodes.label)
+          // parentCallBack(nodes.id, dbName)
+        // }}
       >
         {Array.isArray(nodes.children)
-          ? nodes.children.map(node => renderTree(node, onSelect))
+          ? nodes.children.map(node => renderTree(node, onSelect, dbName))
           : null}
       </TreeItem>
     // );
@@ -81,6 +86,7 @@ const FolderTreeStructure = ({treeData, parentCallBack}) => {
             data={treeData}
             setFieldValue={props.setFieldValue}
             renderTree={renderTree}
+            dbName={dbName}
           />
           {/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
         </>
@@ -100,8 +106,9 @@ const Tree = (props) => {
         defaultExpanded={["root"]}
         defaultExpandIcon={<ChevronRightIcon />}
         multiSelect
+        dbName
       >
-        {props.renderTree(props.data, props.setFieldValue)}
+        {props.renderTree(props.data, props.setFieldValue, props.dbName)}
       </TreeView>
       {/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
     </>

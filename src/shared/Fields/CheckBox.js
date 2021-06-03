@@ -21,6 +21,7 @@ export default function Checkboxes(props) {
             className={classes.root + ' ' + props.className}
             name={props.name}
             id={props.id}
+            onChange={props.onChange}
         />
     );
 }

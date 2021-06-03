@@ -101,6 +101,7 @@ function HandleResponse(response,history) {
 }
 
 export function post(url, postdata,history) {
+    console.log('setSubmit', url, postdata)
     // if (window.location.hostname == 'localhost') {
     //     let file;
     //     if (url.includes('gquser.login')) {

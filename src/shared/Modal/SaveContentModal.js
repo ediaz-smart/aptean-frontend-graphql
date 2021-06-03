@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal'
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	footerDiv:{
 		padding:'0 30px'
+	},
+	contentPadding: {
+		padding: "45px !important"
 	}
 }));
 
@@ -25,19 +28,22 @@ function SaveContentModal(props) {
 			centered
 			contentClassName='modalPromptContent'
 		>
-			<Modal.Header closeButton className={classes.modalHeader}>
+			{/* <Modal.Header closeButton className={classes.modalHeader}> */}
 				{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
           </Modal.Title> */}
-			</Modal.Header>
-			<Modal.Body className={"text-center "}>
-				<h5>{props.onMessage}</h5>
+			{/* </Modal.Header> */}
+			<Modal.Body className={"text-center"}>
+				<h5 className={classes.contentPadding}>{props.onMessage}</h5>
 				
+			{!props.type == "seqSearch" && <Fragment>
 				<br></br>
 				<br></br>
 				<div className={classes.footerDiv}>
 					<Button onClick={props.onHide} className="float-right m-2" color="primary" variant="contained">OK</Button>
 				</div>
+				</Fragment>
+				}
 				
 				
 			</Modal.Body>

@@ -131,8 +131,18 @@
     "newFolder":"New Folder Name",
     "moveResult":"Move Results",
     "folderNameNotAllowed":"Your new folder name is not allowed.​",
-    "tryAgain":"Please try again.​",
+    "plsTryAgain":"Please try again.​",
     "ok":"Ok",
-    "loginFailure":"Login unsuccessful, please try again​"
+    "loginFailure":"Login unsuccessful, please try again​",
+    "required": "Required",
+    "notNumber": "Enter valid number",
+    "onlyAlphabetsAllowed": "Only alphabets are allowed for this field",
+    "onlyAtgcnAllowed": "Only ATGCN characters were allowed for this field",
+    "searchSubmitted": "Your search has been submitted.",
+    "seqSearchErrorOccured": "An error was ancountered when attempting to submit your search.",
+    "errorCodeIs": "The error code is: ",
+    "tryAgainOrContact": "Please try again, or contact ",
+    "forAssistance": " for assistance.",
+    "tryAgain": "Try again"
 
 }

@@ -51,6 +51,7 @@ export default function DatePicker(props) {
           onChange={props.onChange}
           disablePast={true}
           InputProps={{ readOnly: true }}
+          disabled={props.disabled}
         />
       </Grid>
     </MuiPickersUtilsProvider>
