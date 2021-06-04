@@ -36,7 +36,11 @@
 }
 
 .appLinkColor {
-    color: #008EC5;
+    color: #008EC5 !important;
+}
+.appLinkFont {
+    font-size: 0.875rem;
+    font-weight: 500;
 }
 .primaryBtn{
     background-color:#008EC5 !important;
@@ -122,11 +126,15 @@
 }
 
 .appTextFont {
-    font-size: 14px;
+    font-size: 14px !important;
 }
 
 .appTextColor {
     color: #4a5050 !important;
+}
+.content > p{
+    font-size: 14px !important;
+    line-height: 25px;
 }
 
 .borderless {

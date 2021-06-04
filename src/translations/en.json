@@ -143,6 +143,15 @@
     "errorCodeIs": "The error code is: ",
     "tryAgainOrContact": "Please try again, or contact ",
     "forAssistance": " for assistance.",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "auditTrial":"Audit Trial",
+    "resSharing":"Result Sharing",
+    "alertSetting":"Alert Setting",
+    "searchHistory":"Search History",
+    "notes":"Notes",
+    "delPrevResult":"Delete all Previous Results​",
+    "notesComment":"These are notes attached to a set of results.​",
+    "saveChanges":"Save Changes",
+    "searchresseq":"Search Result Report – Sequence"
 
 }

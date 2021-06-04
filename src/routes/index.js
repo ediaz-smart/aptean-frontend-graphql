@@ -13,6 +13,7 @@ import ChangePassword from '../components/Auth/ChangePassword';
 import SearchManagement from '../components/SearchManagement/SearchManagement';
 import AccountInfo from '../components/AccountInfo/AccountInfo';
 import MergeResults from '../components/MergeResults/MergeResults'
+import SearchResultSequence from '../components/SearchResultSequence/SearchResultSequence'
 class Routes extends React.Component {
     render() {
         console.log('qwdhijoiefhdoihdf')
@@ -28,6 +29,7 @@ class Routes extends React.Component {
                     <Route exact path="/recent" component={Recent} />
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                     <Route exact path="/ipseqsearch" title="ipseqsearch" component={IpSequenceSearch} />
+                    <Route exact path="/searchresseq" title="searchresseq" component={SearchResultSequence} />
                     <Route exact path="/searchResult" title="searchResMgmnt"  component={SearchManagement} />
                     <Route exact path="/accountinfo" component={AccountInfo} />
                     <Route exact path="/merge" component={MergeResults} />

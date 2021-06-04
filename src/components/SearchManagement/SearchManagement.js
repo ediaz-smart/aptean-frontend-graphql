@@ -1,5 +1,4 @@
 import DataTable from "react-data-table-component";
-import SortIcon from "@material-ui/icons/ArrowDownward";
 // import movies from "./movies";
 import { makeStyles } from '@material-ui/core/styles';
 import React,{ useState, useCallback, useEffect,Fragment } from 'react';
@@ -436,7 +435,9 @@ function SearchManagement(props) {
             if(pagetype === "searchmanagement" || pagetype === "searchfolder")
             {
                 tempObj["info"] = <Fragment>
-                                    <a href="#" className="infoIcon" onClick={(e)=>getInfoIconData(e,tempObj)}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
+									{datas.type === "Folder" && <a href="#" className="infoIcon tt" onClick={(e)=>getInfoIconData(e,tempObj)}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>}
+									{datas.type !== "Folder" && <a href="#" className="infoIcon ss" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>}
+
                                     <a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLinkColor" /></a>
                                     <a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
                                 </Fragment>
