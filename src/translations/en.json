@@ -152,6 +152,14 @@
     "delPrevResult":"Delete all Previous Results​",
     "notesComment":"These are notes attached to a set of results.​",
     "saveChanges":"Save Changes",
-    "searchresseq":"Search Result Report – Sequence"
+    "searchresseq":"Search Result Report – Sequence",
+    "ImmunoglobulinVariationsFor":"Immunoglobulin variations for",
+    "query":"Query​",
+    "subjDB":"Subject Databases",
+    "searchStrategy":"Search Strategy",
+    "techData":"Technical Data",
+    "alerts":"Alerts",
+    "redos":"Redo's"
+    
 
 }

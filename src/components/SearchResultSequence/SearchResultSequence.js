@@ -166,14 +166,14 @@ function SearchResultSequence() {
                     </Typography>
                 </Col>
                 <Col lg="12" md="12" sm="12">
-                    <h6 className={"appTextColor loginTitle"}>Immunoglobulin variations for Steve​</h6>
+                    <h6 className={"appTextColor loginTitle"}>{t('ImmunoglobulinVariationsFor')} Steve​</h6>
                     <Row>
                         {/* <Col lg="1" md="1" sm="12" className="pr-0">
                             <img src={seqSearchImg} alt="Immunoglobulin variations for Steve​"  />
                         </Col> */}
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Typography>
-                                <img className="float-left mx-3" src={seqSearchImg} alt="Immunoglobulin variations for Steve​" />
+                                <img className="float-left mx-3" src={seqSearchImg} alt={t('ImmunoglobulinVariationsFor')}/>
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /><span>This search was launched on 18-Feb-2021 by Heather Leeman.​</span></Typography>
                             <Typography>
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> <span>It is shared with Steve Allen, Henk Heus, and Vijaya Gorla (share settings).</span></Typography>
@@ -182,10 +182,10 @@ function SearchResultSequence() {
                     <hr />
                     <Row>
                         <Col lg="12" md="12" sm="12" className="pr-0 content">
-                            <h6 className={"appTextColor loginTitle"}>Query​</h6>
+                            <h6 className={"appTextColor loginTitle"}>{t('query')}</h6>
                             <Typography className="appTextFont ml-3"><Link className={"appLinkColor"} href="#" onClick={(e) => e.preventDefault()}>These 4 protein sequences</Link> have been used in this search.​</Typography>
                             <br />
-                            <h6 className={"appTextColor loginTitle"}>Subject Databases</h6>
+                            <h6 className={"appTextColor loginTitle"}>{t('subjDB')}</h6>
                             <Row className="ml-1">
                                 <Col lg="8" md="8" className="pr-0 content">
                                     <Typography>
@@ -211,7 +211,7 @@ function SearchResultSequence() {
                                 </Col>
                             </Row>
                             <br />
-                            <h6 className={"appTextColor loginTitle"}>Search Strategy</h6>
+                            <h6 className={"appTextColor loginTitle"}>{t('searchStrategy')}</h6>
                             <Col lg="12" md="12" className="pr-0 content">
                                 <Typography >
                                     <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The sequence comparison algorithm used is GenePAST.​</Typography>
@@ -221,7 +221,7 @@ function SearchResultSequence() {
                                     <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The sequence comparison algorithm used is GenePAST.​</Typography>
                             </Col>
                             <br />
-                            <h6 className={"appTextColor loginTitle"}>Technical Data</h6>
+                            <h6 className={"appTextColor loginTitle"}>{t('techData')}</h6>
                             <Col lg="12" md="12" className="pr-0 content">
                                 <Typography >
                                     <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Search Id 4512653 consumes 15.90 Mb of server disk space​.​</Typography>
@@ -229,10 +229,10 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"}>Result sharing​</h6>
+                    <h6 className={"appTextColor loginTitle"}>{t('resSharing')}​</h6>
                     <Row>
                         <Col lg="1" md="1" sm="12" className="pr-0">
-                            <img src={resultshareImg} alt="Result sharing" />
+                            <img src={resultshareImg} alt={t('resSharing')}/>
                         </Col>
                         <Col lg="8" md="9" sm="12" className="p-0 content">
                             <Row>
@@ -261,12 +261,12 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"}>Alert Settings​</h6>
+                    <h6 className={"appTextColor loginTitle"}>{t('alertSetting')}​</h6>
                     <Row>
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Row>
                                 <Col lg="8" md="8" className="pr-0 content">
-                                    <img className="float-left mx-3" src={alertImg} alt="Alert Settings" />
+                                    <img className="float-left mx-3" src={alertImg} alt={t('alertSetting')} />
                                     <Typography >
                                         This result is repeated automatically once a month. New results are emailed to Heather.Leeman@Aptean.com. ​</Typography>
                                 </Col>
@@ -285,7 +285,7 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"}>Search History</h6>
+                    <h6 className={"appTextColor loginTitle"}>{t('searchHistory')}</h6>
                     <Row>
                         {/* <Col lg="1" md="1" sm="12" className="pr-0">
                             <img src={searchResultImg} alt="Search History"  />
@@ -293,14 +293,14 @@ function SearchResultSequence() {
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Row>
                                 <Col lg="8" md="8" className="pr-0 content">
-                                    <img className="float-left mx-3" src={searchResultImg} alt="Search History" />
+                                    <img className="float-left mx-3" src={searchResultImg} alt={t('searchHistory')} />
                                     <Typography >
                                         The following previous versions of this search are stored on our servers. Please consider deleting results that you no longer need.​​</Typography>
                                 </Col>
                             </Row>
                         </Col>
                         <Col lg="12" md="12" className="pr-0 content float-right mt-3 ml-3">
-                            <h6 className={"appTextColor loginTitle"}>Alerts</h6>
+                            <h6 className={"appTextColor loginTitle"}>{t('alerts')}</h6>
                             <DataTable
                                 columns={columns}
                                 data={searchResultData}
@@ -324,7 +324,7 @@ function SearchResultSequence() {
                             />
                         </Col>
                         <Col lg="12" md="12" className="pr-0 content float-right mt-3 ml-3">
-                            <h6 className={"appTextColor loginTitle"}>Redo's</h6>
+                            <h6 className={"appTextColor loginTitle"}>{t('redos')}</h6>
                             <DataTable
                                 columns={columns}
                                 data={searchResultData}
