@@ -22,6 +22,7 @@ export default function Checkboxes(props) {
             name={props.name}
             id={props.id}
             onChange={props.onChange}
+            disabled={props.disabled}
         />
     );
 }

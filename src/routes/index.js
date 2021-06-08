@@ -14,6 +14,7 @@ import SearchManagement from '../components/SearchManagement/SearchManagement';
 import AccountInfo from '../components/AccountInfo/AccountInfo';
 import MergeResults from '../components/MergeResults/MergeResults'
 import SearchResultSequence from '../components/SearchResultSequence/SearchResultSequence'
+import IpSequenceVariation from '../components/IpSequenceVariation/IpSequenceVariation';
 class Routes extends React.Component {
     render() {
         console.log('qwdhijoiefhdoihdf')
@@ -33,6 +34,7 @@ class Routes extends React.Component {
                     <Route exact path="/searchResult" title="searchResMgmnt"  component={SearchManagement} />
                     <Route exact path="/accountinfo" component={AccountInfo} />
                     <Route exact path="/merge" component={MergeResults} />
+                    <Route exact path="/ipseqvariation" title="ipseqvariation" component={IpSequenceVariation} />
                 </Switch>
             </HashRouter>)
     }

@@ -13,7 +13,7 @@ function hideLoader() {
 async function getCopyright() {
     try {
         // showLoader();
-        return await get(url.copyright)
+        return await get(url.getServerInfo)
         .then((response) => {
             // hideLoader();
             if(response && response.response_content)

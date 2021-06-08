@@ -7,6 +7,8 @@ import Loader from "react-loader-spinner";
 import PubSub from 'pubsub-js';
 import { makeStyles } from "@material-ui/core/styles";
 import LoadingOverlay from 'react-loading-overlay';
+import { useDispatch } from 'react-redux';
+import { getUserServerInfo } from './reducers/slice/userServerDataSlice';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,8 +38,13 @@ loader :{
 function App() {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    const isUserLogin = localStorage.getItem('isLoggedIn');
+    if(isUserLogin) {
+    dispatch(getUserServerInfo())
+    }
     async function fetchLoader() {
       const loaderResponse = await PubSub.subscribe('msg', (msg, data) => {
         setLoading(data)

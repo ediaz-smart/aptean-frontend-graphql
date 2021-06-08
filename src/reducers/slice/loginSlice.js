@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { post } from '../../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
 import { url } from '../url';
+import { getUserServerInfo } from './userServerDataSlice';
 
 
 const initialState = { isLoggedIn: false }
@@ -17,6 +18,7 @@ export const submitLogin = (data,history, t) => async (dispatch) => {
         .then(async (response) => {
             if(response && response.response_status == 0)
             {
+                await dispatch(getUserServerInfo());
                 toast.success(t('loginSuccess'));
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('userName', data.GQUSERID);
@@ -33,7 +35,7 @@ export const submitLogin = (data,history, t) => async (dispatch) => {
                 
             }
         })
-        .catch((error) => {
+        .catch((error) => { 
             toast.error('loginFailed');
             console.log("error::", error);
 

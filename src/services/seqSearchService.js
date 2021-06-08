@@ -12,10 +12,10 @@ function hideLoader() {
 	PubSub.publish('msg', false);
 }
 
-export async function getSeqSearchResults() {
+export async function getSeqSearchResults(history) {
     try {
         showLoader();
-        return await get(url.seqSearchInit)
+        return await get(url.seqSearchInit, history)
         .then((response) => {
             hideLoader();
             // if(response && response.data.response_status == 0)

@@ -9,11 +9,12 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { useFormik } from 'formik';
-import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel, Checkbox } from '@material-ui/core';
+import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+
 
 //components
 import TextInput from '../../shared/Fields/TextInput';
@@ -252,7 +253,7 @@ const data3 = [
 ];
 
 
-function IpSeqSearch() {
+function IpSequenceVariation() {
     const { t, i18n } = useTranslation('common');
     const history = useHistory();
 
@@ -260,7 +261,6 @@ function IpSeqSearch() {
 
     //using state
     const userInfo = useSelector(state=> state.setUserInfo);
-
 
     const [seqDBFilter, setSeqDBFilter] = React.useState(true);
     const [specificDBFilter, setSpecificDBFilter] = React.useState(true);
@@ -391,6 +391,7 @@ function IpSeqSearch() {
                     setIsSubmitActive(true);
                 }
             }
+
             // const accountData = await AccountInfo.getAccountInfo();
             // if (accountData && accountData.response_content && accountData.response_content.ppu_type) {
             //     let userPpu = accountData.response_content.ppu_type;
@@ -423,7 +424,7 @@ function IpSeqSearch() {
             minResidues: 6,
             maxResidues: 100000
         },
-        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue),
+        // validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue),
         onSubmit: async (values) => {
             console.log('formikValues', values)
 
@@ -501,7 +502,8 @@ function IpSeqSearch() {
                 protdb_type: "multiple", // always multiple
                 protdbs: proDb, // Similar like nucdbs
                 template_name: saveFormValue ? values.formName : '', // Set this value when selecting "Save this form for later use as"
-                parent_id: "" // When having the patent workflow, for the "redo" scenario
+                parent_id: "", // When having the patent workflow, for the "redo" scenario
+                loadvmtables: "on"
             };
             if (searchAlgorithmValue == "kerr") {
                 // Genepast parameters
@@ -581,9 +583,11 @@ function IpSeqSearch() {
         if (event.target.value == "nucleotide") {
             setScoringMatrix('NUC3.1');
             setWordSize('11');
+            setProDb([]);
         } else {
             setScoringMatrix('BLOSUM62');
             setWordSize('3');
+            setNucDb([])
         }
     };
 
@@ -727,10 +731,10 @@ function IpSeqSearch() {
             value: "fragment",
             label: "Fragment Search"
         },
-        {
-            value: "motif",
-            label: "MOTIF Search"
-        }
+        // {
+        //     value: "motif",
+        //     label: "MOTIF Search"
+        // }
     ];
 
     const genePastItems = [
@@ -1075,7 +1079,7 @@ function IpSeqSearch() {
                         </Col>
                     </AccordionDetails>
                 </Row>
-                <Row>
+                {/* <Row>
                     <AccordionDetails className="appTextColor">
                         <Col md="12">
                             <CheckBox
@@ -1091,7 +1095,7 @@ function IpSeqSearch() {
                             </Typography>
                         </Col>
                     </AccordionDetails>
-                </Row>
+                </Row> */}
                 <hr />
                 <Row>
                     <Col md="11">
@@ -1326,9 +1330,10 @@ function IpSeqSearch() {
                                             <CheckBox
                                                 name="nuc"
                                                 id={test.id}
-                                                checked={isChecked.includes(test.id)}
+                                                checked={nucDb.includes(test.id)}
                                                 onChange={handleSingleCheck}
                                                 className={"absolutePosition " + classes.checkBox}
+                                                disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                 color="primary"
                                             />
                                             <label className={classes.checkBoxContent}>{test.label}</label>
@@ -1353,12 +1358,13 @@ function IpSeqSearch() {
                                             <div className="relativePosition"
                                                 key={index}
                                             >
-                                                <Checkbox
+                                                <CheckBox
                                                     name="nuc"
                                                     id={test.id}
-                                                    checked={isChecked.includes(test.id)}
+                                                    checked={nucDb.includes(test.id)}
                                                     onChange={handleSingleCheck}
                                                     className={"absolutePosition " + classes.checkBox}
+                                                    disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                     color="primary"
                                                 />
                                                 <label className={classes.checkBoxContent}>{test.label}</label>
@@ -1382,12 +1388,13 @@ function IpSeqSearch() {
                                             <div className="relativePosition"
                                                 key={index}
                                             >
-                                                <Checkbox
+                                                <CheckBox
                                                     name="nuc"
                                                     id={test.id}
-                                                    checked={isChecked.includes(test.id)}
+                                                    checked={nucDb.includes(test.id)}
                                                     onChange={handleSingleCheck}
                                                     className={"absolutePosition " + classes.checkBox}
+                                                    disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                     color="primary"
                                                 />
                                                 <label className={classes.checkBoxContent}>{test.label}</label>
@@ -1407,7 +1414,7 @@ function IpSeqSearch() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" />
+                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} />
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -1419,6 +1426,7 @@ function IpSeqSearch() {
                                         <p className="loginTitle m-0">
                                             {formCheck2 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck2 && <ArrowRightIcon className={classes.arrowIcon} />}
+
                                             <b className={classes.arrowIconTitle}>{t("proteinPatDb")}</b>
                                         </p>
                                     </AccordionSummary>
@@ -1427,14 +1435,16 @@ function IpSeqSearch() {
                                             <div className="relativePosition"
                                                 key={index}
                                             >
-                                                <Checkbox
+                                                <CheckBox
                                                     name="pro"
                                                     id={test.id}
-                                                    checked={isChecked.includes(test.id)}
+                                                    checked={proDb.includes(test.id)}
                                                     onChange={handleSingleCheck}
                                                     className={"absolutePosition " + classes.checkBox}
+                                                    disabled={sequenceTypeValue == "protein" ? false : true}
                                                     color="primary"
                                                 />
+                                                &nbsp; &nbsp;
                                            <label className={classes.checkBoxContent}>{test.label}</label>
                                             </div>
                                         ))
@@ -1448,6 +1458,7 @@ function IpSeqSearch() {
                                         <p className="loginTitle m-0">
                                             {formCheck4 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck4 && <ArrowRightIcon className={classes.arrowIcon} />}
+
                                             <b className={classes.arrowIconTitle}>{t("referenceProDb")}</b>
                                         </p>
                                     </AccordionSummary>
@@ -1456,15 +1467,16 @@ function IpSeqSearch() {
                                             <div className="relativePosition"
                                                 key={index}
                                             >
-                                                <Checkbox
+                                                <CheckBox
                                                     name="pro"
                                                     id={test.id}
-                                                    checked={isChecked.includes(test.id)}
+                                                    checked={proDb.includes(test.id)}
                                                     onChange={handleSingleCheck}
                                                     className={"absolutePosition " + classes.checkBox}
+                                                    disabled={sequenceTypeValue == "protein" ? false : true}
                                                     color="primary"
                                                 />
-                                           <label className={classes.checkBoxContent}>{test.label}</label>
+                                                <label className={classes.checkBoxContent}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1481,7 +1493,7 @@ function IpSeqSearch() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" />
+                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} />
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -1503,7 +1515,7 @@ function IpSeqSearch() {
                             <Link className="appTextFont appLinkColor float-right mr-2">{t("help")}</Link>
                         </Col>
                     </Row>
-                   {ppuType != "0" && <Row>
+                    {ppuType != "0" && <Row>
                         <Col md="12">
                             <CheckBox
                                 // defaultChecked
@@ -1581,4 +1593,4 @@ function IpSeqSearch() {
     );
 }
 
-export default IpSeqSearch;
+export default IpSequenceVariation;
