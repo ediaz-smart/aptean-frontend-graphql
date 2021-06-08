@@ -424,7 +424,7 @@ function IpSequenceVariation() {
             minResidues: 6,
             maxResidues: 100000
         },
-        // validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue),
+        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue),
         onSubmit: async (values) => {
             console.log('formikValues', values)
 
