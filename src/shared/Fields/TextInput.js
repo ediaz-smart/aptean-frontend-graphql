@@ -46,6 +46,7 @@ export default function TextInput(props) {
         rows={props.rows}
         rowsMax={props.rowsMax}
         disabled={props.disabled}
+        min={props.min}
         />
     );
 }

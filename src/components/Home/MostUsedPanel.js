@@ -89,7 +89,7 @@ function MostUsedPanel() {
                             <p className={classes.pTagMargin}>
                                 <Link to="/ipseqvariation" className={classes.anchorTag}>{t('seqVariation')}</Link>
                             </p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('antibodySequence')}</a></p>
+                            <p className={classes.pTagMargin}><Link to="/searchresantibody" className={classes.anchorTag}>{t('antibodySequence')}</Link></p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patientnumlookup')}</a></p>
                         </div>
                     </Col>

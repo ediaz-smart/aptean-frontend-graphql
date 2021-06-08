@@ -24,7 +24,7 @@ function PromptModal({show,modalCallback,hideModal}) {
 			contentClassName='modalPromptContent'
 			show={show}
 		>
-			<Modal.Header className={classes.modalHeader}>
+			<Modal.Header closeButton={true} className={classes.modalHeader}>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
           </Modal.Title> */}

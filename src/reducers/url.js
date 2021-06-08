@@ -22,5 +22,9 @@ export const url = {
     moveToFolder: "do=gqfolder.move_shareable_to&format=json&sharing_setting=inherit_recursive&id=FID&shareable_id=WID",
     deleteItems: "do=gqshareable.delete&format=json&is_recursive=true&id=**",
     getServerInfo: "do=gqft.get_server_info&format=json",
-    addFolder:"do=gqfolder.create_subfolder&format=json&id=PFID&text_label=FNAME"
+    addFolder:"do=gqfolder.create_subfolder&format=json&id=PFID&text_label=FNAME",
+    copyright: "do=gqft.get_server_info&format=json",
+    addFolder:"do=gqfolder.create_subfolder&format=json&id=PFID&text_label=FNAME",
+    antibodySearch:"do=gqworkflow&workflow_type=GqWfABIpSearch&format=json&view_helper=ObjectViewer::full",
+    authInfoAB:"do=gqresult2.get_auth_info_4ab&format=json&db=wf:ab.resdb"
 }

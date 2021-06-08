@@ -15,6 +15,7 @@ import AccountInfo from '../components/AccountInfo/AccountInfo';
 import MergeResults from '../components/MergeResults/MergeResults'
 import SearchResultSequence from '../components/SearchResultSequence/SearchResultSequence'
 import IpSequenceVariation from '../components/IpSequenceVariation/IpSequenceVariation';
+import SearchResultAntibody from '../components/SearchResultAntibody/SearchResultAntibody'
 class Routes extends React.Component {
     render() {
         console.log('qwdhijoiefhdoihdf')
@@ -31,6 +32,7 @@ class Routes extends React.Component {
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                     <Route exact path="/ipseqsearch" title="ipseqsearch" component={IpSequenceSearch} />
                     <Route exact path="/searchresseq" title="searchresseq" component={SearchResultSequence} />
+                    <Route exact path="/searchresantibody" title="searchresantibody" component={SearchResultAntibody} />
                     <Route exact path="/searchResult" title="searchResMgmnt"  component={SearchManagement} />
                     <Route exact path="/accountinfo" component={AccountInfo} />
                     <Route exact path="/merge" component={MergeResults} />

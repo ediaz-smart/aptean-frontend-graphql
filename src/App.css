@@ -135,6 +135,10 @@
 .content > p{
     font-size: 14px !important;
     line-height: 25px;
+    color: #4a5050 !important;
+}
+.w-12{
+    width: 12%;
 }
 
 .borderless {

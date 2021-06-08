@@ -8,7 +8,8 @@ const Validate = {
     ForgotValidate,
     IpSeqSearchValidate,
     InformationDataValidate,
-    ChangePasswordValidate
+    ChangePasswordValidate,
+    AntibodySearchValidation
 };
 
 function LoginValidate() {
@@ -118,17 +119,214 @@ function IpSeqSearchValidate(seqType) {
 
     if (seqType && seqType == "nucleotide") {
         validationShape.querySequence = yup
-                .string()
-                .required(t('querySeqReq'))
-                .matches(/^[ACGTURYKMSWBDHVNacgturykmswbdhvn]+$/, t("onlyAtgcnAllowed"))
+            .string()
+            .required(t('querySeqReq'))
+            .matches(/^[ACGTURYKMSWBDHVNacgturykmswbdhvn]+$/, t("onlyAtgcnAllowed"))
     } else {
         validationShape.querySequence = yup
-                .string()
-                .required(t('querySeqReq'))
-                .matches(/^[aA-zZ\s]+$/, t("onlyAlphabetsAllowed"))
+            .string()
+            .required(t('querySeqReq'))
+            .matches(/^[aA-zZ\s]+$/, t("onlyAlphabetsAllowed"))
     }
     const validationSchema = yup.object().shape(validationShape);
 
+    return validationSchema;
+}
+yup.addMethod(yup.string, "validateCdr", function (message) {
+    // const { message } = args;
+    // console.log(args,'args');
+    return yup.mixed().test(`validateCdr`, message, function (value) {
+        const { path, createError } = this;
+        let isValid = true;
+        if (value) {
+            let isValid = true;
+            value = value.replace(/\s+/g, '');
+            if (value.length > 64 || value.length < 3) {
+                isValid = false;
+            } else {
+                let letters = /^[A-Za-z]+$/;
+                isValid = value.match(letters);
+            }
+            return isValid || createError({ path, message });
+        }else {
+            return isValid || createError({ path, message });
+        }
+
+
+    })
+})
+yup.addMethod(yup.string, "validateMismatch", function (seqType) {
+    // const { message } = args;
+    // console.log(yup.mixed().parent,'data');
+    return yup.mixed().test(`validateMismatch`, function (val,ctx) {
+        const { path, createError } = this;
+        let message = '';
+        let isValid = true;
+        if (val) {
+            // let keyValue = "cdrhcseq"+num;
+            let text = ctx.parent[seqType];
+            let isValid = true;
+            // value = value.replace(/\s+/g, '');
+            let maxVal = 0;
+            if(text)
+            {
+                maxVal = Math.floor(text.length / 5);
+            }
+            if (val !== undefined && val !== null && val >= 0 && val <= maxVal) {
+            } else {
+                message = 'Please input a number between 0 and ' + maxVal;
+                isValid = false;
+            }
+            return isValid || createError({ path, message });
+        }else {
+            return isValid || createError({ path, message });
+        }
+
+
+    })
+})
+yup.addMethod(yup.string, "validateStrategy", function (strategyType,t) {
+    // const { message } = args;
+    // console.log(yup.mixed().parent,'data');
+    return yup.mixed().test(`validateStrategy`, function (val,ctx) {
+        const { path, createError } = this;
+        let message = '';
+        let isValid = true;
+        if (val) {
+            // let keyValue = "cdrhcseq"+num;
+            let text = ctx.parent[strategyType];
+            let isValid = true;
+            if(text =='genepast' && path == "percId")
+            {
+                if (val < 65 || val > 100) {
+                    isValid = false;
+                    message = t('percErr');
+                }
+            }else {
+                if(path == "expectCutoff")
+                {
+                    if (val < 0 || val > 100) {
+                        isValid = false;
+                        message = t('expectCutOffErr');
+                    }
+                }else {
+                    if (val < 2 || val > 3) {
+                        isValid = false;
+                        message = t('wordSizeErr');
+                    }
+                }
+            }
+            return isValid || createError({ path, message });
+        }else {
+            return isValid || createError({ path, message });
+        }
+
+
+    })
+})
+yup.addMethod(yup.string, "validateSeq", function (message) {
+    // const { message } = args;
+    // console.log(args,'args');
+    return yup.mixed().test(`validateSeq`, message, function (text) {
+        const { path, createError } = this;
+        let isValid = true;
+        let val = 0;
+        if (text) {
+            let lines = text.split(/[\r\n]+/); // split by \n, \r and \r\n, and filter out empty lines
+            if (/^\s*>\s*\S+/.test(text)) { // FASTA
+                // count > numbers
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].substring(0, 1) === '>' && (i + 1) < lines.length && lines[i + 1].substring(0, 1) !== '>') {
+                        val++;
+                    }
+                }
+            } else if (/^\s*\@\s*\S+/.test(text)) { // FASTAQ
+                //val = lines.length / 4;
+                isValid = false;
+            } else if (/^\s*!!/.test(text)) { // ST25
+                isValid = false;
+            } else if (/^\s*;/.test(text)) { // CIPO
+                isValid = false;
+            }
+            else {
+                // Appends ">seq_1\n" and treats as FASTA, refer to DlRawSeqdb.php
+                text = ">seq_1\n" + text;
+                lines = text.split(/[\r\n]+/);
+                // count > numbers
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].substring(0, 1) === '>' && (i + 1) < lines.length && lines[i + 1].substring(0, 1) !== '>') {
+                        val++;
+                    }
+                    if (lines[i].substring(0, 2) === '//') { // EMBL format
+                        isValid = false;
+                        break;
+                    }
+                }
+            }
+            if (val > 1) {
+                isValid = false;
+            }
+            return isValid || createError({ path, message });
+        }else {
+            return isValid || createError({ path, message });
+        }
+
+
+    })
+})
+function AntibodySearchValidation() {
+    // console.log('seqType', seqType)
+    const { t, i18n } = useTranslation('common');
+
+    let validationShape = {
+        searchName: yup
+            .string()
+            .required(t('searchNameRequired'))
+            .max(255, t('255OnlyAllowed')),
+        cdrhcseq1: yup.string()
+            .validateCdr(t('sequenceTextErr')),
+            // .required(t('cdrhc1Req')),
+        cdrhcseq2: yup.string()
+            .validateCdr(t('sequenceTextErr')),
+            // .required(t('cdrhc2Req')),
+        cdrhcseq3: yup.string()
+            .validateCdr(t('sequenceTextErr')),
+            // .required(t('cdrhc3Req')),
+        hcOption1: yup.string()
+            .validateMismatch('cdrhcseq1'),
+        hcOption2: yup.string()
+            .validateMismatch('cdrhcseq2'),
+        hcOption3: yup.string()
+            .validateMismatch('cdrhcseq3'),
+        cdrlcseq1: yup.string()
+            .validateCdr(t('sequenceTextErr')),
+            // .required(t('cdrhc1Req')),
+        cdrlcseq2: yup.string()
+            .validateCdr(t('sequenceTextErr')),
+            // .required(t('cdrhc2Req')),
+        cdrlcseq3: yup.string()
+            .validateCdr(t('sequenceTextErr')),
+            // .required(t('cdrhc3Req')),
+        lcOption1: yup.string()
+            .validateMismatch('cdrlcseq1'),
+        lcOption2: yup.string()
+            .validateMismatch('cdrlcseq2'),
+        lcOption3: yup.string()
+            .validateMismatch('cdrlcseq3'),
+        percId: yup.string()
+            .validateStrategy('strategy',t),
+        expectCutoff: yup.string()
+            .validateStrategy('strategy',t),
+        wordSize: yup.string()
+            .validateStrategy('strategy',t),
+        hcFullSeq: yup.string()
+            .validateSeq(t('fullSeqErr')),
+        lcFullSeq: yup.string()
+            .validateSeq(t('fullSeqErr')),
+
+    }
+
+    const validationSchema = yup.object().shape(validationShape);
     return validationSchema;
 }
 export default Validate;
