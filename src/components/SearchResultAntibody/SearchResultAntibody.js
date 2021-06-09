@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, Fragment } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory,useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,6 @@ import { useFormik } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import { toast } from 'react-toastify';
 import _ from "lodash";
-import Modal from 'react-bootstrap/Modal'
 
 
 import TextInput from '../../shared/Fields/TextInput';
@@ -52,19 +51,20 @@ function SearchResultAntibody() {
     const [searchModal, setSearchModal] = useState(false);
     // const [strategy, setStrategy] = useState('genepast');
     const [authInfo, setAuthInfo] = useState();
-    const [workflowId, setWorkflowId] = useState();
+    // const [workflowId, setWorkflowId] = useState();
     const [patientDBData, setPatientDBData] = useState(Constant.patientSearchDatabases);
     const [disableSearch, setDisableSearch] = React.useState(false);
+    const [formdata, setFormData] = useState({});
+    const { workflowId } = useParams();
+
 
     useEffect(async () => {
-
         const getResponse = await searchResAntibody.getAuthInfoAB(workflowId);
-        if(getResponse && getResponse.response_status == 0)
-        {
+        if (getResponse && getResponse.response_status == 0) {
             setAuthInfo(getResponse.response_content);
+            updateFormData(getResponse.response_content);
             setDisableSearch(true);
-            if(getResponse.response_content.dbs && getResponse.response_content.dbs.length > 0)
-            {
+            if (getResponse.response_content.dbs && getResponse.response_content.dbs.length > 0) {
                 getResponse.response_content.dbs.forEach(function (value) {
                     if (value.startsWith("CAS") || value.startsWith("REG")) {
                         patientDBData[3].ticked = true;
@@ -77,53 +77,90 @@ function SearchResultAntibody() {
                     setPatientDBData([...patientDBData]);
                 });
             }
-            
+
             if (getResponse.response_content.ppuType > 0) {
                 setDisableSearch(false);
-                
+
                 if (getResponse.response_content.ppuType == 2 && getResponse.response_content.redo) { // Bundle Redo
                     setDisableSearch(true);
                 }
-                if(!getResponse.response_content.syscontrol_search_submit && getResponse.response_content.className == "adminium")
-                {
+                if (!getResponse.response_content.syscontrol_search_submit && getResponse.response_content.className == "adminium") {
                     setDisableSearch(false);
                 }
             }
-            console.log(disableSearch,'disableSearch');
+            console.log(disableSearch, 'disableSearch');
         }
         //dispatch(userActions.logout()); 
     }, []);
+    function updateFormData(data) {
+        if (data.redo) {
+            if (data.formData) {
+                data.formData['searchName'] = data.formData['title'];
+                let strategyData = _.find(Constant['strategies'], function (obj) {
+                    return obj.val == data.formData['strategy']
+                });
+                data.formData['strategy'] = strategyData['value'];
+                patientDBData[0].selected = false;
+                patientDBData[1].selected = false;
+                patientDBData[2].selected = false;
+                patientDBData[3].selected = false;
+                data.formData.selectedDbs.forEach(function (value) {
+                    if (value == 'p:GQPAT_PRT') {
+                        patientDBData[0].selected = true;
+                    } else if (value == 'p:GQPAT_PREMIUM_PRT') {
+                        patientDBData[1].selected = true;
+                    } else if (value == 'p:GEAA') {
+                        patientDBData[2].selected = true;
+                    } else if (value == 'p:CASPAT_PRT') {
+                        patientDBData[3].selected = true;
+                    }
+                });
+                setPatientDBData([...patientDBData]);
+                setFormData(data.formData);
+                // console.log(formdata, 'formdata');
+            }
+        }
+        var expiredTime = data.expiredTime;
+        if (expiredTime && expiredTime.date) {
+            var expiredTimeInSecs = Math.round(new Date(expiredTime.date).getTime() / 1000);
+            // Sets the session timeout based on the user expired time in database, -90 for timeout 60 secs and 30 more buffer
+            expiredTimeInSecs = expiredTimeInSecs - Math.round(new Date().getTime() / 1000) - 90;
+            // Idle.setIdle(expiredTimeInSecs < 0 ? (30 * 59) : expiredTimeInSecs);
+            //Idle.watch();
+            //console.log(Idle.getIdle());
 
+            console.log("NRB expired at: " + expiredTime.date);
+        }
+    }
     const handleCheckbox = (event, i) => {
         // console.log(event, value); 
         patientDBData[i]['selected'] = event.target.checked;
         // patientDBData[i]['ticked'] = event.target.checked;
         setPatientDBData([...patientDBData]);
     }
-    // reset login status
-
     const formik = useFormik({
         initialValues: {
-            searchName: '',
-            cdrhcseq1: '',
-            cdrhcseq2: '',
-            cdrhcseq3: '',
-            cdrlcseq1: '',
-            cdrlcseq2: '',
-            cdrlcseq3: '',
-            hcOption1: 0,
-            hcOption2: 0,
-            hcOption3: 0,
-            lcOption1: 0,
-            lcOption2: 0,
-            lcOption3: 0,
-            strategy: 'genepast',
-            percId: 80,
-            expectCutoff: 10,
-            wordSize: 3,
-            hcFullSeq: '',
-            lcFullSeq: ''
+            searchName: formdata && formdata.searchName ? formdata.searchName : '',
+            cdrhcseq1: formdata && formdata.cdrhcseq1 ? formdata.cdrhcseq1 : '',
+            cdrhcseq2: formdata && formdata.cdrhcseq2 ? formdata.cdrhcseq2 : '',
+            cdrhcseq3: formdata && formdata.cdrhcseq3 ? formdata.cdrhcseq3 : '',
+            cdrlcseq1: formdata && formdata.cdrlcseq1 ? formdata.cdrlcseq1 : '',
+            cdrlcseq2: formdata && formdata.cdrlcseq2 ? formdata.cdrlcseq2 : '',
+            cdrlcseq3: formdata && formdata.cdrlcseq3 ? formdata.cdrlcseq3 : '',
+            hcOption1: formdata && formdata.hcOption1 ? formdata.hcOption1 : 0,
+            hcOption2: formdata && formdata.hcOption2 ? formdata.hcOption2 : 0,
+            hcOption3: formdata && formdata.hcOption3 ? formdata.hcOption3 : 0,
+            lcOption1: formdata && formdata.lcOption1 ? formdata.lcOption1 : 0,
+            lcOption2: formdata && formdata.lcOption2 ? formdata.lcOption2 : 0,
+            lcOption3: formdata && formdata.lcOption3 ? formdata.lcOption3 : 0,
+            strategy: formdata && formdata.strategy ? formdata.strategy : 'genepast',
+            percId: formdata && formdata.percId ? formdata.percId : 80,
+            expectCutoff: formdata && formdata.expectCutoff ? formdata.expectCutoff : 10,
+            wordSize: formdata && formdata.wordSize ? formdata.wordSize : 3,
+            hcFullSeq: formdata && formdata.hcFullSeq ? formdata.hcFullSeq : '',
+            lcFullSeq: formdata && formdata.lcFullSeq ? formdata.lcFullSeq : ''
         },
+        enableReinitialize: true,
         validationSchema: Validate.AntibodySearchValidation(),
         onSubmit: async (values) => {
             console.log(values, 'values');
@@ -193,7 +230,7 @@ function SearchResultAntibody() {
             <form name="antibodySearchForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
 
                 <Row>
-                    <Col lg="12" md="12" className={"mb-2 "+(authInfo && !authInfo.syscontrol_search_submit ? 'd-block':'d-none') }>
+                    <Col lg="12" md="12" className={"mb-2 " + (authInfo && !authInfo.syscontrol_search_submit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
                             {t('ABsearchDisableText')}
                             {authInfo && authInfo.syscontrol_search_submit_txt}
@@ -555,14 +592,14 @@ function SearchResultAntibody() {
                                             // checked={true}
                                             checked={values.selected}
                                             color="primary"
-                                            className={"float-left mx-2 "+(values.ticked ? 'd-block':'d-none')}
+                                            className={"float-left mx-2 " + (values.ticked ? 'd-block' : 'd-none')}
                                             name={values.value}
                                             id={values.value}
                                             key={values.value}
                                             onChange={(e) => handleCheckbox(e, i)}
                                         // onChange={() => { setIspublishGQUnknownDates(!ispublishGQUnknownDates) }}
                                         />
-                                        <Typography className={"float-left mt-2 w-75 "+(values.ticked ? 'd-block':'d-none')}>
+                                        <Typography className={"float-left mt-2 w-75 " + (values.ticked ? 'd-block' : 'd-none')}>
                                             {values.label}
                                         </Typography>
                                     </div>)
@@ -571,12 +608,12 @@ function SearchResultAntibody() {
                         </Row>
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" className={"mb-2 "+(authInfo && (authInfo.ppuType == 1 || (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block':'d-none'))}>
-                        <div className={(authInfo && (authInfo.ppuType == 1) ? 'd-block':'d-none')}>
+                    <Col lg="12" md="12" className={"mb-2 " + (authInfo && (authInfo.ppuType == 1 || (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block' : 'd-none'))}>
+                        <div className={(authInfo && (authInfo.ppuType == 1) ? 'd-block' : 'd-none')}>
                             <h6 className={"appTextColor loginTitle"}>{t('ppuuserSearchTitle')}</h6>
                             <h6 className={"appTextColor loginTitle ml-4 "}>{t('ppuuserCreditPrice')}</h6>
                         </div>
-                        <div className={(authInfo && (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block':'d-none')}>
+                        <div className={(authInfo && (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block' : 'd-none')}>
                             <h6 className={"appTextColor loginTitle"}>{t('ppuuserSearchTitle')}</h6>
                             <h6 className={"appTextColor loginTitle ml-4 "}>{t('ppubundleCreditPrice')}</h6>
                         </div>
@@ -598,7 +635,7 @@ function SearchResultAntibody() {
                         <hr />
                     </Col>
                     <Col lg="12" md="12" className="float-right mb-3">
-                        <Button color={!disableSearch ? 'default':'primary'} variant="contained" className={" text-capitalize mr-2 float-right "+(!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} type="submit" disabled={!disableSearch}>{t('search')}</Button>&nbsp;&nbsp;&nbsp;
+                        <Button color={!disableSearch ? 'default' : 'primary'} variant="contained" className={" text-capitalize mr-2 float-right " + (!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} type="submit" disabled={!disableSearch}>{t('search')}</Button>&nbsp;&nbsp;&nbsp;
                     <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} type="submit">{t('cancel')}</Button>
                     </Col>
                 </Row>

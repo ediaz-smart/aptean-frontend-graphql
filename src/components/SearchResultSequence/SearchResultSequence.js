@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory,useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
 import Checkbox from "@material-ui/core/Checkbox";
@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import DataTable from "react-data-table-component";
 import Button from '@material-ui/core/Button';
+import { format } from 'date-fns';
 
 
 import seqSearchImg from '../../assets/image/seqSearch.png';
@@ -17,6 +18,7 @@ import alertImg from '../../assets/image/alert.png';
 import searchResultImg from '../../assets/image/searchResult.png';
 import notesImg from '../../assets/image/notes.png';
 import TextInput from '../../shared/Fields/TextInput';
+import searchResSequence from '../../services/searchResSequence';
 
 
 
@@ -124,9 +126,30 @@ function SearchResultSequence() {
     const history = useHistory();
     const [selectData, setSelectData] = useState();
     const [disableDelete, setDisableDelete] = useState(true);
+    const [seqSummary, setSeqSummary] = useState();
+    const [seqShare, setSeqShare] = useState();
+    const { workflowId } = useParams();
+
     // reset login status
     useEffect(async () => {
-
+        const getSummaryResponse = await searchResSequence.getSequenceSummary(workflowId);
+        const getShareResponse = await searchResSequence.getSequenceShare(workflowId);
+        console.log(getShareResponse,'getShareResponse')
+        if(getSummaryResponse && getSummaryResponse.response_status == 0)
+        {
+            setSeqSummary(getSummaryResponse.response_content);
+        }
+        if(getShareResponse && getShareResponse.response_status == 0)
+        {
+            let {gq_user_id,write_sharee_id,read_sharee_id} = getShareResponse.response_content.SUBJECT;
+            if(gq_user_id == write_sharee_id == read_sharee_id){
+                
+            }else {
+                // console.log('data shared');
+            }
+            // setSeqSummary(getSummaryResponse.response_content);
+        }
+        console.log(seqSummary,'seqSummary')
         //dispatch(userActions.logout()); 
     }, []);
     const updateState = useCallback(state => setSelectData(state));
@@ -174,7 +197,7 @@ function SearchResultSequence() {
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Typography>
                                 <img className="float-left mx-3" src={seqSearchImg} alt={t('ImmunoglobulinVariationsFor')}/>
-                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /><span>This search was launched on 18-Feb-2021 by Heather Leeman.​</span></Typography>
+                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /><span>This search was launched on {seqSummary && seqSummary.create_time ? format(new Date(seqSummary.create_time), 'dd-MMM-yyyy'):''} by {seqSummary && seqSummary.sdb__owner_full_name}.​</span></Typography>
                             <Typography>
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> <span>It is shared with Steve Allen, Henk Heus, and Vijaya Gorla (share settings).</span></Typography>
                         </Col>

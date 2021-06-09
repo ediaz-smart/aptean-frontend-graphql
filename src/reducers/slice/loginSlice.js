@@ -28,7 +28,7 @@ export const submitLogin = (data,history, t) => async (dispatch) => {
                 let errorMsg = 'Unable to Login';
                 dispatch(setUser({isLoggedIn: false }));
                 if(response && typeof response.response_content === 'object' && response.response_content !== null){
-                    errorMsg = response.response_content.message;
+                    errorMsg = response;
                 }
                 return errorMsg;
                 // toast.error(errorMsg);

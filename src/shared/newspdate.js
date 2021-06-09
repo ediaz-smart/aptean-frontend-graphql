@@ -1,9 +1,7 @@
-import React, { useRef, useState,useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Container, Row, Col } from 'react-bootstrap';
+import React, { useState,useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@material-ui/core/styles';
+import ReactHtmlParser from 'react-html-parser';
 
 import ContentModal from './Modal/ContentModal';
 import NewsService from '../services/news'
@@ -69,8 +67,10 @@ function Newsupdate(props) {
         <div  className={classes.newsContent+' '+(props.isMostUsedPanel ? classes.newsMostUsedContent : '')+(props.isForgotPanel ? classes.forgotNewsContent:'')}>
             <div id="newsUpdateDiv" className="p-3">
             <h5 className="appTextColor"><b>{t('newsandupdates')}</b></h5>
-            <div dangerouslySetInnerHTML={{__html: newsData}}>
-            </div>
+            {ReactHtmlParser(newsData)}
+            {/* <div dangerouslySetInnerHTML={{__html: newsData}}>
+
+            </div> */}
             </div>
         </div>
         

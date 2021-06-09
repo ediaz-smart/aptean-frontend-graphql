@@ -4,10 +4,14 @@ import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
 
 import { makeStyles } from '@material-ui/core/styles';
+import CloseIcon from '@material-ui/icons/Close';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
-		borderBottom: 'none !important'
+		borderBottom: 'none !important',
+		display:'block !important',
+		padding:'10px'
 	},
 	footerDiv:{
 		padding:'0 30px'
@@ -24,12 +28,11 @@ function PromptModal({show,modalCallback,hideModal}) {
 			contentClassName='modalPromptContent'
 			show={show}
 		>
-			<Modal.Header closeButton={true} className={classes.modalHeader}>
-				{/* <Modal.Title id="contained-modal-title-vcenter">
-           Logout
-          </Modal.Title> */}
+			<Modal.Header className={classes.modalHeader+"  w-100"}>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon className={"float-right"} onClick={hideModal} /></Link>
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
+				
 				<h5>Please confirm that you want to log out.</h5>
 				<br></br>  <br></br>
 				<div className={classes.footerDiv}>

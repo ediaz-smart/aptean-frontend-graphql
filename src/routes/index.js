@@ -32,7 +32,9 @@ class Routes extends React.Component {
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                     <Route exact path="/ipseqsearch" title="ipseqsearch" component={IpSequenceSearch} />
                     <Route exact path="/searchresseq" title="searchresseq" component={SearchResultSequence} />
+                    <Route exact path="/searchresseq/:workflowId" title="searchresseq" component={SearchResultSequence} />
                     <Route exact path="/searchresantibody" title="searchresantibody" component={SearchResultAntibody} />
+                    <Route exact path="/searchresantibody/:workflowId" title="searchresantibody" component={SearchResultAntibody} />
                     <Route exact path="/searchResult" title="searchResMgmnt"  component={SearchManagement} />
                     <Route exact path="/accountinfo" component={AccountInfo} />
                     <Route exact path="/merge" component={MergeResults} />

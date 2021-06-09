@@ -13,6 +13,7 @@ import { submitLogin } from '../../reducers/slice/loginSlice';
 import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
 import Footer from '../../shared/footer';
+import { supportMail } from '../../config';
 
 const useStyles = makeStyles((theme) => ({
     loginDiv: {
@@ -67,6 +68,8 @@ function Login(props) {
     const classes = useStyles();
     const [errorMsg,setErrorMsg] = useState(false);
     const { t, i18n } = useTranslation('common');
+    const [errorMsgText,setErrorMsgText] = useState(t('loginFailure1'));
+    const [loginTry,setLoginTry] = useState();
     const dispatch = useDispatch();
 
     const formik = useFormik({
@@ -78,9 +81,24 @@ function Login(props) {
         onSubmit: async(values) => {
             let resp = await dispatch(submitLogin({GQUSERID: values.userName, GQPASSWORD: values.password},history, t));
             console.log(resp,'resp');
-            if(resp == "LOGIN_FAILED")
+            if(resp && resp.response_status > 0)
             {
-                setErrorMsg(!errorMsg);
+                if(resp.response_content.triesLeft > 3)
+                {
+                    setErrorMsgText(t('loginFailure1'));
+                }
+                else if(resp.response_content.triesLeft > 1 && resp.response_content.triesLeft < 4)
+                {
+                    setErrorMsgText(t('loginFailure2'));
+                }
+                else if(resp.response_content.triesLeft == 1)
+                {
+                    setErrorMsgText(t('loginFailure3'));
+                }else {
+                    setErrorMsgText(t('loginFailure4'));
+                }
+                setLoginTry(resp.response_content.triesLeft)
+                setErrorMsg(true);
             }
             // history.push('/home');
         },
@@ -107,9 +125,12 @@ function Login(props) {
             <Row className="justify-content-md-center">
                 <Col sm="12" md="5" className="mb-5 mt-4">
                 
-                <form name="loginForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
+                <form name="loginForm" onSubmit={formik.handleSubmit} className={classes.loginDiv+" content"}>
                     {!errorMsg && <h5 className="loginTitle">{t('loginAccount')}</h5>}
-                    {errorMsg && <h6 className="loginTitle failedTextColor">{t('loginFailure')}</h6>}
+                    {errorMsg && <h6 className="loginTitle failedTextColor">{errorMsgText}</h6>}
+                    {errorMsg && loginTry == 0 && 
+                    <p>Please Contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.</p>
+                    }
                     <div className="form-group">
                         <TextInput 
                         fullWidth

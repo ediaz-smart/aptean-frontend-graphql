@@ -514,7 +514,7 @@ function IpSeqSearch() {
                 data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : ""; // Word Size - Protein
                 data.strat_blast_scoring_matrix_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? scoringMatrixValue : ""; // Scoring matrix - Protein
                 data.strat_blast_eval_cutoff = values.expectCutoff; // Expect Cutoff
-                data.strat_blast_hsp = processHsp ? "on" : "off"; // HSP handling, "on" when the checkbox is selected
+                data.strat_blast_hsp = processHsp ? "on" : ""; // HSP handling, "on" when the checkbox is selected
             } else if (searchAlgorithmValue == "fragment") {
                 // Fragment
                 data.strat_fragment_window_length_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentStretch : ""; // Window Length - Nuc
@@ -597,7 +597,7 @@ function IpSeqSearch() {
                 setDbTypeArray([...dbTypeArray])
             }
             setTimeout(function () {
-                let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "off";
+                let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "";
                 setIsBothDbSelected(twoDbSelected)
             }, 3000);
 
@@ -617,7 +617,7 @@ function IpSeqSearch() {
             setProDb([...proDb]);
         }
         setTimeout(function () {
-            let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "off";
+            let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "";
             setIsBothDbSelected(twoDbSelected)
         }, 3000);
     };
