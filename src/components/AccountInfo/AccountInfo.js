@@ -185,10 +185,20 @@ function AccountInfo() {
     {
       history.push('/home');
     }
-   
-      
-    return(
+    function tryAgainForm()
+    {
+     formik.setFieldValue('confirmPassword','');
+     setModalShow(false)
+    }
+    // console.log(formik,"vlauess vlauess vlauess vlauess vlauess");
+    const passwordVlaue = formik.values.confirmPassword;
+    console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
+    const passValCheck = passwordVlaue.length; 
+    console.log(passValCheck,"passValCheck passValCheck passValCheck passValCheck passValCheck");
 
+
+    return(
+     
         <div className={classes.grow}>
        <form name="accountInformationForm" onSubmit={formik.handleSubmit} >
         <div>
@@ -202,6 +212,9 @@ function AccountInfo() {
                                 name="firstName"
                                 label='First Name'
                                 variant="outlined"
+                                inputProps={{
+                                    maxlength: 64
+                                  }}
                                 value={formik.values.firstName}
                                 onChange={formik.handleChange} 
                                 error={formik.touched.firstName && Boolean(formik.errors.firstName)}
@@ -212,6 +225,9 @@ function AccountInfo() {
                          className={classes.textBox}
                            id="lastName"
                               //  initialValues={userLastName}
+                              inputProps={{
+                                    maxlength: 64
+                                  }}
                                 name="lastName"
                                 label='Last Name'
                                 variant="outlined"
@@ -313,13 +329,17 @@ function AccountInfo() {
             
           <div className={classes.rootButton}>
               <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
-                <Button variant="contained" type="submit">{t('aisavechange')}</Button>
+                <Button  variant="contained" className={(passValCheck != 0 ? 'loginSubmit text-capitalize' : '')} type="submit">{t('aisavechange')}</Button>
           </div>
-             
+          {/* <Button {(passwordForm ? 'd-block' : 'd-none')} variant="contained" type="submit">{t('aisavechange')}</Button> */}
+          {/* <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
+                            Submit
+             </Button> */}
           </div>
           <AccountInfoModal
                             show={modalShow}
                             onHide={() => setModalShow(false)}
+                            tryAgain={()=> tryAgainForm()}
                             onMessage={errorMessage}
                         />
                          <SaveContentModal

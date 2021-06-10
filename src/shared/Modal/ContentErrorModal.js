@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function AccountInfoModal(props) {
+function ContentErrorModal(props) {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation('common');
     let mailUrl = "mailto:" + supportMail+"?subject="+props.subjectText;
@@ -47,16 +47,8 @@ function AccountInfoModal(props) {
 				{/* <h5>{props.onMessage}</h5> */}
 				<h5>The current password was incorrect.</h5>
                  <br></br>
-				{/* <h5>Please try again.</h5> */}
-				<p>
-                        <spoan>{t("tryAgainOrContact")}</spoan>
-						<br></br>
-						<br></br>
-                        <span>
-                            <a className={"appTextFont appLinkColor"} href={mailUrl} target="_blank" rel="noopener noreferrer">{supportMail}</a>
-                        </span>
-                        <span>{t("forAssistance")}</span>
-              </p>
+				<h5>Please try again.</h5>
+				
 				<br></br>
 				<br></br>
 				<div className={classes.footerDiv}>
@@ -73,4 +65,4 @@ function AccountInfoModal(props) {
 	);
 }
 
-export default AccountInfoModal;
+export default ContentErrorModal;

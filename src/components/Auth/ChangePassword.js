@@ -13,7 +13,7 @@ import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
 import AccountService from '../../services/accountInfo';
 import SaveContentModal from '../../shared/Modal/SaveContentModal'
-import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
+import ContentErrorModal from '../../shared/Modal/ContentErrorModal'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -136,6 +136,15 @@ function ChangePassword() {
       {
         history.push('/home');
       }
+      const passwordVlaue = formik.values.currentPassword;
+      console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
+      const passValCheck = passwordVlaue.length; 
+      console.log(passValCheck,"passValCheck passValCheck passValCheck passValCheck passValCheck");
+      function tryAgainForm()
+      {
+       formik.setFieldValue('currentPassword','');
+       setModalShow(false)
+      }
     return (
       <div className={classes.grow}>
         <Container className="mt-100">
@@ -207,7 +216,7 @@ function ChangePassword() {
                        
                         <div className={classes.rootButton}>
                             <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
-                             <Button variant="contained" type="submit">{t('cpsavenewpass')}</Button>
+                             <Button variant="contained" className={(passValCheck != 0 ? 'loginSubmit text-capitalize' : '')} type="submit">{t('cpsavenewpass')}</Button>
                         </div>
 
                     </form>
@@ -235,9 +244,10 @@ function ChangePassword() {
                 </Col>
             </Row>
         </Container>
-        <AccountInfoModal
+        <ContentErrorModal
                             show={modalShow}
                             onHide={() => setModalShow(false)}
+                            tryAgain={()=> tryAgainForm()}
                             onMessage={errorMessage}
                         />
                          <SaveContentModal

@@ -140,7 +140,7 @@ function RecentResults() {
 
 		<div className={classes.grow}>
 			{/* <ProgressBar /> */}
-			<Row >
+			        <Row >
 						<Col>
 						<span className={'appTextColor '+classes.textHeading}>Most Recent Results</span><span className="pipeText appTextColor">|</span><span className={classes.pTagMargin}>
 							{/* <a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>All Search Results</a> */}

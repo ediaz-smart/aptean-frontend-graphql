@@ -46,8 +46,10 @@ export default function Router({
 	/**
 	 * If not included on both previous cases, redirect user to the desired route.
 	 */
+
 	if (isUserLogin == null || !isUserLogin) {
 		return (
+			
 			<Route
 				{...rest}
 				render={props => (

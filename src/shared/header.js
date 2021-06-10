@@ -24,7 +24,12 @@ const useStyles = makeStyles((theme) => ({
         // marginRight: theme.spacing(2),
         '& img':{
             height:'50px'
-        }
+        },
+        '&:hover':{
+            backgroundColor: 'transparent',
+             
+        },
+        // color: 'white',
     },
     inputRoot: {
         color: 'inherit',
@@ -58,6 +63,13 @@ const useStyles = makeStyles((theme) => ({
         width: '92% !important',
         zIndex: 999,
         borderBottom: '1px solid #cec7c7'
+
+    },
+    headerLink:{
+        // alignItems: 'left',
+        pointerEvents: 'none',
+        backgroundColor: 'transparent'
+        // opacity:' 0.5'
 
     },
     headerPipe: {
@@ -178,8 +190,11 @@ export default function Header(props) {
                         className={classes.menuButton}
                         color="inherit"
                         aria-label="open drawer"
+                        disableRipple ='true'
                     >
-                        <Link to="/home" className="text-left"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link>
+                                         
+                            <Link to="/home" ><img src={GQLogo}  alt="GQLogo" className="w-75" /></Link>
+                       
 
                     </IconButton>
                     <div className={classes.grow} />

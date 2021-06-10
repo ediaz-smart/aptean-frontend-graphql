@@ -1050,8 +1050,8 @@ function IpSeqSearch() {
                             </Link>
                             </Fragment>
                             }
-                        </Col>
-                    </AccordionDetails>
+                        </Col>    
+                    </AccordionDetails>a
                     <AccordionDetails className="appTextColor">
                         <Col md="12">
                             <Typography className={"float-left " + classes.seqText}>

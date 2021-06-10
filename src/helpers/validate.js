@@ -20,7 +20,7 @@ function LoginValidate() {
             .required(t('userNameReq')),
         password: yup
             .string(t('enterPass'))
-            .min(8, t('passMinChar'))
+            // .min(8, t('passMinChar'))
             .required(t('passwordReq')),
     });
     return validationSchema;

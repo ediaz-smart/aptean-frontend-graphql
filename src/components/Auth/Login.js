@@ -94,7 +94,11 @@ function Login(props) {
                 else if(resp.response_content.triesLeft == 1)
                 {
                     setErrorMsgText(t('loginFailure3'));
-                }else {
+                }else if(resp.response_content.triesLeft == null)
+                {
+                    setErrorMsgText(t('loginFailure1'));
+                }
+                else {
                     setErrorMsgText(t('loginFailure4'));
                 }
                 setLoginTry(resp.response_content.triesLeft)

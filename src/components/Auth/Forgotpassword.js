@@ -50,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
 function Forgotpassword() {
     const classes = useStyles();
     const {t, i18n} = useTranslation('common');
+    const [errorMsg,setErrorMsg] = useState(0);
+    
     const [passwordForm, setPasswordForm] = useState(true);
     const [verifycaptchaCode, setcaptchaCode] = useState();
     const dispatch = useDispatch();
@@ -61,9 +63,11 @@ function Forgotpassword() {
         },
         validationSchema: Validate.ForgotValidate(),
          onSubmit: async(values) => {
+            // setErrorMsg(0);
             console.log(values,"valessssssssss");
             if(values.captchaCode == verifycaptchaCode)
             {
+               
                  const result = await PasswordService.forgotPassword(values.userName);
                 // dispatch(forgotpasswordSlice({userId:values.userName},history));
                 //  checkflag = result.response_content.success;
@@ -76,13 +80,15 @@ function Forgotpassword() {
                    
                 }
                 else{
+                    setErrorMsg(0);
                     setPasswordForm(false);
                     toast.success("Success");
                 }
                
             }
             else{
-            toast.error("Captcha InCorrect ! Try Again");
+            setErrorMsg(1);
+            // toast.error("Captcha InCorrect ! Try Again");
             // setPasswordForm(false);
             }
         },
@@ -109,8 +115,11 @@ function Forgotpassword() {
                 {/* <Col sm="12" md="6" className="loginDiv"> */}
                 <Col sm="12" md="5" className={'mb-5 mt-4 '+classes.passwordRecoverDiv}>
                     <form name="passwordForm" onSubmit={formik.handleSubmit} className={(passwordForm ? 'd-block' : 'd-none')}>
+
                         <h5 className="loginTitle">{t('pwdRecovery')}</h5>
                         <p className="appTextColor mb-4">{t('pwdRecoveryTitle')}</p>
+                        {errorMsg == 1 ? <h6 className="loginTitle failedTextColor">The Code was Incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> :'' }
+
                         <div className="form-group">
                             <TextInput 
                                 fullWidth
