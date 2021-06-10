@@ -125,7 +125,7 @@ function ApplicationPanel() {
                                     {/* <a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a> */}
                                     <span className={classes.pTagMargin}>{t('sequenceVariation')}</span>
                                 </p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('antibodySequence')}</a></p>
+                                <p className={classes.pTagMargin}><Link to="/searchresantibody" className={classes.anchorTag}>{t('antibodySequence')}</Link></p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('documentSearch')}</p>

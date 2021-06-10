@@ -234,9 +234,17 @@
     "ackAntibodySearch": "By checking this box, I acknowledge and agree to these search fees.",
     "ppubundleCreditPrice": "TOTAL 3 credits",
     "ABsearchDisableText": "Search Submission is temporarily suspended for routine maintenance.",
-    "patienceThanksText": "Thank you for your patience"
+    "patienceThanksText": "Thank you for your patience",
+    "searchLaunchTitle":"This search was launched on",
+    "by":"by",
+    "sharedWithTitle":"It is shared with",
+    "shareSettings":"share settings",
+    "alarmSettingText1":"The search is repeated automatically every two weeks with an email going to",
+    "alarmSettingText2":"If new results are found",
+    "alertSettings":"alert settings",
+    "usedInSearch":"have been used in this search",
+    "currentVersion":"Current Version",
+    "updateAvailable":"Update Available"
 
-
-
-
+    
 }

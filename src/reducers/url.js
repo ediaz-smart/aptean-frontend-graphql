@@ -27,5 +27,7 @@ export const url = {
     antibodySearch:"do=gqworkflow&workflow_type=GqWfABIpSearch&format=json&view_helper=ObjectViewer::full",
     authInfoAB:"do=gqresult2.get_auth_info_4ab&format=json&db=wf:ab.resdb",
     seqWorkflow:"do=gqworkflow.get_info_ft&format=json&workflow=id:**&workflow_output_name=resdb",
-    seqShareInfo:"do=gqshareable.get_acl_form&id=**&format=json"
+    seqShareInfo:"do=gqshareable.get_acl_form&id=**&format=json",
+    seqAlertInfo:"do=gqworkflow.get_schedule_form&id=**&format=json",
+    seqTechnicalData:"do=gqworkflow.get_log&workflow=id:**"
 }

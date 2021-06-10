@@ -4,7 +4,10 @@ import { url } from '../reducers/url';
 
 async function getNewsBullet() {
     try {
-        return await get(url.news)
+        var d = new Date();
+        var n = d.getMilliseconds();
+        let apiurl = url.news+'&request.preventCache='+n;
+        return await get(apiurl)
         .then((response) => {
             if(response && response.response_content)
             {

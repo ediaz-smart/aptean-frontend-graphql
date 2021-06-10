@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ContentModal(props) {
 	const classes = useStyles();
-    console.log(props,'props');
+    // console.log(props,'props');
 	return (
 		<Modal
 			{...props}

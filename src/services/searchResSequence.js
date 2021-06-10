@@ -61,11 +61,62 @@ async function getSequenceShare(workflowId) {
         console.error(error, "errors");
         hideLoader();
     }
+}
+async function getSeqAlert(workflowId) {
 
+    try {
+        let apiurl = url.seqAlertInfo;
+        apiurl = apiurl.replace('**',workflowId)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+async function getSeqTechnical(workflowId) {
+
+    try {
+        let apiurl = url.seqTechnicalData;
+        apiurl = apiurl.replace('**',workflowId)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
 }
 const searchResSequence = {
     getSequenceSummary,
-    getSequenceShare
+    getSequenceShare,
+    getSeqAlert,
+    getSeqTechnical
 };
 
 export default searchResSequence;

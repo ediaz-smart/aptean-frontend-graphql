@@ -26,7 +26,7 @@ class Routes extends React.Component {
    
     render() {
         const isUserLogin = localStorage.getItem('isLoggedIn');
-        console.log(isUserLogin,'isUserLogin isUserLogin isUserLogin qwdhijoiefhdoihdf')
+        // console.log(isUserLogin,'isUserLogin isUserLogin isUserLogin qwdhijoiefhdoihdf')
 
         // const data = getItem()
         return (

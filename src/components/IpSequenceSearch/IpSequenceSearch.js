@@ -494,7 +494,7 @@ function IpSeqSearch() {
                 // [{"P":"SEQUENCE_D1","O":"BEF","V":20210527},
                 //  {"P":"SEQUENCE_P9","O":"LTE","V":100000},
                 //  {"P":"SEQUENCE_D2","O":"BEF","V":20210527}]
-                sdb_filters: sdbFilterData && sdbFilterData.length > 0 ? sdbFilterData : "",
+                sdb_filters: sdbFilterData && sdbFilterData.length > 0 ? JSON.stringify(sdbFilterData) : "",
                 nucdb_type: "multiple", // always multiple
                 nucdbs: nucDb,
                 // nucdbs: "[\"p:GQPAT_NUC\", \"p:GENA\"]", // string array of databases
@@ -509,18 +509,18 @@ function IpSeqSearch() {
                 data.strat_genepast_perc_id_over = values.genepastPercentageOver;
             } else if (searchAlgorithmValue == "blast") {
                 // Blast
-                data.strat_blast_word_size_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? wordSizeValue : ""; // Word Size - Nucleotide
-                data.strat_blast_scoring_matrix_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? scoringMatrixValue : ""; // Scoring matrix - Nucleotide
-                data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : ""; // Word Size - Protein
-                data.strat_blast_scoring_matrix_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? scoringMatrixValue : ""; // Scoring matrix - Protein
+                data.strat_blast_word_size_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? wordSizeValue : "11"; // Word Size - Nucleotide
+                data.strat_blast_scoring_matrix_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? scoringMatrixValue : "NUC.3.1"; // Scoring matrix - Nucleotide
+                data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : "10"; // Word Size - Protein
+                data.strat_blast_scoring_matrix_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? scoringMatrixValue : "BLOSUM62"; // Scoring matrix - Protein
                 data.strat_blast_eval_cutoff = values.expectCutoff; // Expect Cutoff
                 data.strat_blast_hsp = processHsp ? "on" : ""; // HSP handling, "on" when the checkbox is selected
             } else if (searchAlgorithmValue == "fragment") {
                 // Fragment
-                data.strat_fragment_window_length_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentStretch : ""; // Window Length - Nuc
-                data.strat_fragment_perc_id_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentAminoAcid : ""; // Percentage Identity - Nuc
-                data.strat_fragment_window_length_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentStretch : ""; // Window Length - Prt
-                data.strat_fragment_perc_id_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentAminoAcid : ""; // Percentage Identity - Prt
+                data.strat_fragment_window_length_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentStretch : "50"; // Window Length - Nuc
+                data.strat_fragment_perc_id_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentAminoAcid : "96"; // Percentage Identity - Nuc
+                data.strat_fragment_window_length_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentStretch : "20"; // Window Length - Prt
+                data.strat_fragment_perc_id_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentAminoAcid : "95"; // Percentage Identity - Prt
             }
 
 
@@ -1050,8 +1050,8 @@ function IpSeqSearch() {
                             </Link>
                             </Fragment>
                             }
-                        </Col>    
-                    </AccordionDetails>a
+                        </Col>
+                    </AccordionDetails>
                     <AccordionDetails className="appTextColor">
                         <Col md="12">
                             <Typography className={"float-left " + classes.seqText}>
