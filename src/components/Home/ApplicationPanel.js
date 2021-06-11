@@ -149,7 +149,9 @@ function ApplicationPanel() {
                             </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href={stageBrowserDBLink} target="_blank">{t('browseDatabases')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('personalDatabases')}</a></p>
+                                <p className={classes.pTagMargin}>
+                                    <Link className={classes.anchorTag} to='/searchResult'>{t('personalDatabases')}</Link>
+                                </p>
                             </Col>
                         </Row>
                     </Col>
