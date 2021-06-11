@@ -1,4 +1,4 @@
-import { post, get } from '../helpers/fetchServicesMethods';
+import { post, get,getFile } from '../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
 import { url } from '../reducers/url';
 import PubSub from 'pubsub-js';
@@ -94,7 +94,83 @@ async function getSeqTechnical(workflowId) {
         apiurl = apiurl.replace('**',workflowId)
        
         showLoader();
+        return await getFile(apiurl,'techLog')
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+async function getAlertRedo(workflowId) {
+
+    try {
+        let apiurl = url.getAlertRedos;
+        apiurl = apiurl.replace('**',workflowId)
+       
+        showLoader();
         return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+async function updateSeqNotes(workflowId,notes) {
+
+    try {
+        let apiurl = url.updateSeqNotes;
+        apiurl = apiurl.replace('WID',workflowId)
+        apiurl = apiurl.replace('**',notes)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+async function downloadQuerySeq(workflowId) {
+
+    try {
+        let apiurl = url.downloadQuerySeq;
+        apiurl = apiurl.replace('**',workflowId)
+       
+        showLoader();
+        return await getFile(apiurl,'querySeq')
             .then((response) => {
                 hideLoader();
                 // console.log(JSON.stringify(response),"Password");
@@ -116,7 +192,10 @@ const searchResSequence = {
     getSequenceSummary,
     getSequenceShare,
     getSeqAlert,
-    getSeqTechnical
+    getSeqTechnical,
+    getAlertRedo,
+    updateSeqNotes,
+    downloadQuerySeq
 };
 
 export default searchResSequence;

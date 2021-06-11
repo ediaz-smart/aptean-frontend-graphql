@@ -177,3 +177,50 @@ export function get(url, history) {
     }
 
 }
+
+export function getFile(url, history,type) {
+    try {
+        // if (window.location.hostname == 'localhost') {
+        //     let file;
+        //     if (url.includes('mygq.get_welcome_page_v2')) {
+        //         file = searchResultsData;
+        //     }
+        //     else if (url.includes('gqworkflow.get_status')) {
+        //         file = searchResultsStatusData;
+        //     }
+        //     return fetch(file).then(r => r.text())
+        //         .then(text => {
+        //             console.log('text decoded:', text);
+        //             return JSON.parse(text);
+        //         });
+        // } else {
+            const headers = {
+                // 'Content-Length': 0,
+                // 'Content-Type': 'text/plain'
+            };
+            
+            return axios.get(
+                baseUrl + url, { headers }
+                )
+                .then(resp => {
+                    const url = window.URL.createObjectURL(new Blob([resp.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    if(type == "querySeq")
+                    {
+                        link.setAttribute('download', 'queries.fasta.txt'); //or any other extension
+                    }else {
+                        link.setAttribute('download', 'techLog.txt'); //or any other extension
+                    }
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    return HandleResponse(resp,history)
+                    // return resp
+                });
+        // }
+    } catch (error) {
+        console.error(error);
+    }
+
+}

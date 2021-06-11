@@ -244,7 +244,8 @@
     "alertSettings":"alert settings",
     "usedInSearch":"have been used in this search",
     "currentVersion":"Current Version",
-    "updateAvailable":"Update Available"
+    "updateAvailable":"Update Available",
+    "manageSearchRes":"Manage Search Results"
 
     
 }

@@ -114,10 +114,12 @@ function IpSeqSearchValidate(seqType) {
             .number()
             .required(t('required'))
             .typeError(t('notNumber')),
+        querySequence: yup.string()
+            .validateSeq(t('onlyAlphabetsAllowed')),
     };
 
 
-    if (seqType && seqType == "nucleotide") {
+    /*if (seqType && seqType == "nucleotide") {
         validationShape.querySequence = yup
             .string()
             .required(t('querySeqReq'))
@@ -127,7 +129,7 @@ function IpSeqSearchValidate(seqType) {
             .string()
             .required(t('querySeqReq'))
             .matches(/^[aA-zZ\s]+$/, t("onlyAlphabetsAllowed"))
-    }
+    }*/
     const validationSchema = yup.object().shape(validationShape);
 
     return validationSchema;

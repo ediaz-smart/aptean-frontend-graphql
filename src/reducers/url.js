@@ -29,5 +29,9 @@ export const url = {
     seqWorkflow:"do=gqworkflow.get_info_ft&format=json&workflow=id:**&workflow_output_name=resdb",
     seqShareInfo:"do=gqshareable.get_acl_form&id=**&format=json",
     seqAlertInfo:"do=gqworkflow.get_schedule_form&id=**&format=json",
-    seqTechnicalData:"do=gqworkflow.get_log&workflow=id:**"
+    seqTechnicalData:"do=gqworkflow.get_log&workflow=id:**",
+    getAlertRedos:"do=gqworkflow.get_related_workflows&bid=**&format=json",
+    updateSeqNotes:"do=gqworkflow.update&id=WID&format=json&description=**",
+    downloadQuerySeq:"do=gqworkflow.show_result&workflow=id:**&workflow_output_name=queries.fasta"
+    
 }

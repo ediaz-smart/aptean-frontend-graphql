@@ -367,6 +367,7 @@ function SearchManagement(props) {
             let id = datas.id;
             tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
             const regex = /Fulltext/i;
+			let type = 'Alignments';
             if(datas.type !== null && datas.type !== '')
             {
                 const found = datas.type.match(regex);
@@ -376,7 +377,7 @@ function SearchManagement(props) {
             }else{
                 datas.type = ' ' 
             }
-            let type = 'Alignments';
+            // let type = 'Alignments';
             
             let mostRecentTypeUrl = url.mostRecentTypeUrl
             mostRecentTypeUrl = mostRecentTypeUrl.replace('**', id);

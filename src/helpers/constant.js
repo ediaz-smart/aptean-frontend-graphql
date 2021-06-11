@@ -14,6 +14,15 @@ const Constant = {
         {value: "GQPAT_PREMIUM_PRT", label: "GQ-Pat Platinum Protein", ticked: true, selected: true},
         {value: "GEAA", label: "GENESEQ Protein", ticked: false, selected: false},
         {value: "CASPAT_PRT", label: "CAS Biosequences™ - Proteins from Patents", ticked: false, selected: false}
-    ]
+    ],
+    alertOptions:{
+        "":"every time a database gets updated",
+        null:"every time a database gets updated",
+        "7":"every week",
+        "14":"every 2 weeks",
+        "30":"every month",
+        "180":"every 6 months",
+        "365":"every year"
+    }
 }
 export default Constant;
