@@ -90,6 +90,10 @@ function ApplicationPanel() {
        history.push('/search')
        
       }
+
+     const stageBrowserDBLink = "https://stage.genomequestlive.com/query?do=mygq#4"; 
+     const stagePatentNumLink = "https://stage.genomequestlive.com/query?do=gqfetch.get_field_search_form"; 
+     const stageAlignSequencesDirectly = "https://stage.genomequestlive.com/query?do=gqsearch.get_align_pair_form"; 
     return (
         <div className={classes.grow}>
             {/* <Container className="p-0 m-5"> */}
@@ -135,7 +139,7 @@ function ApplicationPanel() {
                             </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentNumbers')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href={stagePatentNumLink} target="_blank">{t('patentNumbers')}</a></p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('sequenceDatabases')}</p>
@@ -144,7 +148,7 @@ function ApplicationPanel() {
                                 <img src={seqDb} alt="seqDb" className="w-100" />
                             </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('browseDatabases')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href={stageBrowserDBLink} target="_blank">{t('browseDatabases')}</a></p>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('personalDatabases')}</a></p>
                             </Col>
                         </Row>
@@ -167,7 +171,7 @@ function ApplicationPanel() {
                                 <img src={seqTool} alt="seqTool" className="w-100" />
                             </Col>
                             <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('alignSequencesDirectly')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href={stageAlignSequencesDirectly} target="_blank">{t('alignSequencesDirectly')}</a></p>
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p>
                             </Col>
                         </Row>
