@@ -17,6 +17,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import RedoIcon from '@material-ui/icons/Redo';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 import TextInput from '../../shared/Fields/TextInput';
 import HomeService from '../../services/home'
@@ -437,9 +438,10 @@ function SearchManagement(props) {
             if(pagetype === "searchmanagement" || pagetype === "searchfolder")
             {
                 tempObj["info"] = <Fragment>
-									{datas.type === "Folder" && <a href="#" className="infoIcon tt" onClick={(e)=>getInfoIconData(e,tempObj)}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>}
-									{datas.type !== "Folder" && <a href="#" className="infoIcon ss" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>}
-
+				
+									{datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e)=>getInfoIconData(e,tempObj)}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>}
+									{datas.type !== "Folder" && <Link to={"/searchresseq/"+datas.id} className="infoIcon appLinkColor"><InfoIcon className={"mr-2 appLinkColor "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></Link>}
+									
                                     <a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLinkColor" /></a>
                                     <a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
                                 </Fragment>

@@ -275,6 +275,7 @@ function SearchResultAntibody() {
                                     onChange={formik.handleChange}
                                     error={formik.touched.cdrhcseq1 && Boolean(formik.errors.cdrhcseq1)}
                                     helperText={formik.errors.cdrhcseq1}
+                                    disabled={authInfo && authInfo.redo}
                                 />
                                 <TextInput
                                     fullWidth={false}
@@ -292,7 +293,7 @@ function SearchResultAntibody() {
                                     }}
                                     error={formik.touched.hcOption1 && Boolean(formik.errors.hcOption1)}
                                     helperText={formik.errors.hcOption1}
-
+                                   
                                 />
                                 <Typography className="mx-2 mt-2 float-left">{t('missmatchAllow')}</Typography>
                             </Col>
@@ -309,6 +310,7 @@ function SearchResultAntibody() {
                                     onChange={formik.handleChange}
                                     error={formik.touched.cdrhcseq2 && Boolean(formik.errors.cdrhcseq2)}
                                     helperText={formik.errors.cdrhcseq2}
+                                    disabled={authInfo && authInfo.redo}
                                 />
                                 <TextInput
                                     fullWidth={false}
@@ -342,6 +344,7 @@ function SearchResultAntibody() {
                                     onChange={formik.handleChange}
                                     error={formik.touched.cdrhcseq3 && Boolean(formik.errors.cdrhcseq3)}
                                     helperText={formik.errors.cdrhcseq3}
+                                    disabled={authInfo && authInfo.redo}
                                 />
                                 <TextInput
                                     fullWidth={false}
@@ -376,6 +379,7 @@ function SearchResultAntibody() {
                                     onChange={formik.handleChange}
                                     error={formik.touched.cdrlcseq1 && Boolean(formik.errors.cdrlcseq1)}
                                     helperText={formik.errors.cdrlcseq1}
+                                    disabled={authInfo && authInfo.redo}
                                 />
                                 <TextInput
                                     fullWidth={false}
@@ -409,6 +413,7 @@ function SearchResultAntibody() {
                                     onChange={formik.handleChange}
                                     error={formik.touched.cdrlcseq2 && Boolean(formik.errors.cdrlcseq2)}
                                     helperText={formik.errors.cdrlcseq2}
+                                    disabled={authInfo && authInfo.redo}
                                 />
                                 <TextInput
                                     fullWidth={false}
@@ -442,6 +447,7 @@ function SearchResultAntibody() {
                                     onChange={formik.handleChange}
                                     error={formik.touched.cdrlcseq3 && Boolean(formik.errors.cdrlcseq3)}
                                     helperText={formik.errors.cdrlcseq3}
+                                    disabled={authInfo && authInfo.redo}
                                 />
                                 <TextInput
                                     fullWidth={false}
@@ -480,6 +486,7 @@ function SearchResultAntibody() {
                                         value={formik.values.strategy}
                                         onChange={formik.handleChange}
                                         className={"float-left ml-3"}
+                                        disabled={authInfo && authInfo.redo}
                                     />
                                 </Col>
                                 <Col lg="7" md="7" className={"p-0 content " + (formik.values.strategy == "genepast" ? 'd-block' : 'd-none')}>
@@ -501,6 +508,7 @@ function SearchResultAntibody() {
                                         }}
                                         error={formik.touched.percId && Boolean(formik.errors.percId)}
                                         helperText={formik.errors.percId}
+                                        disabled={authInfo && authInfo.redo}
                                     />
                                     <Typography className="mx-2 mt-2 float-left">% Identity over the Chain Sequence</Typography>
                                 </Col>
@@ -522,6 +530,7 @@ function SearchResultAntibody() {
                                         }}
                                         error={formik.touched.expectCutoff && Boolean(formik.errors.expectCutoff)}
                                         helperText={formik.errors.expectCutoff}
+                                        disabled={authInfo && authInfo.redo}
                                     />
                                     <Typography className="mx-2 mt-2 float-left">Word Size</Typography>
                                     <TextInput
@@ -540,6 +549,7 @@ function SearchResultAntibody() {
                                         }}
                                         error={formik.touched.wordSize && Boolean(formik.errors.wordSize)}
                                         helperText={formik.errors.wordSize}
+                                        disabled={authInfo && authInfo.redo}
                                     />
                                 </Col>
                                 <Col lg="12" md="12" className="p-0 content float-left">
@@ -557,6 +567,7 @@ function SearchResultAntibody() {
                                             onChange={formik.handleChange}
                                             error={formik.touched.hcFullSeq && Boolean(formik.errors.hcFullSeq)}
                                             helperText={formik.errors.hcFullSeq}
+                                            disabled={authInfo && authInfo.redo}
                                         />
                                     </div>
                                     <div className="form-group px-3">
@@ -573,6 +584,7 @@ function SearchResultAntibody() {
                                             onChange={formik.handleChange}
                                             error={formik.touched.lcFullSeq && Boolean(formik.errors.lcFullSeq)}
                                             helperText={formik.errors.lcFullSeq}
+                                            disabled={authInfo && authInfo.redo}
                                         />
                                     </div>
                                 </Col>
