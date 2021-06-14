@@ -87,19 +87,23 @@ function Login(props) {
                 {
                     setErrorMsgText(t('loginFailure1'));
                 }
-                else if(resp.response_content.triesLeft > 1 && resp.response_content.triesLeft < 4)
+                else if(resp.response_content.triesLeft == 3)
                 {
                     setErrorMsgText(t('loginFailure2'));
                 }
-                else if(resp.response_content.triesLeft == 1)
+                else if(resp.response_content.triesLeft == 2)
                 {
                     setErrorMsgText(t('loginFailure3'));
+                }
+                else if(resp.response_content.triesLeft == 1)
+                {
+                    setErrorMsgText(t('loginFailure4'));
                 }else if(resp.response_content.triesLeft == null)
                 {
                     setErrorMsgText(t('loginFailure1'));
                 }
                 else {
-                    setErrorMsgText(t('loginFailure4'));
+                    setErrorMsgText(t('loginFailure5'));
                 }
                 setLoginTry(resp.response_content.triesLeft)
                 setErrorMsg(true);

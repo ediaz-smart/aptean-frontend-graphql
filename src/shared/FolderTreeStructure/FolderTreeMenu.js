@@ -52,16 +52,21 @@ const TreeItem = withStyles({
 	}
 })(MuiTreeItem);
 
-const FolderTreeMenu = ({ items, parentCallback, selectedTitle,type,moveFolderCallback,expandedIds,infoFolderIds }) => {
+const FolderTreeMenu = ({ items, parentCallback, selectedTitle,selectedTitleId,type,moveFolderCallback,expandedIds,infoFolderIds,moveFolderId }) => {
 	const classes = useStyles();
 	const [defaultTitle, setDefaultTitle] = useState('');
+	const [defaultTitleId, setDefaultTitleId] = useState('');
+	const [moveToFolderId, setMoveToFolderId] = useState('');
 	const [selectTitle, setSelectTitle] = useState('');
 	items.text_label = 'My Searches';
 	expandedIds = expandedIds ? expandedIds : [];
 	infoFolderIds = infoFolderIds ? infoFolderIds:[];
 
 	useEffect(() => {
+		console.log(moveFolderId,'moveFolderId');
 		setDefaultTitle(selectedTitle);
+		setDefaultTitleId(selectedTitleId);
+		setMoveToFolderId(moveFolderId);
 	});
 	function showString(str){
         let getLength = str.length;
@@ -82,15 +87,16 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle,type,moveFolderCa
 						{/* <FolderOpenIcon /> {nodes.text_label} */}
 						{/* <a className="cursorPointer text-decoration-none appTextColor" onClick={() => changeTitle(nodes.text_label)}> */}
 						{type === "selectFolder" && <a className="cursorPointer text-decoration-none appTextColor">
-							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (defaultTitle === nodes.text_label ? classes.projTitleActive : '')} title={nodes.text_label}>{showString(nodes.text_label)}</span></a>
+							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (defaultTitleId === nodes.id ? classes.projTitleActive : '')} title={nodes.text_label}>{showString(nodes.text_label)}</span></a>
 						}
 						{type === "moveFolder" && <a className="cursorPointer text-decoration-none appTextColor">
-							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (selectTitle === nodes.text_label ? classes.projTitleActive : '')} title={nodes.text_label}>{showString(nodes.text_label)}</span></a>
+							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (moveFolderId === nodes.id ? classes.projTitleActive : '')} title={nodes.text_label}>{showString(nodes.text_label)}</span></a>
 						}
 					</>
 				</div>
 			}
 			onLabelClick={() => {
+				console.log(nodes,'nodes');
 				onSelect(nodes.id, nodes.text_label);
 				setSelectTitle(nodes.text_label);
 				if(type === "selectFolder")

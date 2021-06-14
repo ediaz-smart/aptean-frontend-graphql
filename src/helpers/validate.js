@@ -164,7 +164,7 @@ yup.addMethod(yup.string, "validateMismatch", function (seqType) {
         const { path, createError } = this;
         let message = '';
         let isValid = true;
-        if (val) {
+        if (val && val !== undefined && val !== 'undefined') {
             // let keyValue = "cdrhcseq"+num;
             let text = ctx.parent[seqType];
             let isValid = true;
@@ -194,7 +194,7 @@ yup.addMethod(yup.string, "validateStrategy", function (strategyType,t) {
         const { path, createError } = this;
         let message = '';
         let isValid = true;
-        if (val) {
+        if (val && val !== undefined && val !== 'undefined') {
             // let keyValue = "cdrhcseq"+num;
             let text = ctx.parent[strategyType];
             let isValid = true;
@@ -211,7 +211,7 @@ yup.addMethod(yup.string, "validateStrategy", function (strategyType,t) {
                         isValid = false;
                         message = t('expectCutOffErr');
                     }
-                }else {
+                }else if(path == "wordSize"){
                     if (val < 2 || val > 3) {
                         isValid = false;
                         message = t('wordSizeErr');
@@ -233,7 +233,7 @@ yup.addMethod(yup.string, "validateSeq", function (message) {
         const { path, createError } = this;
         let isValid = true;
         let val = 0;
-        if (text) {
+        if (text && text !== undefined && text !== 'undefined') {
             let lines = text.split(/[\r\n]+/); // split by \n, \r and \r\n, and filter out empty lines
             if (/^\s*>\s*\S+/.test(text)) { // FASTA
                 // count > numbers

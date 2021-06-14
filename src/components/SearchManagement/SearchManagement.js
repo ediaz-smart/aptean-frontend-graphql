@@ -284,6 +284,7 @@ function SearchManagement(props) {
 	async function deleteRecordFolder(getIds,type) {
 		const response = await SearchManagementService.deleteSearchResult(getIds, history);
 		if (response && response.response_content && response.response_content.success.length > 0) {
+			setTermsDisable(false);
 			if(type === "record")
 			{
 				setModalShow(false);
@@ -410,7 +411,7 @@ function SearchManagement(props) {
             {
                 tempObj["report"] = '';
             }else{
-                if(datas.type != '')
+                if(datas.type != '' && datas.status != 'STILL_RUNNING')
                 {
                     if(datas.type == "GqWfABIpSearch")
                     {
@@ -505,9 +506,12 @@ function SearchManagement(props) {
 		setFolderErrorContent(false);
 	}
 	const openMoveFolderModal = () => {
+		setMoveFolderId('');
 		setMoveFolderModalShow(true);
 	}
 	const changeTitle = (event) => {
+		setClearCheckedRow(!clearCheckedRow);
+		
 		setDefaultTitle(event.text_label);
 		setDefaultTitleId(event.id);
 		setParentFolderId(event.id);
@@ -673,7 +677,7 @@ function SearchManagement(props) {
 
 							{/* {folderDetail.map((value, index) => { */}
 								<ListGroup.Item key={123} className={classes.projectListItem}>
-									<FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} type="selectFolder" parentCallback={changeTitle} />
+									<FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} selectedTitleId={defaultTitleId} type="selectFolder" parentCallback={changeTitle} />
 								</ListGroup.Item>
 
 							{/* })} */}
@@ -713,7 +717,7 @@ function SearchManagement(props) {
 					</Col>
 				</Col>
 				<Col md="9">
-					<h6 className="appTextColor mb-4"><b><img src={FolderIcon} /> <span className={classes.projectTitle}>{defaultTitle}</span></b></h6>
+					<h6 className="appTextColor mb-4"><b><img src={FolderIcon} /> <span className={classes.projectTitle}>{defaultTitleId ? defaultTitle:'Recent Search Results'}</span></b></h6>
 					<DataTable
 						columns={columns}
 						data={searchResultData}
@@ -842,11 +846,11 @@ function SearchManagement(props) {
 						<p className="mb-3"><b>{t('moveToFolder')}</b></p>
 						<p className="mb-3">{t('selFolderToMove')}</p>
 						<div className="mb-5 h-100">
-							<FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderCallback={selectedFolder} type="moveFolder" />
+							<FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
 							<Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true:false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('moveResult')}</Button>
-							<Button onClick={closeMoveFolderModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+							<Button onClick={closeMoveFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
 						</div>
 					</div>
 				</Modal.Body>

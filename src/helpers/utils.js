@@ -65,7 +65,7 @@ async function mostRecentResCalculation(data,pagetype) {
             {
                 tempObj["report"] = '';
             }else{
-                if(datas.type != '')
+                if(datas.type != '' && datas.status != 'STILL_RUNNING')
                 {
                     if(datas.type == "GqWfABIpSearch")
                     {

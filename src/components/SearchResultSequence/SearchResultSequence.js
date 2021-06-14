@@ -504,14 +504,78 @@ function SearchResultSequence() {
                             }
                             <br />
                             <h6 className={"appTextColor loginTitle"}>{t('searchStrategy')}</h6>
-                            <Col lg="12" md="12" className="pr-0 content">
-                                <Typography >
-                                    <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The sequence comparison algorithm used is GenePAST.​</Typography>
-                                <Typography >
-                                    <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The sequence comparison algorithm used is GenePAST.​</Typography>
-                                <Typography >
-                                    <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The sequence comparison algorithm used is GenePAST.​</Typography>
-                            </Col>
+                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')} >
+                                    <Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This strategy fits the shorter sequence (query or subject) into the longer one, keeping the number of mismatches and gaps to a minimum.​</Typography>
+                                    <Typography className="text-lowercase">
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Alignments with less than {seqSummary && seqSummary.params.strat_genepast_perc_id}% identity over {seqSummary && seqSummary.params.strat_genepast_perc_id_over} are discarded.​</Typography>
+                                </Col>
+                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "blast" ? 'd-block':'d-none')} >
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc}​</Typography>
+                                        <Typography className="text-lowercase">
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}​</Typography>
+                                    </div>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.stats.querytype) ? 'd-block':'d-none')}>
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_pro}​</Typography>
+                                        <Typography className="text-lowercase">
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}​</Typography>
+                                    </div>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc} for nucleotide and {seqSummary && seqSummary.params.strat_blast_word_size_pro} for protein.​</Typography>
+                                        <Typography className="text-lowercase">
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc :"NUC.3.1"} for nucleotide and {seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"} for protein.​</Typography>
+                                    </div>
+                                    <div className="content">
+                                        <Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> e-val cutoff is {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.​</Typography>
+                                        <Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Experimental HSP handling is {seqSummary && seqSummary.params.strat_blast_hsp ? seqSummary.params.strat_blast_hsp:'none'}​</Typography>
+                                    </div>
+                                </Col>
+                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "sw" ? 'd-block':'d-none')} >
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> gap open / extension panelties are {seqSummary && seqSummary.params.strat_sw_gapo_nuc} / {seqSummary && seqSummary.params.strat_sw_gape_nuc}.</Typography>
+                                        <Typography className="text-lowercase">
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_sw_scoring_matrix_nuc ? seqSummary.params.strat_sw_scoring_matrix_nuc:"NUC.3.1"}​</Typography>
+                                    </div>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.stats.querytype) ? 'd-block':'d-none')}>
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> gap open / extension panelties are {seqSummary && seqSummary.params.strat_sw_gapo_nuc} / {seqSummary && seqSummary.params.strat_sw_gape_nuc} for nucleotide, and {seqSummary && seqSummary.params.strat_sw_gapo_pro} / {seqSummary && seqSummary.params.strat_sw_gape_pro} for protein.​</Typography>
+                                        <Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_sw_scoring_matrix_pro ? seqSummary.params.strat_sw_scoring_matrix_pro:"BLOSUM62"}​</Typography>
+                                    </div>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
+                                        <Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_sw_scoring_matrix_nuc ? seqSummary.params.strat_sw_scoring_matrix_nuc:"NUC.3.1"} for nucleotide, and {seqSummary && seqSummary.params.strat_sw_scoring_matrix_pro ? seqSummary.params.strat_sw_scoring_matrix_pro:"BLOSUM62"} for protein.​</Typography>
+                                    </div>
+                                    <div className="content">
+                                        <Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> score cutoff is {seqSummary && seqSummary.params.strat_sw_score_cutoff}.​</Typography>
+                                    </div>
+                                </Col>
+                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "fragment" ? 'd-block':'d-none')} >
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.</Typography>
+                                    </div>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.stats.querytype) ? 'd-block':'d-none')}>
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.​</Typography>
+                                   </div>
+                                   <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
+                                        <Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> For nucleotide hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded;
+                                        </Typography>
+                                        <Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " />For protein hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.
+                                        </Typography>
+                                    </div>
+                                </Col>
                             <br />
                             <h6 className={"appTextColor loginTitle"}>{t('techData')}</h6>
                             <Col lg="12" md="12" className="pr-0 content">
@@ -556,7 +620,7 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"}>{t('alertSetting')}​</h6>
+                    <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('alertSetting')}​</h6>
                     <Row>
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Row>
@@ -595,7 +659,7 @@ function SearchResultSequence() {
                             </Row>
                         </Col>
                         <Col lg="12" md="12" className="pr-0 content float-right mt-3 ml-3">
-                            <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('alerts')}</h6>
+                            <h6 className={"appTextColor loginTitle"}>{t('alerts')}</h6>
                             <DataTable
                                 columns={columns}
                                 data={alertData}

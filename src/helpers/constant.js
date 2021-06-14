@@ -23,6 +23,7 @@ const Constant = {
         "30":"every month",
         "180":"every 6 months",
         "365":"every year"
-    }
+    },
+    nucleotideDB:['PROTEIN-PROTEIN','NUCLEOTIDE-PROTEIN','PROTEIN-NUCLEOTIDE','PROTEIN-MIX']
 }
 export default Constant;
