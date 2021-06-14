@@ -38,6 +38,12 @@ const useStyles = makeStyles((theme) => ({
         textTransform:"capitalize",
       },
   },
+  loginSubmitButton : {
+    backgroundColor: '#DB862D',
+    border: '2px solid #DB862D' ,
+    color:'white',
+    textTransform: 'capitalize',
+ },
     root: {
       
       '& > *': {
@@ -56,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
       },
     },
+   
   }));
 function AccountInfo() {
     const [accountInfoData, setAccountInfoData] = useState([]);
@@ -329,7 +336,7 @@ function AccountInfo() {
             
           <div className={classes.rootButton}>
               <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
-                <Button  variant="contained" className={(passValCheck != 0 ? 'loginSubmit text-capitalize' : '')} type="submit">{t('aisavechange')}</Button>
+                <Button  variant="contained" className={(passValCheck != 0 ? classes.loginSubmitButton : '')} type="submit">{t('aisavechange')}</Button>
           </div>
           {/* <Button {(passwordForm ? 'd-block' : 'd-none')} variant="contained" type="submit">{t('aisavechange')}</Button> */}
           {/* <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">

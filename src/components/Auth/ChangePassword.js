@@ -29,6 +29,12 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #bfb4b4',
         borderRadius: '6px'
     },
+    loginSubmitButton : {
+        backgroundColor: '#DB862D',
+        border: '2px solid #DB862D' ,
+        color:'white',
+        textTransform: 'capitalize',
+    },
     loginLogoDiv:{
         position: 'relative',
         left: '0px',
@@ -100,6 +106,7 @@ function ChangePassword() {
         },
         validationSchema: Validate.ChangePasswordValidate(),
         onSubmit: async(values) => {
+               
                if(values.newPassword == values.confirmPassword)
                {
                         const result = await AccountService.updatePass(userId,values.newPassword,values.confirmPassword,values.currentPassword);
@@ -114,7 +121,6 @@ function ChangePassword() {
                             setmodalShowSaved(true);
                         }
                        
-           
                }
                else{
                 toast.error("Password MisMatch! Enter Valid Password.");
@@ -165,7 +171,7 @@ function ChangePassword() {
                                 type="password"
                                 value={formik.values.currentPassword}
                                 onChange={formik.handleChange}
-                                error={formik.touched.currentPassword && Boolean(formik.errors.currentPassword)}
+                                error={formik.values.currentPassword != '' && formik.touched.currentPassword && Boolean(formik.errors.currentPassword)}
                                 helperText={formik.touched.currentPassword && formik.errors.currentPassword}
                                 InputLabelProps={{
                                     classes: {root:classes.materialUILabel}, 
@@ -216,7 +222,7 @@ function ChangePassword() {
                        
                         <div className={classes.rootButton}>
                             <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
-                             <Button variant="contained" className={(passValCheck != 0 ? 'loginSubmit text-capitalize' : '')} type="submit">{t('cpsavenewpass')}</Button>
+                             <Button variant="contained" className={(passValCheck != 0 ? classes.loginSubmitButton : '')} type="submit">{t('cpsavenewpass')}</Button>
                         </div>
 
                     </form>

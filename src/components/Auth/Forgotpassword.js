@@ -76,7 +76,10 @@ function Forgotpassword() {
                 {
                     const error = result.response_content.errors[0];
                     console.log(error,"errorerror")
-                    toast.error(error);
+                    // toast.error(error);
+                    // setErrorMsg(3);
+                    setErrorMsg(0);
+                    setPasswordForm(false);
                    
                 }
                 else{
@@ -118,7 +121,7 @@ function Forgotpassword() {
 
                         <h5 className="loginTitle">{t('pwdRecovery')}</h5>
                         <p className="appTextColor mb-4">{t('pwdRecoveryTitle')}</p>
-                        {errorMsg == 1 ? <h6 className="loginTitle failedTextColor">The Code was Incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> :'' }
+                        {errorMsg == 1 ? <h6 className="loginTitle failedTextColor">The Code was Incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> : errorMsg == 3 ? <h6 className="loginTitle failedTextColor">Invalid username</h6>:'' }
 
                         <div className="form-group">
                             <TextInput 
