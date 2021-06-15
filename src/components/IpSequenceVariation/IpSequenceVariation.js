@@ -1638,7 +1638,7 @@ function IpSequenceVariation() {
                         </Col>
                     </Row>
                 </div>
-                {(userClassName == "platinum.com") && ppuType != "0" && (!accGroupName.includes('FT - ') && !accGroupName.includes('SB - ')) && 
+                {(userClassName == "adminium") && ppuType != "0" && (!accGroupName.includes('FT - ') && !accGroupName.includes('SB - ')) && 
                 <Fragment>
                 <ColoredLine color="#f3f2f2" />
                     <Row>
