@@ -35,6 +35,10 @@ export const url = {
     downloadQuerySeq:"do=gqworkflow.show_result&workflow=id:**&workflow_output_name=queries.fasta",
     updateAlertSetting:"do=gqworkflow.update_schedule&format=json&activate=on&relaunch_interval=**&id=WID",
     removeAlert:"do=gqworkflow.delete_schedule&format=json&relaunch_interval=&id=WID",
-    removeResultShare:"do=gqshareable.update_acl&format=json&id=WID&read_sharee_id=UID&is_read_recursive=1&write_sharee_id=UID&is_write_recursive=1&request.preventCache=TIMESTAMP"
+    removeResultShare:"do=gqshareable.update_acl&format=json&id=WID&read_sharee_id=UID&is_read_recursive=1&write_sharee_id=UID&is_write_recursive=1&request.preventCache=TIMESTAMP",
+    patientNumberLookup:"https://stage.genomequestlive.com/query?do=gqfetch.field_search&field=PN",
+    stageBrowserDBLink:"https://stage.genomequestlive.com/query?do=mygq#4",
+    stagePatentNumLink:"https://stage.genomequestlive.com/query?do=gqfetch.get_field_search_form",
+    stageAlignSequencesDirectly:"https://stage.genomequestlive.com/query?do=gqsearch.get_align_pair_form"
     
 }

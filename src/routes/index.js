@@ -1,5 +1,6 @@
 import { HashRouter, Switch } from 'react-router-dom';
 import React from 'react';
+import {Router,Redirect} from "react-router-dom";
 import history from '../helpers/history';
 import Route from "./Route";
 import Login from '../components/Auth/Login';
@@ -17,7 +18,9 @@ import SearchResultSequence from '../components/SearchResultSequence/SearchResul
 import IpSequenceVariation from '../components/IpSequenceVariation/IpSequenceVariation';
 import SearchResultAntibody from '../components/SearchResultAntibody/SearchResultAntibody'
 import ResultReportFolder from '../components/ResultReportFolder/ResultReportFolder';
-import {Router,Redirect} from "react-router-dom";
+import FullTextSearch from '../components/FullTextSearch/FullTextSearch';
+
+
 
 
 
@@ -52,6 +55,7 @@ class Routes extends React.Component {
                     <Route exact path="/merge" component={MergeResults} />
                     <Route exact path="/ipseqvariation" title="ipseqvariation" component={IpSequenceVariation} />
                     <Route exact path="/report/folder" component={ResultReportFolder} />
+                    <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
                     </React.Fragment>
                     : 
                     <Redirect to='/login' />

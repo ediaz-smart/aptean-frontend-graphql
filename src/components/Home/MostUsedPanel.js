@@ -6,7 +6,9 @@ import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
+
 import Newsupdate from '../../shared/newspdate';
+import { url } from '../../reducers/url';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -71,7 +73,7 @@ function MostUsedPanel() {
         
         //dispatch(userActions.logout()); 
     }, []);
-    const stageUrlLink = "https://stage.genomequestlive.com/query?do=gqfetch.field_search&field=PN"
+    // const stageUrlLink = "https://stage.genomequestlive.com/query?do=gqfetch.field_search&field=PN"
     return (
         <div className={classes.grow}>
             {/* <Container className="p-0 m-5"> */}
@@ -90,7 +92,7 @@ function MostUsedPanel() {
                                 <Link to="/ipseqvariation" className={classes.anchorTag}>{t('seqVariation')}</Link>
                             </p>
                             <p className={classes.pTagMargin}><Link to="/searchresantibody" className={classes.anchorTag}>{t('antibodySequence')}</Link></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href={stageUrlLink} target="_blank" >{t('patientnumlookup')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href={url.patientNumberLookup} target="_blank" >{t('patientnumlookup')}</a></p>
                         </div>
                     </Col>
                 </Row>

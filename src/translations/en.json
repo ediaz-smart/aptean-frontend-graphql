@@ -258,5 +258,7 @@
     "nucCreditSubTotal": "Sub-total of credits used for nucleotide search",
     "proCreditSubTotal": "Sub-total of credits used for protein search",
     "totalCredits" :"TOTAL Credits used by this search",
-    "creditsReamining": "Credits remaining after this search is submitted"
+    "creditsReamining": "Credits remaining after this search is submitted",
+    "fulltextsearch":"Life Sciences Full Text Search",
+    "fulltext":"Full Text Search"
 }
