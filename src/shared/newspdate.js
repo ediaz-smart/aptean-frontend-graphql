@@ -52,13 +52,19 @@ function Newsupdate(props) {
             setNewsData(getNewsData['news']);
         }
         
-        const height = document.getElementById('newsUpdateDiv').clientHeight;
-        console.log(height,'height');
-        if(height > 195)
+        var myElement = document.getElementById("newsUpdateDiv");
+        
+        if(myElement)
         {
-            setShowMore(true);
-            document.getElementById("newsUpdateDiv").className = props.isMostUsedPanel ? "newsUpdateContent":"p-3"; 
+            const height = myElement.clientHeight;
+            console.log(height,'height');
+            if(height > 195)
+            {
+                setShowMore(true);
+                document.getElementById("newsUpdateDiv").className = props.isMostUsedPanel ? "newsUpdateContent":"p-3"; 
+            }
         }
+        
     }, []);
     const elementContent = <div><p className={"appTextColor"+' '+(props.isMostUsedPanel ? 'ml-2 mt-4' : '')}>2021 Jan 21 <b>Patent Family Updates – </b>The GenomeQuest content team has streamlined the patent family assignment process to increase accuracy and increase update frequency. The new process has resulted in a significant reduction of singletons, updates for newdocuments are now done weekly. Please contact support@gqlifesciences.com with questions or comments.</p>
     <p className={"appTextColor"+' '+(props.isMostUsedPanel ? 'ml-2 ' : '')}>2020 Oct 27 <b>Antibody Module – </b>The new module has been released! Please join us in a <a href='#' onClick={e => e.preventDefault()}>webinar</a> on November 10th to learn about streamlining your antibody searches.</p></div>
