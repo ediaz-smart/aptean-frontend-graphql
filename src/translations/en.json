@@ -246,7 +246,8 @@
     "usedInSearch":"have been used in this search",
     "currentVersion":"Current Version",
     "updateAvailable":"Update Available",
-    "manageSearchRes":"Manage Search Results"
+    "manageSearchRes":"Manage Search Results",
+    "updateAlert":"Update Alert Settings"
 
     
 }

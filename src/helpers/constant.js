@@ -16,7 +16,7 @@ const Constant = {
         {value: "CASPAT_PRT", label: "CAS Biosequences™ - Proteins from Patents", ticked: false, selected: false}
     ],
     alertOptions:{
-        "":"every time a database gets updated",
+        "0":"every time a database gets updated",
         null:"every time a database gets updated",
         "7":"every week",
         "14":"every 2 weeks",

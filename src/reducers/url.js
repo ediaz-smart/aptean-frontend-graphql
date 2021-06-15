@@ -32,6 +32,9 @@ export const url = {
     seqTechnicalData:"do=gqworkflow.get_log&workflow=id:**",
     getAlertRedos:"do=gqworkflow.get_related_workflows&bid=**&format=json",
     updateSeqNotes:"do=gqworkflow.update&id=WID&format=json&description=**",
-    downloadQuerySeq:"do=gqworkflow.show_result&workflow=id:**&workflow_output_name=queries.fasta"
+    downloadQuerySeq:"do=gqworkflow.show_result&workflow=id:**&workflow_output_name=queries.fasta",
+    updateAlertSetting:"do=gqworkflow.update_schedule&format=json&activate=on&relaunch_interval=**&id=WID",
+    removeAlert:"do=gqworkflow.delete_schedule&format=json&relaunch_interval=&id=WID",
+    removeResultShare:"do=gqshareable.update_acl&format=json&id=WID&read_sharee_id=UID&is_read_recursive=1&write_sharee_id=UID&is_write_recursive=1&request.preventCache=TIMESTAMP"
     
 }

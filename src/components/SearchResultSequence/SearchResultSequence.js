@@ -27,6 +27,7 @@ import searchResSequence from '../../services/searchResSequence';
 import SearchManagementService from '../../services/searchmanagement'
 import Constant from '../../helpers/constant';
 import { url } from '../../reducers/url';
+import SelectBox from '../../shared/Fields/SelectBox';
 
 
 
@@ -58,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
     },
     rowHeight: {
         height: '8%'
+    },
+    alertSelect:{
+        width:'70%'
     }
 }));
 const columns = [
@@ -166,6 +170,17 @@ function SearchResultSequence() {
     const [termsDisable, setTermsDisable] = React.useState(false);
     const [deleteType, setDeleteType] = React.useState('single');
 
+    // Alert Setting Modal
+    const [alertSettingModal, setAlertSettingModal] = useState(false);
+    const [alertSettingData, setAlertSettingData] = useState([]);
+    const [alertSettingValue, setAlertSettingValue] = useState();
+
+    // Result Sharing
+    const [readShareId, setReadShareId] = useState();
+    const [writeShareId, setWriteShareId] = useState();
+    const [gqUserId, setGqUserId] = useState();
+
+
     // reset login status
     useEffect(async () => {
         getSummaryResp();
@@ -173,6 +188,18 @@ function SearchResultSequence() {
         getAlertResp();
         getAlertRedoResp();
         // console.log(userInfo, 'userInfo');
+        let tempAlertArr = [];
+
+        _.each(Constant['alertOptions'], (value, key) => {
+            if(key != 'null')
+            {
+                let tempObj = {value: key, label: value};
+                alertSettingData.push(tempObj)
+            }
+            
+        });
+        setAlertSettingData([...alertSettingData])
+        setAlertSettingValue(7);
 
     }, []);
     const getSummaryResp = async () => {
@@ -196,6 +223,10 @@ function SearchResultSequence() {
     const getAlertResp = async () => {
         const getAlertResponse = await searchResSequence.getSeqAlert(workflowId);
         if (getAlertResponse && getAlertResponse.response_status == 0) {
+            if(getAlertResponse.response_content.relaunch_interval == "" || getAlertResponse.response_content.relaunch_interval == null){
+                getAlertResponse.response_content.relaunch_interval = 0;
+            }
+            setAlertSettingValue(getAlertResponse.response_content.relaunch_interval);
             setAlarmSetting(getAlertResponse.response_content);
         }
     }
@@ -204,7 +235,10 @@ function SearchResultSequence() {
         if (getShareResponse && getShareResponse.response_status == 0) {
             // Getting Shared Members Name
             let { gq_user_id, write_sharee_id, read_sharee_id } = getShareResponse.response_content.SUBJECT;
-            if (gq_user_id == write_sharee_id == read_sharee_id) {
+            setReadShareId(read_sharee_id);
+            setWriteShareId(write_sharee_id);
+            setGqUserId(gq_user_id);
+            if (gq_user_id === write_sharee_id && write_sharee_id === read_sharee_id) {
                 setSeqShare('');
             } else {
                 let user_candidates = getShareResponse.response_content.user_candidates;
@@ -215,40 +249,49 @@ function SearchResultSequence() {
                 let userIds = [write_sharee_id, read_sharee_id];
                 let sharedNames = [];
                 let sharedObj = [];
+                // console.log(getShareResponse,'getShareResponse');
                 userIds.map(function (value, key) {
                     if (user_candidates && user_candidates[value]) {
                         sharedNames.push(user_candidates[value].full_name);
+                        user_candidates[value].text_label = user_candidates[value].full_name;
                         sharedObj.push(user_candidates[value]);
                     }
                     if (group_candidates && group_candidates[value]) {
                         sharedNames.push(group_candidates[value].text_label);
-                        sharedObj.push(user_candidates[value]);
+                        sharedObj.push(group_candidates[value]);
                     }
                     if (seat_candidates && seat_candidates[value]) {
                         sharedNames.push(seat_candidates[value].text_label);
-                        sharedObj.push(user_candidates[value]);
+                        sharedObj.push(seat_candidates[value]);
                     }
                     if (team_candidates && team_candidates[value]) {
                         sharedNames.push(team_candidates[value].text_label);
-                        sharedObj.push(user_candidates[value]);
+                        sharedObj.push(team_candidates[value]);
                     }
                     if (universal_team && universal_team[value]) {
                         sharedNames.push(universal_team[value].text_label);
-                        sharedObj.push(user_candidates[value]);
+                        sharedObj.push(universal_team[value]);
                     }
                 });
-                // console.log(sharedObj,'sharedObj');
                 let sharedData = {};
-                sharedData['sharedNameObj'] = sharedObj;
-                if (sharedNames.length > 0) {
-                    const last = sharedNames.pop();
-                    const shareDatas = sharedNames.join(', ') + ' and ' + last;
+                let shareDatas;
+                sharedData['sharedNames'] = '';
+                if(write_sharee_id == read_sharee_id)
+                {
+                    sharedObj = _.uniqBy(sharedObj, 'id');
+                    sharedNames = _.uniq(sharedNames);
+                    // console.log(sharedNames,'sharedNames');
+                    shareDatas = sharedNames.join(', ');
                     sharedData['sharedNames'] = shareDatas;
-
-
-                } else {
-                    sharedData['sharedNames'] = '';
                 }
+                
+                sharedData['sharedNameObj'] = sharedObj;
+                if (sharedNames.length > 1) {
+                    const last = sharedNames.pop();
+                    shareDatas = sharedNames.join(', ') + ' and ' + last;
+                    sharedData['sharedNames'] = shareDatas;
+                }
+                
                 setSeqShare(sharedData);
                 // setTimeout(() => {
                 //     console.log(seqShare,'seqShare');
@@ -325,7 +368,7 @@ function SearchResultSequence() {
                     tempObj["searchId"] = <span>Search id {values.id}</span>;
                 }
                 tempObj["id"] = values.id;
-                if (values.credit_code == "redo") {
+                if (values.credit_code == "redo" || values.credit_code == null) {
                     redoArr.push(tempObj);
                 } else {
                     alertArr.push(tempObj);
@@ -420,6 +463,52 @@ function SearchResultSequence() {
         await searchResSequence.getSeqTechnical(workflowId);
         // console.log(getTechResp,'getTechResp');
     }
+    const showAlertModal = async(e)=>{
+        e.preventDefault();
+        setAlertSettingModal(!alertSettingModal)
+    }
+    const updateAlertSettings = async()=>{
+        setAlertSettingModal(!alertSettingModal)
+        let alertVal = alertSettingValue;
+        if(alertVal == 0)
+        {
+            alertVal = '';
+        }
+        const getSettingResponse = await searchResSequence.updateAlertSettings(workflowId,alertVal);
+        if (getSettingResponse && getSettingResponse.response_status == 0) {
+            getAlertResp();
+        }else {
+            toast.error('Update in Error.');
+        }
+        // console.log(getSettingResponse,'getSettingResponse');
+    }
+    const removeAlert = async(e)=>{
+        e.preventDefault();
+        const getremoveResponse = await searchResSequence.removeAlertSettings(workflowId);
+        if (getremoveResponse && getremoveResponse.response_status == 0) {
+            getAlertResp();
+        }else {
+            toast.error('Removing in Error.');
+        }
+        console.log(getremoveResponse,'getremoveResponse');
+    }
+    const removeResSharing = async(e)=>{
+        e.preventDefault();
+        var d = new Date();
+        var timeStamp = d.getMilliseconds();
+        let postData = {
+            workflowId,
+            gqUserId,
+            timeStamp
+        }
+        const getremoveResponse = await searchResSequence.removeResultSharing(postData);
+        if (getremoveResponse && getremoveResponse.response_status == 0) {
+            getShareResp()
+        }else {
+            toast.error('Removing in Error.');
+        }
+        // console.log(getremoveResponse,'getremoveResponse');
+    }
     return (
         <div className={classes.grow}>
             <Row>
@@ -429,19 +518,19 @@ function SearchResultSequence() {
                             {t('auditTrial')}
                         </span>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                        <Link href="#" title={t('resSharing')} className={"appLinkColor appLinkFont"} onClick={(e) => e.preventDefault()}>
+                        <Link href="#resultSharing" title={t('resSharing')} className={"appLinkColor appLinkFont"} onClick={(e) => handleScroll(e, 'resultSharing')}>
                             {t('resSharing')}
                         </Link>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                        <Link href="#" title={t('alertSetting')} className={"appLinkColor appLinkFont"} onClick={(e) => e.preventDefault()} >
+                        <Link href="#alertSettings" title={t('alertSetting')} className={"appLinkColor appLinkFont"} onClick={(e) => handleScroll(e, 'alertSettings')} >
                             {t('alertSetting')}
                         </Link>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                        <Link href="#" title={t('searchHistory')} className={"appLinkColor appLinkFont"} onClick={(e) => e.preventDefault()}>
+                        <Link href="#" title={t('searchHistory')} className={"appLinkColor appLinkFont"} onClick={(e) => handleScroll(e, 'searchHistoryDiv')}>
                             {t('searchHistory')}
                         </Link>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                        <Link href="#" title={t('notes')} className={"appLinkColor appLinkFont"} onClick={(e) => e.preventDefault()}>
+                        <Link href="#" title={t('notes')} className={"appLinkColor appLinkFont"} onClick={(e) => handleScroll(e, 'notesDiv')}>
                             {t('notes')}
                         </Link>
                     </Typography>
@@ -503,8 +592,8 @@ function SearchResultSequence() {
                             })
                             }
                             <br />
-                            <h6 className={"appTextColor loginTitle"}>{t('searchStrategy')}</h6>
-                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')} >
+                            <h6 className={"appTextColor loginTitle"} id="resultSharing">{t('searchStrategy')}</h6>
+                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')}>
                                     <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This strategy fits the shorter sequence (query or subject) into the longer one, keeping the number of mismatches and gaps to a minimum.​</Typography>
                                     <Typography className="text-lowercase">
@@ -558,7 +647,7 @@ function SearchResultSequence() {
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> score cutoff is {seqSummary && seqSummary.params.strat_sw_score_cutoff}.​</Typography>
                                     </div>
                                 </Col>
-                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "fragment" ? 'd-block':'d-none')} >
+                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "fragment" ? 'd-block':'d-none')}>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
                                         <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.</Typography>
@@ -567,7 +656,7 @@ function SearchResultSequence() {
                                         <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.​</Typography>
                                    </div>
-                                   <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
+                                   <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')} >
                                         <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> For nucleotide hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded;
                                         </Typography>
@@ -592,7 +681,7 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"} id="resultSharing">{t('resSharing')}​</h6>
+                    <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('resSharing')}​</h6>
                     <Row>
                         <Col lg="1" md="1" sm="12" className="pr-0">
                             <img src={resultshareImg} alt={t('resSharing')} />
@@ -608,10 +697,10 @@ function SearchResultSequence() {
                                     <Row key={i}>
                                         <Col lg="4" md="4" className="pr-0 content">
                                             <Typography >
-                                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {dbVal.full_name}</Typography>
+                                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {dbVal.text_label}</Typography>
                                         </Col>
                                         <Col lg="4" md="4" className="pr-0 content">
-                                            <Typography ><Link className={"failedTextColor"} id={dbVal.id} href="#" onClick={(e) => e.preventDefault()}>Remove</Link></Typography>
+                                            <Typography ><Link className={"failedTextColor"} id={dbVal.id} href="#" onClick={(e) => removeResSharing(e)}>Remove</Link></Typography>
                                         </Col>
                                     </Row>
                                 )
@@ -620,22 +709,22 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('alertSetting')}​</h6>
+                    <h6 className={"appTextColor loginTitle"} id="searchHistoryDiv">{t('alertSetting')}​</h6>
                     <Row>
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Row>
                                 <Col lg="8" md="8" className="pr-0 content">
                                     <img className="float-left mx-3" src={alertImg} alt={t('alertSetting')} />
-                                    <Typography >
+                                    <Typography className={(alarmSetting && alarmSetting.is_created ? 'd-block':'d-none')}>
                                         This result is repeated automatically {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]}. New results are emailed to {alarmSetting && alarmSetting.is_created && alarmSetting.email}. ​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className="pr-0 content float-right">
                                     <Typography className={"float-right"}>
-                                        <Link href="#" title={t('resSharing')} className={"appLinkColor appLinkFont"} onClick={(e) => e.preventDefault()}>
+                                        <Link href="#" title={t('resSharing')} className={"appLinkColor appLinkFont"} onClick={(e)=>showAlertModal(e)}>
                                             Change Settings
                                         </Link>
                                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                                        <Link href="#" title={t('resSharing')} className={"failedTextColor appLinkFont"} onClick={(e) => e.preventDefault()}>
+                                        <Link href="#" title={t('resSharing')} className={"failedTextColor appLinkFont"} onClick={(e) => removeAlert(e)}>
                                             Remove Alert
                                         </Link>
                                     </Typography>
@@ -713,7 +802,7 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"}>{t('notes')}</h6>
+                    <h6 className={"appTextColor loginTitle"} id="notesDiv">{t('notes')}</h6>
                     <Row>
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Row>
@@ -752,6 +841,33 @@ function SearchResultSequence() {
                     </Row>
                 </Col>
             </Row>
+            <Modal
+				show={alertSettingModal}
+				size="md"
+				aria-labelledby="contained-modal-title-vcente"
+				centered
+				contentClassName='modalPromptContent'
+			>
+				<Modal.Body className="appTextColor">
+					<label className="mb-3 mt-2 float-left">{t('alertSetting')}</label>
+						{/* <div className="mb-5 h-100"> */}
+                            <SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="changeAlert"
+                                id="changeAlert"
+                                value={alertSettingValue}
+                                items={alertSettingData}
+                                onChange={(e)=>setAlertSettingValue(e.target.value)}
+                                className={"float-left ml-3"+' '+(classes.alertSelect)}
+                            />
+						{/* </div>  */}
+						<div className={classes.footerDiv + " float-right"}>
+							<Button onClick={updateAlertSettings} color={'primary'} className={"text-capitalize mr-2 loginSubmit"} variant="contained">{t('updateAlert')}</Button>
+							<Button onClick={()=>setAlertSettingModal(!alertSettingModal)} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+						</div>
+				</Modal.Body>
+			</Modal>
             <Modal
                 show={modalShow}
                 size="md"

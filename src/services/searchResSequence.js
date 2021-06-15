@@ -188,6 +188,84 @@ async function downloadQuerySeq(workflowId) {
         hideLoader();
     }
 }
+async function updateAlertSettings(workflowId,alertSettingValue) {
+
+    try {
+        let apiurl = url.updateAlertSetting;
+        apiurl = apiurl.replace('WID',workflowId)
+        apiurl = apiurl.replace('**',alertSettingValue)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+async function removeAlertSettings(workflowId) {
+
+    try {
+        let apiurl = url.removeAlert;
+        apiurl = apiurl.replace('WID',workflowId)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+async function removeResultSharing(postdata) {
+
+    try {
+        let apiurl = url.removeResultShare;
+        apiurl = apiurl.replace('WID',postdata.workflowId)
+        apiurl = apiurl.replaceAll('UID',postdata.gqUserId)
+        apiurl = apiurl.replace('TIMESTAMP',postdata.timeStamp)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
 const searchResSequence = {
     getSequenceSummary,
     getSequenceShare,
@@ -195,7 +273,10 @@ const searchResSequence = {
     getSeqTechnical,
     getAlertRedo,
     updateSeqNotes,
-    downloadQuerySeq
+    downloadQuerySeq,
+    updateAlertSettings,
+    removeAlertSettings,
+    removeResultSharing
 };
 
 export default searchResSequence;
