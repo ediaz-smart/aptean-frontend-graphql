@@ -170,7 +170,7 @@
     "sendMailAfterSearch": "Send email when the search is done",
     "acceptTermsCheckBox": "By checking this box, I acknowledge and agree to these terms",
     "total2Credits": "TOTAL 2 Credits",
-    "executingSearch": "Executing this search will incur the following charges:",
+    "executingSearchCharges": "Executing this search will incur the following charges:",
     "personalProDb": "Personal Protein Databases",
     "referenceProDb": "Reference Protein Databases",
     "proteinPatDb": "Protein Patent Databases",
@@ -247,7 +247,16 @@
     "currentVersion":"Current Version",
     "updateAvailable":"Update Available",
     "manageSearchRes":"Manage Search Results",
-    "updateAlert":"Update Alert Settings"
-
-    
+    "updateAlert":"Update Alert Settings",
+    "executingSearchCredits": "Executing this search will incur the following credits:",
+    "amountPerSeq": "query sequences @ $850.00 per query sequence",
+    "nucSubTotal": "Sub-total for nucleotide search",
+    "proSubTotal": "Sub-total for protein search",
+    "total": "TOTAL",
+    "creditsPerSeq": "Credit used per query sequence",
+    "noOfQueryInSearch": "Total number of query sequences in this search",
+    "nucCreditSubTotal": "Sub-total of credits used for nucleotide search",
+    "proCreditSubTotal": "Sub-total of credits used for protein search",
+    "totalCredits" :"TOTAL Credits used by this search",
+    "creditsReamining": "Credits remaining after this search is submitted"
 }

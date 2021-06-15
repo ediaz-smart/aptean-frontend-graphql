@@ -295,7 +295,7 @@ function IpSequenceVariation() {
     // const [querySequenceValue, setQuerySequencyValue] = useState();
     const [genePastValue, setGenePastValue] = useState("QUERY");
     const [personalDataValue, setPersonalDataValue] = useState();
-    const [isBothDbSelected, setIsBothDbSelected] = useState("off");
+    // const [isBothDbSelected, setIsBothDbSelected] = useState("off");
     const [dbTypeArray, setDbTypeArray] = useState([]);
     const [sendMailAfterSearch, setSendMailAfterSearch] = useState(false);
     const [processHsp, setProcessHsp] = useState(false);
@@ -314,6 +314,22 @@ function IpSequenceVariation() {
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [errorMsg, setErrorMsg] = useState();
     const [nucGenBankData, setNucGenBankData] = useState([]);
+    const [userClassName, setUserClassName] = useState();
+    const [accGroupName, setAccGroupName] = useState("");
+    const [credits, setCredits] = useState();
+
+    let initialCreditValues = {
+        ppu1SubTotal:0,
+        ppu1NucSubTotal: 0,
+        ppu1ProSubTotal: 0,
+        ppu1Total: 0,
+        seqCount: 0,
+        ppu2NucCredit: 0,
+        ppu2ProCredit:0,
+        ppu2TotalCredit: 0,
+        ppu2RemainingCredits: 0
+    };
+    const [creditValues, setCreditValues] = useState(initialCreditValues);
 
 
 
@@ -380,16 +396,20 @@ function IpSequenceVariation() {
                 setProPersonalData(proDataShardWithMe);
             }
 
-            if(userInfo && userInfo.current_user && userInfo.current_user.ppu_type) {
-                let userPpu = userInfo.current_user.ppu_type;
-                console.log('userData', userInfo)
+            // if(userInfo && userInfo.current_user && userInfo.current_user.ppu_type) {
+            //     let userPpu = userInfo.current_user.ppu_type;
+            //     console.log('userData', userInfo)
 
-                setPpuType(userInfo.current_user.ppu_type);
-                if (userPpu == "1" || userPpu == "2") {
-                    setIsSubmitActive(false);
-                } else {
-                    setIsSubmitActive(true);
-                }
+            //     setPpuType(userInfo.current_user.ppu_type);
+            //     if (userPpu == "1" || userPpu == "2") {
+            //         setIsSubmitActive(false);
+            //     } else {
+            //         setIsSubmitActive(true);
+            //     }
+            // }
+
+            if (resp && resp.response_content && resp.response_content && resp && resp.response_content && resp.response_content.group_credits) {
+                setCredits(resp.response_content && resp.response_content.group_credits);
             }
 
             // const accountData = await AccountInfo.getAccountInfo();
@@ -404,6 +424,27 @@ function IpSequenceVariation() {
             // }
         })()
     }, []);
+
+    setTimeout(() => {
+        if (userInfo && userInfo.current_user ) {
+            let userPpu = userInfo.current_user.ppu_type;
+            console.log('userData', userInfo)
+
+            setPpuType(userPpu);
+            if (userPpu == "0") {
+                setIsSubmitActive(true);
+            } else {
+                setIsSubmitActive(false);
+            }
+
+            if (userInfo.current_user.user_class_name) {
+                setUserClassName(userInfo.current_user.user_class_name)
+            }
+            if (userInfo.current_user.accounting_group_name) {
+                setAccGroupName(userInfo.current_user.accounting_group_name)
+            }
+        }
+    }, 3000);
 
     const formik = useFormik({
         initialValues: {
@@ -477,7 +518,7 @@ function IpSequenceVariation() {
                 searchtype: "FTO", // leave it as always "FTO"
                 title: values.searchDetails, // Workflow name
                 email: sendMailAfterSearch ? localStorage.getItem('userName') : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
-                nucandprot: isBothDbSelected, // "on" when selecting both NUC and PRO databases
+                // nucandprot: isBothDbSelected, // "on" when selecting both NUC and PRO databases
                 strat_name: searchAlgorithmValue, // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
                 /*
                 strat_sw_scoring_matrix_nuc: "NUC.3.1",
@@ -516,7 +557,7 @@ function IpSequenceVariation() {
                 data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : ""; // Word Size - Protein
                 data.strat_blast_scoring_matrix_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? scoringMatrixValue : ""; // Scoring matrix - Protein
                 data.strat_blast_eval_cutoff = values.expectCutoff; // Expect Cutoff
-                data.strat_blast_hsp = processHsp ? "on" : "off"; // HSP handling, "on" when the checkbox is selected
+                data.strat_blast_hsp = processHsp ? "on" : ""; // HSP handling, "on" when the checkbox is selected
             } else if (searchAlgorithmValue == "fragment") {
                 // Fragment
                 data.strat_fragment_window_length_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentStretch : ""; // Window Length - Nuc
@@ -533,6 +574,7 @@ function IpSequenceVariation() {
                 closeSuccessModal();
             } else {
                 let setMessage = resp && resp.response_content && resp.response_content.type ? resp.response_content.type : "Unknown";
+                setMessage = resp && resp.response_content && resp.response_content.qdb && resp && resp.response_content && resp.response_content.qdb.msg ? resp.response_content.qdb.msg : "Unknown";
                 setShowErrorModal(true);
                 setErrorMsg(setMessage);
             }
@@ -580,6 +622,16 @@ function IpSequenceVariation() {
     const handleSequenceType = (event) => {
         setSequenceType(event.target.value);
         formik.setFieldValue("querySequence", '');
+        creditValues.ppu1SubTotal = 0;
+        creditValues.ppu1NucSubTotal = 0;
+        creditValues.ppu1ProSubTotal = 0;
+        creditValues.ppu1Total = 0;
+        creditValues.seqCount = 0;
+        creditValues.ppu2NucCredit = 0;
+        creditValues.ppu2ProCredit = 0;
+        creditValues.ppu2TotalCredit = 0;
+        creditValues.ppu2RemainingCredits = 0;
+        setCreditValues({...creditValues});
         if (event.target.value == "nucleotide") {
             setScoringMatrix('NUC3.1');
             setWordSize('11');
@@ -600,10 +652,10 @@ function IpSequenceVariation() {
                 dbTypeArray.splice(index, 1);
                 setDbTypeArray([...dbTypeArray])
             }
-            setTimeout(function () {
-                let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "off";
-                setIsBothDbSelected(twoDbSelected)
-            }, 3000);
+            // setTimeout(function () {
+            //     let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "";
+            //     setIsBothDbSelected(twoDbSelected)
+            // }, 3000);
 
             name && name == "nuc" ? setNucDb(nucDb.filter(dbName => dbName !== id)) : setProDb(proDb.filter(dbName => dbName !== id));
             return setAllChecked(false);
@@ -620,10 +672,10 @@ function IpSequenceVariation() {
             proDb.push(id.toString());
             setProDb([...proDb]);
         }
-        setTimeout(function () {
-            let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "off";
-            setIsBothDbSelected(twoDbSelected)
-        }, 3000);
+        // setTimeout(function () {
+        //     let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "";
+        //     setIsBothDbSelected(twoDbSelected)
+        // }, 3000);
     };
 
     function handleDbChange(id, name) {
@@ -649,11 +701,95 @@ function IpSequenceVariation() {
     // console.log('isnucselecte', isNucSelected)
     // console.log('isproselecte', isProSelected)
     console.log('dbtypearray', dbTypeArray)
-    console.log('bothdbselected', isBothDbSelected)
+    // console.log('bothdbselected', isBothDbSelected)
     console.log('nucDb', nucDb)
     console.log('proDb', proDb)
 
+    function calTextCredits(e, bothDb, type){
+        console.log('texte', e)
+    //     if(type && type =="isCompare"){
+    //         console.log('insideType', type)
+    //     setIsBothDbSelected(!isBothDbSelected);
+    // }
+    let text;
+    text = type && type == "isCompare" ? formik.values.querySequence : e.target.value;
+        if ((e && (e.keyCode == 9 || e.type == "blur")) || type == "isCompare") {
+            // let text = formik.values.querySequence;
+            console.log('textCode', text, type)
 
+            if (ppuType == '0') {
+                return;
+            }
+            let val = 0;
+            if (text !== undefined && text !== null && text.length > 0 && !text.startsWith('Paste your ')) {
+                // Determine if FASTA/FASTAQ/Embl types, refer to SeqFileChecker.php
+                // And then calculate the number of sequences
+                let lines = text.split(/[\r\n]+/); // split by \n, \r and \r\n, and filter out empty lines
+                if (/^\s*>\s*\S+/.test(text)) { // FASTA
+                    // count > numbers
+                    for (let i = 0; i < lines.length; i++) {
+                        if (lines[i].substring(0, 1) === '>' && (i + 1) < lines.length && lines[i + 1].substring(0, 1) !== '>') {
+                            val++;
+                        }
+                    }
+                } else if (/^\s*\@\s*\S+/.test(text)) { // FASTAQ
+                    val = lines.length / 4;
+                } else if (/^[a-zA-Z0-9\.][a-zA-Z0-9\.][\s\t]/.test(text)) { // EMBL
+                    // count '//' numbers
+                    for (let i = 0; i < lines.length; i++) {
+                        if (lines[i].substring(0, 2) === '//') {
+                            val++;
+                        }
+                    }
+                } else {
+                    // Appends ">seq_1\n" and treats as FASTA, refer to DlRawSeqdb.php
+                    text = ">seq_1\n" + text;
+                    lines = text.split(/[\r\n]+/);
+                    // count > numbers
+                    for (let i = 0; i < lines.length; i++) {
+                        if (lines[i].substring(0, 1) === '>' && (i + 1) < lines.length && lines[i + 1].substring(0, 1) !== '>') {
+                            val++;
+                        }
+                    }
+                }
+            }
+            console.log('calcVal', val, 'credits', credits, 'userclsname', userClassName, 'groupname', accGroupName, 'ppu', ppuType, 'sequenceTypeValue', sequenceTypeValue, 'isBothDbSelected', bothDb)
+            // seqCount = val;
+            if (ppuType && ppuType == "1") {
+                console.log('Insidepputype1')
+                let ppu1SubTotal = val * 850;
+                let ppu1NucSubTotal = (sequenceTypeValue == "nucleotide" || bothDb) ? val * 850 : 0;
+                let ppu1ProSubTotal = (sequenceTypeValue == "protein" || bothDb) ? val * 850 : 0;
+                let ppu1Total = ppu1NucSubTotal + ppu1ProSubTotal;
+                creditValues.ppu1SubTotal = ppu1SubTotal;
+                creditValues.ppu1NucSubTotal = ppu1NucSubTotal;
+                creditValues.ppu1ProSubTotal = ppu1ProSubTotal;
+                creditValues.ppu1Total = ppu1Total;
+                creditValues.seqCount = val;
+                setCreditValues({...creditValues});
+                setTimeout(() => {
+                    console.log('creditValues', creditValues)
+                    }, 2000);
+            } else if (ppuType && ppuType == "2") {
+                console.log('Insidepputype2')
+                let ppu2NucCredit = (sequenceTypeValue == "nucleotide" || bothDb) ? val : 0;
+                let ppu2ProCredit = (sequenceTypeValue == "protein" || bothDb) ? val : 0;
+                let ppu2TotalCredit = ppu2NucCredit + ppu2ProCredit;
+                let ppu2RemainingCredits = credits - ppu2TotalCredit;
+                creditValues.ppu2NucCredit = ppu2NucCredit;
+                creditValues.ppu2ProCredit = ppu2ProCredit;
+                creditValues.ppu2TotalCredit = ppu2TotalCredit;
+                creditValues.ppu2RemainingCredits = ppu2RemainingCredits;
+                creditValues.seqCount = val;
+                setCreditValues({...creditValues});
+                setTimeout(() => {
+                    console.log('creditValues', creditValues)
+                    }, 2000);
+            }
+            // seqCount = val;            
+            // calCredits(vßal);
+        }
+    }
 
     const ColoredLine = ({ color }) => (
         <hr
@@ -871,6 +1007,8 @@ function IpSequenceVariation() {
                                 onChange={formik.handleChange}
                                 error={formik.touched.querySequence && formik.errors.querySequence}
                                 helperText={formik.errors.querySequence}
+                                onKeyDown={(e) => calTextCredits(e,null, null)}
+                                onBlur={(e) => calTextCredits(e,null, null)}
                             />
                         </div>
                     </Col>
@@ -1500,16 +1638,75 @@ function IpSequenceVariation() {
                         </Col>
                     </Row>
                 </div>
+                {(userClassName == "platinum.com") && ppuType != "0" && (!accGroupName.includes('FT - ') && !accGroupName.includes('SB - ')) && 
+                <Fragment>
                 <ColoredLine color="#f3f2f2" />
-                <div>
                     <Row>
-                        <Col md="11">
-                            <p className="ml-3">{t("executingSearch")}</p>
-                            <p className={"loginTitle ml-5"}>
-                                <b>
-                                    {t("total2Credits")}
-                                </b>
-                            </p>
+                    <Col md="11">
+                            <p class="loginTitle">Search Fee</p>
+                            {ppuType == "1" && <p>{t('executingSearchCharges')}</p>}
+                            {ppuType == "2" && <p>{t('executingSearchCredits')}</p>}
+                                <table class="ml-5">
+                                    {ppuType == "1" && <Fragment>
+                                        <tr>
+                                            <td><p>${creditValues.ppu1SubTotal}</p></td>
+                                            <td><p class="ml-3">{creditValues.seqCount} {t('amountPerSeq')} </p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><p>${creditValues.ppu1NucSubTotal}</p></td>
+                                            <td><p class="ml-3">{t('nucSubTotal')}</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><p>${creditValues.ppu1ProSubTotal}</p></td>
+                                            <td><p class="ml-3">{t('proSubTotal')}</p></td>
+                                        </tr>
+                                        <tr class="loginTitle">
+                                            <td>
+                                                <p>${creditValues.ppu1Total}</p>
+                                            </td>
+                                            <td>
+                                                <p class="ml-3">{t('total')}</p>
+                                            </td>
+                                        </tr>
+                                    </Fragment>
+                                    }
+                                    {ppuType == "2" && <Fragment>
+                                        <tr>
+                                            <td><p>1</p></td>
+                                            <td><p class="ml-3">{t('creditsPerSeq')}</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><p>{creditValues.seqCount}</p></td>
+                                            <td><p class="ml-3">{t('noOfQueryInSearch')}</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><p>{creditValues.ppu2NucCredit}</p></td>
+                                            <td><p class="ml-3">{t('nucCreditSubTotal')}</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><p>{creditValues.ppu2ProCredit}</p></td>
+                                            <td><p class="ml-3">{t('proCreditSubTotal')}</p></td>
+                                        </tr>
+
+                                        <tr class="loginTitle">
+                                            <td>
+                                                <p>{creditValues.ppu2TotalCredit}</p>
+                                            </td>
+                                            <td>
+                                                <p class="ml-3">{t('totalCredits')}</p>
+                                            </td>
+                                        </tr>
+                                        <tr class="loginTitle">
+                                            <td>
+                                                <p>{creditValues.ppu2RemainingCredits}</p>
+                                            </td>
+                                            <td>
+                                                <p class="ml-3">{t('creditsReamining')}</p>
+                                            </td>
+                                        </tr>
+                                    </Fragment>
+                                    }
+                                </table>
                         </Col>
                         <Col md="1" className={classes.desktopHelpLink}>
                             <Link className="appTextFont appLinkColor float-right mr-2">{t("help")}</Link>
@@ -1530,6 +1727,8 @@ function IpSequenceVariation() {
                             </Typography>
                         </Col>
                     </Row>
+                    }
+                    </Fragment>
                     }
                     <ColoredLine color="#f3f2f2" />
                     <Row>
@@ -1573,7 +1772,6 @@ function IpSequenceVariation() {
                             />
                         </Col>
                     </Row>
-                </div>
                 <br></br>
                 <Row >
                     <Col>

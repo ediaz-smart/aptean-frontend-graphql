@@ -48,6 +48,7 @@ export default function TextInput(props) {
         rowsMax={props.rowsMax}
         disabled={props.disabled}
         min={props.min}
+        onBlur={props.onBlur}
         />
     );
 }
