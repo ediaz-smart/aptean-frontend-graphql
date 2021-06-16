@@ -80,3 +80,35 @@ export const submitSeqSearch = (data,history, t) => {
         });
 };
 
+export async function getRedoData(parentId, history) {
+    try {
+        showLoader();
+        let redoUrl = url.seqSearchInit + '&parent_id='+parentId;
+        return await get(redoUrl, history)
+        .then((response) => {
+            hideLoader();
+            // if(response && response.data.response_status == 0)
+            // {
+            // }else {
+                
+            //     let errorMsg = 'Unable to Login';
+            //     if(response && typeof response.data.response_content === 'object' && response.data.response_content !== null){
+            //         errorMsg = response.data.response_content.message;
+            //     }
+            //     toast.error(errorMsg);
+            // }
+            return response;
+        })
+        .catch((error) => {
+            hideLoader();
+            toast.error('A');
+            console.log("error::", error);
+
+            // return dispatch(loginError(error));
+            // dispatch(showMessage({ message: error }));
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+

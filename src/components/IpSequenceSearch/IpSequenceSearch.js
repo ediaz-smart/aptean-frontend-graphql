@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
@@ -21,7 +21,7 @@ import CheckBox from '../../shared/Fields/CheckBox';
 import SelectBox from '../../shared/Fields/SelectBox';
 import DatePicker from '../../shared/Fields/DatePicker';
 import RadioButton from '../../shared/Fields/RadioButton';
-import { getSeqSearchResults, submitSeqSearch } from '../../services/seqSearchService';
+import { getSeqSearchResults, submitSeqSearch, getRedoData } from '../../services/seqSearchService';
 import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStructure';
 import SaveContentModal from '../../shared/Modal/SaveContentModal';
 import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModal';
@@ -263,6 +263,8 @@ function IpSeqSearch() {
     const userInfo = useSelector(state => state.setUserInfo);
     console.log('userInfo', userInfo)
 
+    const { parentId } = useParams(); 
+
 
     const [seqDBFilter, setSeqDBFilter] = React.useState(true);
     const [specificDBFilter, setSpecificDBFilter] = React.useState(true);
@@ -395,6 +397,11 @@ function IpSeqSearch() {
             if (resp && resp.response_content && resp.response_content && resp && resp.response_content && resp.response_content.group_credits) {
                 setCredits(resp.response_content && resp.response_content.group_credits);
             }
+
+            if(parentId) {
+                const redoResp = await getRedoData(parentId, history);
+                console.log('redoresp', redoResp);
+            }
             // const accountData = await AccountInfo.getAccountInfo();
             // if (accountData && accountData.response_content && accountData.response_content.ppu_type) {
             //     let userPpu = accountData.response_content.ppu_type;
@@ -501,7 +508,7 @@ function IpSeqSearch() {
                 searchtype: "FTO", // leave it as always "FTO"
                 title: values.searchDetails, // Workflow name
                 email: sendMailAfterSearch ? localStorage.getItem('userName') : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
-                nucandprot: isBothDbSelected ? "on" : "off", // "on" when selecting both NUC and PRO databases
+                nucandprot: isBothDbSelected ? "on" : "", // "on" when selecting both NUC and PRO databases
                 strat_name: searchAlgorithmValue, // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
                 /*
                 strat_sw_scoring_matrix_nuc: "NUC.3.1",
