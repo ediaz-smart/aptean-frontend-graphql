@@ -19,6 +19,7 @@ import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 
+
 import TextInput from '../../shared/Fields/TextInput';
 import HomeService from '../../services/home'
 import SearchManagementService from '../../services/searchmanagement'
@@ -30,6 +31,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Constant from '../../helpers/constant';
 import ProgressBar from '../../shared/ProgressBar/Progress';
 import { url } from '../../reducers/url';
+import CustomPagination from '../../shared/CustomPagination';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -180,6 +182,9 @@ function SearchManagement(props) {
 	const [defaultTitleId, setDefaultTitleId] = useState('');
 	const [infoFolderIds, setInfoFolderIds] = useState([]);
 
+	// Search Set
+	const [searchResSet, setSearchResSet] = useState('');
+
 	// Table Data Delete Variable
 	const [confirmContent, setConfirmContent] = useState(true);
 	const [delLoaderContent, setDelLoaderContent] = useState(false);
@@ -204,6 +209,8 @@ function SearchManagement(props) {
 	const [parentFolderId,setParentFolderId] = useState('');
 	const [addFolderText, setAddFolderText] = useState(true);
 	const [clearCheckedRow,setClearCheckedRow] = useState(false);
+
+	//Pagination
 
 	const escFunction = useCallback((event) => {
 		if(event.keyCode === 27) {
@@ -589,7 +596,7 @@ function SearchManagement(props) {
 	}
 	async function  getInfoIconData(e,data){
 		e.preventDefault();
-		console.log(data,'data');
+		// console.log(data,'data');
 		if(data)
 		{
 			setDefaultTitle(data.description);
@@ -601,17 +608,45 @@ function SearchManagement(props) {
 			}
 			infoFolderIds.push(data.id)
 
-			console.log(infoFolderIds,'beforeinfoFolderIds')
- 			setInfoFolderIds([...infoFolderIds]);
-			
-			
-
-			console.log(infoFolderIds,'checkinfoFolderIds')
+			setInfoFolderIds([...infoFolderIds]);
 			getDefaultSearchResult('folder', data.id);
 			// getFolderResultData();
 		}
 		
 	};
+	
+	const getsearchResultSet = async (e)=>{
+		// Enter or Click
+		if(e.keyCode == 13 || e.type == "click"){
+			console.log(searchResSet,'searchResSet');
+				if(searchResSet)
+				{
+					const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history);
+					// console.log(getSearchResp,'getSearchResp');
+				}
+				
+				// if(addResp.response_status == 0)
+				// {
+				// 	// if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
+				// 		getDefaultSearchResult('folder', defaultTitleId);
+				// 		getFolderResultData();
+				// 		e.target.value = '';
+				// 		setShowNewFolder(false);
+				// 		setAddFolderText(true);
+				// 		toast.success('Folder Added Successfully');
+				// 	// }
+				// }else {
+				// 	// getDefaultSearchResult('folder', defaultTitleId);
+				// 	toast.error(addResp.response_content.message);
+				// }
+			
+			
+		}
+	}
+	const changePage = async(e,page)=>{
+		console.log(e,'ee');
+		console.log(page,'page');
+	}
 	useEffect(() => {
 		// (async () => {
 			// const result = dispatch(getSearchResult());
@@ -654,17 +689,18 @@ function SearchManagement(props) {
 								name="searchResSet"
 								label={t('searchResSet')}
 								type="text"
-								value=""
+								// value={}
 								InputProps={{
 									endAdornment: (
-										<InputAdornment>
+										<InputAdornment onClick={getsearchResultSet}>
 											<IconButton>
 												<SearchIcon />
 											</IconButton>
 										</InputAdornment>
 									)
 								}}
-							// onChange={formik.handleChange}
+								onChange={(e)=>setSearchResSet(e.target.value)}
+								onKeyDown={getsearchResultSet}
 							/>
 						</div>
 					</Col>
@@ -739,7 +775,12 @@ function SearchManagement(props) {
 						// onRowClicked={getRowData}
 						onRowClicked={getRowData}
 						clearSelectedRows={clearCheckedRow}
+						
 					/>
+					{/* <Col md="12">
+						<CustomPagination className={"float-right mt-2"} count={searchResultData.length} changePage={changePage} recordPerPage={Constant['recordPerPage']} showFirstButton showLastButton />
+					</Col> */}
+
 					<Col className={"float-left " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} type="submit">{t('deleteSelected')}</Button>
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('moveToFolder')}</Button>

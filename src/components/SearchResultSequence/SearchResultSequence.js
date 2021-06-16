@@ -565,19 +565,19 @@ function SearchResultSequence() {
 
                                 // Return the element. Also pass key     
                                 return (
-                                    <Row className={"ml-1 " + classes.rowHeight} key={i}>
-                                        <Col lg="8" md="8" className="pr-0 content">
+                                    <div className={"ml-1 "} key={i}>
+                                        <Col lg="6" md="6" className="pr-0 content float-left">
                                             <Typography>
                                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {seqSummary.sdb_db_list[dbVal].title}</Typography>
                                         </Col>
-                                        <Col lg="2" md="2" className="pr-0 content">
+                                        <Col lg="2" md="2" className="pr-0 content float-left">
                                             <Typography>
                                                 {
                                                     seqSummary.sdb_db_list[dbVal].update_time ? format(new Date(seqSummary.sdb_db_list[dbVal].update_time), 'dd-MMM-yyyy') : ''
                                                 }
                                             </Typography>
                                         </Col>
-                                        <Col lg="2" md="2" className={"pr-0 " + (classes.content)}>
+                                        <Col lg="2" md="2" className={"pr-0 float-left " + (classes.content)}>
 
                                             {(seqSummary.sdb_db_list[dbVal].update_time == seqSummary.sdb_db_list[dbVal].current_update_time) &&
                                                 <Typography className="text-success">{t('currentVersion')}</Typography>
@@ -587,12 +587,13 @@ function SearchResultSequence() {
                                             }
 
                                         </Col>
-                                    </Row>
+                                    </div>
                                 )
                             })
                             }
-                            <br />
-                            <h6 className={"appTextColor loginTitle"} id="resultSharing">{t('searchStrategy')}</h6>
+                            <br clear="all"/>
+                            <h6 className={"appTextColor loginTitle mt-3"} id="resultSharing">{t('searchStrategy')}</h6>
+                           
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')}>
                                     <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This strategy fits the shorter sequence (query or subject) into the longer one, keeping the number of mismatches and gaps to a minimum.​</Typography>
@@ -665,9 +666,10 @@ function SearchResultSequence() {
                                         </Typography>
                                     </div>
                                 </Col>
+                            
                             <br />
                             <h6 className={"appTextColor loginTitle"}>{t('techData')}</h6>
-                            <Col lg="12" md="12" className="pr-0 content">
+                            <Col lg="12" md="12" className="pr-0 content mb-2">
                                 <Typography >
                                     <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> 
                                     <div className={(userInfo && userInfo.current_user.user_class_name === "adminium" ? ' d-block':'d-none')}>
@@ -680,7 +682,9 @@ function SearchResultSequence() {
                             </Col>
                         </Col>
                     </Row>
+                    <br />
                     <hr />
+                    
                     <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('resSharing')}​</h6>
                     <Row>
                         <Col lg="1" md="1" sm="12" className="pr-0">

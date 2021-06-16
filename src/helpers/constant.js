@@ -24,6 +24,7 @@ const Constant = {
         "180":"every 6 months",
         "365":"every year"
     },
-    nucleotideDB:['PROTEIN-PROTEIN','NUCLEOTIDE-PROTEIN','PROTEIN-NUCLEOTIDE','PROTEIN-MIX']
+    nucleotideDB:['PROTEIN-PROTEIN','NUCLEOTIDE-PROTEIN','PROTEIN-NUCLEOTIDE','PROTEIN-MIX'],
+    recordPerPage:5
 }
 export default Constant;

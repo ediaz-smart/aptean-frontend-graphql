@@ -159,13 +159,35 @@ async function addFolder(parentFolderId,folderName,history) {
         console.error(error);
     }
 }
+async function getSearchResultSet(search,history) {
+    try {
+        
+        let searchResultSet = url.searchResultSet
+        searchResultSet = searchResultSet.replace('**', search);
+        showLoader();
+        return await get(searchResultSet,history)
+        .then((response) => {
+            hideLoader();
+            return response;
+        })
+        .catch((error) => {
+            hideLoader();
+            //toast.error('A');
+            console.log("error::", error);
+        });
+    } catch (error) {
+        hideLoader();
+        console.error(error);
+    }
+}
 const SearchManagementService = {
     getProjectFolders,
     getProjectFolderData,
     getFolderData,
     deleteSearchResult,
     moveToFolder,
-    addFolder
+    addFolder,
+    getSearchResultSet
 };
 
 export default SearchManagementService;

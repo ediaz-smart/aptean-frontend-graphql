@@ -39,6 +39,7 @@ export const url = {
     patientNumberLookup:"https://stage.genomequestlive.com/query?do=gqfetch.field_search&field=PN",
     stageBrowserDBLink:"https://stage.genomequestlive.com/query?do=mygq#4",
     stagePatentNumLink:"https://stage.genomequestlive.com/query?do=gqfetch.get_field_search_form",
-    stageAlignSequencesDirectly:"https://stage.genomequestlive.com/query?do=gqsearch.get_align_pair_form"
+    stageAlignSequencesDirectly:"https://stage.genomequestlive.com/query?do=gqsearch.get_align_pair_form",
+    searchResultSet:"do=gqshareable.qsearch&format=json&text=**"
     
 }
