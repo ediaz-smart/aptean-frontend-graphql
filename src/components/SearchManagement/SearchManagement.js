@@ -403,10 +403,17 @@ function SearchManagement(props) {
                         tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
                     }
                     else {
+                    	if (datas.type == 'DlPhysicalSeqdb') {
+                    		type = 'Sequences';
+						}
                         tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
                     }
                 }else{
-                    tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
+                	let folderLabel = 'Empty';
+                	if (datas.results > 0) {
+						folderLabel = datas.results + ' Search Results';
+					}
+                    tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>{folderLabel}</a>;
                 }
             }else {
                 tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
@@ -608,7 +615,10 @@ function SearchManagement(props) {
 			}
 			infoFolderIds.push(data.id)
 
-			setInfoFolderIds([...infoFolderIds]);
+ 			setInfoFolderIds([...infoFolderIds]);
+			
+			
+
 			getDefaultSearchResult('folder', data.id);
 			// getFolderResultData();
 		}
@@ -689,7 +699,6 @@ function SearchManagement(props) {
 								name="searchResSet"
 								label={t('searchResSet')}
 								type="text"
-								// value={}
 								InputProps={{
 									endAdornment: (
 										<InputAdornment onClick={getsearchResultSet}>

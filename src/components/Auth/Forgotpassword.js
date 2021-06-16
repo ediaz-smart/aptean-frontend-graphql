@@ -16,6 +16,7 @@ import ClientCaptcha from "react-client-captcha"
 import "react-client-captcha/dist/index.css"
 import { Link, useHistory } from 'react-router-dom';
 import PasswordService from '../../services/forgotpassword'
+import { supportMail } from '../../config';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +65,7 @@ function Forgotpassword() {
         validationSchema: Validate.ForgotValidate(),
          onSubmit: async(values) => {
             // setErrorMsg(0);
+            
             console.log(values,"valessssssssss");
             if(values.captchaCode == verifycaptchaCode)
             {
@@ -90,6 +92,8 @@ function Forgotpassword() {
                
             }
             else{
+                const link = document.getElementById('retryButton');
+                link.click();
             setErrorMsg(1);
             // toast.error("Captcha InCorrect ! Try Again");
             // setPasswordForm(false);
@@ -166,7 +170,7 @@ function Forgotpassword() {
                         <br />
                         <p>{t('thankYou')}</p>
                         <p>{t('loginInfoText')}</p>
-                        <p>{t('pleaseContactText')}</p>
+                        <p>{t('pleaseContactText1')} <a href={"mailto:"+supportMail}>{supportMail}</a> {t('pleaseContactText2')}</p>
                     </div>
                 </Col>
                 <Col sm="12" md="5" className="ml-3">

@@ -1,8 +1,12 @@
 const Constant = {
 	searchType: {
         "GqWfIpSearch":"IP Sequence",
+        "GqWfVMIpSearch":"Variation",
         "GqWfABIpSearch":"Antibody",
-        "GqFolder":"Folder"
+        "GqFolder":"Folder",
+        "GqWfAlndbCopy": "Save Filtered Result",
+        "DlPhysicalSeqdb": "Sequence Database"
+        //"GqWfSeqSearch": "Blast Search"
     },
     folderRestrictNames:["Recent Search Results","My Data",'Reference Data','Data Shared With Me','Raw Uploaded Files','Search Folders'],
     strategies:[
