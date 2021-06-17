@@ -29,7 +29,7 @@ class Routes extends React.Component {
    
     render() {
         const isUserLogin = localStorage.getItem('isLoggedIn');
-        // console.log(isUserLogin,'isUserLogin isUserLogin isUserLogin qwdhijoiefhdoihdf')
+        console.log(isUserLogin,'isUserLogin isUserLogin isUserLogin qwdhijoiefhdoihdf')
 
         // const data = getItem()
         return (
@@ -38,7 +38,7 @@ class Routes extends React.Component {
                     <Route exact path="/" title="login" component={Login} />
                     <Route exact path="/login" title="login" component={Login} />
                     <Route exact path="/forgot" title="forgot" component={Forgotpassword} />
-                    {isUserLogin ? 
+                    {/* {isUserLogin ?  */}
                     <React.Fragment>
                     <Route exact path="/home" title="" component={Home} />
                     <Route exact path="/changePassword" title="changePassMange" component={ChangePassword} />
@@ -57,9 +57,9 @@ class Routes extends React.Component {
                     <Route exact path="/report/folder" component={ResultReportFolder} />
                     <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
                     </React.Fragment>
-                    : 
+                    {/* : 
                     <Redirect to='/login' />
-                    }
+                    } */}
 
 
                 </Switch>

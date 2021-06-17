@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
-        margin: '135px auto 28px',
+        margin: '0 auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',
         padding: '23px 13px 5px'

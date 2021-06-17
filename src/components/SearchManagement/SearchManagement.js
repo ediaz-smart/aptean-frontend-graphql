@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 	grow: {
 		flexGrow: 1,
 		width: '96%',
-		margin: '130px auto',
+		margin: '0 auto',
 		minHeight: '260px',
 		padding: '23px 0 5px'
 	},
@@ -413,7 +413,7 @@ function SearchManagement(props) {
                 	if (datas.results > 0) {
 						folderLabel = datas.results + ' Search Results';
 					}
-                    tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>{folderLabel}</a>;
+                    tempObj['results'] = <a href="#" onClick={(e)=>getInfoIconData(e,tempObj)}>{folderLabel}</a>;
                 }
             }else {
                 tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;

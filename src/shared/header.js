@@ -60,9 +60,10 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: 'none !important',
         color: '#0C90C6 !important',
         margin: 'auto',
-        width: '92% !important',
+        width: '96% !important',
         zIndex: 999,
-        borderBottom: '1px solid #cec7c7'
+        borderBottom: '1px solid #cec7c7',
+        position:'unset'
 
     },
     headerLink:{
@@ -183,7 +184,7 @@ export default function Header(props) {
     return (
 
         <div className={classes.grow}>
-            <AppBar position="fixed" className={classes.headerNav}>
+            <AppBar className={classes.headerNav}>
                 <Toolbar>
                     <IconButton
                         edge="start"

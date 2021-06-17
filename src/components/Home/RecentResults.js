@@ -65,7 +65,7 @@ const customStyles = {
 			borderLeft: '0',
 		},
 		fontWeight:'bold',
-		color:'#4a5050'
+		color:'#4a5050',
 	  },
 	},
 	cells: {
