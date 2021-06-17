@@ -28,6 +28,7 @@ import SearchManagementService from '../../services/searchmanagement'
 import Constant from '../../helpers/constant';
 import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
+import ShareResultsModal from '../../shared/Modal/ShareResultsModal'
 
 
 
@@ -180,6 +181,7 @@ function SearchResultSequence() {
     const [writeShareId, setWriteShareId] = useState();
     const [gqUserId, setGqUserId] = useState();
 
+    const [modalResultShow, setModalResultShow] = React.useState(false); 
 
     // reset login status
     useEffect(async () => {
@@ -509,6 +511,10 @@ function SearchResultSequence() {
         }
         // console.log(getremoveResponse,'getremoveResponse');
     }
+    function shareResultsForm()
+    {
+        
+    }
     return (
         <div className={classes.grow}>
             <Row>
@@ -694,8 +700,16 @@ function SearchResultSequence() {
                             <Row>
                                 {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
                                 <Typography className="mb-2">
-                                    The following people have access to this result. <Link className={"appLinkColor"} href="#" onClick={(e) => e.preventDefault()} >Add more …​</Link></Typography>
+                                    The following people have access to this result. <Link className={"appLinkColor"}  onClick={() => setModalResultShow(true)} >Add more …​</Link></Typography>
+                                    <ShareResultsModal
+                                    show={modalResultShow}
+                                    onHide={() => setModalResultShow(false)}
+                                    tryAgain={()=> shareResultsForm()}
+                                    // onMessage={errorMessage}
+                                    />
+
                             </Row>
+
                             {seqShare && seqShare.sharedNameObj.length > 0 && seqShare.sharedNameObj.map((dbVal, i) => {
                                 return (
                                     <Row key={i}>

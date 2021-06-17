@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         height: '100%'
     },
     navbarClass :{
-        marginBottom : '10px'
+        marginTop: '60px'
     }
     ,
     forgotLink: {
@@ -123,7 +123,7 @@ function Login(props) {
     }, []);
 
     return (
-        <div>
+        <div >
         <Container className="mt-100">
             <Row className={classes.loginLogoDiv}>
                 <Col md="3" className="p-0 ml-4">
@@ -182,9 +182,9 @@ function Login(props) {
                 </Col>
             </Row>
         </Container>
-        {/* <div className={classes.navbarClass}>
+        <div className={classes.navbarClass}>
             <Footer />
-        </div> */}
+        </div>
         </div>
            
         

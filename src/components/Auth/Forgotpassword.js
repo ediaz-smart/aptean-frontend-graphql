@@ -17,6 +17,7 @@ import "react-client-captcha/dist/index.css"
 import { Link, useHistory } from 'react-router-dom';
 import PasswordService from '../../services/forgotpassword'
 import { supportMail } from '../../config';
+import Footer from '../../shared/footer';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
         padding: '15px 25px 20px',
         border: '2px solid #bfb4b4',
         borderRadius: '6px'
+    },
+    navbarClass :{
+        marginTop: '0px'
     },
     loginLogoDiv:{
         position: 'relative',
@@ -52,9 +56,9 @@ function Forgotpassword() {
     const classes = useStyles();
     const {t, i18n} = useTranslation('common');
     const [errorMsg,setErrorMsg] = useState(0);
-    
+    // const [retryState, setRetryState] = useState(false);
     const [passwordForm, setPasswordForm] = useState(true);
-    const [verifycaptchaCode, setcaptchaCode] = useState();
+    const [verifycaptchaCode, setcaptchaCode] = useState(); 
     const dispatch = useDispatch();
     const history = useHistory();
      const formik = useFormik({
@@ -92,8 +96,8 @@ function Forgotpassword() {
                
             }
             else{
-                const link = document.getElementById('retryButton');
-                link.click();
+                // const link = document.getElementById('retryButton');
+                // link.click();
             setErrorMsg(1);
             // toast.error("Captcha InCorrect ! Try Again");
             // setPasswordForm(false);
@@ -125,7 +129,7 @@ function Forgotpassword() {
 
                         <h5 className="loginTitle">{t('pwdRecovery')}</h5>
                         <p className="appTextColor mb-4">{t('pwdRecoveryTitle')}</p>
-                        {errorMsg == 1 ? <h6 className="loginTitle failedTextColor">The Code was Incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> : errorMsg == 3 ? <h6 className="loginTitle failedTextColor">Invalid username</h6>:'' }
+                        {errorMsg == 1 ? <h6 className="loginTitle failedTextColor">The code was incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> : errorMsg == 3 ? <h6 className="loginTitle failedTextColor">Invalid username</h6>:'' }
 
                         <div className="form-group">
                             <TextInput 
@@ -155,7 +159,7 @@ function Forgotpassword() {
                             />
                         </div>
                         <div className="form-group">
-                        <ClientCaptcha fontColor='#FC0202' backgroundColor='#BDCFF5' width='150' fontSize='32' charsCount='5' captchaCode={updateCode}/>
+                        <ClientCaptcha fontColor='#FC0202'  backgroundColor='#BDCFF5' width='150' fontSize='32' charsCount='5' captchaCode={updateCode}/>
                         </div>
                        
                         <div className="form-group">
@@ -177,6 +181,9 @@ function Forgotpassword() {
                     <Newsupdate isForgotPanel={true} />
                 </Col>
             </Row>
+            <div className={classes.navbarClass}>
+            <Footer />
+        </div>
         </Container>
 
     );

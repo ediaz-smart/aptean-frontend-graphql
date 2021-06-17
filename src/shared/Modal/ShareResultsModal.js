@@ -19,12 +19,25 @@ const useStyles = makeStyles((theme) => ({
 		float:'right',
 		textTransform: 'none',
 		margin:'4px',
+		backgroundColor: '#d98638',
 
+	},
+	buttonStyles:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+	},
+	ModalDesign:{
+		// width:'60px'
+		marginRight: '106px'
+	},
+	selectorValues:{
+		marginRight: '300px'
 	}
 
 }));
 
-function AccountInfoModal(props) {
+function ShareResultsModal(props) {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation('common');
     let mailUrl = "mailto:" + supportMail+"?subject="+props.subjectText;
@@ -37,31 +50,43 @@ function AccountInfoModal(props) {
 			aria-labelledby="contained-modal-title-vcente"
 			centered
 			contentClassName='modalPromptContent'
+			
 		>
 			<Modal.Header closeButton className={classes.modalHeader}>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
           </Modal.Title> */}
+		   <h5>Share these Results.</h5>
 			</Modal.Header>
+			{/* <h5>Share these Results.</h5> */}
 			<Modal.Body className={"text-center "}>
 				{/* <h5>{props.onMessage}</h5> */}
-				<h5>The current password was incorrect.</h5>
-                 <br></br>
-				<h5>Please try again.</h5>
-				{/* <p>
-                        <spoan>{t("tryAgainOrContact")}</spoan>
-						<br></br>
-						<br></br>
-                        <span>
-                            <a className={"appTextFont appLinkColor"} href={mailUrl} target="_blank" rel="noopener noreferrer">{supportMail}</a>
-                        </span>
-                        <span>{t("forAssistance")}</span>
-              </p> */}
+				<div className={classes.ModalDesign}>
+				<p>Select one or more people to share these results with.</p>
+
+				</div>
+                 
+				   <div className={classes.selectorValues}>
+				 <p>Scarlett Anderson</p>
+				   <p>Leyla Barnes</p>
+				   <p>Jensen Gibbs</p>
+				   <p>Luciana Shaffer</p>
+				   <p>Scarlett Anderson</p>
+				   <p>Leyla Barnes</p>
+				   <p>Jensen Gibbs</p>
+				   <p>Luciana Shaffer</p>
+				 
+				   </div>
+				  <br></br>
 				<br></br>
 				<br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Try Again</Button> 
-					<Button onClick={props.onHide} className={classes.buttonStyle}  color="default" variant="contained">Cancel</Button>
+					<Button onClick={props.onHide} className={classes.buttonStyles}  color="primary" variant="contained">Cancel</Button>
+					
+					{/* <Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Share Results</Button>  */}
+					<Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" onClick={props.tryAgain} >
+					Share Results
+                        </Button>
 				</div>
 				
 				
@@ -73,4 +98,4 @@ function AccountInfoModal(props) {
 	);
 }
 
-export default AccountInfoModal;
+export default ShareResultsModal;

@@ -12,7 +12,7 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
 import AccountService from '../../services/accountInfo';
-import SaveContentModal from '../../shared/Modal/SaveContentModal'
+import ChangePasswordModal from '../../shared/Modal/ChangePasswordModal'
 import ContentErrorModal from '../../shared/Modal/ContentErrorModal'
 
 
@@ -151,6 +151,11 @@ function ChangePassword() {
        formik.setFieldValue('currentPassword','');
        setModalShow(false)
       }
+      function cancelForm()
+      {
+        setModalShow(false);
+        history.push('/home');
+      }
     return (
       <div className={classes.grow}>
         <Container className="mt-100">
@@ -171,7 +176,7 @@ function ChangePassword() {
                                 type="password"
                                 value={formik.values.currentPassword}
                                 onChange={formik.handleChange}
-                                error={formik.values.currentPassword != '' && formik.touched.currentPassword && Boolean(formik.errors.currentPassword)}
+                                error={formik.touched.currentPassword && Boolean(formik.errors.currentPassword)}
                                 helperText={formik.touched.currentPassword && formik.errors.currentPassword}
                                 InputLabelProps={{
                                     classes: {root:classes.materialUILabel}, 
@@ -252,11 +257,11 @@ function ChangePassword() {
         </Container>
         <ContentErrorModal
                             show={modalShow}
-                            onHide={() => setModalShow(false)}
+                            onHide={() => cancelForm()}
                             tryAgain={()=> tryAgainForm()}
                             onMessage={errorMessage}
                         />
-                         <SaveContentModal
+                         <ChangePasswordModal
                             show={modalShowSaved}
                             onHide={() => successMessage()}
                             onMessage={'Your changes have been saved.'}

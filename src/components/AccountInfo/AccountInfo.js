@@ -22,6 +22,8 @@ import Validate from '../../helpers/validate';
 import { toast } from 'react-toastify';
 import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
 import SaveContentModal from '../../shared/Modal/SaveContentModal'
+import moment from 'moment';
+
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -29,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     width: '96%',
     margin: '30px auto',
     minHeight: '260px',
-    marginTop: '130px',
+    marginTop: '165px',
   },
   rootButton:{
     marginLeft:'-14px',
@@ -109,8 +111,9 @@ function AccountInfo() {
         data.email ? setuserEmail(data.email) : setuserEmail('');
         data.accounting_group_name ?  setuserAccountingGroup(data.accounting_group_name) : setuserAccountingGroup('');
         data.user_class_name ? setuserAccountType(data.user_class_name) : setuserAccountType('');
-        data.access_key_create_time ? setuserAccountCreated(data.access_key_create_time) : setuserAccountCreated('');
-        data.access_key_expire_time ?  setuserAccountExpires(data.access_key_expire_time) :  setuserAccountExpires('');
+        // moment(values.docPublicDate).format('YYYYMMDD')
+        data.access_key_create_time ? setuserAccountCreated(moment(data.access_key_create_time).format("DD/MM/YYYY")) : setuserAccountCreated('');
+        data.access_key_expire_time ?  setuserAccountExpires(moment(data.access_key_expire_time).format("DD/MM/YYYY")) :  setuserAccountExpires('');
         data.clitoken ? setuserAccountClitoken(data.clitoken) : setuserAccountClitoken('');
         data.dspace_workflow ?  setuserAnalyses(data.dspace_workflow) :  setuserAnalyses(0);
         data.dspace_seqdb ? setuserSeqDatabase(data.dspace_seqdb) : setuserSeqDatabase(0);
@@ -203,7 +206,12 @@ function AccountInfo() {
     const passValCheck = passwordVlaue.length; 
     console.log(passValCheck,"passValCheck passValCheck passValCheck passValCheck passValCheck");
 
+    function cancelForm()
+    {
+      setModalShow(false);
+      history.push('/home');
 
+    }
     return(
      
         <div className={classes.grow}>
@@ -345,7 +353,7 @@ function AccountInfo() {
           </div>
           <AccountInfoModal
                             show={modalShow}
-                            onHide={() => setModalShow(false)}
+                            onHide={() => cancelForm()}
                             tryAgain={()=> tryAgainForm()}
                             onMessage={errorMessage}
                         />
@@ -353,6 +361,7 @@ function AccountInfo() {
                             show={modalShowSaved}
                             onHide={() => successMessage()}
                             onMessage={'Your changes have been saved.'}
+                            type="seqSearch"
                         />
                      
         </Container>

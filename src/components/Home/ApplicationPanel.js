@@ -90,7 +90,7 @@ function ApplicationPanel() {
     function searchForm() {
        history.push('/search')
        
-      }
+    }
 
     return (
         <div className={classes.grow}>
@@ -108,7 +108,7 @@ function ApplicationPanel() {
                             <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Calcification protocols in DNA Modules')}</a></p>
 
                             <br></br>
-                            <p className={classes.pTagMargin}><a className={"moreLink "+classes.anchorTag} href='#' onClick={searchForm}>{t('more')}</a></p>
+                            <p className={classes.pTagMargin}><a className={"moreLink "+classes.anchorTag}  onClick={searchForm}>{t('more')}</a></p>
                         </div>
 
                     </Col>

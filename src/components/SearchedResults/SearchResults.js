@@ -125,7 +125,10 @@ const columns = [
 
 const isIndeterminate = indeterminate => indeterminate;
 const selectableRowsComponentProps = { indeterminate: isIndeterminate };
-
+function homePage()
+{
+  
+}
 function SearchResults() {
     const classes = useStyles();
     const [thing, setThing] = useState([]);
@@ -183,7 +186,8 @@ function SearchResults() {
   
     <Row className="float-right">
     <Col  className={classes.columnPadding}>
-    <Button variant="outline-primary"  type="submit">Cancel</Button>&nbsp;&nbsp;&nbsp;
+    <Button variant="contained" onClick={homePage}>Cancel</Button>
+     &nbsp;&nbsp;&nbsp;
     <Button color="primary" variant="contained" onClick={greetUser} className="float-right loginSubmit text-capitalize" type="submit">Delete Selected Saved Search Forms</Button>   
 
       </Col>
