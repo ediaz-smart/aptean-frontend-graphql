@@ -143,27 +143,33 @@ const customStyles = {
 const columns = [
 	{
 		name: "Type",
-		selector: "type"
+		selector: "type",
+		center: true
 	},
 	{
 		name: "Date",
-		selector: "date"
+		selector: "date",
+		center: true
 	},
 	{
 		name: "",
-		selector: "info"
+		selector: "info",
+		center: true
 	},
 	{
 		name: "Description",
-		selector: "description"
+		selector: "description",
+		center: true
 	},
 	{
 		name: "",
-		selector: "results"
+		selector: "results",
+		center: true
 	},
 	{
 		name: " ",
-		selector: "report"
+		selector: "report",
+		center: true
 	}
 ];
 
@@ -362,6 +368,13 @@ function SearchManagement(props) {
 		}
 		setSearchResultData(tempArr);
 	}
+	const getProgressStatus = async(isCompleted)=>{
+		if(isCompleted)
+		{
+			getDefaultSearchResult('defaultText', '');
+		}
+		
+	}
 	async function getSearchDataArr(data,pagetype){
 		let tempArr = [];
         let resultData;
@@ -397,7 +410,7 @@ function SearchManagement(props) {
                 {
                     if(datas.status == 'STILL_RUNNING')
                     {
-                        tempObj['results'] = <ProgressBar datas={datas} />
+                        tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
                     }
                     else if(datas.status == 'FAILED'){
                         tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
@@ -791,7 +804,7 @@ function SearchManagement(props) {
 					</Col> */}
 
 					<Col className={"float-left " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
-						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} type="submit">{t('deleteSelected')}</Button>
+						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'loginSubmit')} type="submit">{t('deleteSelected')}</Button>
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('moveToFolder')}</Button>
 						<Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('mergeResult')}</Button>
 					</Col>
@@ -808,7 +821,7 @@ function SearchManagement(props) {
 			</Row>
 			<Modal
 				show={modalShow}
-				size="md"
+				size="lg"
 				aria-labelledby="contained-modal-title-vcente"
 				centered
 				contentClassName='modalPromptContent'
@@ -816,7 +829,7 @@ function SearchManagement(props) {
 				<Modal.Body className="appTextColor">
 					<div className={(confirmContent ? 'd-block' : 'd-none')}>
 						<p className="mb-3"><b>{t('deleteSelItems')}</b></p>
-						<p className="mb-3">{t('deleteSelItemContent')}</p>
+						<p className="mb-3">{t('deleteSelItemContent')}.<b>{t('deleteSelItemContent1')}</b>.</p>
 						<div className="mb-5 h-100">
 							<Checkbox
 								color="primary"
@@ -829,8 +842,8 @@ function SearchManagement(props) {
 							<p className={"float-left ml-1"}>{t('termsConditionText')}</p>
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={()=>deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'deleteBtnColor')} variant="contained">{t('deleteSelItems')}</Button>
-							<Button onClick={closeModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+							<Button onClick={()=>deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelItems')}</Button>
+							<Button onClick={closeModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
 						</div>
 					</div>
 					<div className={"text-center " + (delLoaderContent ? 'd-block' : 'd-none')}>
@@ -841,14 +854,14 @@ function SearchManagement(props) {
 						<p className="mb-3">{t('errorDeletTitle')}</p>
 						<p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={closeModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+							<Button onClick={closeModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
 						</div>
 					</div>
 				</Modal.Body>
 			</Modal>
 			<Modal
 				show={folderModalShow}
-				size="md"
+				size="lg"
 				aria-labelledby="contained-modal-title-vcente"
 				centered
 				contentClassName='modalPromptContent'
@@ -856,7 +869,7 @@ function SearchManagement(props) {
 				<Modal.Body className="appTextColor">
 					<div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
 						<p className="mb-3"><b>{t('deleteSelFolder')}</b></p>
-						<p className="mb-3">{t('deleteSelFolderContent')}</p>
+						<p className="mb-3">{t('deleteSelFolderContent')}.<b>{t('deleteSelItemContent1')}</b>.</p>
 						<div className="mb-5 h-100">
 							<Checkbox
 								color="primary"
@@ -869,8 +882,8 @@ function SearchManagement(props) {
 							<p className={"float-left ml-1"}>{t('termsConditionText')}</p>
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={()=>deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'deleteBtnColor')} variant="contained">{t('deleteSelFolder')}</Button>
-							<Button onClick={closeFolderModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+							<Button onClick={()=>deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelFolder')}</Button>
+							<Button onClick={closeFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
 						</div>
 					</div>
 					<div className={"text-center " + (delFolderLoaderContent ? 'd-block' : 'd-none')}>
@@ -881,7 +894,7 @@ function SearchManagement(props) {
 						<p className="mb-3">{t('errorDeleteFolderTitle')}</p>
 						<p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={closeFolderModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+							<Button onClick={closeFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
 						</div>
 					</div>
 				</Modal.Body>
@@ -909,7 +922,7 @@ function SearchManagement(props) {
 			</Modal>
 			<Modal
 				show={addFolderModalShow}
-				size="md"
+				size="lg"
 				aria-labelledby="contained-modal-title-vcente"
 				centered
 				contentClassName='modalPromptContent'

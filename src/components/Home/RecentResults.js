@@ -1,13 +1,20 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect,Fragment } from "react";
 import { Link, useLocation,useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
 import { makeStyles } from "@material-ui/core/styles";
 import DataTable from "react-data-table-component";
 import SortIcon from "@material-ui/icons/ArrowDownward";
+import { format } from 'date-fns';
+import InfoIcon from '@material-ui/icons/Info';
+import RedoIcon from '@material-ui/icons/Redo';
+import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 // import movies from '../SearchedResults/movies'
 import HomeService from '../../services/home'
-import UtilsService from '../../helpers/utils';
+// import UtilsService from '../../helpers/utils';
+import Constant from '../../helpers/constant';
+import { url } from '../../reducers/url';
+import ProgressBar from '../../shared/ProgressBar/Progress';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +72,7 @@ const customStyles = {
 			borderLeft: '0',
 		},
 		fontWeight:'bold',
-		color:'#4a5050',
+		color:'#4a5050'
 	  },
 	},
 	cells: {
@@ -77,7 +84,8 @@ const customStyles = {
 		'&:first-child': {
 			borderLeft: '0',
 		},
-		display:'grid'
+		display:'grid',
+		textAlign:"left !important"
 	  },
 	  
 	},
@@ -86,27 +94,32 @@ const columns = [
 	{
 	  name: "Type",
 	  selector: "type",
-	  sortable: false
+	  sortable: false,
+	  center: true
 	},
 	{
 	  name: "Date",
 	  selector: "date",
-	  sortable: false
+	  sortable: false,
+	  center: true
 	},
 	{
 	  name: "Description",
 	  selector: "description",
 	  sortable: false,
+	  center: true
 	},
 	{
 		name: "",
 		selector: "results",
-		sortable: false
+		sortable: false,
+		center: true
 	  },
 	  {
 		name: " ",
 		selector: "report",
 		sortable: false,
+		center: true
 	  }
   ];
    const isIndeterminate = indeterminate => indeterminate;
@@ -122,19 +135,124 @@ function RecentResults() {
 	useEffect(() => {
 		(async () => {
 			// const result = dispatch(getSearchResult());
-			const result = await HomeService.getSearchResults(history);
-			let tempArr = [];
-			if(result && result.response_content && result.response_content.length > 0)
-			{
-				tempArr = await UtilsService.mostRecentResCalculation(result,'home');
-			}
-			// Getting only 9 array from the response as per the ppt documentation
-			tempArr = tempArr.slice(0, 9);
-			setSearchResultData(tempArr);
+			getDefaultSearchResult();
 		})();
 	}, []);
-
-	
+	const getDefaultSearchResult = async()=>{
+		const result = await HomeService.getSearchResults(history);
+		let tempArr = [];
+		if(result && result.response_content && result.response_content.length > 0)
+		{
+			// tempArr = await UtilsService.mostRecentResCalculation(result,'home');
+			tempArr = await getSearchDataArr(result, 'home');
+		}
+		// Getting only 9 array from the response as per the ppt documentation
+		tempArr = tempArr.slice(0, 9);
+		setSearchResultData(tempArr);
+	}
+	const getProgressStatus = async(isCompleted)=>{
+		console.log(isCompleted,'isCompleted')
+		if(isCompleted)
+		{
+			getDefaultSearchResult();
+		}
+	}
+	async function getSearchDataArr(data,pagetype) {
+		try {
+			let tempArr = [];
+			let resultData;
+			if(pagetype == 'searchfolder')
+			{
+				resultData = data.response_content.results;
+			}else {
+				resultData = data.response_content;
+			}
+			resultData.forEach(datas => {
+				let tempObj = datas;
+				let id = datas.id;
+				tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
+				const regex = /Fulltext/i;
+				if(datas.type !== null && datas.type !== '')
+				{
+					const found = datas.type.match(regex);
+					if(found && found.length >0){
+						type = 'Documents';
+					}
+				}else{
+					datas.type = ' ' 
+				}
+				let type = 'Alignments';
+				
+				let mostRecentTypeUrl = url.mostRecentTypeUrl
+				mostRecentTypeUrl = mostRecentTypeUrl.replace('**', id);
+				let typeUrl = process.env.REACT_APP_BASE_URL+mostRecentTypeUrl;
+				if(datas.type != '')
+				{
+					if(datas.type !== 'GqFolder')
+					{
+						if(datas.status == 'STILL_RUNNING')
+						{
+							tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
+						}
+						else if(datas.status == 'FAILED'){
+							tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
+						}
+						else {
+							tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+						}
+					}else{
+						tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
+					}
+				}else {
+					tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
+				}
+				
+				let mostRecentClassicUrl = url.mostRecentClassicUrl
+				mostRecentClassicUrl = mostRecentClassicUrl.replace('**', id);
+				let classicLink = process.env.REACT_APP_API_URL+mostRecentClassicUrl
+				if(datas.status == 'FAILED')
+				{
+					tempObj["report"] = '';
+				}else{
+					if(datas.type != '' && datas.status != 'STILL_RUNNING')
+					{
+						if(datas.type == "GqWfABIpSearch")
+						{
+							let mostRecentReportUrl = url.mostRecentReportUrl
+							mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
+							let reportLink = process.env.REACT_APP_BASE_URL+mostRecentReportUrl
+							tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
+												<span className="mx-2">|</span>
+												<a href={classicLink} target="_blank">Classic</a>
+												</Fragment>
+						}else if(datas.type !== "GqFolder"){
+							tempObj["report"] = <Fragment>
+												<a href={classicLink} target="_blank">Classic</a>
+												</Fragment>
+						}else {
+							tempObj["report"] = '';
+						}
+					}else {
+						tempObj["report"] = '';
+					}
+				}
+				tempObj['type'] = Constant['searchType'][datas.type] ? Constant['searchType'][datas.type]: datas.type;
+				if(pagetype === "searchmanagement" || pagetype === "searchfolder")
+				{
+					tempObj["info"] = <Fragment>
+										<a href="#" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
+										<a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLinkColor" /></a>
+										<a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
+									</Fragment>
+				}
+				tempArr.push(tempObj);
+			})
+			return tempArr;
+		} catch (error) {
+			console.error(error);
+		}
+	   
+	}
 
 	return (
 

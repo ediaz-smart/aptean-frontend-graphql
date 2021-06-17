@@ -43,21 +43,25 @@ const useStyles = makeStyles({
     }
 });
 
-export default function ProgressBar(props) {
+export default function ProgressBar({datas,getStatus}) {
     const classes = useStyles();
     const [progress, setProgress] = React.useState(0);
     const [showProgress, setShowProgress] = React.useState(true);
     const [status, setStatus] = React.useState('');
+    const [progressComplete, setProgressComplete] = React.useState(true);
+    console.log(datas,'datas');
+    console.log(getStatus,'getStatus');
     React.useEffect(async () => {
         // console.log(props.datas.id,'props');
-        const result = await HomeService.getSearchResultsStatus(props.datas.id);
+        const result = await HomeService.getSearchResultsStatus(datas.id);
         setProgressData(result);
         
         const timer = setInterval(async () => {
             // setProgress((prevProgress) => (prevProgress >= 100 ? 10 : prevProgress + 10));
-            const result = await HomeService.getSearchResultsStatus(props.datas.id);
+            const result = await HomeService.getSearchResultsStatus(datas.id);
             console.log(result,'resultresult');
             setProgressData(result);
+            
         }, 10000);
 
         // return () => {
@@ -74,6 +78,8 @@ export default function ProgressBar(props) {
             }else {
                 setStatus(result.response_content.results);
                 setShowProgress(false);
+                setProgressComplete(true);
+                getStatus(progressComplete);
             }
         }
     }
