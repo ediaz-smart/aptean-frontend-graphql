@@ -181,14 +181,20 @@ function SearchResultSequence() {
     const [writeShareId, setWriteShareId] = useState();
     const [gqUserId, setGqUserId] = useState();
 
+    // Get User List
+    const [userList, setUserList] = useState();
+
     const [modalResultShow, setModalResultShow] = React.useState(false); 
 
     // reset login status
     useEffect(async () => {
         getSummaryResp();
-        getShareResp();
+        getUserResp();
+        // getShareResp();
+        
         getAlertResp();
         getAlertRedoResp();
+        
         // console.log(userInfo, 'userInfo');
         let tempAlertArr = [];
 
@@ -204,6 +210,19 @@ function SearchResultSequence() {
         setAlertSettingValue(7);
 
     }, []);
+    const getUserResp = async() =>{
+        const getUserResponse = await searchResSequence.getUserList(workflowId);
+        if (getUserResponse && getUserResponse.response_status == 0) {
+            if(getUserResponse.response_content.user_candidates)
+            {
+                setUserList(getUserResponse.response_content.user_candidates);
+                getResultShareResp(getUserResponse.response_content.user_candidates);
+                
+                
+            }
+        }
+        console.log(getUserResponse,'getUserResponse');
+    }
     const getSummaryResp = async () => {
         const getSummaryResponse = await searchResSequence.getSequenceSummary(workflowId);
         if (getSummaryResponse && getSummaryResponse.response_status == 0) {
@@ -213,6 +232,7 @@ function SearchResultSequence() {
                 usedSpace = (diskUsage / (1024 * 1024));
                 usedSpace = usedSpace.toFixed(2);
             }
+            setGqUserId(getSummaryResponse.response_content.gq_user_id);
             getSummaryResponse.response_content['usedSpace'] = usedSpace;
             if(getSummaryResponse.response_content.description)
             {
@@ -230,6 +250,35 @@ function SearchResultSequence() {
             }
             setAlertSettingValue(getAlertResponse.response_content.relaunch_interval);
             setAlarmSetting(getAlertResponse.response_content);
+        }
+    }
+    const getResultShareResp = async(userData)=>{
+        const getResultShareResponse = await searchResSequence.getSequenceResultShare(workflowId);
+        if (getResultShareResponse && getResultShareResponse.response_status == 0) {
+            if(getResultShareResponse.response_content && getResultShareResponse.response_content.userIds)
+            {
+                let sharedNames = [];
+                let sharedObj = [];
+                let sharedData = {};
+                let shareDatas;
+                sharedData['sharedNames'] = '';
+                getResultShareResponse.response_content.userIds.map(function (value, key) {
+                    if (userData && userData[value]) {
+                        sharedNames.push(userData[value].full_name);
+                        sharedObj.push(userData[value]);
+                    }
+                });
+                sharedData['sharedNameObj'] = sharedObj;
+                if (sharedNames.length > 1) {
+                    const last = sharedNames.pop();
+                    shareDatas = sharedNames.join(', ') + ' and ' + last;
+                    sharedData['sharedNames'] = shareDatas;
+                }else {
+                    shareDatas = sharedNames.join(', ');
+                    sharedData['sharedNames'] = shareDatas;
+                }
+                setSeqShare(sharedData);
+            }
         }
     }
     const getShareResp = async () => {
@@ -494,26 +543,33 @@ function SearchResultSequence() {
         }
         console.log(getremoveResponse,'getremoveResponse');
     }
-    const removeResSharing = async(e)=>{
+    const removeResSharing = async(e,id)=>{
         e.preventDefault();
-        var d = new Date();
-        var timeStamp = d.getMilliseconds();
         let postData = {
             workflowId,
-            gqUserId,
-            timeStamp
+            id
         }
         const getremoveResponse = await searchResSequence.removeResultSharing(postData);
         if (getremoveResponse && getremoveResponse.response_status == 0) {
-            getShareResp()
+            getResultShareResp(userList);
         }else {
             toast.error('Removing in Error.');
         }
         // console.log(getremoveResponse,'getremoveResponse');
     }
-    function shareResultsForm()
-    {
-        
+    const shareResultsForm = async(ids)=>{
+        setModalResultShow(false);
+        let postData = {
+            workflowId,
+            userId:ids[0]
+        }
+        const getaddShareResponse = await searchResSequence.addResultSharing(postData);
+        if (getaddShareResponse && getaddShareResponse.response_status == 0) {
+            getResultShareResp(userList);
+        }else {
+            toast.error('Adding in Error.');
+        }
+        // console.log(getaddShareResponse,'getaddShareResponse');
     }
     return (
         <div className={classes.grow}>
@@ -598,7 +654,7 @@ function SearchResultSequence() {
                             })
                             }
                             <br clear="all"/>
-                            <h6 className={"appTextColor loginTitle mt-3"} id="resultSharing">{t('searchStrategy')}</h6>
+                            <h6 className={"appTextColor loginTitle mt-3"}>{t('searchStrategy')}</h6>
                            
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')}>
                                     <Typography >
@@ -691,7 +747,7 @@ function SearchResultSequence() {
                     <br />
                     <hr />
                     
-                    <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('resSharing')}​</h6>
+                    <h6 className={"appTextColor loginTitle"} id="resultSharing">{t('resSharing')}​</h6>
                     <Row>
                         <Col lg="1" md="1" sm="12" className="pr-0">
                             <img src={resultshareImg} alt={t('resSharing')} />
@@ -700,11 +756,13 @@ function SearchResultSequence() {
                             <Row>
                                 {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
                                 <Typography className="mb-2">
-                                    The following people have access to this result. <Link className={"appLinkColor"}  onClick={() => setModalResultShow(true)} >Add more …​</Link></Typography>
+                                    The following people have access to this result. <Link className={"appLinkColor cursorPointer"}  onClick={() => setModalResultShow(true)} >Add more …​</Link></Typography>
                                     <ShareResultsModal
                                     show={modalResultShow}
+                                    data={userList}
                                     onHide={() => setModalResultShow(false)}
-                                    tryAgain={()=> shareResultsForm()}
+                                    // getSelectUser={getSelectUser}
+                                    shareResult={shareResultsForm}
                                     // onMessage={errorMessage}
                                     />
 
@@ -715,10 +773,10 @@ function SearchResultSequence() {
                                     <Row key={i}>
                                         <Col lg="4" md="4" className="pr-0 content">
                                             <Typography >
-                                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {dbVal.text_label}</Typography>
+                                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {dbVal.full_name}</Typography>
                                         </Col>
                                         <Col lg="4" md="4" className="pr-0 content">
-                                            <Typography ><Link className={"failedTextColor"} id={dbVal.id} href="#" onClick={(e) => removeResSharing(e)}>Remove</Link></Typography>
+                                            <Typography ><Link className={"failedTextColor"} id={dbVal.id} href="#" onClick={(e) => removeResSharing(e,dbVal.id)}>Remove</Link></Typography>
                                         </Col>
                                     </Row>
                                 )
@@ -727,7 +785,7 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"} id="searchHistoryDiv">{t('alertSetting')}​</h6>
+                    <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('alertSetting')}​</h6>
                     <Row>
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Row>
@@ -751,7 +809,7 @@ function SearchResultSequence() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6 className={"appTextColor loginTitle"}>{t('searchHistory')}</h6>
+                    <h6 className={"appTextColor loginTitle"} id="searchHistoryDiv">{t('searchHistory')}</h6>
                     <Row>
                         {/* <Col lg="1" md="1" sm="12" className="pr-0">
                             <img src={searchResultImg} alt="Search History"  />

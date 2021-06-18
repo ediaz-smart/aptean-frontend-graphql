@@ -134,7 +134,8 @@ const customStyles = {
 			'&:first-child': {
 				borderLeft: '0',
 			},
-			display: 'grid'
+			display: 'grid',
+			textAlign:'center'
 		},
 
 	},
@@ -163,8 +164,7 @@ const columns = [
 	},
 	{
 		name: "",
-		selector: "results",
-		center: true
+		selector: "results"
 	},
 	{
 		name: " ",
@@ -174,7 +174,7 @@ const columns = [
 ];
 
 const isIndeterminate = indeterminate => indeterminate;
-const selectableRowsComponentProps = { indeterminate: isIndeterminate };
+const selectableRowsComponentProps = { indeterminate: isIndeterminate,color:'primary' };
 
 function SearchManagement(props) {
 	const classes = useStyles();
@@ -312,7 +312,7 @@ function SearchManagement(props) {
 				setFolderErrorContent(false);
 			}
 			
-			toast.success('Deleted Successfully');
+			
 			if (defaultTitle === 'Recent Search Results') {
 				getDefaultSearchResult('defaultText', '');
 			} else {
@@ -325,6 +325,10 @@ function SearchManagement(props) {
 				}
 				getFolderResultData();
 			}
+			setTimeout(() => {
+				toast.success('Deleted Successfully');
+			}, 3000);
+			
 
 		} else {
 			if(type === "record")

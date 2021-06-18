@@ -40,6 +40,11 @@ export const url = {
     stageBrowserDBLink:"https://stage.genomequestlive.com/query?do=mygq#4",
     stagePatentNumLink:"https://stage.genomequestlive.com/query?do=gqfetch.get_field_search_form",
     stageAlignSequencesDirectly:"https://stage.genomequestlive.com/query?do=gqsearch.get_align_pair_form",
-    searchResultSet:"do=gqshareable.qsearch&format=json&text=**"
+    searchResultSet:"do=gqshareable.qsearch&format=json&text=**",
+    userList:"do=gqshareable.get_acl_form&id=**&format=json",
+    seqShareList:"do=gqworkflow.get_sharees_ft&format=json&workflow=id:**",
+    seqAddSharee:"do=gqworkflow.add_sharee_ft&format=json&workflow=id:**&userId=UID",
+    seqRemoveSharee:"do=gqworkflow.remove_sharee_ft&format=json&workflow=id:**&userId=UID"
+
     
 }

@@ -59,7 +59,7 @@ export default function ProgressBar({datas,getStatus}) {
         const timer = setInterval(async () => {
             // setProgress((prevProgress) => (prevProgress >= 100 ? 10 : prevProgress + 10));
             const result = await HomeService.getSearchResultsStatus(datas.id);
-            console.log(result,'resultresult');
+            // console.log(result,'resultresult');
             setProgressData(result);
             
         }, 10000);
@@ -73,7 +73,8 @@ export default function ProgressBar({datas,getStatus}) {
         {
             if(result.response_content.status == 'STILL_RUNNING')
             {
-                setProgress(parseInt(result.response_content.progress));
+                let progress = parseInt(result.response_content.progress.trim());
+                setProgress(progress);
                 setShowProgress(true);
             }else {
                 setStatus(result.response_content.results);
@@ -86,7 +87,7 @@ export default function ProgressBar({datas,getStatus}) {
     return (
         <div className={classes.root}>
             <div className={(showProgress ? 'd-block':'d-none')}>
-                <LinearProgressWithLabel  value={progress} classes={{colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary}} />
+                <LinearProgressWithLabel  value={progress} classes={{colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary}} className="align-left" />
             </div>
             <div className={(showProgress ? 'd-none':'d-block')}>
                 <p>{status}</p>

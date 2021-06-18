@@ -85,7 +85,7 @@ const customStyles = {
 			borderLeft: '0',
 		},
 		display:'grid',
-		textAlign:"left !important"
+		textAlign:"center !important"
 	  },
 	  
 	},
@@ -112,8 +112,7 @@ const columns = [
 	{
 		name: "",
 		selector: "results",
-		sortable: false,
-		center: true
+		sortable: false
 	  },
 	  {
 		name: " ",
