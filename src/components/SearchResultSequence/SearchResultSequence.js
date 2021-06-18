@@ -559,9 +559,10 @@ function SearchResultSequence() {
     }
     const shareResultsForm = async(ids)=>{
         setModalResultShow(false);
+        let id = ids.join(',');
         let postData = {
             workflowId,
-            userId:ids[0]
+            userId:id
         }
         const getaddShareResponse = await searchResSequence.addResultSharing(postData);
         if (getaddShareResponse && getaddShareResponse.response_status == 0) {

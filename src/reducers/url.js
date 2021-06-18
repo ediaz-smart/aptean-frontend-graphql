@@ -43,7 +43,7 @@ export const url = {
     searchResultSet:"do=gqshareable.qsearch&format=json&text=**",
     userList:"do=gqshareable.get_acl_form&id=**&format=json",
     seqShareList:"do=gqworkflow.get_sharees_ft&format=json&workflow=id:**",
-    seqAddSharee:"do=gqworkflow.add_sharee_ft&format=json&workflow=id:**&userId=UID",
+    seqAddSharee:"do=gqworkflow.add_sharees_ft&format=json&workflow=id:**&userId=UID",
     seqRemoveSharee:"do=gqworkflow.remove_sharee_ft&format=json&workflow=id:**&userId=UID"
 
     
