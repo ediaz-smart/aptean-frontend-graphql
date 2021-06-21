@@ -19,14 +19,16 @@ const useStyles = makeStyles((theme) => ({
 		float:'right',
 		textTransform: 'none',
 		margin:'4px',
+		// backgroundColor: '#147ca6'
+
 	},
 	modalBoxContent :{
-		maxHeight: '650px',
+		maxHeight: '675px',
 	},
 	modalClassContent:{
 		position: 'absolute',
 		width: '65%',
-		height: '38%',
+		height: '35%',
 		top: '30%',
 		left: '50%',
 		right: 'auto',
@@ -34,9 +36,10 @@ const useStyles = makeStyles((theme) => ({
 		transform: 'translate(-50%, -50%)'
 	}
 
+
 }));
 
-function ContentErrorModal(props) {
+function ChangePassCheckModal(props) {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation('common');
     let mailUrl = "mailto:" + supportMail+"?subject="+props.subjectText;
@@ -50,7 +53,8 @@ function ContentErrorModal(props) {
 			centered
 			contentClassName={classes.modalClassContent}
 			className={classes.modalBoxContent}
-		 >
+
+		>
 			<Modal.Header closeButton className={classes.modalHeader}>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
@@ -58,10 +62,18 @@ function ContentErrorModal(props) {
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
 				{/* <h5>{props.onMessage}</h5> */}
-				<h5>The current password was incorrect.</h5>
+				<h5>The two new passwords are not identical.</h5>
                  <br></br>
 				<h5>Please try again.</h5>
-				
+				{/* <p>
+                        <spoan>{t("tryAgainOrContact")}</spoan>
+						<br></br>
+						<br></br>
+                        <span>
+                            <a className={"appTextFont appLinkColor"} href={mailUrl} target="_blank" rel="noopener noreferrer">{supportMail}</a>
+                        </span>
+                        <span>{t("forAssistance")}</span>
+              </p> */}
 				<br></br>
 				<div className={classes.footerDiv}>
 					<Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Try Again</Button> 
@@ -77,4 +89,4 @@ function ContentErrorModal(props) {
 	);
 }
 
-export default ContentErrorModal;
+export default ChangePassCheckModal;

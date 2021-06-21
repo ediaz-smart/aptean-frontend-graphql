@@ -14,15 +14,15 @@ import Validate from '../../helpers/validate';
 import AccountService from '../../services/accountInfo';
 import ChangePasswordModal from '../../shared/Modal/ChangePasswordModal'
 import ContentErrorModal from '../../shared/Modal/ContentErrorModal'
-
+import ChangePassCheckModal from '../../shared/Modal/ChangePassCheckModal'
 
 const useStyles = makeStyles((theme) => ({
     grow: {
 		flexGrow: 1,
 		width: '96%',
 		margin: '30px auto',
-		minHeight: '260px',
-        marginTop: '130px',
+		minHeight: '240px',
+        marginTop: '65px',
 	},
     passwordRecoverDiv:{
         padding: '15px 25px 20px',
@@ -91,6 +91,8 @@ function ChangePassword() {
     const [passwordForm, setPasswordForm] = useState(true);
     const [modalShowSaved, setmodalShowSaved] = React.useState(false); 
     const [modalShow, setModalShow] = React.useState(false); 
+    const [modalCheckPass, setModalCheckPass] = React.useState(false); 
+
     const [errorMessage, seterrorMessage] = useState("");
 
     const [userId, setUserId] = useState(true);
@@ -127,7 +129,8 @@ function ChangePassword() {
                        
                }
                else{
-                toast.error("Password MisMatch! Enter Valid Password.");
+                setModalCheckPass(true);
+                // toast.error("Password MisMatch! Enter Valid Password.");
 
                }
        
@@ -160,11 +163,17 @@ function ChangePassword() {
         setModalShow(false);
         history.push('/home');
       }
+      function tryAgainFormNew()
+      {
+       
+        formik.setFieldValue('newPassword','') && formik.setFieldValue('confirmPassword',''); 
+        formik.setFieldValue('default','')
+        setModalCheckPass(false)
+      }
     return (
       <div className={classes.grow}>
-        <Container className="mt-100">
+        <Container >
             
-          
             <Row >
                 <Col sm="12" md="6" >
                     <form name="changePasswordForm" onSubmit={formik.handleSubmit} className={(passwordForm ? 'd-block' : 'd-none')}>
@@ -259,6 +268,13 @@ function ChangePassword() {
                 </Col>
             </Row>
         </Container>
+        <ChangePassCheckModal
+                            show={modalCheckPass}
+                            onHide={() => cancelForm()}
+                            tryAgain={()=> tryAgainFormNew()}
+                            // onMessage={errorMessage}
+                        />
+
         <ContentErrorModal
                             show={modalShow}
                             onHide={() => cancelForm()}

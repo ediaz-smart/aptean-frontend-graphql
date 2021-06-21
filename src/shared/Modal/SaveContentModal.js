@@ -10,10 +10,25 @@ const useStyles = makeStyles((theme) => ({
 		borderBottom: 'none !important'
 	},
 	footerDiv:{
-		padding:'0 30px'
+		padding:'0 30px',
+		marginTop:'-40px',
+		marginRight: '-31px',	
 	},
 	contentPadding: {
 		padding: "45px !important"
+	},
+	modalBoxContent :{
+		maxHeight: '650px',
+	},
+	modalClassContent:{
+		position: 'absolute',
+		width: '65%',
+		height: '28%',
+		top: '30%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
 	}
 }));
 
@@ -26,7 +41,8 @@ function SaveContentModal(props) {
 			size="lg"
 			aria-labelledby="contained-modal-title-vcente"
 			centered
-			contentClassName='modalPromptContent'
+			contentClassName={classes.modalClassContent}
+			className={classes.modalBoxContent}
 		>
 			{/* <Modal.Header closeButton className={classes.modalHeader}> */}
 				{/* <Modal.Title id="contained-modal-title-vcenter">
@@ -36,14 +52,13 @@ function SaveContentModal(props) {
 			<Modal.Body className={"text-center"}>
 				<h5 className={classes.contentPadding}>{props.onMessage}</h5>
 				
-			{!props.type == "seqSearch" && <Fragment>
-				<br></br>
-				<br></br>
+		      {/* <Fragment> */}
+			
 				<div className={classes.footerDiv}>
 					<Button onClick={props.onHide} className="float-right m-2" color="primary" variant="contained">OK</Button>
 				</div>
-				</Fragment>
-				}
+				{/* </Fragment> */}
+			
 				
 				
 			</Modal.Body>

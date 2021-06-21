@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 	},
 	modalBoxContent :{
-		maxHeight: '405px',
+		maxHeight: '675px',
 	},
 	modalClassContent:{
 		position: 'absolute',

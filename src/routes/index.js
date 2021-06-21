@@ -19,6 +19,7 @@ import IpSequenceVariation from '../components/IpSequenceVariation/IpSequenceVar
 import SearchResultAntibody from '../components/SearchResultAntibody/SearchResultAntibody'
 import ResultReportFolder from '../components/ResultReportFolder/ResultReportFolder';
 import FullTextSearch from '../components/FullTextSearch/FullTextSearch';
+import NewPassword from '../components/Auth/NewPassword';
 
 
 
@@ -28,8 +29,9 @@ class Routes extends React.Component {
     
    
     render() {
-        const isUserLogin = localStorage.getItem('isLoggedIn');
+        const isUserLogin = localStorage.getItem('isLoggedIn') ? localStorage.getItem('isLoggedIn') : false;
         console.log(isUserLogin,'isUserLogin isUserLogin isUserLogin qwdhijoiefhdoihdf')
+        // const isUserLogin = localStorage.getItem('isLoggedIn');
 
         // const data = getItem()
         return (
@@ -38,11 +40,13 @@ class Routes extends React.Component {
                     <Route exact path="/" title="login" component={Login} />
                     <Route exact path="/login" title="login" component={Login} />
                     <Route exact path="/forgot" title="forgot" component={Forgotpassword} />
-                    {/* {isUserLogin ?  */}
+                    <Route exact path="/newpassword" component={NewPassword} />
+
+                    {isUserLogin ? 
                     <React.Fragment>
                     <Route exact path="/home" title="" component={Home} />
                     <Route exact path="/changePassword" title="changePassMange" component={ChangePassword} />
-                    <Route exact path="/search" component={SearchResult} />
+                    <Route exact path="/search" component={SearchResult} /> 
                     <Route exact path="/recent" component={Recent} />
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                     <Route exact path="/ipseqsearch" title="ipseqsearch" component={IpSequenceSearch} />
@@ -56,10 +60,11 @@ class Routes extends React.Component {
                     <Route exact path="/ipseqvariation" title="ipseqvariation" component={IpSequenceVariation} />
                     <Route exact path="/report/folder" component={ResultReportFolder} />
                     <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
+
                     </React.Fragment>
-                    {/* : 
+                   : 
                     <Redirect to='/login' />
-                    } */}
+                   }
 
 
                 </Switch>

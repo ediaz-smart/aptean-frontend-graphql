@@ -107,7 +107,7 @@ const conditionalRowStyles = [
 const columns = [
   {
     name: "Type",
-    selector: "title",
+    selector: "map.workflow_type",
     sortable: true
   },
   {
@@ -117,7 +117,7 @@ const columns = [
   },
   {
     name: "Name",
-    selector: "director",
+    selector: "name",
     sortable: true,
     left: true
   }
@@ -133,21 +133,40 @@ function SearchResults() {
     const classes = useStyles();
     const [thing, setThing] = useState([]);
     const handleAction = value => setThing(value);
+    const [searchFormsData, setSearchFormsData] = useState([]);
     // unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
     const updateState = useCallback(state =>  setThing(state));
     function updateVal(state)
     {    
         setThing(state)
     }
+    // useEffect(() => {
+    //   async function fetchMyAPI() {
+    //     const result = await SavedSearch.getSavedSearchData();
+    //     if(result.response_content && result.response_content.templates)
+    //     {
+    //       console.log(result.response_content,"result.response_content.template) result.response_content.template)");
+    //       const dta = await result.response_content.templates;
+    //       //  setSearchFormsData(dta);
+    //     }
+    //     // (result.response_content && result.response_content.template) ? setSearchFormsData(result.response_content.template) : "" ;
+    //     // console.log(result,"result result result result result result result ");
+    //   }
+    //   fetchMyAPI();
+    //   // setThing([]) getSavedSearchData
+    //   // document.title = `You clicked ${count} times`;
+    // });
     useEffect(() => {
-      async function fetchMyAPI() {
+      (async () => {
         const result = await SavedSearch.getSavedSearchData();
-        console.log(result,"result result result result result result result ");
-      }
-      fetchMyAPI()
-      // setThing([]) getSavedSearchData
-      // document.title = `You clicked ${count} times`;
-    });
+        if(result.response_content && result.response_content.templates)
+        {
+          console.log(result.response_content,"result.response_content.template) result.response_content.template)");
+          const dta = await result.response_content.templates;
+           setSearchFormsData(dta);
+        }
+      })()
+    }, []);
     function greetUser() {
         // console.log(updateState,"SAMple Data that enters")
         console.log(thing,"SAMple")
@@ -165,14 +184,14 @@ function SearchResults() {
         }
        
       }
-
+//  console.log(searchFormsData,"searchFormsData");
   return (
     <div >
     <Row className={classes.columnPad} >
       <Col>
         <DataTable
           columns={columns}
-          data={movies}
+          data={searchFormsData}
           defaultSortField="title"
           sortIcon={<SortIcon />}
           onSelectedRowsChange={updateVal}
