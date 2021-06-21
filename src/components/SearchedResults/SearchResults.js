@@ -12,7 +12,7 @@ import Button  from '@material-ui/core/Button';
 import { toast } from 'react-toastify';
 import Header from '../../shared/header';
 import Footer from '../../shared/footer';
-
+import SavedSearch from '../../services/savedsearch';
 const useStyles = makeStyles((theme) => ({
     loginDiv:{
         border: '2px solid #bfb4b4',
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom:'20px',
       },
       columnPad : {
-        paddingTop: '45px',
+        paddingTop: '30px',
       }
 }));
 const customStyles = {
@@ -140,8 +140,12 @@ function SearchResults() {
         setThing(state)
     }
     useEffect(() => {
-      
-      // setThing([])
+      async function fetchMyAPI() {
+        const result = await SavedSearch.getSavedSearchData();
+        console.log(result,"result result result result result result result ");
+      }
+      fetchMyAPI()
+      // setThing([]) getSavedSearchData
       // document.title = `You clicked ${count} times`;
     });
     function greetUser() {
@@ -163,7 +167,7 @@ function SearchResults() {
       }
 
   return (
-    <Container className="mt-100">
+    <div >
     <Row className={classes.columnPad} >
       <Col>
         <DataTable
@@ -194,7 +198,7 @@ function SearchResults() {
  
     
     </Row>
- </Container>
+ </div>
   
   );
 }

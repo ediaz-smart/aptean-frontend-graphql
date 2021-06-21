@@ -12,15 +12,30 @@ const useStyles = makeStyles((theme) => ({
 	},
 	footerDiv:{
 		padding:'0 30px',
-		
-
+		marginTop:'-20px',
+		marginRight: '-31px',	
 	},
 	buttonStyle:{
 		float:'right',
 		textTransform: 'none',
 		margin:'4px',
+		// backgroundColor: '#147ca6'
 
+	},
+	modalBoxContent :{
+		maxHeight: '405px',
+	},
+	modalClassContent:{
+		position: 'absolute',
+		width: '65%',
+		height: '35%',
+		top: '30%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
 	}
+
 
 }));
 
@@ -36,7 +51,9 @@ function AccountInfoModal(props) {
 			size="lg"
 			aria-labelledby="contained-modal-title-vcente"
 			centered
-			contentClassName='modalPromptContent'
+			contentClassName={classes.modalClassContent}
+			className={classes.modalBoxContent}
+
 		>
 			<Modal.Header closeButton className={classes.modalHeader}>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
@@ -57,7 +74,6 @@ function AccountInfoModal(props) {
                         </span>
                         <span>{t("forAssistance")}</span>
               </p> */}
-				<br></br>
 				<br></br>
 				<div className={classes.footerDiv}>
 					<Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Try Again</Button> 

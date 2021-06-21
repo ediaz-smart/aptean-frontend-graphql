@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     width: '96%',
     margin: '30px auto',
     minHeight: '260px',
-    marginTop: '165px',
+    marginTop: '70px',
   },
   rootButton:{
     marginLeft:'-14px',
@@ -45,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
     border: '2px solid #DB862D' ,
     color:'white',
     textTransform: 'capitalize',
+    '&:hover': {
+      backgroundColor: '#DB862D',
+      boxShadow: 'none',
+    },
  },
     root: {
       
@@ -112,8 +116,8 @@ function AccountInfo() {
         data.accounting_group_name ?  setuserAccountingGroup(data.accounting_group_name) : setuserAccountingGroup('');
         data.user_class_name ? setuserAccountType(data.user_class_name) : setuserAccountType('');
         // moment(values.docPublicDate).format('YYYYMMDD')
-        data.access_key_create_time ? setuserAccountCreated(moment(data.access_key_create_time).format("DD/MM/YYYY")) : setuserAccountCreated('');
-        data.access_key_expire_time ?  setuserAccountExpires(moment(data.access_key_expire_time).format("DD/MM/YYYY")) :  setuserAccountExpires('');
+        data.create_time ? setuserAccountCreated(moment(data.create_time).format("DD/MM/YYYY")) : setuserAccountCreated('');
+        data.expire_time ?  setuserAccountExpires(moment(data.expire_time).format("DD/MM/YYYY")) :  setuserAccountExpires(' -- ');
         data.clitoken ? setuserAccountClitoken(data.clitoken) : setuserAccountClitoken('');
         data.dspace_workflow ?  setuserAnalyses(data.dspace_workflow) :  setuserAnalyses(0);
         data.dspace_seqdb ? setuserSeqDatabase(data.dspace_seqdb) : setuserSeqDatabase(0);
@@ -344,6 +348,7 @@ function AccountInfo() {
             
           <div className={classes.rootButton}>
               <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
+              
                 <Button  variant="contained" className={(passValCheck != 0 ? classes.loginSubmitButton : '')} type="submit">{t('aisavechange')}</Button>
           </div>
           {/* <Button {(passwordForm ? 'd-block' : 'd-none')} variant="contained" type="submit">{t('aisavechange')}</Button> */}

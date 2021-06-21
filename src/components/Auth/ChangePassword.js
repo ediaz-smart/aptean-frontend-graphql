@@ -34,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #DB862D' ,
         color:'white',
         textTransform: 'capitalize',
+        '&:hover': {
+            backgroundColor: '#DB862D',
+            boxShadow: 'none',
+          },
     },
     loginLogoDiv:{
         position: 'relative',
