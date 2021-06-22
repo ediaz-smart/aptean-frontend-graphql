@@ -15,8 +15,13 @@
     "codeReq": "Code is required",
     "thankYou": "Thank you.",
     "loginInfoText": "Instructions will be sent to the email address you registered with us.",
+<<<<<<< Updated upstream
     "pleaseContactText1": "Please contact",
     "pleaseContactText2":"should you require further assistance.",
+=======
+    "pleaseContactText1": "Please contact ",
+    "pleaseContactText2": " should you require further assistance.",
+>>>>>>> Stashed changes
     "newsandupdates": "News and Updates",
     "savedSearchForms": "Saved Search Forms",
     "sequenceSearch": "Sequence Search",

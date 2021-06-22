@@ -148,6 +148,7 @@ export function post(url, postdata,history) {
 // axios get
 export function get(url, history) {
     try {
+        console.log('getttt', url)
         // if (window.location.hostname == 'localhost') {
         //     let file;
         //     if (url.includes('mygq.get_welcome_page_v2')) {

@@ -12,10 +12,14 @@ function hideLoader() {
 	PubSub.publish('msg', false);
 }
 
-export async function getSeqSearchResults(history) {
+export async function getSeqSearchInit(history, parentId) {
     try {
+        let getUrl = url.seqSearchInit;
+        if(parentId) {
+            getUrl = getUrl + '&parent_id='+parentId;
+        }
         showLoader();
-        return await get(url.seqSearchInit, history)
+        return await get(getUrl, history)
         .then((response) => {
             hideLoader();
             // if(response && response.data.response_status == 0)
@@ -79,36 +83,4 @@ export const submitSeqSearch = (data,history, t) => {
             // dispatch(showMessage({ message: error }));
         });
 };
-
-export async function getRedoData(parentId, history) {
-    try {
-        showLoader();
-        let redoUrl = url.seqSearchInit + '&parent_id='+parentId;
-        return await get(redoUrl, history)
-        .then((response) => {
-            hideLoader();
-            // if(response && response.data.response_status == 0)
-            // {
-            // }else {
-                
-            //     let errorMsg = 'Unable to Login';
-            //     if(response && typeof response.data.response_content === 'object' && response.data.response_content !== null){
-            //         errorMsg = response.data.response_content.message;
-            //     }
-            //     toast.error(errorMsg);
-            // }
-            return response;
-        })
-        .catch((error) => {
-            hideLoader();
-            toast.error('A');
-            console.log("error::", error);
-
-            // return dispatch(loginError(error));
-            // dispatch(showMessage({ message: error }));
-        });
-    } catch (error) {
-        console.error(error);
-    }
-}
 
