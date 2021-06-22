@@ -191,7 +191,7 @@ export default function Header(props) {
                         className={classes.menuButton}
                         color="inherit"
                         aria-label="open drawer"
-                        disableRipple ='true'
+                        // disableRipple ='true'
                     >
                                          
                             <Link to="/home" ><img src={GQLogo}  alt="GQLogo" className="w-75" /></Link>

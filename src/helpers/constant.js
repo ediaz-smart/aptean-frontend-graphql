@@ -29,6 +29,15 @@ const Constant = {
         "365":"every year"
     },
     nucleotideDB:['PROTEIN-PROTEIN','NUCLEOTIDE-PROTEIN','PROTEIN-NUCLEOTIDE','PROTEIN-MIX'],
-    recordPerPage:5
+    recordPerPage:5,
+    fullTextSearchFields:[
+        {key:"FullText",value:"Full Text"},
+        {key:"Title",value:"Title"},
+        {key:"TitleorAbstract",value:"Title, or Abstract"},
+        {key:"TitleAbstractorClaims",value:"Title, Abstract, or Claims"},
+        {key:"Claims",value:"Claims"},
+        {key:"Abstract",value:"Abstract"},
+        {key:"Description",value:"Description"}
+    ]
 }
 export default Constant;

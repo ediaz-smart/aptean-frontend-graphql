@@ -42,7 +42,7 @@ class Routes extends React.Component {
                     <Route exact path="/forgot" title="forgot" component={Forgotpassword} />
                     <Route exact path="/newpassword" component={NewPassword} />
 
-                    {isUserLogin ? 
+                    {/* {isUserLogin ?  */}
                     <React.Fragment>
                     <Route exact path="/home" title="" component={Home} />
                     <Route exact path="/changePassword" title="changePassMange" component={ChangePassword} />
@@ -64,9 +64,9 @@ class Routes extends React.Component {
                     <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
 
                     </React.Fragment>
-                   : 
-                    <Redirect to='/login' />
-                   }
+                   {/* :  */}
+                    {/* <Redirect to='/login' /> */}
+                   {/* } */}
 
 
                 </Switch>

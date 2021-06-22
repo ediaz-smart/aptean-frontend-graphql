@@ -11,6 +11,8 @@ import en from "./translations/en.json";
 import { ToastContainer, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import './assets/css/mega-menu.css';
+
 i18next.init({
 	interpolation: { escapeValue: false },  // React already does escaping
 	lng: 'en',                              // language to use
