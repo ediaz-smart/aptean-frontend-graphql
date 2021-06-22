@@ -322,7 +322,7 @@ function IpSeqSearch() {
     const [accGroupName, setAccGroupName] = useState('');
     const [credits, setCredits] = useState();
     const [calculateCredit, setcCalculateCredit] = useState();
-    const [systemControlSubmit, setSystemControlSubmit] = useState(false);
+    const [systemControlSubmit, setSystemControlSubmit] = useState(true);
     const [showCreditCalC, setShowCreditCalc] = useState(false);
     const [systemControlSubmitText, setSystemControlSubmitText] = useState('');
 

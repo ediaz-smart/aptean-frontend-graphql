@@ -320,7 +320,7 @@ function IpSequenceVariation() {
     const [userClassName, setUserClassName] = useState();
     const [accGroupName, setAccGroupName] = useState("");
     const [credits, setCredits] = useState();
-    const [systemControlSubmit, setSystemControlSubmit] = useState(false);
+    const [systemControlSubmit, setSystemControlSubmit] = useState(true);
     const [systemControlSubmitText, setSystemControlSubmitText] = useState('');
     const [showCreditCalC, setShowCreditCalc] = useState(false);
 
