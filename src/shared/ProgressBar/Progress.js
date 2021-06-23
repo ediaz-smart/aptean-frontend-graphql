@@ -73,7 +73,7 @@ export default function ProgressBar({datas,getStatus}) {
         {
             if(result.response_content.status == 'STILL_RUNNING')
             {
-                let progress = parseInt(result.response_content.progress.trim());
+                let progress = result.response_content.progress ? parseInt(result.response_content.progress):0;
                 setProgress(progress);
                 setShowProgress(true);
             }else {
