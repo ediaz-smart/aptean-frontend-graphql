@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,6 +11,8 @@ import seqDb from '../../assets/image/seqDb.png';
 import seqSearch from '../../assets/image/seqSearch.png';
 import seqTool from '../../assets/image/seqTool.png';
 import { url } from '../../reducers/url';
+import { useSelector } from 'react-redux';
+
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
         height:'100%'
     },
     anchorTag: {
-        textDecoration: 'none',
+        textDecoration: 'none !important',
         color: "#008EC5",
         fontSize:"15px",
         cursor: 'pointer',
@@ -66,11 +68,16 @@ function ApplicationPanel() {
     const history = useHistory();
 
     const classes = useStyles();
+    const userInfo = useSelector(state => state.setUserInfo);
+    const [userData, setUserData] = useState();
 
     // reset login status
     useEffect(() => {
         //dispatch(userActions.logout()); 
-    }, []);
+        if(userInfo && userInfo.current_user) {
+            setUserData(userInfo);
+        }
+    }, [userInfo]);
     function showString(str){
         let getLength = str.length;
         if(getLength > 23){
@@ -124,10 +131,17 @@ function ApplicationPanel() {
                                     <Link to="/ipseqsearch" className={classes.anchorTag}>{t('ipSequence')}</Link>
                                 </p>
                                 <p className={classes.pTagMargin}>
-                                    {/* <a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('sequenceVariation')}</a> */}
-                                    <span className={classes.pTagMargin}>{t('sequenceVariation')}</span>
+                                    <Fragment>
+                                    {userData && !userData.vmAccess && <span className={classes.pTagMargin}>{t('sequenceVariation')}</span>}
+                                   {userData && userData.vmAccess && <Link to="/ipseqvariation" className={classes.anchorTag}>{t('sequenceVariation')}</Link>}
+                                   </Fragment>
                                 </p>
-                                <p className={classes.pTagMargin}><Link to="/searchresantibody" className={classes.anchorTag}>{t('antibodySequence')}</Link></p>
+                                <p className={classes.pTagMargin}>
+                                    <Fragment>
+                                    {userData && !userData.abAccess && <span className={classes.pTagMargin}>{t('antibodySequence')}</span>}
+                                   {userData && userData.abAccess && <Link to="/searchresantibody" className={classes.anchorTag}>{t('antibodySequence')}</Link>}
+                                   </Fragment>
+                                </p>
                             </Col>
                         </Row>
                         <p className={'appTextColor '+classes.textHeading}>{t('documentSearch')}</p>

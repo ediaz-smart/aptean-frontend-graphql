@@ -56,8 +56,8 @@ const useStyles = makeStyles((theme) => ({
     smallTextBox: {
         width: "60px"
     },
-    marginLeftCancel: {
-        marginLeft: "10px"
+    marginRightCancel: {
+        marginRight: "10px"
     },
     checkBoxContent: {
         fontSize: "14px",
@@ -73,6 +73,9 @@ const useStyles = makeStyles((theme) => ({
     },
     theseAreText: {
         margin: "7px 20px 10px 0px"
+    },
+    submitCss: {
+        backgroundColor: "#DB862D !important"
     },
     '@media (min-width: 768px)': {
         desktopHelpLink: {
@@ -534,10 +537,7 @@ function IpSequenceVariation() {
             //         setIsSubmitActive(true);
             //     }
             // }
-        })()
-    }, []);
 
-    setTimeout(() => {
         if (userInfo && userInfo.current_user) {
             let userPpu = userInfo.current_user.ppu_type;
             let currentUser = userInfo.current_user;
@@ -564,12 +564,14 @@ function IpSequenceVariation() {
             if (userInfo.current_user.accounting_group_name) {
                 setAccGroupName(userInfo.current_user.accounting_group_name)
             }
-
-            if(parentId) {
-                calTextCredits(null, false, 'redo')
-            }
         }
-    }, 3000);
+
+        if(parentId) {
+            calTextCredits(null, false, 'redo')
+        }
+        })()
+    }, [userInfo]);
+
     console.log('system', systemControlSubmit, 'setsubmit', isSubmitActive, 'showcredirt', showCreditCalC)
 
 
@@ -1899,16 +1901,16 @@ function IpSequenceVariation() {
                 </Row>
                 <br></br>
                 <Row >
-                    <Col>
-                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginLeftCancel} type="submit">
-                            {t("cancel")}
-                        </Button>
-                        {isSubmitActive && <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
+                <Col>
+                        {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize "+ classes.submitCss} type="submit">
                             {t("submit")}
                         </Button>}
                         {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>
                             {t("submit")}
                         </Button>}
+                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} type="submit">
+                            {t("cancel")}
+                        </Button>
                     </Col>
                 </Row>
             </form>

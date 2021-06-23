@@ -55,8 +55,8 @@ const useStyles = makeStyles((theme) => ({
     smallTextBox: {
         width: "60px"
     },
-    marginLeftCancel: {
-        marginLeft: "10px"
+    marginRightCancel: {
+        marginRight: "10px"
     },
     checkBoxContent: {
         fontSize: "14px",
@@ -72,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
     },
     theseAreText: {
         margin: "7px 20px 10px 0px"
+    },
+    submitCss: {
+        backgroundColor: "#DB862D !important"
     },
     '@media (min-width: 768px)': {
         desktopHelpLink: {
@@ -325,6 +328,7 @@ function IpSeqSearch() {
     const [systemControlSubmit, setSystemControlSubmit] = useState(true);
     const [showCreditCalC, setShowCreditCalc] = useState(false);
     const [systemControlSubmitText, setSystemControlSubmitText] = useState('');
+    const [isUserData, setIsUserData] = useState(false);
 
 
     let initialCreditValues = {
@@ -512,63 +516,43 @@ function IpSeqSearch() {
             //         setIsSubmitActive(true);
             //     }
             // }
+                if (userInfo && userInfo.current_user) {
+                    let userPpu = userInfo.current_user.ppu_type;
+                    let currentUser = userInfo.current_user;
+                    console.log('userData', userInfo)
+        
+                    if(currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit &&  currentUser.user_class_name != "adminium")) {
+                        setIsSubmitActive(false);
+        
+                    }
+                    if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
+                        setShowCreditCalc(true);
+                    }
+        
+                    setPpuType(userPpu);
+                    // if (userPpu == "0") {
+                    //     setIsSubmitActive(true);
+                    // } else {
+                    //     setIsSubmitActive(false);
+                    // }
+        
+                    if (userInfo.current_user.user_class_name) {
+                        setUserClassName(userInfo.current_user.user_class_name)
+                    }
+                    if (userInfo.current_user.accounting_group_name) {
+                        setAccGroupName(userInfo.current_user.accounting_group_name)
+                    }
+                    setIsUserData(true);
+                }
+
+                if(parentId) {
+                    calTextCredits(null, isBothDbSelected, 'redo')
+                }
         })()
-    }, []);
+    }, [userInfo]);
 
-    setTimeout(() => {
-        if (userInfo && userInfo.current_user) {
-            let userPpu = userInfo.current_user.ppu_type;
-            let currentUser = userInfo.current_user;
-            console.log('userData', userInfo)
-
-            if(currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit &&  currentUser.user_class_name != "adminium")) {
-                setIsSubmitActive(false);
-
-            }
-            if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
-                setShowCreditCalc(true);
-            }
-
-            setPpuType(userPpu);
-            // if (userPpu == "0") {
-            //     setIsSubmitActive(true);
-            // } else {
-            //     setIsSubmitActive(false);
-            // }
-
-            if (userInfo.current_user.user_class_name) {
-                setUserClassName(userInfo.current_user.user_class_name)
-            }
-            if (userInfo.current_user.accounting_group_name) {
-                setAccGroupName(userInfo.current_user.accounting_group_name)
-            }
-
-            if(parentId) {
-                calTextCredits(null, isBothDbSelected, 'redo')
-            }
-        }
-    }, 3000);
 
     console.log('system', systemControlSubmit, 'setsubmit', isSubmitActive, 'showcredirt', showCreditCalC)
-
-    // let ipInitialObj = {
-    //     searchDetails: '',
-    //     querySequence: '',
-    //     alignments: 5000,
-    //     genePastPercentage: 80,
-    //     expectCutoff: 10,
-    //     fragmentStretch: 50,
-    //     fragmentAminoAcid: 96,
-    //     docPublicSel: "BEF",
-    //     publishGQSel: "BEF",
-    //     patientDocSel: "LTE",
-    //     docPublicDate: moment(),
-    //     publishGQDate: moment(),
-    //     genepastPercentageOver: "QUERY",
-    //     patientDocInp: 100000,
-    //     minResidues: 6,
-    //     maxResidues: 100000
-    // }
 
     const formik = useFormik({
         initialValues: redoInitialState,
@@ -1913,15 +1897,15 @@ function IpSeqSearch() {
                 <br></br>
                 <Row >
                     <Col>
-                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginLeftCancel} type="submit">
-                            {t("cancel")}
-                        </Button>
-                        {isSubmitActive && <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
+                        {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize "+ classes.submitCss} type="submit">
                             {t("submit")}
                         </Button>}
                         {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>
                             {t("submit")}
                         </Button>}
+                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} type="submit">
+                            {t("cancel")}
+                        </Button>
                     </Col>
                 </Row>
             </form>
