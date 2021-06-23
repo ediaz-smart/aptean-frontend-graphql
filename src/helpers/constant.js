@@ -5,7 +5,8 @@ const Constant = {
         "GqWfABIpSearch":"Antibody",
         "GqFolder":"Folder",
         "GqWfAlndbCopy": "Save Filtered Result",
-        "DlPhysicalSeqdb": "Sequence Database"
+        "DlPhysicalSeqdb": "Sequence Database",
+        "DlVirtualSeqdb": "Sequence Database"
         //"GqWfSeqSearch": "Blast Search"
     },
     folderRestrictNames:["Recent Search Results","My Data",'Reference Data','Data Shared With Me','Raw Uploaded Files','Search Folders'],

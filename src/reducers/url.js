@@ -30,13 +30,13 @@ export const url = {
     seqShareInfo:"do=gqshareable.get_acl_form&id=**&format=json",
     seqAlertInfo:"do=gqworkflow.get_schedule_form&id=**&format=json",
     seqTechnicalData:"do=gqworkflow.get_log&workflow=id:**",
-    getAlertRedos:"do=gqworkflow.get_related_workflows&bid=**&format=json",
+    getAlertRedos:"do=gqworkflow.get_related_workflows_ft&bid=**&format=json",
     updateSeqNotes:"do=gqworkflow.update&id=WID&format=json&description=**",
     downloadQuerySeq:"do=gqworkflow.show_result&workflow=id:**&workflow_output_name=queries.fasta",
     updateAlertSetting:"do=gqworkflow.update_schedule&format=json&activate=on&relaunch_interval=**&id=WID",
     removeAlert:"do=gqworkflow.delete_schedule&format=json&relaunch_interval=&id=WID",
     removeResultShare:"do=gqshareable.update_acl&format=json&id=WID&read_sharee_id=UID&is_read_recursive=1&write_sharee_id=UID&is_write_recursive=1&request.preventCache=TIMESTAMP",
-    patientNumberLookup:"https://stage.genomequestlive.com/query?do=gqfetch.field_search&field=PN",
+    patentNumberLookup:"https://stage.genomequestlive.com/query?do=gqfetch.field_search&field=PN",
     stageBrowserDBLink:"https://stage.genomequestlive.com/query?do=mygq#4",
     stagePatentNumLink:"https://stage.genomequestlive.com/query?do=gqfetch.get_field_search_form",
     stageAlignSequencesDirectly:"https://stage.genomequestlive.com/query?do=gqsearch.get_align_pair_form",
@@ -44,7 +44,6 @@ export const url = {
     userList:"do=gqshareable.get_acl_form&id=**&format=json",
     seqShareList:"do=gqworkflow.get_sharees_ft&format=json&workflow=id:**",
     seqAddSharee:"do=gqworkflow.add_sharees_ft&format=json&workflow=id:**&userId=UID",
-    seqRemoveSharee:"do=gqworkflow.remove_sharee_ft&format=json&workflow=id:**&userId=UID"
-
-    
+    seqRemoveSharee:"do=gqworkflow.remove_sharee_ft&format=json&workflow=id:**&userId=UID",
+    browseSeqDB:"do=gqfetch&db=id:**"
 }

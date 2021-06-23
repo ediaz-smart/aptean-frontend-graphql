@@ -420,8 +420,9 @@ function SearchManagement(props) {
                         tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
                     }
                     else {
-                    	if (datas.type == 'DlPhysicalSeqdb') {
+                    	if (datas.type == 'DlPhysicalSeqdb' || datas.type == 'DlVirtualSeqdb') {
                     		type = 'Sequences';
+							typeUrl = process.env.REACT_APP_API_URL + url.browseSeqDB.replace('**', id);
 						}
                         tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
                     }
@@ -454,7 +455,7 @@ function SearchManagement(props) {
                                             <span className="mx-2">|</span>
                                             <a href={classicLink} target="_blank">Classic</a>
                                             </Fragment>
-                    }else if(datas.type !== "GqFolder"){
+                    }else if(datas.type !== "GqFolder" && datas.type !== "DlPhysicalSeqdb" && datas.type !== "DlVirtualSeqdb"){
                         tempObj["report"] = <Fragment>
                                             <a href={classicLink} target="_blank">Classic</a>
                                             </Fragment>
