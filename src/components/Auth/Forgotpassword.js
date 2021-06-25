@@ -73,7 +73,6 @@ function Forgotpassword() {
             console.log(values,"valessssssssss");
             if(values.captchaCode == verifycaptchaCode)
             {
-               
                  const result = await PasswordService.forgotPassword(values.userName);
                 // dispatch(forgotpasswordSlice({userId:values.userName},history));
                 //  checkflag = result.response_content.success;
@@ -96,8 +95,7 @@ function Forgotpassword() {
                
             }
             else{
-                // const link = document.getElementById('retryButton');
-                // link.click();
+                
             setErrorMsg(1);
             // toast.error("Captcha InCorrect ! Try Again");
             // setPasswordForm(false);
@@ -125,7 +123,14 @@ function Forgotpassword() {
             <Row className="justify-content-md-center">
                 {/* <Col sm="12" md="6" className="loginDiv"> */}
                 <Col sm="12" md="5" className={'mb-5 mt-4 '+classes.passwordRecoverDiv}>
-                    <form name="passwordForm" onSubmit={formik.handleSubmit} className={(passwordForm ? 'd-block' : 'd-none')}>
+                    <form name="passwordForm" onSubmit={formik.handleSubmit} 
+                    onKeyDown={(e) => {
+                      
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                        }
+                     }}
+                     className={(passwordForm ? 'd-block' : 'd-none')}>
 
                         <h5 className="loginTitle">{t('pwdRecovery')}</h5>
                         <p className="appTextColor mb-4">{t('pwdRecoveryTitle')}</p>
@@ -159,7 +164,7 @@ function Forgotpassword() {
                             />
                         </div>
                         <div className="form-group">
-                        <ClientCaptcha fontColor='#FC0202'  backgroundColor='#BDCFF5' width='150' fontSize='32' charsCount='5' captchaCode={updateCode}/>
+                        <ClientCaptcha fontColor='#FC0202' id='clientCaptcha' backgroundColor='#BDCFF5' width='150' fontSize='32' charsCount='5' captchaCode={updateCode}/>
                         </div>
                        
                         <div className="form-group">

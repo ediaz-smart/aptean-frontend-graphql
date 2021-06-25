@@ -39,7 +39,7 @@ function ChangePasswordModal(props) {
 				<br></br>
 				<br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.onHide} className="float-right m-2" color="primary" variant="contained">OK</Button>
+					<Button onClick={props.onHide} className="float-right m-2 primaryBtn" color="primary" variant="contained">OK</Button>
 				</div>
 		
 				

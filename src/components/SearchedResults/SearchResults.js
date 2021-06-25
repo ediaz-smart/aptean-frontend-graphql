@@ -175,7 +175,7 @@ function SearchResults() {
         console.log(data,"data data data");
         if(thing && thing.selectedCount >= 1 && data && data.length > 0)
         {
-            toast.success("Successfully Deleted");
+          toast.error("Under Construction!");
             console.log("Hi there, user!");
         }
         else{

@@ -19,20 +19,12 @@ const useStyles = makeStyles((theme) => ({
 		float:'right',
 		textTransform: 'none',
 		margin:'4px',
-		backgroundColor:'#008EC5 !important',
-        border: '2px solid #008EC5 !important',
 
-	},
-	buttonStyleCancel:{
-		float:'right',
-		textTransform: 'none',
-		margin:'4px',
-	
 	}
 
 }));
 
-function ShareResultsRemoveModal(props) {
+function SavedSearchModal(props) {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation('common');
     let mailUrl = "mailto:" + supportMail+"?subject="+props.subjectText;
@@ -58,12 +50,13 @@ function ShareResultsRemoveModal(props) {
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
 				{/* <h5>{props.onMessage}</h5> */}
-				<h5>Are you sure you want to stop sharing this result set with {props.onMessage ? props.onMessage.full_name : ""}?</h5>
+				<h5>Are you sure you want to delete the selected saved search forms?</h5>
                  <br></br>
-			
+                 <h5>This action cannot be undone.</h5>
+                 <br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.onHide} className={classes.buttonStyleCancel}  color="default" variant="contained">Cancel</Button>
-					<Button onClick={sendRemoveData} className={classes.buttonStyle} color="primary" variant="contained">Remove Share</Button> 
+					<Button onClick={props.onHide} className={classes.buttonStyle}  color="default" variant="contained">Cancel</Button>
+					<Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Delete</Button> 
 
 				</div>
 				
@@ -76,4 +69,4 @@ function ShareResultsRemoveModal(props) {
 	);
 }
 
-export default ShareResultsRemoveModal;
+export default SavedSearchModal;

@@ -19,8 +19,14 @@ const useStyles = makeStyles((theme) => ({
 		float:'right',
 		textTransform: 'none',
 		margin:'4px',
-		// backgroundColor: '#147ca6'
+		backgroundColor:'#008EC5 !important',
+        border: '2px solid #008EC5 !important',
 
+	},
+	buttonStyleCancel:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
 	},
 	modalBoxContent :{
 		maxHeight: '675px',
@@ -77,7 +83,7 @@ function ChangePassCheckModal(props) {
 				<br></br>
 				<div className={classes.footerDiv}>
 					<Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Try Again</Button> 
-					<Button onClick={props.onHide} className={classes.buttonStyle}  color="default" variant="contained">Cancel</Button>
+					<Button onClick={props.onHide} className={classes.buttonStyleCancel}  color="default" variant="contained">Cancel</Button>
 				</div>
 				
 				

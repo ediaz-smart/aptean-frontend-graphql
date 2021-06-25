@@ -267,9 +267,10 @@ async function removeAlertSettings(workflowId) {
 async function removeResultSharing(postdata) {
 
     try {
+
         let apiurl = url.seqRemoveSharee;
         apiurl = apiurl.replace('**',postdata.workflowId)
-        apiurl = apiurl.replaceAll('UID',postdata.id)
+        apiurl = apiurl.replaceAll('UID',postdata.removeId)
        
         showLoader();
         return await get(apiurl)

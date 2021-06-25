@@ -12,7 +12,7 @@ import seqSearch from '../../assets/image/seqSearch.png';
 import seqTool from '../../assets/image/seqTool.png';
 import { url } from '../../reducers/url';
 import { useSelector } from 'react-redux';
-
+import SavedSearch from '../../services/savedsearch';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#008EC5",
         fontSize:"15px",
         cursor: 'pointer',
+        wordWrap: 'break-word'
     },
     p: {
         color: "#008EC5",
@@ -66,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 function ApplicationPanel() {
     const { t, i18n } = useTranslation('common');
     const history = useHistory();
+    const [searchFormsData, setSearchFormsData] = useState([]);
 
     const classes = useStyles();
     const userInfo = useSelector(state => state.setUserInfo);
@@ -73,11 +75,19 @@ function ApplicationPanel() {
 
     // reset login status
     useEffect(() => {
-        //dispatch(userActions.logout()); 
+        (async () => {
+          const result = await SavedSearch.getSavedSearchData();
+          if(result.response_content && result.response_content.templates)
+          {
+            console.log(result.response_content,"result.response_content.template) result.response_content.template)");
+            const dta = await result.response_content.templates;
+             setSearchFormsData(dta);
+          }
+        })()
         if(userInfo && userInfo.current_user) {
             setUserData(userInfo);
         }
-    }, [userInfo]);
+      }, []);
     function showString(str){
         let getLength = str.length;
         if(getLength > 23){
@@ -99,6 +109,7 @@ function ApplicationPanel() {
        
     }
 
+
     return (
         <div className={classes.grow}>
             {/* <Container className="p-0 m-5"> */}
@@ -106,16 +117,16 @@ function ApplicationPanel() {
                     <Col md="3" sm="12" className="mb-3">
                         <div className={classes.savedForm}>
                             <p className={'appTextColor '+classes.textHeading}>{t('savedSearchForms')}</p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('FTO mRNA defaults')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Domain check search')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Primer FTO')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Secondary Ag search')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Bovine growth hormone')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Immunoglobulin reactive information')}</a></p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{showString('Calcification protocols in DNA Modules')}</a></p>
+                            {searchFormsData && searchFormsData.length > 0 && searchFormsData.map((dbVal, i) => {
+                                return (
+                                    <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}> {dbVal.name} </a></p>
 
+                                )
+                            })
+                            }
+                            
                             <br></br>
-                            <p className={classes.pTagMargin}><a className={"moreLink "+classes.anchorTag}  onClick={searchForm}>{t('more')}</a></p>
+                            <p className={classes.pTagMargin}><a className={"moreLink "+classes.anchorTag}  onClick={searchForm}>Manage ...</a></p>
                         </div>
 
                     </Col>

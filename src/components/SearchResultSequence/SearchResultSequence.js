@@ -28,7 +28,8 @@ import SearchManagementService from '../../services/searchmanagement'
 import Constant from '../../helpers/constant';
 import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
-import ShareResultsModal from '../../shared/Modal/ShareResultsModal'
+import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
+import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
 
 
 
@@ -155,7 +156,8 @@ function SearchResultSequence() {
     const [alarmSetting, setAlarmSetting] = useState();
     const [alertData, setAlertData] = useState([]);
     const [alertRedoData, setAlertRedoData] = useState([]);
-    const [redoData, setRedoData] = useState([]);
+    const [redoData, setRedoData] = useState([]); 
+    const [removeData, setRemoveData] = useState([]); 
     const [techincalData, setTechincalData] = useState();
     const { workflowId } = useParams();
     const [notes, setNotes] = useState();
@@ -167,7 +169,8 @@ function SearchResultSequence() {
     const [confirmContent, setConfirmContent] = useState(true);
     const [delLoaderContent, setDelLoaderContent] = useState(false);
     const [errorContent, setErrorContent] = useState(false);
-    const [modalShow, setModalShow] = React.useState(false);
+    const [modalShow, setModalShow] = React.useState(false); 
+    const [modalResultRemoveShow, setModalResultRemoveShow] = React.useState(false);
     const [termsDisable, setTermsDisable] = React.useState(false);
     const [deleteType, setDeleteType] = React.useState('single');
 
@@ -572,6 +575,35 @@ function SearchResultSequence() {
         }
         // console.log(getaddShareResponse,'getaddShareResponse');
     }
+
+    function cancelForm(){
+        setModalResultRemoveShow(false);
+    }
+    const removeSharing = async(data)=>{
+        setModalResultRemoveShow(false);
+        console.log(data,"onMessage Support Support onMessage ")
+        const removeId = data.id;
+        console.log(removeId,"removeId removeId");
+        debugger;
+        let postData = {
+            workflowId,
+            removeId 
+        }
+        const getremoveResponse = await searchResSequence.removeResultSharing(postData);
+        if (getremoveResponse && getremoveResponse.response_status == 0) {
+            // getUserResp();
+            
+          getResultShareResp(userList);
+        }else {
+            toast.error('Failed, Try Again');
+        }
+    }
+   
+    function viewRemoveModal(data)
+    {
+        setModalResultRemoveShow(true);
+        setRemoveData(data);
+    }
     return (
         <div className={classes.grow}>
             <Row>
@@ -777,7 +809,7 @@ function SearchResultSequence() {
                                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {dbVal.full_name}</Typography>
                                         </Col>
                                         <Col lg="4" md="4" className="pr-0 content">
-                                            <Typography ><Link className={"failedTextColor"} id={dbVal.id} href="#" onClick={(e) => removeResSharing(e,dbVal.id)}>Remove</Link></Typography>
+                                            <Typography ><Link className={"failedTextColor"} id={dbVal.id}  onClick={() => viewRemoveModal(dbVal) }>Remove</Link></Typography>
                                         </Col>
                                     </Row>
                                 )
@@ -985,6 +1017,12 @@ function SearchResultSequence() {
                     </div>
                 </Modal.Body>
             </Modal>
+            <ShareResultsRemoveModal
+                show={modalResultRemoveShow}
+                onHide={() => cancelForm()}
+                removeShare={removeSharing}
+                onMessage={removeData}
+                />
         </div>
     )
 }
