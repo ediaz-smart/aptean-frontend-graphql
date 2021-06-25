@@ -221,7 +221,15 @@ width: 500px
     text-decoration: none;
     display: block;
   }
-
+.progress-bar{
+    background-color: #008EC5 !important;
+}
+.progress{
+    border: 2px solid #008EC5 !important;
+    background: #fff !important;
+    border-radius: 2px !important;
+    width: 100%;
+}
 @keyframes App-logo-spin {
     from {
         transform: rotate(0deg);

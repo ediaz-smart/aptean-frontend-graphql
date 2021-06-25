@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     }
     
 }));
-
+let ANDString = ' <span class="operatorClass">AND</span>';
+let ORString = ' <span class="operatorClass">OR</span>';
 function FullTextSearch() {
     const { t, i18n } = useTranslation("common");
     const classes = useStyles();
@@ -44,6 +45,7 @@ function FullTextSearch() {
     const [open, setopen] = React.useState(false);
     const [topPosition,setTopPosition] = useState(220);
     const [leftPosition,setLeftPosition] = useState(65);
+    const [keyCode, setKeyCode] = React.useState(null);
 
     const openPopup = () => {
         // console.log(event.currentTarget,'event.currentTarget');
@@ -65,25 +67,82 @@ function FullTextSearch() {
     useEffect(async () => {
         //dispatch(userActions.logout());
     }, []);
+    const getKeyCode = (e)=>{
+        setKeyCode(e.keyCode)
+    }
     const parseQuery = (value,element) =>{
-        // console.log(element.currentTarget.offsetLeft,'pageX');
-        // For Popup open on current pointer position
-        let getXYCoordinates = getCaretGlobalPosition();
-        if(getXYCoordinates)
-        {
-            setTopPosition(getXYCoordinates.top);
-            setLeftPosition(getXYCoordinates.left);
-        }
-        // console.log(coor,'coor');
+        // let value = element.target.textContent;
+        console.log(element,'innerHTML');
         
+        let currentElText = element.nativeEvent.data;
+        console.log(keyCode,'keyCode');
+        console.log(value,'value');
         // localStorage.setItem('searchData',value);
         // setFullText(value);
+        let getLength = value.length;
         let checkLastChar = value.slice(-1);
+        let getRemString = '';
+        // For Popup open on current pointer position
+        // console.log(checkLastChar,'checkLastChar');
+        let htmlElement = document.getElementById("textareaDiv");
+        let checkLast5 = value.slice(-5);
+        let checkLast4 = value.slice(-4);
+        let checkLast3 = value.slice(-3);
+        // console.log(checkLast5,'checkLast5')
+        // console.log(checkLast4,'checkLast4')
         if(checkLastChar == "?")
         {
+            let getXYCoordinates = getCaretGlobalPosition();
+            if(getXYCoordinates)
+            {
+                setTopPosition(getXYCoordinates.top);
+                setLeftPosition(getXYCoordinates.left);
+            }
             openPopup(element);
         }
-        
+        // else if(checkLastChar == " ")
+        // {
+            
+        //     if(checkLast5 == " AND ")
+        //     {
+        //         value = value;
+        //     }else if(checkLast4 == " AND"){
+        //         value = value+' ';
+        //     }
+        //     else if(checkLast4 == " OR"){
+        //         value = value+' ';
+        //     }
+        //     else if(checkLast4 == " OR "){
+        //         value = value+' ';
+        //     }
+        //     else if(checkLastChar == " "){
+        //         if(checkLast3 === " AN " || checkLast3 === " AN" || checkLast3 === "AN " || checkLast3 === " A "  || checkLast3 === " A")
+        //         {
+        //             value = value;
+        //         }else if(checkLast3 === " OR " || checkLast3 === " OR" || checkLast3 === "OR " || checkLast3 === " O "  || checkLast3 === " O")
+        //         {
+        //             value = value;
+        //         }else if(keyCode != 8){
+        //             // value = value+'AND';
+        //         }
+        //     }
+        //     // console.log(value,'value')
+        // }
+        // else if(checkLast5 == " AND"+currentElText)
+        // {
+        //     getLength = getLength - 5;
+        //     getRemString = value.substring(0, getLength);
+        //     value = getRemString+" AND "+currentElText;
+        // }
+        // else if(checkLast5 == " OR"+currentElText)
+        // {
+        //     getLength = getLength - 5;
+        //     getRemString = value.substring(0, getLength);
+        //     value = getRemString+" OR "+currentElText;
+            
+        // }
+        // updateHtmlElement(value);
+        // placeCaretAtEnd(htmlElement);
         // Replacing AND OR with text function
         replaceANDORString(value);
         
@@ -92,20 +151,21 @@ function FullTextSearch() {
         results = results.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
         setTestOutput(results)
     }
-    function getCaretGlobalPosition(){
-        const r = document.getSelection().getRangeAt(0)
-        const node = r.startContainer
-        const offset = r.startOffset
-        const pageOffset = {x:window.pageXOffset, y:window.pageYOffset}
-        let rect,  r2;
-    
-        if (offset > 0) {
-            r2 = document.createRange()
-            r2.setStart(node, (offset - 1))
-            r2.setEnd(node, offset)
-            rect = r2.getBoundingClientRect()
-            return { left:rect.right + pageOffset.x, top:rect.bottom + pageOffset.y }
-        }
+    function updateHtmlElement(value){
+        localStorage.setItem('searchValue',value);
+        let htmlElement = document.getElementById("textareaDiv");
+        let storageData = localStorage.getItem('searchValue');
+        let replaceStr = storageData.replaceAll(' AND',ANDString+' ');
+        replaceStr = replaceStr.replaceAll(' OR',ORString);
+        replaceStr = replaceStr.replaceAll(' or',ORString);
+        replaceStr = replaceStr.replaceAll(' and',ANDString);
+        console.log(replaceStr,'replaceStr');
+        htmlElement.innerHTML = replaceStr;
+        // setTimeout(() => {
+            placeCaretAtEnd(htmlElement);
+        // }, 2000);
+        
+        
     }
     function replaceANDORString(value){
         let checkAnd,checkAndStr = '';
@@ -118,9 +178,10 @@ function FullTextSearch() {
         let getRemString = '';
         let checkANDValues = ['AND','and','And','anD','ANd','aNd'];
         let checkORValues = ['OR','or','Or','oR'];
-        let ANDString = ' <span class="operatorClass">AND</span>';
-        let ORString = ' <span class="operatorClass">OR</span>';
+        // let ANDString = ' <span class="operatorClass">AND</span>';
+        // let ORString = ' <span class="operatorClass">OR</span>';
         let htmlElement = document.getElementById("textareaDiv");
+        
         if(checkANDValues.includes(checkAnd))
         {
             getLength = getLength - 3;
@@ -139,19 +200,13 @@ function FullTextSearch() {
                 if(getRemString)
                 {
                     let storageValue = getRemString+'AND';
-                    localStorage.setItem('searchValue',storageValue);
-
-                    let storageData = localStorage.getItem('searchValue');
-                    let replaceStr = storageData.replaceAll(' AND',ANDString);
-                    replaceStr = replaceStr.replaceAll(' OR',ORString);
-                    replaceStr = replaceStr.replaceAll(' or',ORString);
-                    replaceStr = replaceStr.replaceAll(' and',ANDString);
-                    htmlElement.innerHTML = replaceStr;
+                    updateHtmlElement(storageValue);
                 }else {
                     htmlElement.innerHTML = '';
-                    htmlElement.innerHTML = ANDString;
+                    htmlElement.innerHTML = ANDString+' ';
+                    placeCaretAtEnd(htmlElement);
                 }
-                placeCaretAtEnd(htmlElement);
+                
                 
                 // localStorage.setItem('searchValue',value);
             }
@@ -167,43 +222,83 @@ function FullTextSearch() {
                 if(getRemString)
                 {
                     let storageValue = getRemString+'OR';
-                    localStorage.setItem('searchValue',storageValue);
-
-                    let storageData = localStorage.getItem('searchValue');
-                    let replaceStr = storageData.replaceAll(' AND',ANDString);
-                    replaceStr = replaceStr.replaceAll(' OR',ORString);
-                    replaceStr = replaceStr.replaceAll(' or',ORString);
-                    replaceStr = replaceStr.replaceAll(' and',ANDString);
-                    htmlElement.innerHTML = replaceStr;
+                    updateHtmlElement(storageValue);
                 }else {
                     htmlElement.innerHTML = '';
-                    htmlElement.innerHTML = ORString;
+                    htmlElement.innerHTML = ORString+' ';
+                    placeCaretAtEnd(htmlElement);
                 }
-                placeCaretAtEnd(htmlElement);
                 
                 // localStorage.setItem('searchValue',value);
             }
         }
     }
-    function placeCaretAtEnd(el) {
-        el.focus();
-        if (typeof window.getSelection != "undefined"
-                && typeof document.createRange != "undefined") {
-            var range = document.createRange();
-            
-            range.selectNodeContents(el);
-            range.collapse(false);
-            console.log(range,'range');
-            var sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-        } else if (typeof document.body.createTextRange != "undefined") {
-            var textRange = document.body.createTextRange();
-            
-            textRange.moveToElementText(el);
-            textRange.collapse(false);
-            textRange.select();
-            console.log(textRange,'textRange');
+    function placeCaretAtEnd(e) {
+        // const el = document.getElementById('textareaDiv');  
+        // const selection = window.getSelection();  
+        // const range = document.createRange();  
+        // selection.removeAllRanges();  
+        // range.selectNodeContents(el);  
+        // range.collapse(false);  
+        // selection.addRange(range);  
+        // el.focus();
+        // const e = document.getElementById('textareaDiv');  
+        console.log(e,'ee');
+        let placeholderText = e.innerText;
+        e.innerText = '';
+        e.innerText = placeholderText;
+        console.log(e.innerText.length,'e.innerHTML.length');
+        if(e.innerText && document.createRange)
+        {
+        let range = document.createRange();
+        let selection = window.getSelection();
+        range.selectNodeContents(e);
+        range.setStart(e.firstChild.textContent,e.innerText.length);
+        range.setEnd(e.firstChild.textContent,e.innerText.length);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        }
+
+        // let chars = 5;
+        // var tag = document.getElementById("textareaDiv");
+        // console.log(el,'tag.childNodes[0]')
+        // console.log(tag.childNodes,'tag.childNodes[0]')
+        // // Creates range object
+        // var setpos = document.createRange();
+          
+        // // Creates object for selection
+        // var set = window.getSelection();
+          
+        // // Set start position of range
+        // setpos.setStart(el.textContent, chars);
+          
+        // // Collapse range within its boundary points
+        // // Returns boolean
+        // setpos.collapse(true);
+          
+        // // Remove all ranges set
+        // set.removeAllRanges();
+          
+        // // Add range with respect to range object.
+        // set.addRange(setpos);
+          
+        // // Set cursor on focus
+        // tag.focus();
+    }
+
+    function getCaretGlobalPosition(){
+        const r = document.getSelection().getRangeAt(0)
+        const node = r.startContainer
+        const offset = r.startOffset
+        const pageOffset = {x:window.pageXOffset, y:window.pageYOffset}
+        let rect,  r2;
+    
+        if (offset > 0) {
+            r2 = document.createRange()
+            r2.setStart(node, (offset - 1))
+            r2.setEnd(node, offset)
+            rect = r2.getBoundingClientRect()
+            return { left:rect.right + pageOffset.x, top:rect.bottom + pageOffset.y }
         }
     }
     const selectField= (e,obj)=>{
@@ -216,9 +311,10 @@ function FullTextSearch() {
         closePopup();
         if(getLength == 1 && getText == '?')
         {
-            console.log(htmlElement,'obj');
             htmlElement.innerHTML = obj.key+':';
             
+        }else {
+
         }
         placeCaretAtEnd(htmlElement);
         
@@ -241,13 +337,10 @@ function FullTextSearch() {
                             value={fulltext || ''}
                             // onChange={(e) => setNotes(e.target.value)}
                         /> */}
-                        <div id="textareaDiv" contentEditable='true' onInput={e => parseQuery(e.currentTarget.textContent,e)}>
+                        <div id="textareaDiv" contentEditable='true' onKeyDown={getKeyCode} onInput={e => parseQuery(e.target.textContent,e)}>
                         
                         </div>
                         <div>{ReactHtmlParser(testOutput)}</div>
-                        <Button aria-describedby={"simple-popover"} variant="contained" color="primary" onClick={openPopup}>
-                            Open Popover
-                        </Button>
                         <Popover
                             id={"simple-popover"}
                             open={open}

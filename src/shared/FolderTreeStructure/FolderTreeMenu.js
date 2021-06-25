@@ -63,7 +63,7 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle,selectedTitleId,t
 	infoFolderIds = infoFolderIds ? infoFolderIds:[];
 
 	useEffect(() => {
-		console.log(moveFolderId,'moveFolderId');
+		// console.log(moveFolderId,'moveFolderId');
 		setDefaultTitle(selectedTitle);
 		setDefaultTitleId(selectedTitleId);
 		setMoveToFolderId(moveFolderId);
