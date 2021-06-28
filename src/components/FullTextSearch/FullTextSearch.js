@@ -155,7 +155,7 @@ function FullTextSearch() {
         localStorage.setItem('searchValue',value);
         let htmlElement = document.getElementById("textareaDiv");
         let storageData = localStorage.getItem('searchValue');
-        let replaceStr = storageData.replaceAll(' AND',ANDString+' ');
+        let replaceStr = storageData.replaceAll(' AND',ANDString);
         replaceStr = replaceStr.replaceAll(' OR',ORString);
         replaceStr = replaceStr.replaceAll(' or',ORString);
         replaceStr = replaceStr.replaceAll(' and',ANDString);
@@ -203,7 +203,7 @@ function FullTextSearch() {
                     updateHtmlElement(storageValue);
                 }else {
                     htmlElement.innerHTML = '';
-                    htmlElement.innerHTML = ANDString+' ';
+                    htmlElement.innerHTML = ANDString;
                     placeCaretAtEnd(htmlElement);
                 }
                 
@@ -225,7 +225,7 @@ function FullTextSearch() {
                     updateHtmlElement(storageValue);
                 }else {
                     htmlElement.innerHTML = '';
-                    htmlElement.innerHTML = ORString+' ';
+                    htmlElement.innerHTML = ORString;
                     placeCaretAtEnd(htmlElement);
                 }
                 
@@ -234,30 +234,30 @@ function FullTextSearch() {
         }
     }
     function placeCaretAtEnd(e) {
-        // const el = document.getElementById('textareaDiv');  
-        // const selection = window.getSelection();  
-        // const range = document.createRange();  
-        // selection.removeAllRanges();  
-        // range.selectNodeContents(el);  
-        // range.collapse(false);  
-        // selection.addRange(range);  
-        // el.focus();
+        const el = document.getElementById('textareaDiv');  
+        const selection = window.getSelection();  
+        const range = document.createRange();  
+        selection.removeAllRanges();  
+        range.selectNodeContents(el);  
+        range.collapse(false);  
+        selection.addRange(range);  
+        el.focus();
         // const e = document.getElementById('textareaDiv');  
-        console.log(e,'ee');
-        let placeholderText = e.innerText;
-        e.innerText = '';
-        e.innerText = placeholderText;
-        console.log(e.innerText.length,'e.innerHTML.length');
-        if(e.innerText && document.createRange)
-        {
-        let range = document.createRange();
-        let selection = window.getSelection();
-        range.selectNodeContents(e);
-        range.setStart(e.firstChild.textContent,e.innerText.length);
-        range.setEnd(e.firstChild.textContent,e.innerText.length);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        }
+        // console.log(e,'ee');
+        // let placeholderText = e.innerText;
+        // e.innerText = '';
+        // e.innerText = placeholderText;
+        // console.log(e.innerText.length,'e.innerHTML.length');
+        // if(e.innerText && document.createRange)
+        // {
+        // let range = document.createRange();
+        // let selection = window.getSelection();
+        // range.selectNodeContents(e);
+        // range.setStart(e.firstChild.textContent,e.innerText.length);
+        // range.setEnd(e.firstChild.textContent,e.innerText.length);
+        // selection.removeAllRanges();
+        // selection.addRange(range);
+        // }
 
         // let chars = 5;
         // var tag = document.getElementById("textareaDiv");

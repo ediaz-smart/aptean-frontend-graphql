@@ -4,6 +4,7 @@ const Constant = {
         "GqWfVMIpSearch":"Variation",
         "GqWfABIpSearch":"Antibody",
         "GqFolder":"Folder",
+        "GqWfSeqSearch": "Blast Search",
         "GqWfAlndbCopy": "Save Filtered Result",
         "DlPhysicalSeqdb": "Sequence Database",
         "DlVirtualSeqdb": "Sequence Database"
