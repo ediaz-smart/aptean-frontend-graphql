@@ -9,6 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import LoadingOverlay from 'react-loading-overlay';
 import { useDispatch } from 'react-redux';
 import { getUserServerInfo } from './reducers/slice/userServerDataSlice';
+import { getPageCount } from './reducers/slice/comonSlice';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +44,8 @@ function App() {
   useEffect(() => {
     const isUserLogin = localStorage.getItem('isLoggedIn');
     if(isUserLogin) {
-    dispatch(getUserServerInfo())
+    dispatch(getUserServerInfo());
+    dispatch(getPageCount());
     }
     async function fetchLoader() {
       const loaderResponse = await PubSub.subscribe('msg', (msg, data) => {

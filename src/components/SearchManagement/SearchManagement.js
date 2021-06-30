@@ -1,7 +1,7 @@
 import DataTable from "react-data-table-component";
 // import movies from "./movies";
 import { makeStyles } from '@material-ui/core/styles';
-import React,{ useState, useCallback, useEffect,Fragment } from 'react';
+import React, { useState, useCallback, useEffect, Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
@@ -18,6 +18,7 @@ import RedoIcon from '@material-ui/icons/Redo';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 import TextInput from '../../shared/Fields/TextInput';
@@ -135,7 +136,7 @@ const customStyles = {
 				borderLeft: '0',
 			},
 			display: 'grid',
-			textAlign:'center'
+			textAlign: 'center'
 		},
 
 	},
@@ -174,11 +175,12 @@ const columns = [
 ];
 
 const isIndeterminate = indeterminate => indeterminate;
-const selectableRowsComponentProps = { indeterminate: isIndeterminate,color:'primary' };
+const selectableRowsComponentProps = { indeterminate: isIndeterminate, color: 'primary' };
 
 function SearchManagement(props) {
 	const classes = useStyles();
 	const history = useHistory();
+	const pageCount = useSelector(state => state.setCommon["Paging size"]);
 	const [selectData, setSelectData] = useState();
 	const [folderDetail, setFolderDetail] = useState([]);
 	const [disableDelete, setDisableDelete] = useState(true);
@@ -187,6 +189,7 @@ function SearchManagement(props) {
 	const [defaultTitle, setDefaultTitle] = useState('Recent Search Results');
 	const [defaultTitleId, setDefaultTitleId] = useState('');
 	const [infoFolderIds, setInfoFolderIds] = useState([]);
+	const [folderResultCount, setFolderResultCount] = useState();
 
 	// Search Set
 	const [searchResSet, setSearchResSet] = useState('');
@@ -199,29 +202,29 @@ function SearchManagement(props) {
 	const [termsDisable, setTermsDisable] = React.useState(false);
 
 	// Folder Delete Variable
-	const [folderModalShow,setFolderModalShow] = React.useState(false);
+	const [folderModalShow, setFolderModalShow] = React.useState(false);
 	const [confirmFolderContent, setConfirmFolderContent] = useState(true);
 	const [delFolderLoaderContent, setFolderDelLoaderContent] = useState(false);
 	const [errorFolderContent, setFolderErrorContent] = useState(false);
 
 	// Move To Folder Variable
-	const [moveFolderModalShow,setMoveFolderModalShow] = React.useState(false);
+	const [moveFolderModalShow, setMoveFolderModalShow] = React.useState(false);
 	const [moveFolderId, setMoveFolderId] = useState('');
-	const [folderIds,setFolderIds] = useState([]);
-	
+	const [folderIds, setFolderIds] = useState([]);
+
 	// create New Folder
 	const [showNewFolder, setShowNewFolder] = useState(false);
 	const [addFolderModalShow, setAddFolderModalShow] = useState(false);
-	const [parentFolderId,setParentFolderId] = useState('');
+	const [parentFolderId, setParentFolderId] = useState('');
 	const [addFolderText, setAddFolderText] = useState(true);
-	const [clearCheckedRow,setClearCheckedRow] = useState(false);
+	const [clearCheckedRow, setClearCheckedRow] = useState(false);
 
 	//Pagination
 
 	const escFunction = useCallback((event) => {
-		if(event.keyCode === 27) {
-		  //Do whatever when esc is pressed
-		  	setShowNewFolder(false);
+		if (event.keyCode === 27) {
+			//Do whatever when esc is pressed
+			setShowNewFolder(false);
 			setAddFolderText(true);
 		}
 	}, []);
@@ -270,7 +273,7 @@ function SearchManagement(props) {
 	const getRowData = (event) => {
 		// console.log(event, 'event');
 	};
-	
+
 	async function deleteSearch(type) {
 
 		// console.log(defaultTitleId, "defaultTitleId")
@@ -278,48 +281,44 @@ function SearchManagement(props) {
 		setFolderModalShow(false);
 		setConfirmContent(false);
 		setConfirmFolderContent(false);
-		if(type === "record")
-		{
+		if (type === "record") {
 			if (selectData.selectedCount > 0) {
 				setModalShow(true);
 				setDelLoaderContent(true);
 				var getIds = selectData.selectedRows.map(function (a) { return a.id; }).join(',');
-				deleteRecordFolder(getIds,type);
+				deleteRecordFolder(getIds, type);
 			}
-		}else {
-			if(defaultTitleId)
-			{
+		} else {
+			if (defaultTitleId) {
 				setFolderModalShow(true);
-				setFolderDelLoaderContent(true);	
-				deleteRecordFolder(defaultTitleId,type);
+				setFolderDelLoaderContent(true);
+				deleteRecordFolder(defaultTitleId, type);
 			}
 		}
 	}
-	async function deleteRecordFolder(getIds,type) {
+	async function deleteRecordFolder(getIds, type) {
 		const response = await SearchManagementService.deleteSearchResult(getIds, history);
 		if (response && response.response_content && response.response_content.success.length > 0) {
 			setTermsDisable(false);
-			if(type === "record")
-			{
+			if (type === "record") {
 				setModalShow(false);
 				setConfirmContent(true);
 				setDelLoaderContent(false);
 				setErrorContent(false);
-			}else {
+			} else {
 				setFolderModalShow(false);
 				setConfirmFolderContent(true);
 				setFolderDelLoaderContent(false);
 				setFolderErrorContent(false);
 			}
-			
-			
+
+
 			if (defaultTitle === 'Recent Search Results') {
 				getDefaultSearchResult('defaultText', '');
 			} else {
-				if(type === "record")
-				{
+				if (type === "record") {
 					getDefaultSearchResult('folder', defaultTitleId);
-				}else{
+				} else {
 					setDefaultTitle('Recent Search Results');
 					getDefaultSearchResult('defaultText', '');
 				}
@@ -328,15 +327,14 @@ function SearchManagement(props) {
 			setTimeout(() => {
 				toast.success('Deleted Successfully');
 			}, 3000);
-			
+
 
 		} else {
-			if(type === "record")
-			{
+			if (type === "record") {
 				setModalShow(true);
 				setDelLoaderContent(false);
 				setErrorContent(true);
-			}else {
+			} else {
 				setFolderModalShow(true);
 				setFolderDelLoaderContent(false);
 				setFolderErrorContent(true);
@@ -344,9 +342,9 @@ function SearchManagement(props) {
 			// toast.error('Unable to Delete');
 		}
 	}
-	async function getDefaultSearchResult(type, id) {
+	async function getDefaultSearchResult(type, id, start, stop) {
 		let tempArr = [];
-
+		console.log('pagesize', pageCount)
 		// setSearchResultData([]);
 		if (type == "defaultText") {
 			const result = await HomeService.getSearchResults(history);
@@ -358,129 +356,122 @@ function SearchManagement(props) {
 
 			}
 		} else {
-			if(id)
-			{
-				const result = await SearchManagementService.getFolderData(id, history);
+			if (id) {
+				const result = await SearchManagementService.getFolderData(id, history, start, stop);
 				if (result && result.response_content) {
 					if (result.response_content.results.length > 0) {
+						setFolderResultCount(result.response_content.totalcount);
 						// tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
 						tempArr = await getSearchDataArr(result, 'searchfolder');
+						console.log('inside folder', folderResultCount)
 					}
 				}
 			}
-			
+
 		}
 		setSearchResultData(tempArr);
 	}
-	const getProgressStatus = async(isCompleted)=>{
-		if(isCompleted)
-		{
+	const getProgressStatus = async (isCompleted) => {
+		if (isCompleted) {
 			getDefaultSearchResult('defaultText', '');
 		}
-		
+
 	}
-	async function getSearchDataArr(data,pagetype){
+	async function getSearchDataArr(data, pagetype) {
 		let tempArr = [];
-        let resultData;
-        if(pagetype == 'searchfolder')
-        {
-            resultData = data.response_content.results;
-        }else {
-            resultData = data.response_content;
-        }
-        resultData.forEach(datas => {
-            let tempObj = datas;
-            let id = datas.id;
-            tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
-            const regex = /Fulltext/i;
+		let resultData;
+		if (pagetype == 'searchfolder') {
+			resultData = data.response_content.results;
+		} else {
+			resultData = data.response_content;
+		}
+		resultData.forEach(datas => {
+			let tempObj = datas;
+			let id = datas.id;
+			tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
+			const regex = /Fulltext/i;
 			let type = 'Alignments';
-            if(datas.type !== null && datas.type !== '')
-            {
-                const found = datas.type.match(regex);
-                if(found && found.length >0){
-                    type = 'Documents';
-                }
-            }else{
-                datas.type = ' ' 
-            }
-            // let type = 'Alignments';
-            
-            let mostRecentTypeUrl = url.mostRecentTypeUrl
-            mostRecentTypeUrl = mostRecentTypeUrl.replace('**', id);
-            let typeUrl = process.env.REACT_APP_BASE_URL+mostRecentTypeUrl;
-            if(datas.type != '')
-            {
-                if(datas.type !== 'GqFolder')
-                {
-                    if(datas.status == 'STILL_RUNNING')
-                    {
-                        tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
-                    }
-                    else if(datas.status == 'FAILED'){
-                        tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
-                    }
-                    else {
-                    	if (datas.type == 'DlPhysicalSeqdb' || datas.type == 'DlVirtualSeqdb') {
-                    		type = 'Sequences';
+			if (datas.type !== null && datas.type !== '') {
+				const found = datas.type.match(regex);
+				if (found && found.length > 0) {
+					type = 'Documents';
+				}
+			} else {
+				datas.type = ' '
+			}
+			// let type = 'Alignments';
+
+			let mostRecentTypeUrl = url.mostRecentTypeUrl
+			mostRecentTypeUrl = mostRecentTypeUrl.replace('**', id);
+			let typeUrl = process.env.REACT_APP_BASE_URL + mostRecentTypeUrl;
+			if (datas.type != '') {
+				if (datas.type !== 'GqFolder') {
+					if (datas.status == 'STILL_RUNNING') {
+						tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
+					}
+					else if (datas.status == 'FAILED') {
+						tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor' : '')} onClick={(e) => e.preventDefault()}>Search Failed</a>;
+					}
+					else {
+						if (datas.type == 'DlPhysicalSeqdb' || datas.type == 'DlVirtualSeqdb') {
+							type = 'Sequences';
 							typeUrl = process.env.REACT_APP_API_URL + url.browseSeqDB.replace('**', id);
 						}
-                        tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
-                    }
-                }else{
-                	let folderLabel = 'Empty';
-                	if (datas.results > 0) {
+						tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+					}
+				} else {
+					let folderLabel = 'Empty';
+					if (datas.results > 0) {
 						folderLabel = datas.results + ' Search Results';
 					}
-                    tempObj['results'] = <a href="#" onClick={(e)=>getInfoIconData(e,tempObj)}>{folderLabel}</a>;
-                }
-            }else {
-                tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
-            }
-            
-            let mostRecentClassicUrl = url.mostRecentClassicUrl
-            mostRecentClassicUrl = mostRecentClassicUrl.replace('**', id);
-            let classicLink = process.env.REACT_APP_API_URL+mostRecentClassicUrl
-            if(datas.status == 'FAILED')
-            {
-                tempObj["report"] = '';
-            }else{
-                if(datas.type != '' && datas.status != 'STILL_RUNNING')
-                {
-                    if(datas.type == "GqWfABIpSearch")
-                    {
-                        let mostRecentReportUrl = url.mostRecentReportUrl
-                        mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
-                        let reportLink = process.env.REACT_APP_BASE_URL+mostRecentReportUrl
-                        tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
-                                            <span className="mx-2">|</span>
-                                            <a href={classicLink} target="_blank">Classic</a>
-                                            </Fragment>
-                    }else if(datas.type !== "GqFolder" && datas.type !== "DlPhysicalSeqdb" && datas.type !== "DlVirtualSeqdb"){
-                        tempObj["report"] = <Fragment>
-                                            <a href={classicLink} target="_blank">Classic</a>
-                                            </Fragment>
-                    }else {
-                        tempObj["report"] = '';
-                    }
-                }else {
-                    tempObj["report"] = '';
-                }
-            }
-            tempObj['type'] = Constant['searchType'][datas.type] ? Constant['searchType'][datas.type]: datas.type;
-            if(pagetype === "searchmanagement" || pagetype === "searchfolder")
-            {
-                tempObj["info"] = <Fragment>
-				
-									{datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e)=>getInfoIconData(e,tempObj)}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>}
-									{datas.type !== "Folder" && <Link to={"/searchresseq/"+datas.id} className="infoIcon appLinkColor"><InfoIcon className={"mr-2 appLinkColor "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></Link>}
-									
-                                    <a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLinkColor" /></a>
-                                    <a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
-                                </Fragment>
-            }
-            tempArr.push(tempObj);
-        })
-        return tempArr;
+					tempObj['results'] = <a href="#" onClick={(e) => getInfoIconData(e, tempObj)}>{folderLabel}</a>;
+				}
+			} else {
+				tempObj['results'] = <a href="#" onClick={(e) => e.preventDefault()}>Empty</a>;
+			}
+
+			let mostRecentClassicUrl = url.mostRecentClassicUrl
+			mostRecentClassicUrl = mostRecentClassicUrl.replace('**', id);
+			let classicLink = process.env.REACT_APP_API_URL + mostRecentClassicUrl
+			if (datas.status == 'FAILED') {
+				tempObj["report"] = '';
+			} else {
+				if (datas.type != '' && datas.status != 'STILL_RUNNING') {
+					if (datas.type == "GqWfABIpSearch") {
+						let mostRecentReportUrl = url.mostRecentReportUrl
+						mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
+						let reportLink = process.env.REACT_APP_BASE_URL + mostRecentReportUrl
+						tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
+							<span className="mx-2">|</span>
+							<a href={classicLink} target="_blank">Classic</a>
+						</Fragment>
+					} else if (datas.type !== "GqFolder" && datas.type !== "DlPhysicalSeqdb" && datas.type !== "DlVirtualSeqdb") {
+						tempObj["report"] = <Fragment>
+							<a href={classicLink} target="_blank">Classic</a>
+						</Fragment>
+					} else {
+						tempObj["report"] = '';
+					}
+				} else {
+					tempObj["report"] = '';
+				}
+			}
+			tempObj['type'] = Constant['searchType'][datas.type] ? Constant['searchType'][datas.type] : datas.type;
+			if (pagetype === "searchmanagement" || pagetype === "searchfolder") {
+				tempObj["info"] = <Fragment>
+
+					{datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj)}><InfoIcon className={"mr-2 appLinkColor pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
+					{datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLinkColor"><InfoIcon className={"mr-2 appLinkColor " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
+
+					{datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLinkColor" /></Link>}
+					{datas.type === "Variation" && <Link to={"/ipseqvariation/" + datas.id}><RedoIcon className="mr-2 appLinkColor" /></Link>}
+
+					<a href="#" onClick={(e) => e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
+				</Fragment>
+			}
+			tempArr.push(tempObj);
+		})
+		return tempArr;
 	}
 	async function getFolderResultData() {
 		const folderData = await SearchManagementService.getProjectFolders(history);
@@ -523,7 +514,7 @@ function SearchManagement(props) {
 		setTermsDisable(false);
 		setConfirmFolderContent(true);
 	}
-	const closeMoveFolderModal = () =>{
+	const closeMoveFolderModal = () => {
 		setMoveFolderModalShow(false);
 		setMoveFolderId('');
 	}
@@ -545,162 +536,170 @@ function SearchManagement(props) {
 	}
 	const changeTitle = (event) => {
 		setClearCheckedRow(!clearCheckedRow);
-		
+
 		setDefaultTitle(event.text_label);
 		setDefaultTitleId(event.id);
 		setParentFolderId(event.id);
 		// setTimeout(() => {
-		getDefaultSearchResult('folder', event.id);
+		if (event.text_label != "Recent Search Results") {
+			setInfoFolderIds([]);
+			let start = 1;
+			let stop = pageCount;
+			getDefaultSearchResult('folder', event.id, start, stop);
+		} else {
+			getDefaultSearchResult('folder', event.id);
+		}
+		// getDefaultSearchResult('folder', event.id);
 		setDisableDelete(true);
-		if(!_.includes(infoFolderIds, parentFolderId)){
+		if (!_.includes(infoFolderIds, parentFolderId)) {
 			infoFolderIds.push(parentFolderId)
 		}
 		infoFolderIds.push(event.id)
 		setInfoFolderIds(infoFolderIds);
-		if(event.text_label == "My Searches"){
-			setInfoFolderIds([]);
-		}
+
 		// }, 1000);
 	};
-	const selectedFolder = (event) =>{
+	const selectedFolder = (event) => {
 		setMoveFolderId(event.id);
 	}
-	async function moveToFolder(){
+	async function moveToFolder() {
 		var getIds = selectData.selectedRows.map(function (a) { return a.id; }).join(',');
 		setMoveFolderModalShow(false);
-		const getResponse = await SearchManagementService.moveToFolder(moveFolderId,getIds, history);
-		if(getResponse.response_status == 0)
-		{
+		const getResponse = await SearchManagementService.moveToFolder(moveFolderId, getIds, history);
+		if (getResponse.response_status == 0) {
 			setClearCheckedRow(!clearCheckedRow);
 			// if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
-				getDefaultSearchResult('folder', defaultTitleId);
-				getFolderResultData();
-				toast.success('Folder Moved Successfully');
+			getDefaultSearchResult('folder', defaultTitleId);
+			getFolderResultData();
+			toast.success('Folder Moved Successfully');
 			// }
-		}else {
+		} else {
 			// getDefaultSearchResult('folder', defaultTitleId);
 			toast.error(getResponse.response_content.message);
 		}
-		
-		
+
+
 	}
-	const addNewFolder = (e)=>{
+	const addNewFolder = (e) => {
 		e.preventDefault();
 		setShowNewFolder(!showNewFolder);
 		setAddFolderText(!addFolderText);
 	}
-	const getFolderName=async(e)=>{
-		if(e.keyCode == 13){
-			var regex = new RegExp(Constant.folderRestrictNames.join( "|" ), "i");
-			var isAvailable = regex.test( e.target.value ); 
+	const getFolderName = async (e) => {
+		if (e.keyCode == 13) {
+			var regex = new RegExp(Constant.folderRestrictNames.join("|"), "i");
+			var isAvailable = regex.test(e.target.value);
 			// console.log(isAvailable,'isAvailable');
-			if(isAvailable)
-			{
+			if (isAvailable) {
 				setAddFolderModalShow(true);
-			}else if(e.target.value.length > 200){
+			} else if (e.target.value.length > 200) {
 				setAddFolderModalShow(true);
-			}else {
-				const addResp = await SearchManagementService.addFolder(parentFolderId,e.target.value, history);
-				if(addResp.response_status == 0)
-				{
+			} else {
+				const addResp = await SearchManagementService.addFolder(parentFolderId, e.target.value, history);
+				if (addResp.response_status == 0) {
 					// if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
-						getDefaultSearchResult('folder', defaultTitleId);
-						getFolderResultData();
-						e.target.value = '';
-						setShowNewFolder(false);
-						setAddFolderText(true);
-						toast.success('Folder Added Successfully');
+					getDefaultSearchResult('folder', defaultTitleId);
+					getFolderResultData();
+					e.target.value = '';
+					setShowNewFolder(false);
+					setAddFolderText(true);
+					toast.success('Folder Added Successfully');
 					// }
-				}else {
+				} else {
 					// getDefaultSearchResult('folder', defaultTitleId);
 					toast.error(addResp.response_content.message);
 				}
 			}
-			
+
 		}
 	}
-	async function  getInfoIconData(e,data){
+	async function getInfoIconData(e, data) {
 		e.preventDefault();
 		// console.log(data,'data');
-		if(data)
-		{
+		if (data) {
 			setDefaultTitle(data.description);
 			setDefaultTitleId(data.id);
 			let infoFId = [];
-			if(infoFolderIds && infoFolderIds.length == 0)
-			{
+			if (infoFolderIds && infoFolderIds.length == 0) {
 				infoFolderIds.push(parentFolderId);
 			}
 			infoFolderIds.push(data.id)
 
- 			setInfoFolderIds([...infoFolderIds]);
-			
-			
+			setInfoFolderIds([...infoFolderIds]);
+
+
 
 			getDefaultSearchResult('folder', data.id);
 			// getFolderResultData();
 		}
-		
+
 	};
-	
-	const getsearchResultSet = async (e)=>{
+
+	const getsearchResultSet = async (e) => {
 		// Enter or Click
-		if(e.keyCode == 13 || e.type == "click"){
-			console.log(searchResSet,'searchResSet');
-				if(searchResSet)
-				{
-					const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history);
-					// console.log(getSearchResp,'getSearchResp');
-				}
-				
-				// if(addResp.response_status == 0)
-				// {
-				// 	// if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
-				// 		getDefaultSearchResult('folder', defaultTitleId);
-				// 		getFolderResultData();
-				// 		e.target.value = '';
-				// 		setShowNewFolder(false);
-				// 		setAddFolderText(true);
-				// 		toast.success('Folder Added Successfully');
-				// 	// }
-				// }else {
-				// 	// getDefaultSearchResult('folder', defaultTitleId);
-				// 	toast.error(addResp.response_content.message);
-				// }
-			
-			
+		if (e.keyCode == 13 || e.type == "click") {
+			console.log(searchResSet, 'searchResSet');
+			if (searchResSet) {
+				const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history);
+				// console.log(getSearchResp,'getSearchResp');
+			}
+
+			// if(addResp.response_status == 0)
+			// {
+			// 	// if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
+			// 		getDefaultSearchResult('folder', defaultTitleId);
+			// 		getFolderResultData();
+			// 		e.target.value = '';
+			// 		setShowNewFolder(false);
+			// 		setAddFolderText(true);
+			// 		toast.success('Folder Added Successfully');
+			// 	// }
+			// }else {
+			// 	// getDefaultSearchResult('folder', defaultTitleId);
+			// 	toast.error(addResp.response_content.message);
+			// }
+
+
 		}
 	}
-	const changePage = async(e,page)=>{
-		console.log(e,'ee');
-		console.log(page,'page');
+	const changePage = async (e, page) => {
+		console.log(e, 'ee');
+		console.log(page, 'page');
+		let start, stop;
+		if (page) {
+			start = ((page - 1) * 10) + 1;
+			stop = page * 10;
+			// start= page+1;
+			// stop =page+2;
+		}
+		getDefaultSearchResult('folder', defaultTitleId, start, stop);
 	}
 	useEffect(() => {
 		// (async () => {
-			// const result = dispatch(getSearchResult());
-			getFolderResultData();
-			getDefaultSearchResult('defaultText', '');
-			
-			document.addEventListener("keydown", escFunction, false);
-			// var elements = document.getElementsByClassName("infoIcon");
-			// for (var i = 0; i < elements.length; i++) {
-			// 	elements[i].addEventListener('click', getInfoIconData);
-			// }
-			// setTimeout(() => {
-				// document.querySelectorAll('.infoIcon').forEach(item => {
-				// 	item.addEventListener('click', event => {
-				// 		// setDefaultTitle(event.target.title);
+		// const result = dispatch(getSearchResult());
+		getFolderResultData();
+		getDefaultSearchResult('defaultText', '');
 
-				// 		// getInfoIconData(event)
-				// 		// getDefaultSearchResult('folder', defaultTitleId);
-				// 	})
-				// })
-			// }, 2000);
-			
-			return () => {
-			  document.removeEventListener("keydown", escFunction, false);
-			  
-			};
+		document.addEventListener("keydown", escFunction, false);
+		// var elements = document.getElementsByClassName("infoIcon");
+		// for (var i = 0; i < elements.length; i++) {
+		// 	elements[i].addEventListener('click', getInfoIconData);
+		// }
+		// setTimeout(() => {
+		// document.querySelectorAll('.infoIcon').forEach(item => {
+		// 	item.addEventListener('click', event => {
+		// 		// setDefaultTitle(event.target.title);
+
+		// 		// getInfoIconData(event)
+		// 		// getDefaultSearchResult('folder', defaultTitleId);
+		// 	})
+		// })
+		// }, 2000);
+
+		return () => {
+			document.removeEventListener("keydown", escFunction, false);
+
+		};
 		// })();
 	}, []);
 
@@ -726,7 +725,7 @@ function SearchManagement(props) {
 										</InputAdornment>
 									)
 								}}
-								onChange={(e)=>setSearchResSet(e.target.value)}
+								onChange={(e) => setSearchResSet(e.target.value)}
 								onKeyDown={getsearchResultSet}
 							/>
 						</div>
@@ -741,24 +740,24 @@ function SearchManagement(props) {
 							</ListGroup.Item>
 
 							{/* {folderDetail.map((value, index) => { */}
-								<ListGroup.Item key={123} className={classes.projectListItem}>
-									<FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} selectedTitleId={defaultTitleId} type="selectFolder" parentCallback={changeTitle} />
-								</ListGroup.Item>
+							<ListGroup.Item key={123} className={classes.projectListItem}>
+								<FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} selectedTitleId={defaultTitleId} type="selectFolder" parentCallback={changeTitle} />
+							</ListGroup.Item>
 
 							{/* })} */}
-							<ListGroup.Item className={"my-2 "+(showNewFolder ? 'd-block ':'d-none ')+classes.projectListItem} key="addNewFolder">
-								<img src={FolderIcon} className={classes.folderIcon+" float-left mt-2"} />
-								<TextInput 
+							<ListGroup.Item className={"my-2 " + (showNewFolder ? 'd-block ' : 'd-none ') + classes.projectListItem} key="addNewFolder">
+								<img src={FolderIcon} className={classes.folderIcon + " float-left mt-2"} />
+								<TextInput
 									id="addFolder"
 									name="addFolder"
 									label={t('newFolder')}
 									variant="outlined"
 									className={"float-left ml-2"}
 									onKeyDown={getFolderName}
-								/> 
+								/>
 							</ListGroup.Item>
 							<ListGroup.Item className={classes.projectListItem} key="createNewFolder">
-								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLinkColor " + classes.projectTitle+(!addFolderText ? ' disabled':'')}>{t('addFolder')}</a>
+								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLinkColor " + classes.projectTitle + (!addFolderText ? ' disabled' : '')}>{t('addFolder')}</a>
 							</ListGroup.Item>
 
 						</ListGroup>
@@ -782,7 +781,7 @@ function SearchManagement(props) {
 					</Col>
 				</Col>
 				<Col md="9">
-					<h6 className="appTextColor mb-4"><b><img src={FolderIcon} /> <span className={classes.projectTitle}>{defaultTitleId ? defaultTitle:'Recent Search Results'}</span></b></h6>
+					<h6 className="appTextColor mb-4"><b><img src={FolderIcon} /> <span className={classes.projectTitle}>{defaultTitleId ? defaultTitle : 'Recent Search Results'}</span></b></h6>
 					<DataTable
 						columns={columns}
 						data={searchResultData}
@@ -802,11 +801,11 @@ function SearchManagement(props) {
 						// onRowClicked={getRowData}
 						onRowClicked={getRowData}
 						clearSelectedRows={clearCheckedRow}
-						
+
 					/>
-					{/* <Col md="12">
-						<CustomPagination className={"float-right mt-2"} count={searchResultData.length} changePage={changePage} recordPerPage={Constant['recordPerPage']} showFirstButton showLastButton />
-					</Col> */}
+					{defaultTitle && defaultTitle != "Recent Search Results" && <Col md="12">
+						<CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton />
+					</Col>}
 
 					<Col className={"float-left " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'loginSubmit')} type="submit">{t('deleteSelected')}</Button>
@@ -815,8 +814,8 @@ function SearchManagement(props) {
 					</Col>
 					<Col className={"float-right " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' ? ' d-block' : ' d-none')} md="6">
 						<Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
-						<Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} className={"text-capitalize mr-2 "+(!addFolderText ? ' disableBtnBorder disabled':'primaryBtn')} type="submit">{t('createSubFolder')}</Button>
-						
+						<Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} className={"text-capitalize mr-2 " + (!addFolderText ? ' disableBtnBorder disabled' : 'primaryBtn')} type="submit">{t('createSubFolder')}</Button>
+
 					</Col>
 					{/* <Col className={classes.columnPadding} md="12"> */}
 
@@ -847,7 +846,7 @@ function SearchManagement(props) {
 							<p className={"float-left ml-1"}>{t('termsConditionText')}</p>
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={()=>deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelItems')}</Button>
+							<Button onClick={() => deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelItems')}</Button>
 							<Button onClick={closeModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
 						</div>
 					</div>
@@ -887,7 +886,7 @@ function SearchManagement(props) {
 							<p className={"float-left ml-1"}>{t('termsConditionText')}</p>
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={()=>deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelFolder')}</Button>
+							<Button onClick={() => deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelFolder')}</Button>
 							<Button onClick={closeFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
 						</div>
 					</div>
@@ -919,7 +918,7 @@ function SearchManagement(props) {
 							<FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true:false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('moveResult')}</Button>
+							<Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true : false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('moveResult')}</Button>
 							<Button onClick={closeMoveFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
 						</div>
 					</div>
@@ -938,7 +937,7 @@ function SearchManagement(props) {
 						<p className="mb-3">{t('plsTryAgain')}</p>
 					</div>
 					<div className={classes.footerDiv + " align-center"}>
-						<Button onClick={()=>setAddFolderModalShow(false)} className="mr-2 primaryBtn" color="primary" variant="contained">{t('ok')}</Button>
+						<Button onClick={() => setAddFolderModalShow(false)} className="mr-2 primaryBtn" color="primary" variant="contained">{t('ok')}</Button>
 					</div>
 				</Modal.Body>
 			</Modal>

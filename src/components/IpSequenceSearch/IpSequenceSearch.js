@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import _ from "lodash";
 
 //components
 import TextInput from '../../shared/Fields/TextInput';
@@ -286,11 +287,11 @@ function IpSeqSearch() {
     const [isChecked, setIsChecked] = useState([]);
     const [proPatentData, setProPatentData] = useState([]);
     const [proReferenceData, setProReferenceData] = useState([]);
-    const [proPersonalData, setProPersonalData] = useState([]);
+    const [proPersonalData, setProPersonalData] = useState({});
 
     const [nucPatentData, setNucPatentData] = useState([]);
     const [nucReferenceData, setNucReferenceData] = useState([]);
-    const [nucPersonalData, setNucPersonalData] = useState([]);
+    const [nucPersonalData, setNucPersonalData] = useState({});
 
     const [searchAlgorithmValue, setSearchAlgorithm] = useState("kerr");
     const [scoringMatrixValue, setScoringMatrix] = useState("NUC3.1");
@@ -444,6 +445,7 @@ function IpSeqSearch() {
                 let nucData = resp.response_content.sdb_nuc_tree;
                 let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [];
                 let nucFormattedData = await list_to_tree(nucData);
+                console.log('nucformatted', nucFormattedData)
                 let getNucChild = [];
                 if (nucFormattedData && nucFormattedData.length > 0) {
                     getNucChild = nucFormattedData[0].children;
@@ -475,6 +477,7 @@ function IpSeqSearch() {
                 let proteinData = resp.response_content.sdb_pro_tree;
                 let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [];
                 let proFormattedData = await list_to_tree(proteinData);
+                console.log('proFormattedData', proFormattedData)
                 let getProChild = [];
                 if (proFormattedData && proFormattedData.length > 0) {
                     getProChild = proFormattedData[0].children;
@@ -516,43 +519,44 @@ function IpSeqSearch() {
             //         setIsSubmitActive(true);
             //     }
             // }
-                if (userInfo && userInfo.current_user) {
-                    let userPpu = userInfo.current_user.ppu_type;
-                    let currentUser = userInfo.current_user;
-                    console.log('userData', userInfo)
-        
-                    if(currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit &&  currentUser.user_class_name != "adminium")) {
-                        setIsSubmitActive(false);
-        
-                    }
-                    if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
-                        setShowCreditCalc(true);
-                    }
-        
-                    setPpuType(userPpu);
-                    // if (userPpu == "0") {
-                    //     setIsSubmitActive(true);
-                    // } else {
-                    //     setIsSubmitActive(false);
-                    // }
-        
-                    if (userInfo.current_user.user_class_name) {
-                        setUserClassName(userInfo.current_user.user_class_name)
-                    }
-                    if (userInfo.current_user.accounting_group_name) {
-                        setAccGroupName(userInfo.current_user.accounting_group_name)
-                    }
-                    setIsUserData(true);
+            if (userInfo && userInfo.current_user) {
+                let userPpu = userInfo.current_user.ppu_type;
+                let currentUser = userInfo.current_user;
+                console.log('userData', userInfo, 'userPpu', userPpu)
+                setPpuType(userPpu);
+
+
+                if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
+                    setIsSubmitActive(false);
+
+                }
+                if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
+                    setShowCreditCalc(true);
                 }
 
-                if(parentId) {
-                    calTextCredits(null, isBothDbSelected, 'redo')
+                // if (userPpu == "0") {
+                //     setIsSubmitActive(true);
+                // } else {
+                //     setIsSubmitActive(false);
+                // }
+
+                if (userInfo.current_user.user_class_name) {
+                    setUserClassName(userInfo.current_user.user_class_name)
                 }
+                if (userInfo.current_user.accounting_group_name) {
+                    setAccGroupName(userInfo.current_user.accounting_group_name)
+                }
+                setIsUserData(true);
+                    if (parentId) {
+                        calTextCredits(null, isBothDbSelected, 'redo')
+                    }                
+            }
         })()
-    }, [userInfo]);
+    }, [userInfo, ppuType]);
 
 
     console.log('system', systemControlSubmit, 'setsubmit', isSubmitActive, 'showcredirt', showCreditCalC)
+    console.log('personal', nucPersonalData, 'pro', proPersonalData)
 
     const formik = useFormik({
         initialValues: redoInitialState,
@@ -821,7 +825,7 @@ function IpSeqSearch() {
         // }
         let text;
         text = type && (type == "isCompare" || type == "redo") ? formik.values.querySequence : e.target.value;
-        if ((e && (e.keyCode == 9 || e.type == "blur")) || type == "isCompare" || type =="redo") {
+        if ((e && (e.keyCode == 9 || e.type == "blur")) || type == "isCompare" || type == "redo") {
             // let text = formik.values.querySequence;
             console.log('textCode', text, type)
 
@@ -1085,68 +1089,87 @@ function IpSeqSearch() {
                 <Row>
                     <Col lg="12" md="12" className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
-                            {t('ABsearchDisableText')}
+                        {t('ABsearchDisableText')}
                             {systemControlSubmitText}
-                            {t('patienceThanksText')}</Typography>
-                    </Col>
-                    <Col md="6">
-                        <p className="loginTitle">{t('searchDetails')}</p>
-                        <div className="form-group">
-                            <TextInput
-                                fullWidth
-                                id="searchDetails"
-                                name="searchDetails"
-                                label={t('nameYourSearch')}
-                                variant="outlined"
-                                value={formik.values.searchDetails ? formik.values.searchDetails : ""}
-                                onChange={formik.handleChange}
-                                error={formik.touched.searchDetails && Boolean(formik.errors.searchDetails)}
-                                helperText={formik.touched.searchDetails && formik.errors.searchDetails}
-                            />
-                        </div>
+                            {t('patienceThanksText')}
+                        </Typography>
                     </Col>
                 </Row>
-                <hr />
-                <Row>
-                    <Col sm="12" md="12">
-                        <p className="loginTitle w-75 mb-10 float-left">{t('querySequences')}</p>
-                        <Link className={"appTextFont appLinkColor float-right"} to="/help">{t('help')}</Link>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col sm="12" md="10">
-                        <div className="form-group">
-                            <TextInput
-                                rowsMax="8"
-                                rows="8"
-                                multiline={true}
-                                fullWidth
-                                id="querySequence"
-                                name="querySequence"
-                                label={t('querySequencesPlaceHolder')}
-                                variant="outlined"
-                                value={formik.values.querySequence ? formik.values.querySequence : ""}
-                                onChange={formik.handleChange}
-                                error={formik.touched.querySequence && formik.errors.querySequence}
-                                helperText={formik.errors.querySequence}
-                                onKeyDown={(e) => calTextCredits(e, isBothDbSelected, null)}
-                                onBlur={(e) => calTextCredits(e, isBothDbSelected, null)}
-                            />
-                        </div>
-                    </Col>
-                    <Col md="2"></Col>
-                </Row>
-                <Row>
-                    <Col md="9">
-                        <FormControl component="fieldset">
-                            <RadioGroup row aria-label="These are" name="customized-radios" value={sequenceTypeValue} onChange={handleSequenceType}>
-                                <span className={classes.theseAreText}>{t("theseAre")}</span>
-                                <FormControlLabel value="nucleotide" control={<RadioButton />} label="Nucleotide Sequences" />
-                                <FormControlLabel value="protein" control={<RadioButton />} label="Protein Sequences" />
-                            </RadioGroup>
-                        </FormControl>
-                    </Col>
-                </Row>
+                {parentId &&
+                    <Fragment>
+                        <Row>
+                        <Col sm="12" md="12">
+                            <p className="loginTitle w-75 mb-10 float-left">{t('queryPreloaded')}</p>
+                        </Col>
+                    </Row>
+                        <Typography>
+                            {t('redoAlertText')}
+                        </Typography>
+                    </Fragment>
+                }
+                {!parentId &&
+                    <Fragment>
+                        <Row>
+                            <Col md="6">
+                                <p className="loginTitle">{t('searchDetails')}</p>
+                                <div className="form-group">
+                                    <TextInput
+                                        fullWidth
+                                        id="searchDetails"
+                                        name="searchDetails"
+                                        label={t('nameYourSearch')}
+                                        variant="outlined"
+                                        value={formik.values.searchDetails ? formik.values.searchDetails : ""}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.searchDetails && Boolean(formik.errors.searchDetails)}
+                                        helperText={formik.touched.searchDetails && formik.errors.searchDetails}
+                                    />
+                                </div>
+                            </Col>
+                        </Row>
+                        <hr />
+                        <Row>
+                            <Col sm="12" md="12">
+                                <p className="loginTitle w-75 mb-10 float-left">{t('querySequences')}</p>
+                                <Link className={"appTextFont appLinkColor float-right"} to="/help">{t('help')}</Link>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm="12" md="10">
+                                <div className="form-group">
+                                    <TextInput
+                                        rowsMax="8"
+                                        rows="8"
+                                        multiline={true}
+                                        fullWidth
+                                        id="querySequence"
+                                        name="querySequence"
+                                        label={t('querySequencesPlaceHolder')}
+                                        variant="outlined"
+                                        value={formik.values.querySequence ? formik.values.querySequence : ""}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.querySequence && formik.errors.querySequence}
+                                        helperText={formik.errors.querySequence}
+                                        onKeyDown={(e) => calTextCredits(e, isBothDbSelected, null)}
+                                        onBlur={(e) => calTextCredits(e, isBothDbSelected, null)}
+                                    />
+                                </div>
+                            </Col>
+                            <Col md="2"></Col>
+                        </Row>
+                        <Row>
+                            <Col md="9">
+                                <FormControl component="fieldset">
+                                    <RadioGroup row aria-label="These are" name="customized-radios" value={sequenceTypeValue} onChange={handleSequenceType}>
+                                        <span className={classes.theseAreText}>{t("theseAre")}</span>
+                                        <FormControlLabel value="nucleotide" control={<RadioButton />} label="Nucleotide Sequences" />
+                                        <FormControlLabel value="protein" control={<RadioButton />} label="Protein Sequences" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Col>
+                        </Row>
+                    </Fragment>
+                }
                 <hr />
                 <Row>
                     <Col sm="12" md="12">
@@ -1579,7 +1602,7 @@ function IpSeqSearch() {
                     </Row>
                     <Row>
                         <Col md="6">
-                            <div>
+                            {nucPatentData && _.size(nucPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="loginTitle p-0">
                                         <p className="loginTitle m-0">
@@ -1608,7 +1631,8 @@ function IpSeqSearch() {
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
-                            <div>
+                            }
+                            {nucReferenceData && _.size(nucReferenceData) > 0 && <div>
                                 <Accordion expanded={formCheck3} onChange={() => setformCheck3(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="loginTitle m-0">
@@ -1638,7 +1662,8 @@ function IpSeqSearch() {
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
-                            <div>
+                            }
+                            {nucGenBankData && _.size(nucGenBankData) > 0 && <div>
                                 <Accordion expanded={formCheck5} onChange={() => setformCheck5(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="loginTitle m-0">
@@ -1667,7 +1692,8 @@ function IpSeqSearch() {
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
-                            <div>
+                            }
+                            {nucPersonalData && _.size(nucPersonalData) > 0 && <div>
                                 <Accordion expanded={formCheck7} onChange={() => setformCheck7(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="loginTitle m-0">
@@ -1681,9 +1707,10 @@ function IpSeqSearch() {
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
+                            }
                         </Col>
                         <Col md="6">
-                            <div>
+                            {proPatentData && _.size(proPatentData) > 0 &&<div>
                                 <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="loginTitle m-0">
@@ -1712,7 +1739,8 @@ function IpSeqSearch() {
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
-                            <div>
+                            }
+                            {proReferenceData && _.size(proReferenceData) > 0 && <div>
                                 <Accordion expanded={formCheck4} onChange={() => setformCheck4(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="loginTitle m-0">
@@ -1741,7 +1769,8 @@ function IpSeqSearch() {
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
-                            <div>
+                            }
+                            {proPersonalData && _.size(proPersonalData) > 0 && <div>
                                 <Accordion expanded={formCheck6} onChange={() => setformCheck6(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="loginTitle m-0">
@@ -1755,6 +1784,7 @@ function IpSeqSearch() {
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
+                            }
                         </Col>
                     </Row>
                 </div>
@@ -1897,7 +1927,7 @@ function IpSeqSearch() {
                 <br></br>
                 <Row >
                     <Col>
-                        {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize "+ classes.submitCss} type="submit">
+                        {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize " + classes.submitCss} type="submit">
                             {t("submit")}
                         </Button>}
                         {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>

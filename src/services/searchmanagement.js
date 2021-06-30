@@ -66,12 +66,15 @@ async function getProjectFolderData(id,history) {
     }
    
 }
-async function getFolderData(id,history) {
+async function getFolderData(id,history, start, stop) {
     try {
         console.log(id,'id');
         let projectFolderData = url.projectFolderData
         projectFolderData = projectFolderData.replace('**', id);
-        let urlParam = projectFolderData
+        let urlParam = projectFolderData;
+        if(start && stop) {
+            urlParam  = urlParam+"&start="+start+"&stop="+stop;
+        }
         showLoader();
         return await post(urlParam,null,history)
         .then((response) => {
