@@ -8,19 +8,23 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
-		borderBottom: 'none !important'
+		borderBottom: 'none !important',
+		paddingTop:'11px',
+		paddingRight: '4px',
+		marginTop:'-7px',
 	},
 	footerDiv:{
 		padding:'0 30px',
-		marginTop:'-20px',
-		marginRight: '-31px',	
+		marginTop:'-24px',
+		marginRight: '6px',	
 	},
 	buttonStyle:{
 		float:'right',
 		textTransform: 'none',
 		margin:'4px',
+		color:'white',
 		backgroundColor:'#008EC5 !important',
-        border: '2px solid #008EC5 !important',
+        border: '2px solid #1F4E79 !important',
 
 	},
 	buttonStyleCancel:{
@@ -33,14 +37,26 @@ const useStyles = makeStyles((theme) => ({
 	},
 	modalClassContent:{
 		position: 'absolute',
-		width: '65%',
-		height: '35%',
+		width: '96%',
+		height: '37%',
 		top: '30%',
 		left: '50%',
 		right: 'auto',
 		bottom: 'auto',
 		transform: 'translate(-50%, -50%)'
-	}
+	},
+	colorContainer:{
+		backgroundColor: 'gainsboro',
+		marginTop: '-33px',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		paddingBottom: '65px',
+		marginLeft: '10px',
+		marginRight: '10px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
 
 
 }));
@@ -68,6 +84,7 @@ function ChangePassCheckModal(props) {
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
 				{/* <h5>{props.onMessage}</h5> */}
+				<div className={classes.colorContainer}>
 				<h5>The two new passwords are not identical.</h5>
                  <br></br>
 				<h5>Please try again.</h5>
@@ -82,8 +99,9 @@ function ChangePassCheckModal(props) {
               </p> */}
 				<br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Try Again</Button> 
-					<Button onClick={props.onHide} className={classes.buttonStyleCancel}  color="default" variant="contained">Cancel</Button>
+					<Button onClick={props.tryAgain} className='accountInfo' color="primary" variant="contained">Try Again</Button> 
+					<Button onClick={props.onHide} className={classes.buttonStyle}  color="default" variant="contained">Cancel</Button>
+				</div>
 				</div>
 				
 				

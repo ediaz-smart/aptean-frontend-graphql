@@ -20,9 +20,18 @@ import SearchResultAntibody from '../components/SearchResultAntibody/SearchResul
 import ResultReportFolder from '../components/ResultReportFolder/ResultReportFolder';
 import FullTextSearch from '../components/FullTextSearch/FullTextSearch';
 import NewPassword from '../components/Auth/NewPassword';
+// import {isAdminLogin} from './helpers/authorizedInfo'
 
 
-
+// const AuthRoute = ({ component: Component, ...rest }) => {
+//     return (
+//       <Route {...rest} render={props => (
+//         isAdminLogin() ?
+//           <Component {...props} />: <Redirect to={{ pathname: '/admin/login' }} />
+  
+//       )} />
+//     );
+//   };
 
 
 class Routes extends React.Component {
@@ -41,7 +50,7 @@ class Routes extends React.Component {
                     <Route exact path="/forgot" title="forgot" component={Forgotpassword} />
                     <Route exact path="/newpassword" component={NewPassword} />
 
-                    {/* {isUserLogin ?  */}
+                    {isUserLogin ? 
                     <React.Fragment>
                     <Route exact path="/home" title="" component={Home} />
                     <Route exact path="/changePassword" title="changePassMange" component={ChangePassword} />
@@ -63,9 +72,9 @@ class Routes extends React.Component {
                     <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
 
                     </React.Fragment>
-                   {/* :  */}
-                    {/* <Redirect to='/login' /> */}
-                   {/* } */}
+                   : 
+                    <Redirect to='/login' />
+                   }
 
 
                 </Switch>

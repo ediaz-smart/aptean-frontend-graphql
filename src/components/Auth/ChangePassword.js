@@ -29,16 +29,40 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #bfb4b4',
         borderRadius: '6px'
     },
-    loginSubmitButton : {
-        backgroundColor: '#DB862D',
-        border: '2px solid #DB862D' ,
-        color:'white',
-        textTransform: 'capitalize',
-        '&:hover': {
-            backgroundColor: '#DB862D',
-            boxShadow: 'none',
-          },
+    
+loginSubmitButton : {
+    backgroundColor: '#db862c',
+    borderColor: '#ca751b',
+    border: '2px solid #db862c' ,
+    color:'white',
+    textTransform: 'capitalize',
+    '&:hover': {
+      backgroundColor: '#db862c',
+      boxShadow: 'none',
     },
+ },
+ loginSubmitDis:{
+  backgroundColor: '#EEEEEE',
+  borderColor: '#a2a2a3',
+  border: '2px solid #CCCCCC' ,
+  color:'#777777',
+  textTransform: 'capitalize',
+  '&:hover': {
+    backgroundColor: '#EEEEEE',
+    boxShadow: 'none',
+  },
+ },
+ loginSubmitCancel:{
+  backgroundColor: '#0182C5',
+  borderColor: '#1F4E79',
+  border: '2px solid #1F4E79' ,
+  color:'white',
+  textTransform: 'capitalize',
+  '&:hover': {
+    backgroundColor: '#0182C5',
+    boxShadow: 'none',
+  },
+ },
     loginLogoDiv:{
         position: 'relative',
         left: '0px',
@@ -64,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     },rootButton:{
         marginLeft:'222px',
           '& > *': {
-            margin: theme.spacing(2),
+            margin: theme.spacing(1),
             textTransform:"capitalize",
           },
       },
@@ -118,12 +142,14 @@ function ChangePassword() {
                         const result = await AccountService.updatePass(userId,values.newPassword,values.confirmPassword,values.currentPassword);
                         if(result.response_content.message)
                         { 
+                           
                             await seterrorMessage(result.response_content.message);
                             setModalShow(true);
                             // toast.error(result.response_content.message);
                         }else{
                             // toast.success("Successfully Updated");
                             // history.push('/home')
+                            
                             setmodalShowSaved(true);
                         }
                        
@@ -150,8 +176,13 @@ function ChangePassword() {
         history.push('/home');
       }
       const passwordVlaue = formik.values.currentPassword;
+      const passwordCnVlaue = formik.values.newPassword;
+      const passwordCn1Vlaue = formik.values.confirmPassword;
       console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
       const passValCheck = passwordVlaue.length; 
+      const passValCheck1 = passwordCnVlaue.length; 
+      const passValCheck2 = passwordCn1Vlaue.length; 
+
       console.log(passValCheck,"passValCheck passValCheck passValCheck passValCheck passValCheck");
       function tryAgainForm()
       {
@@ -239,8 +270,11 @@ function ChangePassword() {
                         </div>
                        
                         <div className={classes.rootButton}>
-                            <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
-                             <Button variant="contained" className={(passValCheck != 0 ? classes.loginSubmitButton : '')} type="submit">{t('cpsavenewpass')}</Button>
+                            <Button variant="contained" className={classes.loginSubmitCancel} onClick={homePage}>{t('cancel')}</Button>
+                            {passValCheck != 0  && passValCheck1 != 0 && passValCheck2 != 0 ?
+                                <Button variant="contained" className={classes.loginSubmitButton} type="submit">{t('cpsavenewpass')}</Button> :
+                                <Button variant="contained" className={classes.loginSubmitDis}  disabled>{t('cpsavenewpass')}</Button> 
+                             }
                         </div>
 
                     </form>

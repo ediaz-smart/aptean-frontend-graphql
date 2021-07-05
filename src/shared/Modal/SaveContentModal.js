@@ -6,30 +6,56 @@ import { useTranslation } from "react-i18next";
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
+
 	modalHeader: {
-		borderBottom: 'none !important'
+		borderBottom: 'none !important',
+		paddingTop:'11px',
+		paddingRight: '4px',
+		marginTop:'-7px',
+
 	},
 	footerDiv:{
 		padding:'0 30px',
-		marginTop:'-40px',
-		marginRight: '-31px',	
+		marginTop:'-5px',
+		marginRight: '-10px',	
 	},
 	contentPadding: {
 		padding: "45px !important"
 	},
 	modalBoxContent :{
-		maxHeight: '650px',
+		maxHeight: '675px',
 	},
 	modalClassContent:{
 		position: 'absolute',
-		width: '65%',
-		height: '28%',
+		width: '96%',
+		height: '37%',
 		top: '30%',
 		left: '50%',
 		right: 'auto',
 		bottom: 'auto',
 		transform: 'translate(-50%, -50%)'
-	}
+	},
+	colorContainer:{
+		backgroundColor: 'gainsboro',
+		marginTop: '-32px',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		paddingBottom: '75px',
+		marginLeft: '7px',
+		marginRight: '7px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
+	buttonStyle:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		color:'white',
+		backgroundColor:'##DB862D !important',
+        border: '2px solid ##DB862D !important',
+
+	},
 }));
 
 function SaveContentModal(props) {
@@ -44,22 +70,23 @@ function SaveContentModal(props) {
 			contentClassName={classes.modalClassContent}
 			className={classes.modalBoxContent}
 		>
-			{/* <Modal.Header closeButton className={classes.modalHeader}> */}
-				{/* <Modal.Title id="contained-modal-title-vcenter">
-           Logout
-          </Modal.Title> */}
-			{/* </Modal.Header> */}
+			<Modal.Header closeButton className={classes.modalHeader}>
+				
+			</Modal.Header>
 			<Modal.Body className={"text-center"}>
-				<h5 className={classes.contentPadding}>{props.onMessage}</h5>
+			<div className={classes.colorContainer}>
+			    <br></br>
+				<h5> Your changes have been saved..</h5>
 				
-		      {/* <Fragment> */}
-			
+				
+				<br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.onHide} className="float-right m-2" color="primary" variant="contained">OK</Button>
+				<Button onClick={props.onHide} className='accountInfo' color="default"  variant="contained">OK</Button> 
+
+					{/* <Button onClick={props.onHide} className={classes.buttonStyle} color="default" variant="contained">OK</Button> */}
 				</div>
-				{/* </Fragment> */}
-			
-				
+		
+				</div>
 				
 			</Modal.Body>
 			{/* <Modal.Footer>

@@ -38,50 +38,63 @@
 .appLinkColor {
     color: #008EC5 !important;
 }
+
 .appLinkFont {
     font-size: 0.875rem;
     font-weight: 500;
 }
-.primaryBtn{
-    background-color:#008EC5 !important;
+
+.primaryBtn {
+    background-color: #008EC5 !important;
     border: 2px solid #008EC5 !important;
 }
-.disableBtnBorder{
+
+.disableBtnBorder {
     border: 1.5px solid #a7acac !important;
 }
-.deleteBtnColor{
-    background-color:#db3838 !important;
+
+.deleteBtnColor {
+    background-color: #db3838 !important;
     border: 2px solid #db3838 !important;
     color: #fff !important;
 }
+
 .moreLink {
     color: #008EC5;
     font-style: italic;
     cursor: pointer;
 }
+
 .MuiOutlinedInput-input {
-  padding: 12px 14px !important;
+    padding: 12px 14px !important;
 }
-.cursorPointer{
+
+.cursorPointer {
     cursor: pointer;
 }
-.pe-none{
+
+.pe-none {
     pointer-events: none;
 }
-.MuiTreeItem-group{
-    margin-left:32px !important
+
+.MuiTreeItem-group {
+    margin-left: 32px !important
 }
+
 .disabled {
     pointer-events: none;
     color: #ccc;
     cursor: not-allowed;
 }
-.failedIconColor{
+
+.failedIconColor {
     color: #DB862D !important;
 }
-.failedTextColor{
-    color:#e17a47 !important;
+
+.failedTextColor {
+    color: #e17a47 !important;
 }
+
 
 /* Login & Forgot */
 
@@ -89,6 +102,41 @@
     color: #505F5F;
     margin: 0px 0 15px;
     font-weight: 600;
+}
+
+.accountInfo {
+    float: right;
+    text-transform: none;
+    margin: 4px;
+    text-transform: none !important;
+    margin-top: 4px !important;
+    background-color: #db862c !important;
+    border: 2px solid #ca751b !important;
+    color: white !important;
+}
+
+.cancelButtonClass {
+    background-color: #0182C5;
+    border-color: #1F4E79;
+    border: 2px solid #1F4E79;
+    color: white;
+    text-transform: capitalize;
+}
+
+.submitButtonClass {
+    background-color: #db862c;
+    border-color: #ca751b;
+    border: 2px solid #ca751b;
+    color: white;
+    text-transform: capitalize;
+}
+
+.disableButtonClass {
+    background-color: #EEEEEE;
+    border-color: #a2a2a3;
+    border: 2px solid #CCCCCC;
+    color: #777777;
+    text-transform: capitalize;
 }
 
 .loginSubmit {
@@ -132,12 +180,14 @@
 .appTextColor {
     color: #4a5050 !important;
 }
-.content > p{
+
+.content>p {
     font-size: 14px !important;
     line-height: 25px;
     color: #4a5050 !important;
 }
-.w-12{
+
+.w-12 {
     width: 12%;
 }
 
@@ -163,8 +213,9 @@
 }
 
 .leftAlign {
-      text-align: left
+    text-align: left
 }
+
 
 /* News and Update */
 
@@ -174,7 +225,7 @@
 }
 
 .MuiFormHelperText-root.Mui-error {
-width: 500px
+    width: 500px
 }
 
 .relativePosition {
@@ -185,25 +236,28 @@ width: 500px
     position: absolute;
 }
 
+
 /* Full Text Search */
+
 #textareaDiv {
     -moz-appearance: textfield;
     -webkit-appearance: textfield;
     background-color: white;
     background-color: -moz-field;
     border: 1px solid darkgray;
-    box-shadow: 1px 1px 1px 0 lightgray inset;  
+    box-shadow: 1px 1px 1px 0 lightgray inset;
     font: -moz-field;
     font: -webkit-small-control;
     margin-top: 5px;
     padding: 2px 3px;
-    width: 100%; 
-    min-height:100px;
+    width: 100%;
+    min-height: 100px;
     border-radius: 3px;
 }
-.operatorClass{
-    color:#777777;
-    font-style:italic;
+
+.operatorClass {
+    color: #777777;
+    font-style: italic;
 }
 
 .dropdown-content {
@@ -211,25 +265,28 @@ width: 500px
     background-color: #f1f1f1;
     min-width: 160px;
     overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
-  }
-  
-  .dropdown-content a {
+}
+
+.dropdown-content a {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-  }
-.progress-bar{
+}
+
+.progress-bar {
     background-color: #008EC5 !important;
 }
-.progress{
+
+.progress {
     border: 2px solid #008EC5 !important;
     background: #fff !important;
     border-radius: 2px !important;
     width: 100%;
 }
+
 @keyframes App-logo-spin {
     from {
         transform: rotate(0deg);

@@ -8,16 +8,10 @@ import TextInput from '../../shared/Fields/TextInput';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import TextField from "@material-ui/core/TextField";
 import { Button } from "@material-ui/core";
 import { useFormik } from 'formik';
-import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel } from '@material-ui/core';
 import Validate from '../../helpers/validate';
 import { toast } from 'react-toastify';
 import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
@@ -41,17 +35,41 @@ const useStyles = makeStyles((theme) => ({
       },
   },
   loginSubmitButton : {
-    backgroundColor: '#DB862D',
-    border: '2px solid #DB862D' ,
+    backgroundColor: '#db862c',
+    marginLeft: '-6px',
+    borderColor: '#ca751b',
+    border: '2px solid #ca751b' ,
     color:'white',
     textTransform: 'capitalize',
     '&:hover': {
-      backgroundColor: '#DB862D',
+      backgroundColor: '#db862c',
       boxShadow: 'none',
     },
  },
+ loginSubmitDis:{
+  backgroundColor: '#EEEEEE',
+  marginLeft: '-6px',
+  borderColor: '#a2a2a3',
+  border: '2px solid #CCCCCC' ,
+  color:'#777777',
+  textTransform: 'capitalize',
+  '&:hover': {
+    backgroundColor: '#EEEEEE',
+    boxShadow: 'none',
+  },
+ },
+ loginSubmitCancel:{
+  backgroundColor: '#0182C5',
+  borderColor: '#1F4E79',
+  border: '2px solid #1F4E79' ,
+  color:'white',
+  textTransform: 'capitalize',
+  '&:hover': {
+    backgroundColor: '#0182C5',
+    boxShadow: 'none',
+  },
+ },
     root: {
-      
       '& > *': {
         margin: theme.spacing(2),
         textTransform:"capitalize",
@@ -106,6 +124,12 @@ function AccountInfo() {
       setmodalShowSaved(false);
       history.push('/home')
     }
+    function bytesToSize(bytes) {
+      var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+      if (bytes == 0) return '0 Byte';
+      var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+      return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    }
     function setAccountInfo(data)
     {
       if(data)
@@ -117,11 +141,11 @@ function AccountInfo() {
         data.user_class_name ? setuserAccountType(data.user_class_name) : setuserAccountType('');
         // moment(values.docPublicDate).format('YYYYMMDD')
         data.create_time ? setuserAccountCreated(moment(data.create_time).format("DD/MM/YYYY")) : setuserAccountCreated('');
-        data.expire_time ?  setuserAccountExpires(moment(data.expire_time).format("DD/MM/YYYY")) :  setuserAccountExpires(' -- ');
+        data.expire_time ?  setuserAccountExpires('After ' + moment(data.expire_time).format("MM/DD/YYYY")) :  setuserAccountExpires('Never');
         data.clitoken ? setuserAccountClitoken(data.clitoken) : setuserAccountClitoken('');
-        data.dspace_workflow ?  setuserAnalyses(data.dspace_workflow) :  setuserAnalyses(0);
-        data.dspace_seqdb ? setuserSeqDatabase(data.dspace_seqdb) : setuserSeqDatabase(0);
-        data.dspace_uploaded ? setuserUploads(data.dspace_uploaded) : setuserUploads(0);
+        data.dspace_workflow ?  setuserAnalyses(bytesToSize(data.dspace_workflow)) :  setuserAnalyses(0);
+        data.dspace_seqdb ? setuserSeqDatabase(bytesToSize(data.dspace_seqdb)) : setuserSeqDatabase(0);
+        data.dspace_uploaded ? setuserUploads(bytesToSize(data.dspace_uploaded)) : setuserUploads(0);
         console.log(userFirstName,"userFirstName");
         console.log(userLastName,"userLastName");
         console.log(accountInfoData,"accountInfoData accountInfoData");
@@ -157,6 +181,7 @@ function AccountInfo() {
             const result = await AccountService.updateUser(parseInt(userIdCon),values.firstName,values.lastName,values.confirmPassword);
             if(result.response_content.message)
             {
+             
               await seterrorMessage(result.response_content.message);
               setModalShow(true);
               // toast.error(result.response_content.message);
@@ -336,7 +361,7 @@ function AccountInfo() {
                          className={classes.textBox}
                            id="confirmPassword"
                                 name="confirmPassword"
-                                label='Confirm Password'
+                                label='Current Password'
                                 variant="outlined"
                                 type="password"
                                 value={formik.values.confirmPassword}
@@ -347,9 +372,16 @@ function AccountInfo() {
               </div>
             
           <div className={classes.rootButton}>
-              <Button variant="contained" onClick={homePage}>{t('cancel')}</Button>
+              <Button variant="contained" className={classes.loginSubmitCancel} onClick={homePage}>{t('cancel')}</Button>
               
-                <Button  variant="contained" className={(passValCheck != 0 ? classes.loginSubmitButton : '')} type="submit">{t('aisavechange')}</Button>
+             
+             {passValCheck !=0 ? <Button variant="contained" className={classes.loginSubmitButton} type="submit">
+                        {t('aisavechange')}
+                        </Button>
+                        : <Button variant="contained" className={classes.loginSubmitDis} disabled>
+                        {t('aisavechange')}
+                        </Button>
+                        }
           </div>
           {/* <Button {(passwordForm ? 'd-block' : 'd-none')} variant="contained" type="submit">{t('aisavechange')}</Button> */}
           {/* <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">

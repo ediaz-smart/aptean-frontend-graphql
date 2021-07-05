@@ -34,8 +34,10 @@ const useStyles = makeStyles((theme) => ({
       
     },
     columnPadding: {
-      paddingTop: '20px',
-      paddingLeft: '20px'
+      // paddingTop: '20px',
+      // paddingLeft: '20px'
+      marginTop: '-30px',
+      marginRight: '82px',
     },
     columnPaddings: {
       paddingTop: '5px',
@@ -46,7 +48,8 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom:'20px',
       },
       columnPad : {
-        paddingTop: '30px',
+        padding: '80px',
+        marginTop: '-30px',
       }
 }));
 const customStyles = {
@@ -108,18 +111,15 @@ const columns = [
   {
     name: "Type",
     selector: "map.workflow_type",
-    sortable: true
-  },
-  {
-    name: "Last Search Date",
-    selector: "date",
-    sortable: true
+    sortable: true,
+    width:'20%'
   },
   {
     name: "Name",
     selector: "name",
     sortable: true,
-    left: true
+    left: true,
+    width:'75.3%'
   }
 ];
 
@@ -134,6 +134,7 @@ function SearchResults() {
     const [thing, setThing] = useState([]);
     const handleAction = value => setThing(value);
     const [searchFormsData, setSearchFormsData] = useState([]);
+    const [selectedTemplateData, setSelectedTemplateData] = useState([]);
     // unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
     const updateState = useCallback(state =>  setThing(state));
     function updateVal(state)
@@ -159,7 +160,7 @@ function SearchResults() {
     useEffect(() => {
       (async () => {
         const result = await SavedSearch.getSavedSearchData();
-        if(result.response_content && result.response_content.templates)
+        if(result && result.response_content && result.response_content.templates)
         {
           console.log(result.response_content,"result.response_content.template) result.response_content.template)");
           const dta = await result.response_content.templates;
@@ -167,16 +168,27 @@ function SearchResults() {
         }
       })()
     }, []);
-    function greetUser() {
+    async function constrainTemplateData(savedData)
+    {
+
+      // savedData.forEach(datas => {
+      //   if(datas)
+
+      // })
+    }
+    async function deleteTemplate() {
         // console.log(updateState,"SAMple Data that enters")
-        console.log(thing,"SAMple")
+        console.log(thing,"SAMple");
         const data = [];
         const dataValues = thing  && thing.selectedRows && data.push(thing.selectedRows[0]);
         console.log(data,"data data data");
         if(thing && thing.selectedCount >= 1 && data && data.length > 0)
         {
-          toast.error("Under Construction!");
-            console.log("Hi there, user!");
+          // setSelectedTemplateData();
+          const result = await SavedSearch.deleteSavedTemplate(data,thing.selectedCount);
+
+            toast.error("Under Construction!");
+            console.log("Hi there, user!",result);
         }
         else{
             toast.error("Select Any One Item");
@@ -184,6 +196,7 @@ function SearchResults() {
         }
        
       }
+     
 //  console.log(searchFormsData,"searchFormsData");
   return (
     <div >
@@ -204,18 +217,13 @@ function SearchResults() {
           selectableRowsComponentProps={selectableRowsComponentProps}
         />
       </Col>
-      
     </Row>
-  
     <Row className="float-right">
     <Col  className={classes.columnPadding}>
     <Button variant="contained" onClick={homePage}>Cancel</Button>
      &nbsp;&nbsp;&nbsp;
-    <Button color="primary" variant="contained" onClick={greetUser} className="float-right loginSubmit text-capitalize" type="submit">Delete Selected Saved Search Forms</Button>   
-
+    <Button color="primary" variant="contained" onClick={deleteTemplate} className="float-right loginSubmit text-capitalize" type="submit">Delete Selected Saved Search Forms</Button>   
       </Col>
- 
-    
     </Row>
  </div>
   

@@ -77,7 +77,7 @@ function ApplicationPanel() {
     useEffect(() => {
         (async () => {
           const result = await SavedSearch.getSavedSearchData();
-          if(result.response_content && result.response_content.templates)
+          if(result && result.response_content && result.response_content.templates)
           {
             console.log(result.response_content,"result.response_content.template) result.response_content.template)");
             const dta = await result.response_content.templates;
@@ -117,11 +117,16 @@ function ApplicationPanel() {
                     <Col md="3" sm="12" className="mb-3">
                         <div className={classes.savedForm}>
                             <p className={'appTextColor '+classes.textHeading}>{t('savedSearchForms')}</p>
-                            {searchFormsData && searchFormsData.length > 0 && searchFormsData.map((dbVal, i) => {
+                            {searchFormsData && searchFormsData.length > 0 && searchFormsData.map((dbVal, index) => {
+                               if(index <= 8)
+                               {
                                 return (
-                                    <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}> {dbVal.name} </a></p>
-
-                                )
+                                   
+                                   <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}> {dbVal.name}  </a></p>
+                                 
+                               )
+                               }
+                                
                             })
                             }
                             
