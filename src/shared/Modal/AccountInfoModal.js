@@ -98,7 +98,7 @@ function AccountInfoModal(props) {
                         <br></br>
                         <br></br>
                         <span>
-                            <a className={"appTextFont appLinkColor"} href={mailUrl} target="_blank" rel="noopener noreferrer">{supportMail}</a>
+                            <a className={"appTextFont appLink"} href={mailUrl} target="_blank" rel="noopener noreferrer">{supportMail}</a>
                         </span>
                         <span>{t("forAssistance")}</span>
               </p> */}

@@ -173,11 +173,11 @@ export default function Header(props) {
                     <span className={'text-capitalize appTextFont ' + classes.profileText} >{userName}</span>
                 </Button>
             </MenuItem>
-            <MenuItem onClick={() => setModalShow(true)}>
-                <Button color="inherit" ><span className="appLinkColor text-initial appTextFont" >Log out</span></Button>
+            <MenuItem>
+                <Button color="inherit"><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button>
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
-                <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>
+                <Button color="inherit"><span className="appLink text-capitalize appTextFont" >{t('documentation')}</span></Button>
             </MenuItem>
         </Menu>
     );
@@ -212,8 +212,8 @@ export default function Header(props) {
                             <span className={'text-capitalize appTextFont ' + classes.profileText} >{accountInfo.first_name} {accountInfo.last_name}</span>
                         </Button>
                         <span className={classes.headerPipe}>|</span>
-                        {/* <Button color="inherit" ><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button> */}
-                        <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLinkColor text-initial appTextFont" >{t('logout')}</span></Button>
+                        {/* <Button color="inherit" ><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button> */}
+                        <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button>
 
                         <PromptModal
                             show={modalShow}
@@ -221,7 +221,7 @@ export default function Header(props) {
                             modalCallback={logout}
                         />
                         <span className={classes.headerPipe}>|</span>
-                        <Button color="inherit"><span className="appLinkColor text-capitalize appTextFont" >{t('documentation')}</span></Button>
+                        <Button color="inherit"><span className="appLink text-capitalize appTextFont" >{t('documentation')}</span></Button>
 
                     </div>
                     <div className={classes.sectionMobile}>

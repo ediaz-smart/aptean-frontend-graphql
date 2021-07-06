@@ -29,10 +29,10 @@ const useStyles = makeStyles((theme) => ({
         height:'100%'
     },
     anchorTag: {
-        textDecoration: 'none !important',
-        color: "#008EC5",
-        fontSize:"15px",
-        cursor: 'pointer',
+        // textDecoration: 'none !important',
+        // color: "#008EC5",
+        // fontSize:"15px",
+        // cursor: 'pointer',
         wordWrap: 'break-word'
     },
     p: {
@@ -49,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
     },
     pTagMargin: {
         marginBottom: "0px",
-        fontWeight: "500",
-        '& span':{
-            color: "#5A6868",
-        }
+        // fontWeight: "500",
+        // '& span':{
+        //     color: "#5A6868",
+        // }
     },
     applicationPanelRow: {
         marginBottom: "15px",
@@ -116,27 +116,25 @@ function ApplicationPanel() {
                 <Row>
                     <Col md="3" sm="12" className="mb-3">
                         <div className={classes.savedForm}>
-                            <p className={'appTextColor '+classes.textHeading}>{t('savedSearchForms')}</p>
+                            <p className={'subHeading '+classes.textHeading}>{t('savedSearchForms')}</p>
                             {searchFormsData && searchFormsData.length > 0 && searchFormsData.map((dbVal, index) => {
                                if(index <= 8)
                                {
                                 return (
-                                   
-                                   <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}> {dbVal.name}  </a></p>
-                                 
-                               )
+                                    <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href='#' onClick={e => e.preventDefault()}> {dbVal.name} </a></p>
+
+                                )
                                }
-                                
                             })
                             }
                             
                             <br></br>
-                            <p className={classes.pTagMargin}><a className={"moreLink "+classes.anchorTag}  onClick={searchForm}>Manage ...</a></p>
+                            <p className={classes.pTagMargin}><a className={"moreLink "+classes.anchorTag+' appLink'}  onClick={searchForm}>Manage ...</a></p>
                         </div>
 
                     </Col>
                     <Col md="4" sm="12" className={classes.columnPadding}>
-                        <p className={'appTextColor '+classes.textHeading}>{t('sequenceSearch')}</p>
+                        <p className={'subHeading '+classes.textHeading}>{t('sequenceSearch')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3" sm="12" className="pr-0">
                                 {/* <AccessAlarm className={classes.appIcon} /> */}
@@ -144,75 +142,75 @@ function ApplicationPanel() {
                             </Col>
                             <Col lg="10" md="9" sm="12">
                                 <p className={classes.pTagMargin}>
-                                    <Link to="/ipseqsearch" className={classes.anchorTag}>{t('ipSequence')}</Link>
+                                    <Link to="/ipseqsearch" className={classes.anchorTag+' appLink'}>{t('ipSequence')}</Link>
                                 </p>
                                 <p className={classes.pTagMargin}>
                                     <Fragment>
-                                    {userData && !userData.vmAccess && <span className={classes.pTagMargin}>{t('sequenceVariation')}</span>}
-                                   {userData && userData.vmAccess && <Link to="/ipseqvariation" className={classes.anchorTag}>{t('sequenceVariation')}</Link>}
+                                    {userData && !userData.vmAccess && <span className={classes.pTagMargin + " bodyText"}>{t('sequenceVariation')}</span>}
+                                   {userData && userData.vmAccess && <Link to="/ipseqvariation" className={classes.anchorTag+' appLink'}>{t('sequenceVariation')}</Link>}
                                    </Fragment>
                                 </p>
                                 <p className={classes.pTagMargin}>
                                     <Fragment>
-                                    {userData && !userData.abAccess && <span className={classes.pTagMargin}>{t('antibodySequence')}</span>}
-                                   {userData && userData.abAccess && <Link to="/searchresantibody" className={classes.anchorTag}>{t('antibodySequence')}</Link>}
+                                    {userData && !userData.abAccess && <span className={classes.pTagMargin + " bodyText"}>{t('antibodySequence')}</span>}
+                                   {userData && userData.abAccess && <Link to="/searchresantibody" className={classes.anchorTag+' appLink'}>{t('antibodySequence')}</Link>}
                                    </Fragment>
                                 </p>
                             </Col>
                         </Row>
-                        <p className={'appTextColor '+classes.textHeading}>{t('documentSearch')}</p>
+                        <p className={'subHeading '+classes.textHeading}>{t('documentSearch')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3" className="pr-0">
                                 <img src={docsearch} alt="docsearch" className="w-100" />
                             </Col>
-                            <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href={url.stagePatentNumLink} target="_blank">{t('patentNumbers')}</a></p>
+                            <Col lg="10" md="9">
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href={url.stagePatentNumLink} target="_blank">{t('patentNumbers')}</a></p>
                             </Col>
                         </Row>
-                        <p className={'appTextColor '+classes.textHeading}>{t('sequenceDatabases')}</p>
+                        <p className={'subHeading '+classes.textHeading}>{t('sequenceDatabases')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3" className="pr-0">
                                 <img src={seqDb} alt="seqDb" className="w-100" />
                             </Col>
-                            <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href={url.stageBrowserDBLink} target="_blank">{t('browseDatabases')}</a></p>
+                            <Col lg="10" md="9">
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href={url.stageBrowserDBLink} target="_blank">{t('browseDatabases')}</a></p>
                                 <p className={classes.pTagMargin}>
-                                    <Link className={classes.anchorTag} to='/searchResult'>{t('personalDatabases')}</Link>
+                                    <Link className={classes.anchorTag+' appLink'} to='/searchResult'>{t('personalDatabases')}</Link>
                                 </p>
                             </Col>
                         </Row>
                     </Col>
                     <Col md="4" sm="12" className={classes.columnPadding}>
-                        <p className={'appTextColor '+classes.textHeading}>{t('searchResults')}</p>
+                        <p className={'subHeading '+classes.textHeading}>{t('searchResults')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3" className="pr-0">
                                 <img src={searchResultImg} alt="searchResult" className="w-100" />
                             </Col>
-                            <Col lg="10" md="9" className={classes.anchorTag}>
+                            <Col lg="10" md="9">
                                 <p className={classes.pTagMargin}>
-                                    <Link className={classes.anchorTag} to='/searchResult'>{t('allSearchResults')}</Link>
+                                    <Link className={classes.anchorTag+' appLink'} to='/searchResult'>{t('allSearchResults')}</Link>
                                 </p>
                             </Col>
                         </Row>
-                        <p className={'appTextColor '+classes.textHeading}>{t('sequenceTools')}</p>
+                        <p className={'subHeading '+classes.textHeading}>{t('sequenceTools')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3" className="pr-0">
                                 <img src={seqTool} alt="seqTool" className="w-100" />
                             </Col>
-                            <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href={url.stageAlignSequencesDirectly} target="_blank">{t('alignSequencesDirectly')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p>
+                            <Col lg="10" md="9">
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href={url.stageAlignSequencesDirectly} target="_blank">{t('alignSequencesDirectly')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p>
                             </Col>
                         </Row>
-                        <p className={'appTextColor '+classes.textHeading}>{t('myAccount')}</p>
+                        <p className={'subHeading '+classes.textHeading}>{t('myAccount')}</p>
                         <Row className={classes.applicationPanelRow}>
                             <Col lg="2" md="3" className="pr-0">
                                 <img src={account} alt="account" className="w-100" />
                             </Col>
-                            <Col lg="10" md="9" className={classes.anchorTag}>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag}  onClick={accountInfoForm}>{t('accountInformation')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag}  onClick={changePasswordForm}>{t('changePassword')}</a></p>
+                            <Col lg="10" md="9" >
+                                <p className={classes.pTagMargin}><a onClick={accountInfoForm}>{t('accountInformation')}</a></p>
+                                <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'}  onClick={changePasswordForm}>{t('changePassword')}</a></p>
                             </Col>
                         </Row>
                     </Col>

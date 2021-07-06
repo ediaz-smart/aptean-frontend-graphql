@@ -81,7 +81,8 @@ const customStyles = {
 		},
     '&:second-child': {
 			borderLeft: '0',
-		},
+    },
+
 		display:'grid'
 	  },
 	  
@@ -122,6 +123,7 @@ const columns = [
     width:'75.3%'
   }
 ];
+
 
 const isIndeterminate = indeterminate => indeterminate;
 const selectableRowsComponentProps = { indeterminate: isIndeterminate };

@@ -13,39 +13,26 @@
     }
 }
 
-.App-header {
-    background-color: #282c34;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-
 /* Common */
 
 .mt-100 {
     margin-top: 10%;
 }
 
-.appLinkColor {
-    color: #008EC5 !important;
+.appLink {
+    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-size: 14px;
+    color: #337AB7;
+    font-weight: 400;
+    text-decoration: none !important;
+}
+.appLink:hover {
+    text-decoration: underline !important;
+    cursor: pointer;
 }
 
-.appLinkFont {
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.primaryBtn {
-    background-color: #008EC5 !important;
+.primaryBtn{
+    background-color:#008EC5 !important;
     border: 2px solid #008EC5 !important;
 }
 
@@ -60,7 +47,7 @@
 }
 
 .moreLink {
-    color: #008EC5;
+    color: #337AB7;
     font-style: italic;
     cursor: pointer;
 }
@@ -178,7 +165,7 @@
 }
 
 .appTextColor {
-    color: #4a5050 !important;
+    color: #777777 !important;
 }
 
 .content>p {
@@ -285,6 +272,50 @@
     background: #fff !important;
     border-radius: 2px !important;
     width: 100%;
+}
+/*new styling */
+.bodyText {
+    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-size: 14px;
+    color: #777777;
+    font-weight: 400;
+}
+.pageTitle {
+    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-size: 22px;
+    color: #777777;
+    font-weight: 700;
+}
+.subHeading {
+    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-size: 14px;
+    color: #777777;
+    font-weight: 700;
+}
+
+.hrTableLines {
+    border-top: 1px solid #CCCCCC;
+}
+
+.placeholderText {
+    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-size: 14px;
+    color: #D3D3D3;
+    font-weight: 400;
+    font-style: italic;
+}
+
+a {
+    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-size: 14px;
+    color: #337AB7 !important;
+    font-weight: 400;
+    text-decoration: none !important;
+}
+
+a:hover {
+    text-decoration: underline !important;
+    cursor: pointer;
 }
 
 @keyframes App-logo-spin {

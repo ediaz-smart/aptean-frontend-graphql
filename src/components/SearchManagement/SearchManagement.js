@@ -460,13 +460,13 @@ function SearchManagement(props) {
 			if (pagetype === "searchmanagement" || pagetype === "searchfolder") {
 				tempObj["info"] = <Fragment>
 
-					{datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj)}><InfoIcon className={"mr-2 appLinkColor pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
-					{datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLinkColor"><InfoIcon className={"mr-2 appLinkColor " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
+					{datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj)}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
+					{datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
 
-					{datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLinkColor" /></Link>}
-					{datas.type === "Variation" && <Link to={"/ipseqvariation/" + datas.id}><RedoIcon className="mr-2 appLinkColor" /></Link>}
+					{datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
+					{datas.type === "Variation" && <Link to={"/ipseqvariation/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>}
 
-					<a href="#" onClick={(e) => e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
+					<a href="#" onClick={(e) => e.preventDefault()}><AccessAlarmIcon className="appLink" /></a>
 				</Fragment>
 			}
 			tempArr.push(tempObj);
@@ -763,7 +763,7 @@ function SearchManagement(props) {
 								/>
 							</ListGroup.Item>
 							<ListGroup.Item className={classes.projectListItem} key="createNewFolder">
-								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLinkColor " + classes.projectTitle + (!addFolderText ? ' disabled' : '')}>{t('addFolder')}</a>
+								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLink " + classes.projectTitle + (!addFolderText ? ' disabled' : '')}>{t('addFolder')}</a>
 							</ListGroup.Item>
 
 						</ListGroup>

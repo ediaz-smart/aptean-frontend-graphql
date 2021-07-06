@@ -609,23 +609,23 @@ function SearchResultSequence() {
             <Row>
                 <Col lg="12" md="12" sm="12" className="mb-5">
                     <Typography className={classes.root + " float-right"}>
-                        <span className={"appTextColor appLinkFont"} title={t('auditTrial')}>
+                        <span className={"appTextColor appLink"} title={t('auditTrial')}>
                             {t('auditTrial')}
                         </span>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                        <Link href="#resultSharing" title={t('resSharing')} className={"appLinkColor appLinkFont"} onClick={(e) => handleScroll(e, 'resultSharing')}>
+                        <Link href="#resultSharing" title={t('resSharing')} className={"appLink appLink"} onClick={(e) => handleScroll(e, 'resultSharing')}>
                             {t('resSharing')}
                         </Link>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                        <Link href="#alertSettings" title={t('alertSetting')} className={"appLinkColor appLinkFont"} onClick={(e) => handleScroll(e, 'alertSettings')} >
+                        <Link href="#alertSettings" title={t('alertSetting')} className={"appLink appLink"} onClick={(e) => handleScroll(e, 'alertSettings')} >
                             {t('alertSetting')}
                         </Link>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                        <Link href="#" title={t('searchHistory')} className={"appLinkColor appLinkFont"} onClick={(e) => handleScroll(e, 'searchHistoryDiv')}>
+                        <Link href="#" title={t('searchHistory')} className={"appLink appLink"} onClick={(e) => handleScroll(e, 'searchHistoryDiv')}>
                             {t('searchHistory')}
                         </Link>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                        <Link href="#" title={t('notes')} className={"appLinkColor appLinkFont"} onClick={(e) => handleScroll(e, 'notesDiv')}>
+                        <Link href="#" title={t('notes')} className={"appLink appLink"} onClick={(e) => handleScroll(e, 'notesDiv')}>
                             {t('notes')}
                         </Link>
                     </Typography>
@@ -652,7 +652,7 @@ function SearchResultSequence() {
                     <Row>
                         <Col lg="12" md="12" sm="12" className="pr-0 content">
                             <h6 className={"appTextColor loginTitle"}>{t('query')}</h6>
-                            <Typography className="appTextFont ml-3"><Link className={"appLinkColor"} href="#" onClick={(e)=>downloadQuerySeq(e)}>These {seqSummary && seqSummary.sdb_nb_db} <span className="text-lowercase">{seqSummary && seqSummary.sdb_seq_type}</span> sequences</Link> {t('usedInSearch')}.​</Typography>
+                            <Typography className="appTextFont ml-3"><Link className={"appLink"} href="#" onClick={(e)=>downloadQuerySeq(e)}>These {seqSummary && seqSummary.sdb_nb_db} <span className="text-lowercase">{seqSummary && seqSummary.sdb_seq_type}</span> sequences</Link> {t('usedInSearch')}.​</Typography>
                             <br />
                             <h6 className={"appTextColor loginTitle"}>{t('subjDB')}</h6>
 
@@ -768,10 +768,10 @@ function SearchResultSequence() {
                                 <Typography >
                                     <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> 
                                     <div className={(userInfo && userInfo.current_user.user_class_name === "adminium" ? ' d-block':'d-none')}>
-                                        <Link className={"appLinkColor"} href="#" onClick={(e)=>downloadTechLog(e,workflowId)}>Search Id {workflowId}</Link> consumes {seqSummary && seqSummary.usedSpace} Mb of server disk space​.​
+                                        <Link className={"appLink"} href="#" onClick={(e)=>downloadTechLog(e,workflowId)}>Search Id {workflowId}</Link> consumes {seqSummary && seqSummary.usedSpace} Mb of server disk space​.​
                                     </div>
                                     <div className={(userInfo && userInfo.current_user.user_class_name !== "adminium" ? ' d-block':'d-none')}>
-                                        <span className={"appLinkColor"+(userInfo && userInfo.current_user.user_class_name !== "adminium" ? 'd-block':'d-none')}>Search Id {workflowId}</span> consumes {seqSummary && seqSummary.usedSpace} Mb of server disk space​.​
+                                        <span className={"appLink"+(userInfo && userInfo.current_user.user_class_name !== "adminium" ? 'd-block':'d-none')}>Search Id {workflowId}</span> consumes {seqSummary && seqSummary.usedSpace} Mb of server disk space​.​
                                     </div>
                                 </Typography>
                             </Col>
@@ -789,7 +789,7 @@ function SearchResultSequence() {
                             <Row>
                                 {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
                                 <Typography className="mb-2">
-                                    The following people have access to this result. <Link className={"appLinkColor cursorPointer"}  onClick={() => setModalResultShow(true)} >Add more …​</Link></Typography>
+                                    The following people have access to this result. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >Add more …​</Link></Typography>
                                     <ShareResultsModal
                                     show={modalResultShow}
                                     data={userList}
@@ -829,11 +829,11 @@ function SearchResultSequence() {
                                 </Col>
                                 <Col lg="12" md="12" className="pr-0 content float-right">
                                     <Typography className={"float-right"}>
-                                        <Link href="#" title={t('resSharing')} className={"appLinkColor appLinkFont"} onClick={(e)=>showAlertModal(e)}>
+                                        <Link href="#" title={t('resSharing')} className={"appLink appLink"} onClick={(e)=>showAlertModal(e)}>
                                             Change Settings
                                         </Link>
                                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                                        <Link href="#" title={t('resSharing')} className={"failedTextColor appLinkFont"} onClick={(e) => removeAlert(e)}>
+                                        <Link href="#" title={t('resSharing')} className={"failedTextColor appLink"} onClick={(e) => removeAlert(e)}>
                                             Remove Alert
                                         </Link>
                                     </Typography>

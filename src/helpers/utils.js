@@ -91,9 +91,9 @@ async function mostRecentResCalculation(data,pagetype) {
             if(pagetype === "searchmanagement" || pagetype === "searchfolder")
             {
                 tempObj["info"] = <Fragment>
-                                    <a href="#" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
-                                    <a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLinkColor" /></a>
-                                    <a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
+                                    <a href="#" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLink pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
+                                    <a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLink" /></a>
+                                    <a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLink" /></a>
                                 </Fragment>
             }
             tempArr.push(tempObj);

@@ -1131,7 +1131,7 @@ function IpSeqSearch() {
                         <Row>
                             <Col sm="12" md="12">
                                 <p className="loginTitle w-75 mb-10 float-left">{t('querySequences')}</p>
-                                <Link className={"appTextFont appLinkColor float-right"} to="/help">{t('help')}</Link>
+                                <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
                             </Col>
                         </Row>
                         <Row>
@@ -1174,7 +1174,7 @@ function IpSeqSearch() {
                 <Row>
                     <Col sm="12" md="12">
                         <p className="loginTitle w-75 mb-10 float-left">{t('searchAlgorithmAndSetting')}</p>
-                        <Link className={"appTextFont appLinkColor float-right"} to="/help">{t('help')}</Link>
+                        <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
                     </Col>
                 </Row>
                 <Row>
@@ -1483,7 +1483,7 @@ function IpSeqSearch() {
                         </Accordion>
                     </Col>
                     <Col md="1" className={classes.desktopHelpLink}>
-                        <Link className="appTextFont appLinkColor float-right mr-2">{t("help")}</Link>
+                        <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
                     </Col>
                     <Col md="12">
                         <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
@@ -1589,7 +1589,7 @@ function IpSeqSearch() {
                         </Accordion>
                     </Col>
                     <Col md="12" className={classes.mobileHelpLink}>
-                        <Link className="appTextFont appLinkColor float-right mr-2">{t("help")}</Link>
+                        <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
                     </Col>
                 </Row>
                 {/* <ColoredLine color="black" /> */}
@@ -1597,7 +1597,7 @@ function IpSeqSearch() {
                 <div>
                     <Row>
                         <Col sm="12" md="12">
-                            <Link className={"appTextFont appLinkColor float-right"} to="/help">{t('help')}</Link>
+                            <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
                         </Col>
                     </Row>
                     <Row>
@@ -1859,7 +1859,7 @@ function IpSeqSearch() {
                                 </table>
                             </Col>
                             <Col md="1" className={classes.desktopHelpLink}>
-                                <Link className="appTextFont appLinkColor float-right mr-2">{t("help")}</Link>
+                                <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
                             </Col>
                         </Row>
                         {ppuType != "0" && <Row>

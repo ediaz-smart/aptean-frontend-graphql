@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         size: "20px"
     },
     textHeading: {
-        fontWeight: "700 !important",
+        // fontWeight: "700 !important",
         marginBottom: "5px"
     },
     columnPadding: {
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
     pTagMargin: {
         marginBottom: "0px",
-        fontWeight: "500"
+        // fontWeight: "500"
     },
     applicationPanelRow: {
         marginBottom: "15px",
@@ -86,24 +86,24 @@ function MostUsedPanel() {
                 </Col>
                 <Col md="3" sm="12" className={classes.columnPadding + ' mb-3'}>
                     <div className={classes.savedSearchForm}>
-                        <p className={'appTextColor ' + classes.textHeading}>{t('mostusedlink')}</p>
+                        <p className={'subHeading ' + classes.textHeading}>{t('mostusedlink')}</p>
                         <p className={classes.pTagMargin}>
-                            <Link to="/ipseqsearch" className={classes.anchorTag}>{t('ipSequence')}</Link>
+                            <Link to="/ipseqsearch" className="appLink">{t('ipSequence')}</Link>
                         </p>
-                        <p className={classes.pTagMargin}><a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
+                        <p className={classes.pTagMargin}><a className="appLink" href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
                         <p className={classes.pTagMargin}>
                             <Fragment>
-                                {userData && !userData.vmAccess && <span className={classes.pTagMargin}>{t('sequenceVariation')}</span>}
-                                {userData && userData.vmAccess && <Link to="/ipseqvariation" className={classes.anchorTag}>{t('sequenceVariation')}</Link>}
+                                {userData && !userData.vmAccess && <span className={classes.pTagMargin + " bodyText"}>{t('sequenceVariation')}</span>}
+                                {userData && userData.vmAccess && <Link to="/ipseqvariation" className="appLink">{t('sequenceVariation')}</Link>}
                             </Fragment>
                         </p>
                         <p className={classes.pTagMargin}>
                             <Fragment>
-                                {userData && !userData.abAccess && <span className={classes.pTagMargin}>{t('antibodySequence')}</span>}
-                                {userData && userData.abAccess && <Link to="/searchresantibody" className={classes.anchorTag}>{t('antibodySequence')}</Link>}
+                                {userData && !userData.abAccess && <span className={classes.pTagMargin + " bodyText"}>{t('antibodySequence')}</span>}
+                                {userData && userData.abAccess && <Link to="/searchresantibody" className="appLink">{t('antibodySequence')}</Link>}
                             </Fragment>
                         </p>
-                        <p className={classes.pTagMargin}><a className={classes.anchorTag} href={url.patentNumberLookup} target="_blank" >{t('patentnumlookup')}</a></p>
+                        <p className={classes.pTagMargin}><a className="appLink" href={url.patentNumberLookup} target="_blank" >{t('patentnumlookup')}</a></p>
                     </div>
                 </Col>
             </Row>

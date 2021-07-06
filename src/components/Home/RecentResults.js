@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	pTagMargin: {
 		marginBottom: "0px",
-		fontWeight: "500"
+		// fontWeight: "500"
 	},
 	applicationPanelRow: {
 		marginBottom: "15px"
@@ -71,8 +71,8 @@ const customStyles = {
 		'&:first-child': {
 			borderLeft: '0',
 		},
-		fontWeight:'bold',
-		color:'#4a5050'
+		fontWeight:'700',
+		color:'#777777'
 	  },
 	},
 	cells: {
@@ -80,7 +80,7 @@ const customStyles = {
 		paddingLeft: '8px', // override the cell padding for data cells
 		paddingRight: '8px',
 		borderLeft:'1px solid #0606061f',
-		borderBottom:'1px solid #0606061f',
+		// borderBottom:'1px solid #0606061f',
 		'&:first-child': {
 			borderLeft: '0',
 		},
@@ -239,9 +239,9 @@ function RecentResults() {
 				if(pagetype === "searchmanagement" || pagetype === "searchfolder")
 				{
 					tempObj["info"] = <Fragment>
-										<a href="#" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLinkColor pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
-										<a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLinkColor" /></a>
-										<a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLinkColor" /></a>
+										<a href="#" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLink pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
+										<a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLink" /></a>
+										<a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLink" /></a>
 									</Fragment>
 				}
 				tempArr.push(tempObj);
@@ -259,9 +259,9 @@ function RecentResults() {
 			{/* <ProgressBar /> */}
 			        <Row >
 						<Col>
-						<span className={'appTextColor '+classes.textHeading}>Most Recent Results</span><span className="pipeText appTextColor">|</span><span className={classes.pTagMargin}>
+						<span className={"subHeading"}>Most Recent Results</span><span className="pipeText appTextColor">|</span><span className={classes.pTagMargin + " bodyText"}>
 							{/* <a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>All Search Results</a> */}
-							<Link className={classes.anchorTag} to='/searchResult'>All Search Results</Link>
+							<Link className="appLink" to='/searchResult'>All Search Results</Link>
 						</span>
 						</Col>
 					</Row>
