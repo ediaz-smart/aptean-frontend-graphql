@@ -206,7 +206,7 @@ function SearchManagement(props) {
 	const [confirmFolderContent, setConfirmFolderContent] = useState(true);
 	const [delFolderLoaderContent, setFolderDelLoaderContent] = useState(false);
 	const [errorFolderContent, setFolderErrorContent] = useState(false);
-    const [disableFolderDelete, setDisableFolderDelete] = useState(true);
+	const [disableFolderDelete, setDisableFolderDelete] = useState(true);
 	// Move To Folder Variable
 	const [moveFolderModalShow, setMoveFolderModalShow] = React.useState(false);
 	const [moveFolderId, setMoveFolderId] = useState('');
@@ -463,8 +463,11 @@ function SearchManagement(props) {
 					{datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj)}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
 					{datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
 
-					{datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
-					{datas.type === "Variation" && <Link to={"/ipseqvariation/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>}
+					{/* {datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
+					{datas.type === "Variation" && <Link to={"/ipseqvariation/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>} */}
+
+					{datas.type === "IP Sequence" && <Link  ><RedoIcon className="mr-2 appLink" /></Link>}
+					{datas.type === "Variation" && <Link ><RedoIcon className="mr-2 appLink" /></Link>}
 
 					<a href="#" onClick={(e) => e.preventDefault()}><AccessAlarmIcon className="appLink" /></a>
 				</Fragment>
@@ -557,8 +560,8 @@ function SearchManagement(props) {
 		}
 		infoFolderIds.push(event.id)
 		setInfoFolderIds(infoFolderIds);
-		if(event.text_label == "My Searches"){
-			
+		if (event.text_label == "My Searches") {
+
 			setDisableFolderDelete(true);
 		}
 
@@ -566,7 +569,7 @@ function SearchManagement(props) {
 	};
 	const selectedFolder = (event) => {
 		setMoveFolderId(event.id);
-		
+
 	}
 	async function moveToFolder() {
 		var getIds = selectData.selectedRows.map(function (a) { return a.id; }).join(',');

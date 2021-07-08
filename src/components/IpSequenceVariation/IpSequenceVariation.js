@@ -327,6 +327,7 @@ function IpSequenceVariation() {
     const [systemControlSubmit, setSystemControlSubmit] = useState(true);
     const [systemControlSubmitText, setSystemControlSubmitText] = useState('');
     const [showCreditCalC, setShowCreditCalc] = useState(false);
+    const [noDbSelected, setNoDbSelected] = useState(false);
 
 
     let initialCreditValues = {
@@ -384,9 +385,9 @@ function IpSequenceVariation() {
 
                     nucdbs && nucdbs.length > 0 ? setNucDb(nucdbs) : setNucDb([]);
                     protdbs && protdbs.length > 0 ? setProDb(protdbs) : setProDb([]);
-                    if(qdb_seq_type && qdb_seq_type == "protein") {
+                    if (qdb_seq_type && qdb_seq_type == "protein") {
                         setNucDb([]);
-                    } else if(qdb_seq_type && qdb_seq_type == "nucloetide") {
+                    } else if (qdb_seq_type && qdb_seq_type == "nucloetide") {
                         setProDb([]);
                     }
                     redoInitialState.searchDetails = title ? title : "";
@@ -539,38 +540,38 @@ function IpSequenceVariation() {
             //     }
             // }
 
-        if (userInfo && userInfo.current_user) {
-            let userPpu = userInfo.current_user.ppu_type;
-            let currentUser = userInfo.current_user;
-            console.log('userData', userInfo)
-            setPpuType(userPpu);
+            if (userInfo && userInfo.current_user) {
+                let userPpu = userInfo.current_user.ppu_type;
+                let currentUser = userInfo.current_user;
+                console.log('userData', userInfo)
+                setPpuType(userPpu);
 
 
-            if(currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit &&  currentUser.user_class_name != "adminium")) {
-                setIsSubmitActive(false);
+                if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
+                    setIsSubmitActive(false);
 
-            }
-            if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
-                setShowCreditCalc(true);
-            }
+                }
+                if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
+                    setShowCreditCalc(true);
+                }
 
-            // if (userPpu == "0") {
-            //     setIsSubmitActive(true);
-            // } else {
-            //     setIsSubmitActive(false);
-            // }
+                // if (userPpu == "0") {
+                //     setIsSubmitActive(true);
+                // } else {
+                //     setIsSubmitActive(false);
+                // }
 
-            if (userInfo.current_user.user_class_name) {
-                setUserClassName(userInfo.current_user.user_class_name)
-            }
-            if (userInfo.current_user.accounting_group_name) {
-                setAccGroupName(userInfo.current_user.accounting_group_name)
-            }
-                if(parentId) {
+                if (userInfo.current_user.user_class_name) {
+                    setUserClassName(userInfo.current_user.user_class_name)
+                }
+                if (userInfo.current_user.accounting_group_name) {
+                    setAccGroupName(userInfo.current_user.accounting_group_name)
+                }
+                if (parentId) {
                     console.log('pare', parentId)
                     calTextCredits(null, false, 'redo')
                 }
-        }
+            }
         })()
     }, [userInfo, ppuType]);
 
@@ -579,9 +580,15 @@ function IpSequenceVariation() {
 
     const formik = useFormik({
         initialValues: redoInitialState,
-        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue),
+        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue),
         onSubmit: async (values) => {
             console.log('formikValues', values)
+            if((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
+                // setNoDbSelected(true);
+            } else {
+                setNoDbSelected(true);
+                return
+            }
 
             let sdbFilterData = [];
             if (isDocPubDate) {
@@ -792,6 +799,7 @@ function IpSequenceVariation() {
             proDb.push(id.toString());
             setProDb([...proDb]);
         }
+        setNoDbSelected(false);
         // setTimeout(function () {
         //     let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "";
         //     setIsBothDbSelected(twoDbSelected)
@@ -814,6 +822,7 @@ function IpSequenceVariation() {
                 setProDb([...proDb]);
             }
         }
+        setNoDbSelected(false);
     }
 
 
@@ -833,7 +842,7 @@ function IpSequenceVariation() {
         // }
         let text;
         text = type && (type == "isCompare" || type == "redo") ? formik.values.querySequence : e.target.value;
-        if ((e && (e.keyCode == 9 || e.type == "blur")) || type == "isCompare" || type =="redo") {
+        if ((e && (e.keyCode == 9 || e.type == "blur")) || type == "isCompare" || type == "redo") {
             // let text = formik.values.querySequence;
             console.log('textCode', text, type)
 
@@ -1086,10 +1095,10 @@ function IpSequenceVariation() {
                 errorContent={t("seqSearchErrorOccured")}
             />
             <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
-                  <Row>
+                <Row>
                     <Col lg="12" md="12" className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
-                        {t('ABsearchDisableText')}
+                            {t('ABsearchDisableText')}
                             {systemControlSubmitText}
                             {t('patienceThanksText')}
                         </Typography>
@@ -1098,10 +1107,10 @@ function IpSequenceVariation() {
                 {parentId &&
                     <Fragment>
                         <Row>
-                        <Col sm="12" md="12">
-                            <p className="loginTitle w-75 mb-10 float-left">{t('queryPreloaded')}</p>
-                        </Col>
-                    </Row>
+                            <Col sm="12" md="12">
+                                <p className="loginTitle w-75 mb-10 float-left">{t('queryPreloaded')}</p>
+                            </Col>
+                        </Row>
                         <Typography>
                             {t('redoAlertText')}
                         </Typography>
@@ -1110,8 +1119,14 @@ function IpSequenceVariation() {
                 {!parentId &&
                     <Fragment>
                         <Row>
+                            <Col sm="12" md="12">
+                                <p className="loginTitle w-75 mb-10 float-left">{t('searchDetails')}</p>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank">{t('help')}</a>
+                            </Col>
+                        </Row>
+                        <Row>
                             <Col md="6">
-                                <p className="loginTitle">{t('searchDetails')}</p>
+                                {/* <p className="loginTitle">{t('searchDetails')}</p> */}
                                 <div className="form-group">
                                     <TextInput
                                         fullWidth
@@ -1131,7 +1146,7 @@ function IpSequenceVariation() {
                         <Row>
                             <Col sm="12" md="12">
                                 <p className="loginTitle w-75 mb-10 float-left">{t('querySequences')}</p>
-                                <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
@@ -1174,7 +1189,7 @@ function IpSequenceVariation() {
                 <Row>
                     <Col sm="12" md="12">
                         <p className="loginTitle w-75 mb-10 float-left">{t('searchAlgorithmAndSetting')}</p>
-                        <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
+                        <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank">{t('help')}</a>
                     </Col>
                 </Row>
                 <Row>
@@ -1465,6 +1480,7 @@ function IpSequenceVariation() {
                                             formik.setFieldValue("docPublicDate", val);
                                         }}
                                         disabled={isDocPubDate ? false : true}
+                                        disablePast={false}
                                     />
                                     <CheckBox
                                         color="primary"
@@ -1481,7 +1497,7 @@ function IpSequenceVariation() {
                         </Accordion>
                     </Col>
                     <Col md="1" className={classes.desktopHelpLink}>
-                        <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
                     </Col>
                     <Col md="12">
                         <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
@@ -1529,6 +1545,7 @@ function IpSequenceVariation() {
                                             formik.setFieldValue("publishGQDate", val);
                                         }}
                                         disabled={isPublished ? false : true}
+                                        disablePast={false}
                                     />
                                     <CheckBox
                                         color="primary"
@@ -1553,7 +1570,7 @@ function IpSequenceVariation() {
                                         checked={isPatientDoc}
                                     />
                                     <Typography className={"float-left mt-2"}>
-                                        {t("patientDocContains")} &nbsp;&nbsp;&nbsp;
+                                        {t("patentDocContains")} &nbsp;&nbsp;&nbsp;
                                 </Typography>
                                     <SelectBox
                                         margin="normal"
@@ -1587,7 +1604,7 @@ function IpSequenceVariation() {
                         </Accordion>
                     </Col>
                     <Col md="12" className={classes.mobileHelpLink}>
-                        <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
                     </Col>
                 </Row>
                 {/* <ColoredLine color="black" /> */}
@@ -1595,9 +1612,10 @@ function IpSequenceVariation() {
                 <div>
                     <Row>
                         <Col sm="12" md="12">
-                            <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
+                            <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
                         </Col>
                     </Row>
+                    {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
                     <Row>
                         <Col md="6">
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
@@ -1776,7 +1794,7 @@ function IpSequenceVariation() {
                                 </Accordion>
                             </div>
                             }
-                            {proPersonalData && _.size(proPersonalData) > 0 &&  <div>
+                            {proPersonalData && _.size(proPersonalData) > 0 && <div>
                                 <Accordion expanded={formCheck6} onChange={() => setformCheck6(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="loginTitle m-0">
@@ -1864,9 +1882,9 @@ function IpSequenceVariation() {
                                     }
                                 </table>
                             </Col>
-                            <Col md="1" className={classes.desktopHelpLink}>
+                            {/* <Col md="1" className={classes.desktopHelpLink}>
                                 <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
-                            </Col>
+                            </Col> */}
                         </Row>
                         {ppuType != "0" && <Row>
                             <Col md="12">
@@ -1925,13 +1943,16 @@ function IpSequenceVariation() {
                             onChange={formik.handleChange}
                             fullWidth={true}
                             disabled={!saveFormValue}
+                            value={formik.values.formName ? formik.values.formName : ""}
+                            error={Boolean(formik.errors.formName)}
+                            helperText={formik.errors.formName}
                         />
                     </Col>
                 </Row>
                 <br></br>
                 <Row >
-                <Col>
-                        {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize "+ classes.submitCss} type="submit">
+                    <Col>
+                        {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize " + classes.submitCss} type="submit">
                             {t("submit")}
                         </Button>}
                         {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>

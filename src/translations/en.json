@@ -182,7 +182,7 @@
     "referenceNucDb": "Reference ​Nucleotide Databases",
     "nucPatentDb": "​Nucleotide Patent Databases",
     "sequences": "Sequences",
-    "patientDocContains": "Patient Document contains",
+    "patentDocContains": "Patent Document contains",
     "includeUnknownDates": "Include unknown dates",
     "publishedInGenomeQuest": "Published in GenomeQuest",
     "GQPatSpecificDbFilters": "GQ-Pat specific Database Filters​",

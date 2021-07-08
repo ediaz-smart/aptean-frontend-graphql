@@ -77,6 +77,10 @@ const useStyles = makeStyles((theme) => ({
     submitCss: {
         backgroundColor: "#DB862D !important"
     },
+    dbError: {
+        // textAlign: "center",
+        fontStyle: "italic"
+    },
     '@media (min-width: 768px)': {
         desktopHelpLink: {
             display: 'block'
@@ -330,6 +334,7 @@ function IpSeqSearch() {
     const [showCreditCalC, setShowCreditCalc] = useState(false);
     const [systemControlSubmitText, setSystemControlSubmitText] = useState('');
     const [isUserData, setIsUserData] = useState(false);
+    const [noDbSelected, setNoDbSelected] = useState(false);
 
 
     let initialCreditValues = {
@@ -560,9 +565,15 @@ function IpSeqSearch() {
 
     const formik = useFormik({
         initialValues: redoInitialState,
-        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue),
+        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue),
         onSubmit: async (values) => {
             console.log('formikValues', values)
+            if((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
+                // setNoDbSelected(true);
+            } else {
+                setNoDbSelected(true);
+                return
+            }
 
             let sdbFilterData = [];
             if (isDocPubDate) {
@@ -717,6 +728,9 @@ function IpSeqSearch() {
             setScoringMatrix('BLOSUM62');
             setWordSize('3');
         }
+        if(event.target.value == "motif") {
+            setIsBothDbSelected(false);
+        }
 
     };
 
@@ -771,6 +785,7 @@ function IpSeqSearch() {
             proDb.push(id.toString());
             setProDb([...proDb]);
         }
+        setNoDbSelected(false);
         // setTimeout(function () {
         //     let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "";
         //     setIsBothDbSelected(twoDbSelected)
@@ -793,6 +808,7 @@ function IpSeqSearch() {
                 setProDb([...proDb]);
             }
         }
+        setNoDbSelected(false);
     }
 
 
@@ -1110,8 +1126,14 @@ function IpSeqSearch() {
                 {!parentId &&
                     <Fragment>
                         <Row>
+                            <Col sm="12" md="12">
+                                <p className="loginTitle w-75 mb-10 float-left">{t('searchDetails')}</p>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank">{t('help')}</a>
+                            </Col>
+                        </Row>
+                        <Row>
                             <Col md="6">
-                                <p className="loginTitle">{t('searchDetails')}</p>
+                                {/* <p className="loginTitle">{t('searchDetails')}</p> */}
                                 <div className="form-group">
                                     <TextInput
                                         fullWidth
@@ -1131,7 +1153,7 @@ function IpSeqSearch() {
                         <Row>
                             <Col sm="12" md="12">
                                 <p className="loginTitle w-75 mb-10 float-left">{t('querySequences')}</p>
-                                <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
@@ -1174,7 +1196,7 @@ function IpSeqSearch() {
                 <Row>
                     <Col sm="12" md="12">
                         <p className="loginTitle w-75 mb-10 float-left">{t('searchAlgorithmAndSetting')}</p>
-                        <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
+                        <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank">{t('help')}</a>
                     </Col>
                 </Row>
                 <Row>
@@ -1483,7 +1505,7 @@ function IpSeqSearch() {
                         </Accordion>
                     </Col>
                     <Col md="1" className={classes.desktopHelpLink}>
-                        <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
                     </Col>
                     <Col md="12">
                         <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
@@ -1531,6 +1553,7 @@ function IpSeqSearch() {
                                             formik.setFieldValue("publishGQDate", val);
                                         }}
                                         disabled={isPublished ? false : true}
+                                        disablePast={false}
                                     />
                                     <CheckBox
                                         color="primary"
@@ -1555,7 +1578,7 @@ function IpSeqSearch() {
                                         checked={isPatientDoc}
                                     />
                                     <Typography className={"float-left mt-2"}>
-                                        {t("patientDocContains")} &nbsp;&nbsp;&nbsp;
+                                        {t("patentDocContains")} &nbsp;&nbsp;&nbsp;
                                 </Typography>
                                     <SelectBox
                                         margin="normal"
@@ -1597,9 +1620,10 @@ function IpSeqSearch() {
                 <div>
                     <Row>
                         <Col sm="12" md="12">
-                            <Link className={"appTextFont appLink float-right"} to="/help">{t('help')}</Link>
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
                         </Col>
                     </Row>
+                    {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
                     <Row>
                         <Col md="6">
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
@@ -1858,9 +1882,9 @@ function IpSeqSearch() {
                                     }
                                 </table>
                             </Col>
-                            <Col md="1" className={classes.desktopHelpLink}>
+                            {/* <Col md="1" className={classes.desktopHelpLink}>
                                 <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
-                            </Col>
+                            </Col> */}
                         </Row>
                         {ppuType != "0" && <Row>
                             <Col md="12">
@@ -1921,6 +1945,8 @@ function IpSeqSearch() {
                             fullWidth={true}
                             disabled={!saveFormValue}
                             value={formik.values.formName ? formik.values.formName : ""}
+                            error={Boolean(formik.errors.formName)}
+                            helperText={formik.errors.formName}
                         />
                     </Col>
                 </Row>

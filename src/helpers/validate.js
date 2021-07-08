@@ -79,7 +79,7 @@ function ChangePasswordValidate() {
     return validationSchema;
 }
 
-function IpSeqSearchValidate(seqType) {
+function IpSeqSearchValidate(seqType, saveFormValue) {
     console.log('seqType', seqType)
     const { t, i18n } = useTranslation('common');
     let validationShape = {
@@ -94,8 +94,8 @@ function IpSeqSearchValidate(seqType) {
         genePastPercentage: yup
             .number()
             .required(t('genePastPercentageReq'))
-            .min(1, 'genePastPercentageIncorrect')
-            .max(100, 'genePastPercentageIncorrect')
+            .min(1, t('genePastPercentageIncorrect'))
+            .max(100, t('genePastPercentageIncorrect'))
             .typeError(t('genePastPercentageIncorrect')),
         expectCutoff: yup
             .number()
@@ -105,7 +105,7 @@ function IpSeqSearchValidate(seqType) {
             .number()
             .required(t('fragmentStretchRequired'))
             .typeError(t('fragmentStretchNotNumber'))
-            .min(1, 'fragmentStretchNotNumber'),
+            .min(1, t('fragmentStretchNotNumber')),
         minResidues: yup
             .number()
             .required(t('required'))
@@ -114,8 +114,17 @@ function IpSeqSearchValidate(seqType) {
             .number()
             .required(t('required'))
             .typeError(t('notNumber')),
-        querySequence: yup.string()
+        querySequence: yup
+            .string()
+            .required(t('querySeqReq')),
+        querySequence: yup
+            .string()
+            // .required(t('querySeqReq'))
             .validateSeq(t('onlyAlphabetsAllowed')),
+        // formName: yup
+        //     .string()
+        //     .required()
+        //     .validateFormName(t('required'), saveFormValue)
     };
 
 
@@ -130,6 +139,12 @@ function IpSeqSearchValidate(seqType) {
             .required(t('querySeqReq'))
             .matches(/^[aA-zZ\s]+$/, t("onlyAlphabetsAllowed"))
     }*/
+    if (saveFormValue) {
+        validationShape.formName = yup
+            .string()
+            .required(t('required'))
+    }
+
     const validationSchema = yup.object().shape(validationShape);
 
     return validationSchema;
@@ -265,14 +280,14 @@ yup.addMethod(yup.string, "validateSeq", function (message) {
                     }
                 }
             }
-            if (val > 1) {
-                isValid = false;
-            }
+            // if (val > 1) {
+            //     isValid = false;
+            // }
+
             return isValid || createError({ path, message });
         }else {
             return isValid || createError({ path, message });
         }
-
 
     })
 })
@@ -331,4 +346,16 @@ function AntibodySearchValidation() {
     const validationSchema = yup.object().shape(validationShape);
     return validationSchema;
 }
+
+yup.addMethod(yup.string, "validateFormName", function(message, isSaveForm) {
+    return yup.mixed().test(`validateFormName`, message, function () {
+        const { path, createError } = this;
+        let isValid = true;
+        if(isSaveForm){
+            isValid = false;
+        }
+        return isValid || createError(path, message)
+    })
+});
+
 export default Validate;

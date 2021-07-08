@@ -49,7 +49,7 @@ export default function DatePicker(props) {
           className={classes.root+' '+props.className}
           allowKeyboardControl={props.allowKeyboardControl}
           onChange={props.onChange}
-          disablePast={true}
+          disablePast={props.disablePast}
           InputProps={{ readOnly: true }}
           disabled={props.disabled}
         />
