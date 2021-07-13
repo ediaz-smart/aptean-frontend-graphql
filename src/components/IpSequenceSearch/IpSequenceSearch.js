@@ -81,6 +81,9 @@ const useStyles = makeStyles((theme) => ({
         // textAlign: "center",
         fontStyle: "italic"
     },
+    mediumSizedTextBox: {
+        width: "20%"
+    },
     '@media (min-width: 768px)': {
         desktopHelpLink: {
             display: 'block'
@@ -565,7 +568,7 @@ function IpSeqSearch() {
 
     const formik = useFormik({
         initialValues: redoInitialState,
-        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue),
+        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue, searchAlgorithmValue),
         onSubmit: async (values) => {
             console.log('formikValues', values)
             if((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
@@ -616,6 +619,7 @@ function IpSeqSearch() {
                 }
                 sdbFilterData.push(obj);
             }
+            let userMail = userInfo && userInfo.current_user && userInfo.current_user.email ? userInfo.current_user.email : '';
             console.log('sdbFilterData.toString()', sdbFilterData)
             let data = {
                 qdb_seq: values.querySequence,
@@ -623,7 +627,7 @@ function IpSeqSearch() {
                 qdb_id: "", // will have such value for virtual query database, not included in this release yet
                 searchtype: "FTO", // leave it as always "FTO"
                 title: values.searchDetails, // Workflow name
-                email: sendMailAfterSearch ? localStorage.getItem('userName') : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
+                email: sendMailAfterSearch ? userMail : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
                 nucandprot: isBothDbSelected ? "on" : "", // "on" when selecting both NUC and PRO databases
                 strat_name: searchAlgorithmValue, // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
                 /*
@@ -717,6 +721,11 @@ function IpSeqSearch() {
 
     function handleErrorModal() {
         setShowErrorModal(!showErrorModal);
+    }
+
+    function closeSaveModal() {
+        setShowSuccessModal(false);
+        history.push('/home')
     }
 
     const handleSearchAlgorithm = (event) => {
@@ -1093,6 +1102,7 @@ function IpSeqSearch() {
                 show={showSuccessModal}
                 onMessage={t('searchSubmitted')}
                 type="seqSearch"
+                saveCallBack={closeSaveModal}
             />
             <ContactSupportErrorModal
                 show={showErrorModal}
@@ -1348,6 +1358,8 @@ function IpSeqSearch() {
                                     className={classes.smallTextBox + ' float-left'}
                                     value={formik.values.fragmentAminoAcid}
                                     onChange={formik.handleChange}
+                                    error={formik.touched.fragmentAminoAcid && Boolean(formik.errors.fragmentAminoAcid)}
+                                    helperText={formik.touched.fragmentAminoAcid && formik.errors.fragmentAminoAcid}
                                 />
                                 <Typography className={"float-left mt-2"}>
                                     &nbsp;&nbsp;% {t("identityOrMore")}
@@ -1430,7 +1442,7 @@ function IpSeqSearch() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        className={"float-left"}
+                                        className={"float-left "+ classes.mediumSizedTextBox}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;{t("and")}&nbsp;&nbsp;
@@ -1445,7 +1457,7 @@ function IpSeqSearch() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.maxResidues && Boolean(formik.errors.maxResidues)}
                                         helperText={formik.touched.maxResidues && formik.errors.maxResidues}
-                                        className={"float-left"}
+                                        className={"float-left " + classes.mediumSizedTextBox}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;&nbsp;{t("residuesInLength")}

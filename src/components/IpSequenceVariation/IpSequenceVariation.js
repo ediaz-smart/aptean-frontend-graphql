@@ -78,6 +78,9 @@ const useStyles = makeStyles((theme) => ({
     submitCss: {
         backgroundColor: "#DB862D !important"
     },
+    mediumSizedTextBox: {
+        width: "20%"
+    },
     '@media (min-width: 768px)': {
         desktopHelpLink: {
             display: 'block'
@@ -580,7 +583,7 @@ function IpSequenceVariation() {
 
     const formik = useFormik({
         initialValues: redoInitialState,
-        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue),
+        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue, searchAlgorithmValue),
         onSubmit: async (values) => {
             console.log('formikValues', values)
             if((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
@@ -632,13 +635,14 @@ function IpSequenceVariation() {
                 sdbFilterData.push(obj);
             }
             console.log('sdbFilterData.toString()', sdbFilterData)
+            let userMail = userInfo && userInfo.current_user && userInfo.current_user.email ? userInfo.current_user.email : '';
             let data = {
                 qdb_seq: values.querySequence,
                 qdb_seq_type: sequenceTypeValue, // nucleotide or protein, query sequence type based on the above query seq.
                 qdb_id: "", // will have such value for virtual query database, not included in this release yet
                 searchtype: "FTO", // leave it as always "FTO"
                 title: values.searchDetails, // Workflow name
-                email: sendMailAfterSearch ? localStorage.getItem('userName') : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
+                email: sendMailAfterSearch ? userMail : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
                 // nucandprot: isBothDbSelected, // "on" when selecting both NUC and PRO databases
                 strat_name: searchAlgorithmValue, // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
                 /*
@@ -735,6 +739,11 @@ function IpSequenceVariation() {
         setShowErrorModal(!showErrorModal);
     }
 
+    function closeSaveModal() {
+        setShowSuccessModal(false);
+        history.push('/home')
+    }
+
     const handleSearchAlgorithm = (event) => {
         setSearchAlgorithm(event.target.value);
         if (sequenceTypeValue == "nucleotide") {
@@ -744,6 +753,19 @@ function IpSequenceVariation() {
             setScoringMatrix('BLOSUM62');
             setWordSize('3');
         }
+        // genePastPercentage: 80,
+        // expectCutoff: 10,
+        // fragmentStretch: 50,
+        // fragmentAminoAcid: 96,
+        // if(event.target.value == 'kerr') {
+        //     formik.values.fragmentStretch = 50;
+        //     formik.values.fragmentAminoAcid = 96;
+        //     formik.values.expectCutoff = 10;
+        // } else if(event.target.value == 'blast') {
+        //     formik.values.fragmentStretch = 50;
+        //     formik.values.fragmentAminoAcid = 96;
+        //     formik.values.genePastPercentage = 50;
+        // }
     };
 
     const handleSequenceType = (event) => {
@@ -1086,6 +1108,7 @@ function IpSequenceVariation() {
                 show={showSuccessModal}
                 onMessage={t('searchSubmitted')}
                 type="seqSearch"
+                saveCallBack={closeSaveModal}
             />
             <ContactSupportErrorModal
                 show={showErrorModal}
@@ -1332,7 +1355,7 @@ function IpSequenceVariation() {
                                 <Typography className={"float-left mt-2"}>
                                     &nbsp;&nbsp;{t("aminoAcidWith")} &nbsp;&nbsp;
                             </Typography>
-                                <TextInput
+                            <TextInput
                                     fullWidth={false}
                                     id="fragmentAminoAcid"
                                     name="fragmentAminoAcid"
@@ -1341,6 +1364,8 @@ function IpSequenceVariation() {
                                     className={classes.smallTextBox + ' float-left'}
                                     value={formik.values.fragmentAminoAcid}
                                     onChange={formik.handleChange}
+                                    error={formik.touched.fragmentAminoAcid && Boolean(formik.errors.fragmentAminoAcid)}
+                                    helperText={formik.touched.fragmentAminoAcid && formik.errors.fragmentAminoAcid}
                                 />
                                 <Typography className={"float-left mt-2"}>
                                     &nbsp;&nbsp;% {t("identityOrMore")}
@@ -1421,7 +1446,7 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        className={"float-left"}
+                                        className={"float-left " + classes.mediumSizedTextBox}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;{t("and")}&nbsp;&nbsp;
@@ -1436,7 +1461,7 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.maxResidues && Boolean(formik.errors.maxResidues)}
                                         helperText={formik.touched.maxResidues && formik.errors.maxResidues}
-                                        className={"float-left"}
+                                        className={"float-left " + classes.mediumSizedTextBox}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;&nbsp;{t("residuesInLength")}

@@ -79,8 +79,8 @@ function ChangePasswordValidate() {
     return validationSchema;
 }
 
-function IpSeqSearchValidate(seqType, saveFormValue) {
-    console.log('seqType', seqType)
+function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
+    console.log('seqType', seqType, searchAlgorithm)
     const { t, i18n } = useTranslation('common');
     let validationShape = {
         searchDetails: yup
@@ -90,41 +90,25 @@ function IpSeqSearchValidate(seqType, saveFormValue) {
         alignments: yup
             .number()
             .required(t('alignmentsReq'))
-            .typeError(t('alignmentsNotNumber')),
-        genePastPercentage: yup
-            .number()
-            .required(t('genePastPercentageReq'))
-            .min(1, t('genePastPercentageIncorrect'))
-            .max(100, t('genePastPercentageIncorrect'))
-            .typeError(t('genePastPercentageIncorrect')),
-        expectCutoff: yup
-            .number()
-            .required(t('expectCutoffRequired'))
-            .typeError(t('expectCutoffNotNumber')),
-        fragmentStretch: yup
-            .number()
-            .required(t('fragmentStretchRequired'))
-            .typeError(t('fragmentStretchNotNumber'))
-            .min(1, t('fragmentStretchNotNumber')),
+            .typeError(t('alignmentsNotNumber'))
+            .min(1, t('alignmentNotValid'))
+            .max(1000000, t('alignmentNotValid')),
         minResidues: yup
             .number()
             .required(t('required'))
-            .typeError(t('notNumber')),
+            .typeError(t('notNumber'))
+            .min(3, t('minResiduesNotValid')),
         maxResidues: yup
             .number()
             .required(t('required'))
             .typeError(t('notNumber')),
-        querySequence: yup
-            .string()
-            .required(t('querySeqReq')),
+        // querySequence: yup
+        //     .string()
+        //     .required(t('querySeqReq')),
         querySequence: yup
             .string()
             // .required(t('querySeqReq'))
-            .validateSeq(t('onlyAlphabetsAllowed')),
-        // formName: yup
-        //     .string()
-        //     .required()
-        //     .validateFormName(t('required'), saveFormValue)
+            .validateSeq(t('onlyAlphabetsAllowed'))
     };
 
 
@@ -144,6 +128,33 @@ function IpSeqSearchValidate(seqType, saveFormValue) {
             .string()
             .required(t('required'))
     }
+    if(searchAlgorithm && searchAlgorithm == "kerr") {
+        validationShape.genePastPercentage = yup
+            .number()
+            .required(t('genePastPercentageReq'))
+            .min(1, t('genePastPercentageIncorrect'))
+            .max(100, t('genePastPercentageIncorrect'))
+            .typeError(t('genePastPercentageIncorrect'))
+    } else if(searchAlgorithm && searchAlgorithm == "blast") {
+        validationShape.expectCutoff = yup
+            .number()
+            .required(t('expectCutoffRequired'))
+            .typeError(t('expectCutoffNotNumber'))
+            .min(0, t('expectCutOffErr'))
+            .max(100, t('expectCutOffErr'))
+    } else if(searchAlgorithm && searchAlgorithm == "fragment") {
+        validationShape.fragmentStretch = yup
+            .number()
+            .required(t('fragmentStretchRequired'))
+            .typeError(t('fragmentStretchNotNumber'))
+            .min(1, t('fragmentStretchNotNumber'))
+        validationShape.fragmentAminoAcid = yup
+            .number()
+            .required(t('genePastPercentageReq'))
+            .min(1, t('genePastPercentageIncorrect'))
+            .max(100, t('genePastPercentageIncorrect'))
+            .typeError(t('genePastPercentageIncorrect'))
+    } 
 
     const validationSchema = yup.object().shape(validationShape);
 
@@ -242,13 +253,17 @@ yup.addMethod(yup.string, "validateStrategy", function (strategyType,t) {
     })
 })
 yup.addMethod(yup.string, "validateSeq", function (message) {
+    const { t, i18n } = useTranslation('common');
     // const { message } = args;
     // console.log(args,'args');
-    return yup.mixed().test(`validateSeq`, message, function (text) {
+    return yup.mixed().test(`validateSeq`,message, function (text) {
         const { path, createError } = this;
         let isValid = true;
         let val = 0;
+        let returnMsg='';
+        console.log('requiredMsg', t('required'))
         if (text && text !== undefined && text !== 'undefined') {
+            returnMsg = message;
             let lines = text.split(/[\r\n]+/); // split by \n, \r and \r\n, and filter out empty lines
             if (/^\s*>\s*\S+/.test(text)) { // FASTA
                 // count > numbers
@@ -280,13 +295,16 @@ yup.addMethod(yup.string, "validateSeq", function (message) {
                     }
                 }
             }
-            // if (val > 1) {
-            //     isValid = false;
-            // }
-
-            return isValid || createError({ path, message });
+            if (val > 1 && path != 'querySequence') {
+                isValid = false;
+            }
+            return isValid || createError({ path, message: returnMsg });
         }else {
-            return isValid || createError({ path, message });
+            if(path == 'querySequence' && val == 0) {
+                isValid = false;
+                returnMsg = t('required');
+            }
+            return isValid || createError({ path, message: returnMsg });
         }
 
     })
