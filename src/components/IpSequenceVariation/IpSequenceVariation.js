@@ -48,8 +48,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '-2px'
     },
     arrowIconTitle: {
-        marginLeft: '-8px',
-        fontSize: '16px'
+        marginLeft: '-8px'
     },
     seqText: {
         margin: '10px'
@@ -61,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
         marginRight: "10px"
     },
     checkBoxContent: {
-        fontSize: "14px",
+        // fontSize: "14px",
         width: "80%",
         textAlign: "initial",
         marginLeft: "10px",
@@ -101,8 +100,7 @@ const useStyles = makeStyles((theme) => ({
             marginTop: '-2px'
         },
         arrowIconTitle: {
-            marginLeft: '-8px',
-            fontSize: '16px'
+            marginLeft: '-8px'
         }
     },
     '@media (min-width: 768px)': {
@@ -331,6 +329,8 @@ function IpSequenceVariation() {
     const [systemControlSubmitText, setSystemControlSubmitText] = useState('');
     const [showCreditCalC, setShowCreditCalc] = useState(false);
     const [noDbSelected, setNoDbSelected] = useState(false);
+    const [warningMsg, setWarningMsg] = useState("");
+    const [isWarningReturned, setIsWarningReturned] = useState(false);
 
 
     let initialCreditValues = {
@@ -669,7 +669,8 @@ function IpSequenceVariation() {
                 protdbs: proDb, // Similar like nucdbs
                 template_name: saveFormValue ? values.formName : '', // Set this value when selecting "Save this form for later use as"
                 parent_id: parentId ? parentId : "", // When having the patent workflow, for the "redo" scenario
-                loadvmtables: "on"
+                loadvmtables: "on",
+                ignore_warning: isWarningReturned ? "1" : "",
             };
             if (searchAlgorithmValue == "kerr") {
                 // Genepast parameters
@@ -697,6 +698,10 @@ function IpSequenceVariation() {
             if (resp && resp.response_status == 0) {
                 setShowSuccessModal(true);
                 closeSuccessModal();
+            } else if(resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
+                setWarningMsg("Warning: "+resp.response_content.qdb.msg);
+                setIsWarningReturned(true);
+                window.scrollTo(0,0);
             } else {
                 let setMessage = resp && resp.response_content && resp.response_content.type ? resp.response_content.type : "Unknown";
                 setMessage = resp && resp.response_content && resp.response_content.qdb && resp && resp.response_content && resp.response_content.qdb.msg ? resp.response_content.qdb.msg : "Unknown";
@@ -706,6 +711,7 @@ function IpSequenceVariation() {
         },
     });
 
+    console.log('warning', warningMsg, isWarningReturned)
 
     function list_to_tree(list) {
         var map = {}, node, roots = [], i;
@@ -1127,11 +1133,21 @@ function IpSequenceVariation() {
                         </Typography>
                     </Col>
                 </Row>
+                <Row>
+                    <Col lg="12" md="12" className={"mb-2 " + (isWarningReturned ? 'd-block' : 'd-none')}>
+                    <Typography className="text-danger">
+                    Please notice the warnings below and either fix it or submit as is.
+                        </Typography>
+                    <Typography className="text-danger">
+                        {warningMsg}
+                        </Typography>
+                    </Col>
+                </Row>
                 {parentId &&
                     <Fragment>
                         <Row>
                             <Col sm="12" md="12">
-                                <p className="loginTitle w-75 mb-10 float-left">{t('queryPreloaded')}</p>
+                                <p className="subHeading w-75 mb-10 float-left">{t('queryPreloaded')}</p>
                             </Col>
                         </Row>
                         <Typography>
@@ -1143,13 +1159,13 @@ function IpSequenceVariation() {
                     <Fragment>
                         <Row>
                             <Col sm="12" md="12">
-                                <p className="loginTitle w-75 mb-10 float-left">{t('searchDetails')}</p>
+                                <p className="subHeading w-75 mb-10 float-left">{t('searchDetails')}</p>
                                 <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
                             <Col md="6">
-                                {/* <p className="loginTitle">{t('searchDetails')}</p> */}
+                                {/* <p className="subHeading">{t('searchDetails')}</p> */}
                                 <div className="form-group">
                                     <TextInput
                                         fullWidth
@@ -1168,7 +1184,7 @@ function IpSequenceVariation() {
                         <hr />
                         <Row>
                             <Col sm="12" md="12">
-                                <p className="loginTitle w-75 mb-10 float-left">{t('querySequences')}</p>
+                                <p className="subHeading w-75 mb-10 float-left">{t('querySequences')}</p>
                                 <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank">{t('help')}</a>
                             </Col>
                         </Row>
@@ -1199,7 +1215,7 @@ function IpSequenceVariation() {
                             <Col md="9">
                                 <FormControl component="fieldset">
                                     <RadioGroup row aria-label="These are" name="customized-radios" value={sequenceTypeValue} onChange={handleSequenceType}>
-                                        <span className={classes.theseAreText}>{t("theseAre")}</span>
+                                        <span className={classes.theseAreText + " bodyText"}>{t("theseAre")}</span>
                                         <FormControlLabel value="nucleotide" control={<RadioButton />} label="Nucleotide Sequences" />
                                         <FormControlLabel value="protein" control={<RadioButton />} label="Protein Sequences" />
                                     </RadioGroup>
@@ -1211,7 +1227,7 @@ function IpSequenceVariation() {
                 <hr />
                 <Row>
                     <Col sm="12" md="12">
-                        <p className="loginTitle w-75 mb-10 float-left">{t('searchAlgorithmAndSetting')}</p>
+                        <p className="subHeading w-75 mb-10 float-left">{t('searchAlgorithmAndSetting')}</p>
                         <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank">{t('help')}</a>
                     </Col>
                 </Row>
@@ -1395,7 +1411,7 @@ function IpSequenceVariation() {
                                 onChange={formik.handleChange}
                                 error={formik.touched.alignments && Boolean(formik.errors.alignments)}
                                 helperText={formik.touched.alignments && formik.errors.alignments}
-                                className={"float-left"}
+                                className={"float-left " + classes.mediumSizedTextBox}
                             />
                             <Typography className={"float-left " + classes.seqText}>
                                 &nbsp;&nbsp;{t("bestAlignmentsPerQuerySeq")}&nbsp;&nbsp;
@@ -1424,11 +1440,11 @@ function IpSequenceVariation() {
                 <Row>
                     <Col md="11">
                         <Accordion square expanded={seqDBFilter} onChange={() => setSeqDBFilter(prevState => !prevState)}>
-                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="loginTitle p-0">
-                                <p className="loginTitle m-0">
+                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
+                                <p className="subHeading m-0">
                                     {seqDBFilter && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                     {!seqDBFilter && <ArrowRightIcon className={classes.arrowIcon} />}
-                                    <b className={classes.arrowIconTitle}>{t("generalSeqDbFilter")}</b>
+                                    <span className={classes.arrowIconTitle}>{t("generalSeqDbFilter")}</span>
                                 </p>
                             </AccordionSummary>
                             <AccordionDetails className="appTextColor">
@@ -1526,14 +1542,14 @@ function IpSequenceVariation() {
                     </Col>
                     <Col md="12">
                         <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
-                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="loginTitle p-0">
-                                <p className="loginTitle m-0">
+                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
+                                <p className="subHeading m-0">
                                     {specificDBFilter && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                     {!specificDBFilter && <ArrowRightIcon className={classes.arrowIcon} />}
-                                    <b className={classes.arrowIconTitle}>{t("GQPatSpecificDbFilters")}</b>
+                                    <span className={classes.arrowIconTitle}>{t("GQPatSpecificDbFilters")}</span>
                                 </p>
                             </AccordionSummary>
-                            <AccordionDetails className="loginTitle">
+                            <AccordionDetails className="subHeading">
                                 <Col md="12">
                                     <CheckBox
                                         color="primary"
@@ -1616,9 +1632,9 @@ function IpSequenceVariation() {
                                         variant="outlined"
                                         value={formik.values.patientDocInp}
                                         onChange={formik.handleChange}
-                                        // error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
-                                        // helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        className={"float-left mx-4"}
+                                        error={formik.touched.patientDocInp && Boolean(formik.errors.patientDocInp)}
+                                        helperText={formik.touched.patientDocInp && formik.errors.patientDocInp}
+                                        className={"float-left mx-4 "+ classes.mediumSizedTextBox}
                                         disabled={isPatientDoc ? false : true}
                                     />
                                     <Typography className={"float-left mt-2"}>
@@ -1645,12 +1661,12 @@ function IpSequenceVariation() {
                         <Col md="6">
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
-                                    <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="loginTitle p-0">
-                                        <p className="loginTitle m-0">
+                                    <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="subHeading p-0">
+                                        <p className="subHeading m-0">
                                             {formCheck1 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck1 && <ArrowRightIcon className={classes.arrowIcon} />}
 
-                                            <b className={classes.arrowIconTitle}>{t("nucPatentDb")}</b>
+                                            <span className={classes.arrowIconTitle}>{t("nucPatentDb")}</span>
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>                                            {nucPatentData.map((test, index) => (
@@ -1666,7 +1682,7 @@ function IpSequenceVariation() {
                                                 disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                 color="primary"
                                             />
-                                            <label className={classes.checkBoxContent}>{test.label}</label>
+                                            <label className={classes.checkBoxContent + " bodyText" + " bodyText"}>{test.label}</label>
                                         </div>
                                     ))
                                     }
@@ -1677,11 +1693,11 @@ function IpSequenceVariation() {
                             {nucReferenceData && _.size(nucReferenceData) > 0 && <div>
                                 <Accordion expanded={formCheck3} onChange={() => setformCheck3(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
-                                        <p className="loginTitle m-0">
+                                        <p className="subHeading m-0">
                                             {formCheck3 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck3 && <ArrowRightIcon className={classes.arrowIcon} />}
 
-                                            <b className={classes.arrowIconTitle}>{t("referenceNucDb")}</b>
+                                            <span className={classes.arrowIconTitle}>{t("referenceNucDb")}</span>
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -1698,7 +1714,7 @@ function IpSequenceVariation() {
                                                     disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                     color="primary"
                                                 />
-                                                <label className={classes.checkBoxContent}>{test.label}</label>
+                                                <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1709,10 +1725,10 @@ function IpSequenceVariation() {
                             {nucGenBankData && _.size(nucGenBankData) > 0 && <div>
                                 <Accordion expanded={formCheck5} onChange={() => setformCheck5(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
-                                        <p className="loginTitle m-0">
+                                        <p className="subHeading m-0">
                                             {formCheck5 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck5 && <ArrowRightIcon className={classes.arrowIcon} />}
-                                            <b className={classes.arrowIconTitle}>{t("genBankNucDb")}</b>
+                                            <span className={classes.arrowIconTitle}>{t("genBankNucDb")}</span>
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -1729,7 +1745,7 @@ function IpSequenceVariation() {
                                                     disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                     color="primary"
                                                 />
-                                                <label className={classes.checkBoxContent}>{test.label}</label>
+                                                <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1740,10 +1756,10 @@ function IpSequenceVariation() {
                             {nucPersonalData && _.size(nucPersonalData) > 0 && <div>
                                 <Accordion expanded={formCheck7} onChange={() => setformCheck7(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
-                                        <p className="loginTitle m-0">
+                                        <p className="subHeading m-0">
                                             {formCheck7 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck7 && <ArrowRightIcon className={classes.arrowIcon} />}
-                                            <b className={classes.arrowIconTitle}>{t("personalNucDb")}</b>
+                                            <span className={classes.arrowIconTitle}>{t("personalNucDb")}</span>
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -1757,11 +1773,11 @@ function IpSequenceVariation() {
                             {proPatentData && _.size(proPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
-                                        <p className="loginTitle m-0">
+                                        <p className="subHeading m-0">
                                             {formCheck2 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck2 && <ArrowRightIcon className={classes.arrowIcon} />}
 
-                                            <b className={classes.arrowIconTitle}>{t("proteinPatDb")}</b>
+                                            <span className={classes.arrowIconTitle}>{t("proteinPatDb")}</span>
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -1779,7 +1795,7 @@ function IpSequenceVariation() {
                                                     color="primary"
                                                 />
                                                 &nbsp; &nbsp;
-                                           <label className={classes.checkBoxContent}>{test.label}</label>
+                                           <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1790,11 +1806,11 @@ function IpSequenceVariation() {
                             {proReferenceData && _.size(proReferenceData) > 0 && <div>
                                 <Accordion expanded={formCheck4} onChange={() => setformCheck4(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
-                                        <p className="loginTitle m-0">
+                                        <p className="subHeading m-0">
                                             {formCheck4 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck4 && <ArrowRightIcon className={classes.arrowIcon} />}
 
-                                            <b className={classes.arrowIconTitle}>{t("referenceProDb")}</b>
+                                            <span className={classes.arrowIconTitle}>{t("referenceProDb")}</span>
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -1811,7 +1827,7 @@ function IpSequenceVariation() {
                                                     disabled={sequenceTypeValue == "protein" ? false : true}
                                                     color="primary"
                                                 />
-                                                <label className={classes.checkBoxContent}>{test.label}</label>
+                                                <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1822,10 +1838,10 @@ function IpSequenceVariation() {
                             {proPersonalData && _.size(proPersonalData) > 0 && <div>
                                 <Accordion expanded={formCheck6} onChange={() => setformCheck6(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
-                                        <p className="loginTitle m-0">
+                                        <p className="subHeading m-0">
                                             {formCheck6 && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                             {!formCheck6 && <ArrowRightIcon className={classes.arrowIcon} />}
-                                            <b className={classes.arrowIconTitle}>{t("personalProDb")}</b>
+                                            <span className={classes.arrowIconTitle}>{t("personalProDb")}</span>
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -1842,7 +1858,7 @@ function IpSequenceVariation() {
                         <ColoredLine color="#f3f2f2" />
                         <Row>
                             <Col md="11">
-                                <p className="loginTitle">Search Fee</p>
+                                <p className="subHeading">Search Fee</p>
                                 {ppuType == "1" && <p>{t('executingSearchCharges')}</p>}
                                 {ppuType == "2" && <p>{t('executingSearchCredits')}</p>}
                                 <table className="ml-5">
@@ -1859,7 +1875,7 @@ function IpSequenceVariation() {
                                             <td><p>${creditValues.ppu1ProSubTotal}</p></td>
                                             <td><p className="ml-3">{t('proSubTotal')}</p></td>
                                         </tr>
-                                        <tr className="loginTitle">
+                                        <tr className="subHeading">
                                             <td>
                                                 <p>${creditValues.ppu1Total}</p>
                                             </td>
@@ -1887,7 +1903,7 @@ function IpSequenceVariation() {
                                             <td><p className="ml-3">{t('proCreditSubTotal')}</p></td>
                                         </tr>
 
-                                        <tr className="loginTitle">
+                                        <tr className="subHeading">
                                             <td>
                                                 <p>{creditValues.ppu2TotalCredit}</p>
                                             </td>
@@ -1895,7 +1911,7 @@ function IpSequenceVariation() {
                                                 <p className="ml-3">{t('totalCredits')}</p>
                                             </td>
                                         </tr>
-                                        <tr className="loginTitle">
+                                        <tr className="subHeading">
                                             <td>
                                                 <p>{creditValues.ppu2RemainingCredits}</p>
                                             </td>

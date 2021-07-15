@@ -97,18 +97,24 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
             .number()
             .required(t('required'))
             .typeError(t('notNumber'))
-            .min(3, t('minResiduesNotValid')),
+            .min(3, t('minResiduesNotValid'))
+            .typeError(t('notNumber')),
         maxResidues: yup
             .number()
             .required(t('required'))
-            .typeError(t('notNumber')),
+            .typeError(t('notNumber'))
+            .min(1, t('shouldBeGreaterThanZero')),
         // querySequence: yup
         //     .string()
         //     .required(t('querySeqReq')),
         querySequence: yup
             .string()
             // .required(t('querySeqReq'))
-            .validateSeq(t('onlyAlphabetsAllowed'))
+            .validateSeq(t('onlyAlphabetsAllowed')),
+        patientDocInp: yup
+            .number()
+            .min(1, t('shouldBeGreaterThanZero'))
+            .typeError(t('notNumber')),
     };
 
 
@@ -302,7 +308,7 @@ yup.addMethod(yup.string, "validateSeq", function (message) {
         }else {
             if(path == 'querySequence' && val == 0) {
                 isValid = false;
-                returnMsg = t('required');
+                returnMsg = t('querySeqReq');
             }
             return isValid || createError({ path, message: returnMsg });
         }

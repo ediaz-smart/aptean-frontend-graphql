@@ -266,5 +266,6 @@
     "redoAlertText": "This search is being redone, you cannot change your query, but can change other options on this form.",
     "queryPreloaded": "Query Preloaded",
     "alignmentNotValid": "Please input a valid number from 1 to 1000000",
-    "minResiduesNotValid": "Minimum allowed value is 3"
+    "minResiduesNotValid": "Minimum allowed value is 3",
+    "shouldBeGreaterThanZero": "Value must be greater than 0"
 }
