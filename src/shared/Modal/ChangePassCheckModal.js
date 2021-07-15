@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 		color:'white',
 		backgroundColor:'#008EC5 !important',
         border: '2px solid #1F4E79 !important',
+		borderColor:'#1F4E79',
 
 	},
 	buttonStyleCancel:{

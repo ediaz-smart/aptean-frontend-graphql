@@ -14,8 +14,8 @@ function hideLoader() {
 
    async function getSavedSearchData() {
         try {
-            let apiurl = "do=gqtemplate.get_all&format=json&context=GqWfIpSearch_launch";
-            // let apiurl = 'do=gqtemplate.get_all_ft&format=json&context[]=GqWfIpSearch_launch&context[]=GqWfVMIpSearch_launch';
+            // let apiurl = "do=gqtemplate.get_all&format=json&context=GqWfIpSearch_launch";
+            let apiurl = 'do=gqtemplate.get_all_ft&format=json&context[]=GqWfVMIpSearch_launch&context[]=GqWfIpSearch_launch';
             return await get(apiurl)
                 .then((response) => {
                     // hideLoader();
@@ -36,28 +36,44 @@ function hideLoader() {
     }
     async function deleteSavedTemplate(data,count)
     {
+        let apiurl = '';
         try {
-            let apiurl = '';
+           
             if(data && count)
             {
-                if(count == 1)
+                 if(count == 1)
                 {
-                    const templateName = data.name;
-                    const templateType = data.map && data.map.workflow_type ? data.map.workflow_type : 'GqWfIpSearch';
-                    let apiurl = 'do=gqtemplate.delete&context='+templateType+'_launch&template_name='+templateName+'&format=json';
+                    const templateName = data[0].name;
+                    const templateType = data[0].map && data[0].map.workflow_type ? data[0].map.workflow_type : 'GqWfIpSearch';
+                   
+                     apiurl = 'do=gqtemplate.delete&context='+templateType+'_launch&template_name='+templateName+'&format=json';
 
                 }else{
-                    
+                    let apiurls = 'do=gqtemplate.deletemulti&format=json&';
+                    let dataMapping = [];
+                    data.forEach(item =>{
+                        const renamedUrl = 'template_name['+item.name+']='+item.map.workflow_type;
+                        dataMapping.push(renamedUrl);
+                      
+                    });
+                    let combineUrl = dataMapping.join('&');
+                     apiurl = apiurls+combineUrl;
+                    console.log(apiurl+combineUrl,"dataMapping dataMapping dataMapping dataMapping dataMapping");
+
+
+                    // template_name[Sequences Search]=GqWfIpSearch_launch
                 }
-                  console.log(data,"GqWfIpSearch_launch GqWfIpSearch_launch GqWfIpSearch_launch GqWfIpSearch_launch");
-                  console.log(count,"count count count count count");
+                  
 
             }
+            console.log(apiurl,"apiurl apiurl");
             // let apiurl = 'do=gqtemplate.deletemulti&template_name[hi]=GqWfIpSearch_launch&format=json'
             return await get(apiurl)
+
                 .then((response) => {
                     // hideLoader();
-                    // console.log(JSON.stringify(response),"getSavedSearchData getSavedSearchData");
+                    debugger;
+                    console.log(JSON.stringify(response),"getSavedSearchData getSavedSearchData");
                     return response;
                 })
                 .catch((error) => {

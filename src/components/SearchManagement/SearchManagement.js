@@ -812,11 +812,11 @@ function SearchManagement(props) {
 						clearSelectedRows={clearCheckedRow}
 
 					/>
-					{defaultTitle && defaultTitle != "Recent Search Results" && <Col className='float-right' md="12">
+					{defaultTitle && defaultTitle != "Recent Search Results" && <Col className='d-flex justify-content-center' md="12">
 						<CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton />
 					</Col>}
 
-					<Col className={"float-left " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
+					<Col className={"float-left px-0 " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'loginSubmit')} type="submit">{t('deleteSelected')}</Button>
 						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('moveToFolder')}</Button>
 						<Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('mergeResult')}</Button>

@@ -10,12 +10,59 @@ import Link from '@material-ui/core/Link';
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
 		borderBottom: 'none !important',
-		display:'block !important',
-		padding:'10px'
+		paddingTop:'11px',
+		paddingRight: '4px',
+		marginTop:'-7px',
 	},
 	footerDiv:{
-		padding:'0 30px'
-	}
+		padding:'0 30px',
+		marginTop:'-20px',
+		marginRight: '-31px',	
+	},
+	modalBoxContent :{
+		maxHeight: '675px',
+	},
+	modalClassContent:{
+		position: 'absolute',
+		width: '96%',
+		height: '37%',
+		top: '30%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
+	},
+	colorContainer:{
+		backgroundColor: 'gainsboro',
+		marginTop: '-38px',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		paddingBottom: '65px',
+		marginLeft: '7px',
+		marginRight: '7px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
+	buttonStyle:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		backgroundColor:'##DB862D !important',
+        border: '2px solid ##DB862D !important',
+		marginTop: '4px',
+
+	},
+	buttonStyleCancel:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		color:'white',
+		backgroundColor:'#008EC5 !important',
+		border: '2px solid #1F4E79 !important',
+		borderColor:'#1F4E79',
+
+	},
 }));
 
 function PromptModal({show,modalCallback,hideModal}) {
@@ -25,21 +72,24 @@ function PromptModal({show,modalCallback,hideModal}) {
 			size="lg"
 			aria-labelledby="contained-modal-title-vcente"
 			centered
-			contentClassName='modalPromptContent'
+			contentClassName={classes.modalClassContent}
+			className={classes.modalBoxContent}
 			show={show}
 		>
-			<Modal.Header className={classes.modalHeader+"  w-100"}>
+				
+			<Modal.Header  className={classes.modalHeader}>
 				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon className={"float-right"} onClick={hideModal} /></Link>
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
-				
+		   	<div className={classes.colorContainer}>
+			   <br></br> 
 				<h5>Please confirm that you want to log out.</h5>
-				<br></br>  <br></br>
+				<br></br>  <br></br>  
 				<div className={classes.footerDiv}>
-					<Button onClick={modalCallback} className="float-right m-2 text-initial primaryBtn" color="primary" variant="contained">Log out</Button>
-					<Button onClick={hideModal} className="float-right m-2 text-capitalize appTextColor disableBtnBorder"  color="default" variant="contained">Cancel</Button>
+					<Button onClick={modalCallback} className='accountInfo'  variant="contained">Log out</Button>
+					<Button onClick={hideModal} className={classes.buttonStyleCancel}   variant="contained">Cancel</Button>
 				</div>
-				
+				</div>
 			</Modal.Body>
 			{/* <Modal.Footer>
 				<Button onClick={props.onHide}>Close</Button>

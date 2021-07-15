@@ -8,19 +8,64 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
-		borderBottom: 'none !important'
+		borderBottom: 'none !important',
+		paddingTop:'11px',
+		paddingRight: '4px',
+		marginTop:'-7px',
+
 	},
 	footerDiv:{
 		padding:'0 30px',
-		
-
+		marginTop:'-20px',
+		marginRight: '-31px',	
 	},
 	buttonStyle:{
 		float:'right',
 		textTransform: 'none',
 		margin:'4px',
+		backgroundColor:'##DB862D !important',
+        border: '2px solid ##DB862D !important',
+		marginTop: '4px',
 
-	}
+	},
+	buttonStyleCancel:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		color:'white',
+		backgroundColor:'#008EC5 !important',
+		border: '2px solid #1F4E79 !important',
+		borderColor:'#1F4E79',
+
+
+	},
+	modalBoxContent :{
+		maxHeight: '675px',
+	},
+	modalClassContent:{
+		position: 'absolute',
+		width: '96%',
+		height: '37%',
+		top: '30%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
+	},
+	colorContainer:{
+		backgroundColor: 'gainsboro',
+		marginTop: '-38px',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		paddingBottom: '65px',
+		marginLeft: '7px',
+		marginRight: '7px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
+	
+
 
 }));
 
@@ -28,42 +73,51 @@ function SavedSearchModal(props) {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation('common');
     let mailUrl = "mailto:" + supportMail+"?subject="+props.subjectText;
-    function sendRemoveData()
-	{ 
-		console.log(props.onMessage,"props.onMessage) props.onMessage)");
-        props.removeShare(props.onMessage);
 
-	}
-    console.log(props,"props props props props props");
+    console.log(props,"props");
 	return (
 		<Modal
 			{...props}
 			size="lg"
 			aria-labelledby="contained-modal-title-vcente"
 			centered
-			contentClassName='modalPromptContent'
+			contentClassName={classes.modalClassContent}
+			className={classes.modalBoxContent}
+
 		>
 			<Modal.Header closeButton className={classes.modalHeader}>
-				{/* <Modal.Title id="contained-modal-title-vcenter">
-           Logout
-          </Modal.Title> */}
+			   
+			
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
-				{/* <h5>{props.onMessage}</h5> */}
-				<h5>Are you sure you want to delete the selected saved search forms?</h5>
+                {/* <h5>{props.onMessage}</h5> */}
+                <div className={classes.colorContainer}>
+                <h5>Are you sure you want to delete the selected saved search forms?</h5>
                  <br></br>
-                 <h5>This action cannot be undone.</h5>
-                 <br></br>
-				<div className={classes.footerDiv}>
-					<Button onClick={props.onHide} className={classes.buttonStyle}  color="default" variant="contained">Cancel</Button>
-					<Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Delete</Button> 
+                <h5>This action cannot be undone.</h5>
+                {/* <p> 
+                        <spoan>{t("tryAgainOrContact")}</spoan>
+                        <br></br>
+                        <br></br>
+                        <span>
+                            <a className={"appTextFont appLink"} href={mailUrl} target="_blank" rel="noopener noreferrer">{supportMail}</a>
+                        </span>
+                        <span>{t("forAssistance")}</span>
+              </p> */}
+                <br></br>
+                <div className={classes.footerDiv}>
 
-				</div>
-				
-				
-			</Modal.Body>
+                    <Button onClick={props.tryAgain} className='accountInfo' color="default"  variant="contained">Delete</Button> 
+                    <Button onClick={props.onHide} className={classes.buttonStyleCancel}  color="default" variant="contained">Cancel</Button>
+                </div>
+                
+                </div>
+            </Modal.Body>
+
+			
+			
 			{/* <Modal.Footer>
-				<Button onClick={props.onHide}>Close</Button>
+				
 			</Modal.Footer> */}
 		</Modal>
 	);

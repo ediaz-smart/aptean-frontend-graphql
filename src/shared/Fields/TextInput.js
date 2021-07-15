@@ -14,11 +14,22 @@ const useStyles = makeStyles((theme) => ({
         "& .MuiOutlinedInput-root": {
             borderRadius: "7px"
         },
+        "&::placeholder" : {
+            fontFamily: 'Arial, Helvetica, sans-serif ,Helvetica Neue',
+            fontSize: '14px',
+            color: '#D3D3D3',
+            fontWeight: '400',
+            fontStyle: 'italic',
+          }
         
     },
     materialUILabel: {
-        fontStyle: 'italic',
-        lineHeight:'6px'
+            fontFamily: 'Arial, Helvetica, sans-serif ,Helvetica Neue',
+            fontSize: '14px',
+            color: '#D3D3D3',
+            fontWeight: '400',
+            fontStyle: 'italic',
+            lineHeight: '2px'
     }
 }));
 

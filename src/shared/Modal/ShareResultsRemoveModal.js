@@ -20,7 +20,8 @@ const useStyles = makeStyles((theme) => ({
 		textTransform: 'none',
 		margin:'4px',
 		backgroundColor:'#008EC5 !important',
-        border: '2px solid #008EC5 !important',
+		border: '2px solid #1F4E79 !important',
+		borderColor:'#1F4E79',
 
 	},
 	buttonStyleCancel:{

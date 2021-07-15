@@ -3,8 +3,17 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
     root: {
-        padding: '6px'
+        padding: '6px',
+       
+        "& .MuiCheckbox-root": {
+            fontStyle:'italic',
+            color: '#008EC5',
+        },
+        "& .PrivateSwitchBase-input-87":{
+            color: '#008EC5',
+        }
     }
+    
 }));
 export default function Checkboxes(props) {
     const classes = useStyles();

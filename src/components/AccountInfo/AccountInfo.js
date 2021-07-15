@@ -53,10 +53,11 @@ const useStyles = makeStyles((theme) => ({
   border: '2px solid #CCCCCC' ,
   color:'#777777',
   textTransform: 'capitalize',
-  '&:hover': {
-    backgroundColor: '#EEEEEE',
-    boxShadow: 'none',
-  },
+  boxShadow: 'none',
+  // '&:hover': {
+  //   pointerEvents: 'none',
+  //   boxShadow: 'none',
+  // },
  },
  loginSubmitCancel:{
   backgroundColor: '#0182C5',
@@ -140,8 +141,8 @@ function AccountInfo() {
         data.accounting_group_name ?  setuserAccountingGroup(data.accounting_group_name) : setuserAccountingGroup('');
         data.user_class_name ? setuserAccountType(data.user_class_name) : setuserAccountType('');
         // moment(values.docPublicDate).format('YYYYMMDD')
-        data.create_time ? setuserAccountCreated(moment(data.create_time).format("DD/MM/YYYY")) : setuserAccountCreated('');
-        data.expire_time ?  setuserAccountExpires('After ' + moment(data.expire_time).format("MM/DD/YYYY")) :  setuserAccountExpires('Never');
+        data.create_time ? setuserAccountCreated(data.create_time) : setuserAccountCreated('');
+        data.expire_time ?  setuserAccountExpires('After ' + moment(data.expire_time).format("MMM Do YY")) :  setuserAccountExpires('Never');
         data.clitoken ? setuserAccountClitoken(data.clitoken) : setuserAccountClitoken('');
         data.dspace_workflow ?  setuserAnalyses(bytesToSize(data.dspace_workflow)) :  setuserAnalyses(0);
         data.dspace_seqdb ? setuserSeqDatabase(bytesToSize(data.dspace_seqdb)) : setuserSeqDatabase(0);
@@ -378,14 +379,17 @@ function AccountInfo() {
              {passValCheck !=0 ? <Button variant="contained" className={classes.loginSubmitButton} type="submit">
                         {t('aisavechange')}
                         </Button>
-                        : <Button variant="contained" className={classes.loginSubmitDis} disabled>
+                        : 
+                        <Button variant="contained" disableRipple={true} color="default" className={classes.loginSubmitDis}  >
                         {t('aisavechange')}
                         </Button>
                         }
+                        {/* <Button  className='cancelButtonDisable' color="default" disableRipple={true}  variant="contained">Delete Selected Saved Search Forms</Button>  */}
           </div>
-          {/* <Button {(passwordForm ? 'd-block' : 'd-none')} variant="contained" type="submit">{t('aisavechange')}</Button> */}
+          {/* <Button {(passwordForm ? 'd-block' : 'd-none')} variant="contained" disableRipple='true' type="submit">{t('aisavechange')}</Button> */}
           {/* <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
                             Submit
+
              </Button> */}
           </div>
           <AccountInfoModal

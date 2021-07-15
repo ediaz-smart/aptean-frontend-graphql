@@ -133,8 +133,8 @@ function Forgotpassword() {
                      className={(passwordForm ? 'd-block' : 'd-none')}>
 
                         <h5 className="loginTitle">{t('pwdRecovery')}</h5>
-                        <p className="appTextColor mb-4">{t('pwdRecoveryTitle')}</p>
-                        {errorMsg == 1 ? <h6 className="loginTitle failedTextColor">The code was incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> : errorMsg == 3 ? <h6 className="loginTitle failedTextColor">Invalid username</h6>:'' }
+                        <p className="bodyText mb-4">{t('pwdRecoveryTitle')}</p>
+                        {errorMsg == 1 ? <h6 className="loginFailedTitle">The code was incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> : errorMsg == 3 ? <h6 className="loginFailedTitle">Invalid username</h6>:'' }
 
                         <div className="form-group">
                             <TextInput 
@@ -168,7 +168,7 @@ function Forgotpassword() {
                         </div>
                        
                         <div className="form-group">
-                            <Button variant="contained" color="primary" className="float-right loginSubmit text-capitalize" type="submit">
+                            <Button variant="contained" color="primary" className="accountInfo" type="submit">
                                 {t('submit')}
                             </Button>
                         </div>

@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useHistory } from 'react-router-dom';
 
 import GQLogo from '../assets/image/GenomeQuest.svg';
-import PromptModal from './Modal/PromptModal';
+import LogoutModal from './Modal/LogoutModal';
 import LogoutService from '../services/logout';
 import AccountService from '../services/accountInfo';
 
@@ -215,10 +215,16 @@ export default function Header(props) {
                         {/* <Button color="inherit" ><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button> */}
                         <Button color="inherit" onClick={() => setModalShow(true)}><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button>
 
-                        <PromptModal
+                        {/* <PromptModal
                             show={modalShow}
                             hideModal={() => setModalShow(false)}
                             modalCallback={logout}
+                        /> */}
+                         <LogoutModal
+                            show={modalShow}
+                            onHide={() => setModalShow(false)}
+                            tryAgain={()=> logout()}
+                            // onMessage={errorMessage}
                         />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit"><span className="appLink text-capitalize appTextFont" >{t('documentation')}</span></Button>

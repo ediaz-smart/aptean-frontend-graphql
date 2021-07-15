@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #1F4E79 !important',
 		borderColor:'#1F4E79',
 
-
 	},
 	modalBoxContent :{
 		maxHeight: '675px',
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	colorContainer:{
 		backgroundColor: 'gainsboro',
-		marginTop: '-38px',
+		marginTop: '-32px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		paddingBottom: '65px',
@@ -69,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function ContentErrorModal(props) {
+function LogoutModal(props) {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation('common');
     let mailUrl = "mailto:" + supportMail+"?subject="+props.subjectText;
@@ -92,14 +91,15 @@ function ContentErrorModal(props) {
 			<Modal.Body className={"text-center "}>
                 {/* <h5>{props.onMessage}</h5> */}
                 <div className={classes.colorContainer}>
-                <h5>The current password was incorrect.</h5>
+              
                  <br></br>
-                <h5>Please try again.</h5>
-               
+                <h5>Please confirm that you want to log out..</h5>
+              
                 <br></br>
+				<br></br>
                 <div className={classes.footerDiv}>
 
-                    <Button onClick={props.tryAgain} className='accountInfo' color="default"  variant="contained">Try Again</Button> 
+                    <Button onClick={props.tryAgain} className='accountInfo' color="default"  variant="contained">Log out</Button> 
                     <Button onClick={props.onHide} className={classes.buttonStyleCancel}  color="default" variant="contained">Cancel</Button>
                 </div>
                 
@@ -115,4 +115,4 @@ function ContentErrorModal(props) {
 	);
 }
 
-export default ContentErrorModal;
+export default LogoutModal;

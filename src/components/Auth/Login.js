@@ -135,7 +135,7 @@ function Login(props) {
                 
                 <form name="loginForm" onSubmit={formik.handleSubmit} className={classes.loginDiv+" content"}>
                     {!errorMsg && <h5 className="loginTitle">{t('loginAccount')}</h5>}
-                    {errorMsg && <h6 className="loginTitle failedTextColor">{errorMsgText}</h6>}
+                    {errorMsg && <h6 className="loginFailedTitle">{errorMsgText}</h6>}
                     {errorMsg && loginTry == 0 && 
                     <p>Please Contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.</p>
                     }
@@ -167,7 +167,7 @@ function Login(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <Button color="primary" variant="contained" className="float-right loginSubmit text-capitalize" type="submit">
+                        <Button color="primary" variant="contained" className="accountInfo" type="submit">
                         {t('submit')}
                         </Button>
                     </div>
