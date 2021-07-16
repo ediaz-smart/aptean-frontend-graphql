@@ -27,6 +27,7 @@ import { getSeqSearchInit, submitSeqSearch } from '../../services/seqSearchServi
 import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStructure';
 import SaveContentModal from '../../shared/Modal/SaveContentModal';
 import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModal';
+import SavedSearch from '../../services/savedsearch';
 
 //validation
 import Validate from '../../helpers/validate';
@@ -268,6 +269,7 @@ function IpSequenceVariation() {
     const userInfo = useSelector(state => state.setUserInfo);
 
     const { parentId } = useParams();
+    const { tempname } = useParams();
 
 
     const [seqDBFilter, setSeqDBFilter] = React.useState(true);
@@ -377,6 +379,82 @@ function IpSequenceVariation() {
     useEffect(() => {
         (async () => {
             let resp;
+            console.log(tempname,"tempname tempname tempname tempname ")
+            console.log(parentId,"parentId parentId parentId parentId ")
+            if(tempname)
+            { 
+               const dat = await SavedSearch.getParticularTemplate(tempname,'Variation');
+               if (dat && dat.response_content && dat.response_content.map) {
+                const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = dat.response_content.map;
+                console.log('qdb_seq_type', qdb_seq_type)
+                qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
+                qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
+
+                nucdbs && nucdbs.length > 0 ? setNucDb(nucdbs) : setNucDb([]);
+                protdbs && protdbs.length > 0 ? setProDb(protdbs) : setProDb([]);
+                if (qdb_seq_type && qdb_seq_type == "protein") {
+                    setNucDb([]);
+                } else if (qdb_seq_type && qdb_seq_type == "nucloetide") {
+                    setProDb([]);
+                }
+                redoInitialState.searchDetails = title ? title : "";
+                redoInitialState.querySequence = qdb_seq ? qdb_seq : "";
+                strat_name ? setSearchAlgorithm(strat_name) : setSearchAlgorithm("kerr");
+                redoInitialState.alignments = best_hit_keep_max ? redoInitialState.alignments = best_hit_keep_max : "";
+                // nucandprot && nucandprot == "on" ? setIsBothDbSelected(true) : setIsBothDbSelected(false);
+                redoInitialState.formName = template_name ? redoInitialState.formName = template_name : "";
+                template_name ? setSaveFormValue(true) : setSaveFormValue(false);
+                email ? setSendMailAfterSearch(true) : setSendMailAfterSearch(false);
+                redoInitialState.minResidues = seqlenrange_low ? seqlenrange_low : 6;
+                redoInitialState.maxResidues = seqlenrange_high ? seqlenrange_high : 100000;
+
+                // setRedoInitialState({...redoInitialState});
+
+                if (strat_name && strat_name == "kerr" && strat_genepast_perc_id && strat_genepast_perc_id_over) {
+                    redoInitialState.genePastPercentage = strat_genepast_perc_id;
+                    redoInitialState.genepastPercentageOver = strat_genepast_perc_id_over;
+                    // setRedoInitialState({...redoInitialState});
+                } else if (strat_name == "blast") {
+                    if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_blast_word_size_nuc && strat_blast_scoring_matrix_nuc) {
+                        setWordSize(strat_blast_word_size_nuc);
+                        setScoringMatrix(strat_blast_scoring_matrix_nuc);
+                    } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro && strat_blast_scoring_matrix_pro) {
+                        setWordSize(strat_blast_word_size_pro);
+                        setScoringMatrix(strat_blast_scoring_matrix_pro);
+                    }
+                    redoInitialState.expectCutoff = strat_blast_eval_cutoff ? strat_blast_eval_cutoff : 10;
+                    // setRedoInitialState({...redoInitialState});
+                    strat_blast_hsp && strat_blast_hsp == "on" ? setProcessHsp(true) : setProcessHsp(false);
+                } else if (strat_name == "fragment") {
+                    if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_fragment_window_length_nuc && strat_fragment_perc_id_nuc) {
+                        redoInitialState.fragmentStretch = strat_fragment_window_length_nuc;
+                        redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_nuc;
+                    } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_fragment_window_length_pro && strat_fragment_perc_id_pro) {
+                        redoInitialState.fragmentStretch = strat_fragment_window_length_pro;
+                        redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_pro;
+                    }
+                }
+                let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
+                redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
+                    if (item && item.P && item.P == "SEQUENCE_D1") {
+                        console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
+                        redoInitialState.docPublicSel = item.O;
+                        redoInitialState.docPublicDate = moment(item.V);
+                        setIsDocPubDate(true);
+                    } else if (item && item.P && item.P == "SEQUENCE_D2") {
+                        redoInitialState.publishGQSel = item.O;
+                        redoInitialState.publishGQDate = moment(item.V);
+                        setIsPublished(true);
+                    } else if (item && item.P && item.P == "SEQUENCE_P9") {
+                        redoInitialState.patientDocSel = item.O;
+                        redoInitialState.patientDocInp = item.V;
+                        setIsPatientDoc(true);
+                    }
+                    // setRedoInitialState({...redoInitialState});
+                });
+                setRedoInitialState({ ...redoInitialState });
+            }
+            }
             if (parentId) {
                 resp = await getSeqSearchInit(history, parentId);
                 console.log('redoresp', resp)

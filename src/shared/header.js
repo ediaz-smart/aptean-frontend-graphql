@@ -173,7 +173,7 @@ export default function Header(props) {
                     <span className={'text-capitalize appTextFont ' + classes.profileText} >{userName}</span>
                 </Button>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={() => setModalShow(true)}>
                 <Button color="inherit"><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button>
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>

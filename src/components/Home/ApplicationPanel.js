@@ -108,6 +108,7 @@ function ApplicationPanel() {
        history.push('/search')
        
     }
+     
 
 
     return (
@@ -119,10 +120,25 @@ function ApplicationPanel() {
                             <p className={'subHeading '+classes.textHeading}>{t('savedSearchForms')}</p>
                             {searchFormsData && searchFormsData.length > 0 && searchFormsData.map((dbVal, index) => {
                                if(index <= 8)
-                               {
+                               { 
                                 return (
-                                    <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href='#' onClick={e => e.preventDefault()}> {dbVal.name} </a></p>
+                                     <Fragment>
+                                     {
+                                        dbVal.type == 'GqWfIpSearch_launch'  ?  
+                                        <Fragment>
+                                        <Link to={"/ipseqsearch/template/" +dbVal.name} >{dbVal.name}</Link> 
+                                        <br></br>
+                                        </Fragment>
+                                         :
+                                         <Fragment>
+                                         <Link to={"/ipseqvariation/template/" +dbVal.name} >{dbVal.name}</Link>
+                                         <br></br>
+                                        </Fragment>
 
+                                    }
+                                     </Fragment>
+              
+          
                                 )
                                }
                             })

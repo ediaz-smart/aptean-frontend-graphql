@@ -187,6 +187,7 @@ function SearchResults() {
     const [thing, setThing] = useState([]);
     const handleAction = value => setThing(value);
     const [modalShow, setModalShow] = React.useState(false); 
+    const [checkTemplate, setCheckTemplate] = React.useState(false); 
     const [errorMessage, setErrorMessage] = useState('');
     const [checkValue, setCheckValue] =  React.useState(false); 
 
@@ -282,17 +283,26 @@ function SearchResults() {
     {
 
       savedData.map(datas => {
+        console.log(datas,"typeContent typeContent typeContent typeContent typeContent")
         if(datas.type == 'GqWfVMIpSearch_launch')
         {
-            datas.typeContent = 'Variation';
+            datas.typeContent = 'Variation'; 
+            datas.nameContent =  <Fragment>
+           <Link to={"/ipseqvariation/template/" +datas.name} >{datas.name}</Link>
+           {/* <a href="#" onClick={(e) => routeToTemplateForm(e, datas)} target="_blank">{datas.name}</a> */}
+         </Fragment>
+            
         }
         else if(datas.type == 'GqWfIpSearch_launch')
         {
            datas.typeContent = 'IP Sequence';
+           datas.nameContent =  <Fragment>
+           <Link to={"/ipseqsearch/template/" +datas.name} >{datas.name}</Link>
+           {/* <a href="#" onClick={(e) => routeToTemplateForm(e, datas)} target="_blank">{datas.name}</a> */}
+         </Fragment>
         }
-        datas.nameContent =  <Fragment>
-        <a href="#" onClick={(e) => routeToTemplateForm(e, datas)} target="_blank">{datas.name}</a>
-      </Fragment>
+
+       
         // console.log(datas,"constrainTemplateData")
 
       });
@@ -301,6 +311,7 @@ function SearchResults() {
     {
          e.preventDefault();
          console.log(tempObj,"tempObj tempObj tempObj");
+
 
     }
     async function deleteTemplate() {
@@ -347,7 +358,7 @@ function SearchResults() {
        }
       // setModalShow(true);
      }
-//  console.log(searchFormsData,"searchFormsData");
+   console.log(thing,"thing thing thing");
 
   return (
     <div >

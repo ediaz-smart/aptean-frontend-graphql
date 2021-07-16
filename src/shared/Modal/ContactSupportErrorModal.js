@@ -10,15 +10,71 @@ import { Link, useHistory } from 'react-router-dom';
 import { supportMail } from '../../config';
 
 const useStyles = makeStyles((theme) => ({
+    // modalHeader: {
+    //     borderBottom: 'none !important'
+    // },
+    // footerDiv: {
+    //     padding: '0 30px'
+    // },
     modalHeader: {
-        borderBottom: 'none !important'
-    },
-    footerDiv: {
-        padding: '0 30px'
-    },
+		borderBottom: 'none !important',
+		paddingTop:'11px',
+		paddingRight: '4px',
+		marginTop:'-7px',
+
+	},
+	footerDiv:{
+		padding:'0 30px',
+		marginTop:'-20px',
+		marginRight: '-31px',	
+	},
     contentPadding: {
         padding: "45px 0px 45px 0px"
-    }
+    },
+    modalBoxContent :{
+		maxHeight: '675px',
+	},
+	modalClassContent:{
+		position: 'absolute',
+		width: '96%',
+		height: '51%',
+		top: '30%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
+	},
+	colorContainer:{
+		backgroundColor: 'gainsboro',
+		marginTop: '-33px',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		paddingBottom: '65px',
+		marginLeft: '7px',
+		marginRight: '7px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
+    buttonStyle:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		backgroundColor:'##DB862D !important',
+        border: '2px solid ##DB862D !important',
+		marginTop: '4px',
+
+	},
+	buttonStyleCancel:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		color:'white',
+		backgroundColor:'#008EC5 !important',
+        border: '2px solid #1F4E79 !important',
+		borderColor:'#1F4E79',
+
+	},
 }));
 
 function ContactSupportErrorModal(props) {
@@ -36,12 +92,17 @@ function ContactSupportErrorModal(props) {
             size="lg"
             aria-labelledby="contained-modal-title-vcente"
             centered
-            contentClassName='modalPromptContent'
+            contentClassName={classes.modalClassContent}
+			className={classes.modalBoxContent}
         >
+        			<Modal.Header closeButton className={classes.modalHeader}>
+                    </Modal.Header>
             <Modal.Body className={"text-center"}>
-                <div className={classes.contentPadding}>
+                <div className={classes.colorContainer}>
+                <br></br>
                     <p>{props.errorContent}</p>
                     <p>{t("errorCodeIs")}{props.errorCode}</p>
+                    <br></br>
                     <p>
                         <spoan>{t("tryAgainOrContact")}</spoan>
                         <span>
@@ -49,9 +110,11 @@ function ContactSupportErrorModal(props) {
                         </span>
                         <span>{t("forAssistance")}</span>
                     </p>
+                    <br></br>
                     <div className={classes.footerDiv}>
-                        <Button onClick={() => redirect()} className="float-right m-2" color="default" variant="contained">{t("cancel")}</Button>
-                        <Button onClick={()=>props.modalCallBack()} className="float-right m-2" color="primary" variant="contained">{t("tryAgain")}</Button>
+                    <Button onClick={()=>props.modalCallBack()} className='accountInfo'  variant="default">{t("tryAgain")}</Button>
+
+                        <Button onClick={() => redirect()} className={classes.buttonStyleCancel} color="default" variant="contained">{t("cancel")}</Button>
 
                     </div>
                 </div>

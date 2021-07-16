@@ -34,6 +34,38 @@ function hideLoader() {
         }
 
     }
+    async function getParticularTemplate(tempName,type)
+    {
+        let apiurl ;
+        try {
+            
+            if(type == 'Sequence')
+            {
+                 apiurl = 'do=gqtemplate.get&context=GqWfIpSearch_launch&template_name='+tempName+'&format=json';
+
+            }
+            else{
+                apiurl = 'do=gqtemplate.get&context=GqWfVMIpSearch_launch&template_name='+tempName+'&format=json';
+
+            }
+
+            return await get(apiurl)
+                .then((response) => {
+                    // hideLoader();
+                    console.log(JSON.stringify(response),"getParticularTemplate getParticularTemplate");
+                    return response;
+                })
+                .catch((error) => {
+                    //   hideLoader();
+                    // toast.error('Failed to change password');
+                    console.log("error::", error);
+
+                });
+        } catch (error) {
+            toast.error(error.response_content.message);
+            console.error(error, "errors");
+        }
+    }
     async function deleteSavedTemplate(data,count)
     {
         let apiurl = '';
@@ -93,7 +125,9 @@ function hideLoader() {
 
 const savedsearch = {
     getSavedSearchData,
-    deleteSavedTemplate
+    deleteSavedTemplate,
+    getParticularTemplate,
+
 };
 
 export default savedsearch;

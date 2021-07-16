@@ -59,6 +59,7 @@ class Routes extends React.Component {
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                     <Route exact path="/ipseqsearch" title="ipseqsearch" component={IpSequenceSearch} />
                     <Route exact path="/ipseqsearch/:parentId" title="ipseqsearch" component={IpSequenceSearch} />
+                    <Route exact path="/ipseqsearch/template/:tempname" title="ipseqsearch" component={IpSequenceSearch} />
                     <Route exact path="/searchresseq" title="searchresseq" component={SearchResultSequence} />
                     <Route exact path="/searchresseq/:workflowId" title="searchresseq" component={SearchResultSequence} />
                     <Route exact path="/searchresantibody" title="searchresantibody" component={SearchResultAntibody} />
@@ -68,6 +69,8 @@ class Routes extends React.Component {
                     <Route exact path="/merge" component={MergeResults} />
                     <Route exact path="/ipseqvariation" title="ipseqvariation" component={IpSequenceVariation} />
                     <Route exact path="/ipseqvariation/:parentId" title="ipseqvariation" component={IpSequenceVariation} />
+                    <Route exact path="/ipseqvariation/template/:tempname" title="ipseqvariation" component={IpSequenceVariation} />
+
                     <Route exact path="/report/folder" component={ResultReportFolder} />
                     <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
 

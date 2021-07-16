@@ -12,7 +12,8 @@ export const getUserServerInfo=() => async(dispatch) =>{
         .then(async (response) => {
             if(response && response.response_status == 0)
             {
-                // console.log('getServerInfo', response.response_content)
+                debugger;
+                console.log(' getServerInfo getServerInfo getServerInfo getServerInfo getServerInfo getServerInfo getServerInfo', response.response_content)
                 dispatch(setUserInfo(response.response_content));
             }else {
                 if(response && typeof response.response_content === 'object' && response.response_content !== null){

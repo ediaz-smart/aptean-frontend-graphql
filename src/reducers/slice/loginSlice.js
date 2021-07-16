@@ -16,8 +16,11 @@ export const submitLogin = (data,history, t) => async (dispatch) => {
     postdata.append("GQPASSWORD", data.GQPASSWORD);
     return post(url.login, postdata,history)
         .then(async (response) => {
+            console.log(response,"response response response response response response response");
             if(response && response.response_status == 0)
             {
+                debugger;
+                console.log(response,"response response response response response response response");
                 await dispatch(getUserServerInfo());
                 toast.success(t('loginSuccess'));
                 localStorage.setItem('isLoggedIn', true);
