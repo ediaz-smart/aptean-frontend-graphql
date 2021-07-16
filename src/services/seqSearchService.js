@@ -50,37 +50,23 @@ export async function getSeqSearchInit(history, parentId) {
 
 
 export const submitSeqSearch = (data,history, t) => {
-    // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
-   // const history = useHistory();
-   console.log('getdata', data)
-    return post(url.seqSearchSubmit, data,history)
+    try {
+        showLoader();
+        return post(url.seqSearchSubmit, data,history)
         .then(async (response) => {
-            if(response )
-            {
-                console.log('seqresponse', response)
-                return response;
-                // toast.success('loginSuccess');
-                // localStorage.setItem('isLoggedIn', true);
-                // localStorage.setItem('userName', data.GQUSERID);
-                // dispatch(setUser({GQUSERID: data.GQUSERID,isLoggedIn: true }));
-                // history.push('/home');
+            if(response){
+                hideLoader();
+            return response;
             }else {
                 console.log('seqerrorresponse', response)
-
-                // let errorMsg = 'Unable to Login';
-                // if(response && typeof response.response_content === 'object' && response.response_content !== null){
-                //     errorMsg = response.response_content.message;
-                // }
-                // toast.error(errorMsg);
-                // dispatch(setUser({isLoggedIn: false }));
             }
         })
         .catch((error) => {
+            hideLoader();
             toast.error('failed');
-            console.log("error::", error);
-
-            // return dispatch(loginError(error));
-            // dispatch(showMessage({ message: error }));
         });
+    } catch(error) {
+        hideLoader();
+    }   
 };
 

@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
         height: "20px"
     },
     theseAreText: {
-        margin: "7px 20px 10px 0px"
+        margin: "9px 20px 10px 0px"
     },
     submitCss: {
         backgroundColor: "#DB862D !important"
@@ -343,6 +343,7 @@ function IpSeqSearch() {
     const [noDbSelected, setNoDbSelected] = useState(false);
     const [warningMsg, setWarningMsg] = useState("");
     const [isWarningReturned, setIsWarningReturned] = useState(false);
+    const [errorHeading, setErrorHeading] = useState("");
 
 
     let initialCreditValues = {
@@ -709,6 +710,7 @@ function IpSeqSearch() {
                 searchtype: "FTO", // leave it as always "FTO"
                 title: values.searchDetails, // Workflow name
                 email: sendMailAfterSearch ? userMail : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
+                send_email: sendMailAfterSearch ? "on" : "",
                 nucandprot: isBothDbSelected ? "on" : "", // "on" when selecting both NUC and PRO databases
                 strat_name: searchAlgorithmValue, // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
                 /*
@@ -764,14 +766,18 @@ function IpSeqSearch() {
                 setShowSuccessModal(true);
                 closeSuccessModal();
             } else if(resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
-                setWarningMsg("Warning: "+resp.response_content.qdb.msg);
+                // setWarningMsg("Warning: "+resp.response_content.qdb.msg);
                 setIsWarningReturned(true);
-                window.scrollTo(0,0);
+                setShowErrorModal(true);
+                setErrorMsg("Warning: "+resp.response_content.qdb.msg);
+                setErrorHeading('Please notice the warnings below and either fix it or submit as is.')
+                // window.scrollTo(0,0);
             } else {
-                let setMessage = resp && resp.response_content && resp.response_content.type ? resp.response_content.type : "Unknown";
-                setMessage = resp && resp.response_content && resp.response_content.qdb && resp && resp.response_content && resp.response_content.qdb.msg ? resp.response_content.qdb.msg : "Unknown";
+                let setMessage = resp && resp.response_content && resp.response_content.message ? resp.response_content.message : "Unknown";
+                // setMessage = resp && resp.response_content && resp.response_content.qdb && resp && resp.response_content && resp.response_content.qdb.msg ? resp.response_content.qdb.msg : "Unknown";
                 setShowErrorModal(true);
                 setErrorMsg(setMessage);
+                setErrorHeading(t("seqSearchErrorOccured"))
             }
         },
     });
@@ -1196,7 +1202,7 @@ function IpSeqSearch() {
                 errorCode={errorMsg}
                 modalCallBack={handleErrorModal}
                 subjectText={subjectText}
-                errorContent={t("seqSearchErrorOccured")}
+                errorContent={errorHeading}
             />
             <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
                 <Row>
@@ -1208,7 +1214,7 @@ function IpSeqSearch() {
                         </Typography>
                     </Col>
                 </Row>
-                <Row>
+                {/* <Row>
                     <Col lg="12" md="12" className={"mb-2 " + (isWarningReturned ? 'd-block' : 'd-none')}>
                     <Typography className="text-danger">
                     Please notice the warnings below and either fix it or submit as is.
@@ -1217,7 +1223,7 @@ function IpSeqSearch() {
                         {warningMsg}
                         </Typography>
                     </Col>
-                </Row>
+                </Row> */}
                 {parentId &&
                     <Fragment>
                         <Row>
@@ -1943,12 +1949,12 @@ function IpSeqSearch() {
                                             <td><p>${creditValues.ppu1ProSubTotal}</p></td>
                                             <td><p className="ml-3">{t('proSubTotal')}</p></td>
                                         </tr>
-                                        <tr className="subHeading">
+                                        <tr>
                                             <td>
-                                                <p>${creditValues.ppu1Total}</p>
+                                                <p className="subHeading">${creditValues.ppu1Total}</p>
                                             </td>
                                             <td>
-                                                <p className="ml-3">{t('total')}</p>
+                                                <p className="ml-3 subHeading">{t('total')}</p>
                                             </td>
                                         </tr>
                                     </Fragment>
@@ -1971,20 +1977,20 @@ function IpSeqSearch() {
                                             <td><p className="ml-3">{t('proCreditSubTotal')}</p></td>
                                         </tr>
 
-                                        <tr className="subHeading">
+                                        <tr>
                                             <td>
-                                                <p>{creditValues.ppu2TotalCredit}</p>
+                                                <p className="subHeading">{creditValues.ppu2TotalCredit}</p>
                                             </td>
                                             <td>
-                                                <p className="ml-3">{t('totalCredits')}</p>
+                                                <p className="ml-3 subHeading">{t('totalCredits')}</p>
                                             </td>
                                         </tr>
                                         <tr className="subHeading">
                                             <td>
-                                                <p>{creditValues.ppu2RemainingCredits}</p>
+                                                <p className="subHeading">{creditValues.ppu2RemainingCredits}</p>
                                             </td>
                                             <td>
-                                                <p className="ml-3">{t('creditsReamining')}</p>
+                                                <p className="ml-3 subHeading">{t('creditsReamining')}</p>
                                             </td>
                                         </tr>
                                     </Fragment>

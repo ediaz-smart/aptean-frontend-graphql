@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
         height: "20px"
     },
     theseAreText: {
-        margin: "7px 20px 10px 0px"
+        margin: "9px 20px 10px 0px"
     },
     submitCss: {
         backgroundColor: "#DB862D !important"
@@ -333,6 +333,7 @@ function IpSequenceVariation() {
     const [noDbSelected, setNoDbSelected] = useState(false);
     const [warningMsg, setWarningMsg] = useState("");
     const [isWarningReturned, setIsWarningReturned] = useState(false);
+    const [errorHeading, setErrorHeading] = useState("");
 
 
     let initialCreditValues = {
@@ -721,6 +722,7 @@ function IpSequenceVariation() {
                 searchtype: "FTO", // leave it as always "FTO"
                 title: values.searchDetails, // Workflow name
                 email: sendMailAfterSearch ? userMail : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
+                send_email: sendMailAfterSearch ? "on" : "",
                 // nucandprot: isBothDbSelected, // "on" when selecting both NUC and PRO databases
                 strat_name: searchAlgorithmValue, // Genepast -> kerr, Blast -> blast, Fragment Search -> fragment, Motif -> motif
                 /*
@@ -777,14 +779,18 @@ function IpSequenceVariation() {
                 setShowSuccessModal(true);
                 closeSuccessModal();
             } else if(resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
-                setWarningMsg("Warning: "+resp.response_content.qdb.msg);
+                // setWarningMsg("Warning: "+resp.response_content.qdb.msg);
                 setIsWarningReturned(true);
-                window.scrollTo(0,0);
+                setShowErrorModal(true);
+                setErrorMsg("Warning: "+resp.response_content.qdb.msg);
+                setErrorHeading('Please notice the warnings below and either fix it or submit as is.')
+                // window.scrollTo(0,0);
             } else {
-                let setMessage = resp && resp.response_content && resp.response_content.type ? resp.response_content.type : "Unknown";
-                setMessage = resp && resp.response_content && resp.response_content.qdb && resp && resp.response_content && resp.response_content.qdb.msg ? resp.response_content.qdb.msg : "Unknown";
+                let setMessage = resp && resp.response_content && resp.response_content.message ? resp.response_content.message : "Unknown";
+                // setMessage = resp && resp.response_content && resp.response_content.qdb && resp && resp.response_content && resp.response_content.qdb.msg ? resp.response_content.qdb.msg : "Unknown";
                 setShowErrorModal(true);
                 setErrorMsg(setMessage);
+                setErrorHeading(t("seqSearchErrorOccured"))
             }
         },
     });
@@ -1199,7 +1205,7 @@ function IpSequenceVariation() {
                 errorCode={errorMsg}
                 modalCallBack={handleErrorModal}
                 subjectText={subjectText}
-                errorContent={t("seqSearchErrorOccured")}
+                errorContent={errorHeading}
             />
             <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
                 <Row>
@@ -1211,7 +1217,7 @@ function IpSequenceVariation() {
                         </Typography>
                     </Col>
                 </Row>
-                <Row>
+                {/* <Row>
                     <Col lg="12" md="12" className={"mb-2 " + (isWarningReturned ? 'd-block' : 'd-none')}>
                     <Typography className="text-danger">
                     Please notice the warnings below and either fix it or submit as is.
@@ -1220,7 +1226,7 @@ function IpSequenceVariation() {
                         {warningMsg}
                         </Typography>
                     </Col>
-                </Row>
+                </Row> */}
                 {parentId &&
                     <Fragment>
                         <Row>
