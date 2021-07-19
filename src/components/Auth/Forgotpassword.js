@@ -112,7 +112,12 @@ function Forgotpassword() {
         //dispatch(userActions.logout()); 
     }, []);
 
-    
+    const passwordVlaue = formik.values.userName;
+    const passwordCnVlaue = formik.values.captchaCode;
+    console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
+    const passValCheck = passwordVlaue.length; 
+    const passValCheck1 = passwordCnVlaue.length; 
+
     return (
         <Container className="mt-100">
             
@@ -168,9 +173,11 @@ function Forgotpassword() {
                         </div>
                        
                         <div className="form-group">
-                            <Button variant="contained" color="primary" className="accountInfo" type="submit">
-                                {t('submit')}
-                            </Button>
+                        {passValCheck != 0  && passValCheck1 != 0 ?
+                                <Button variant="contained" className='accountInfo' type="submit">{t('submit')}</Button> :
+                                <Button variant="contained" className='cancelButtonDisable'  disableRipple={true}>{t('submit')}</Button> 
+                             }
+                       
                         </div>
                     </form>
                     <div className={'p-4 ' +(passwordForm ? 'd-none' : 'd-block')}>

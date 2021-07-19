@@ -27,7 +27,7 @@ import SavedSearch from '../../services/savedsearch';
 
 
 import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStructure';
-import SaveContentModal from '../../shared/Modal/SaveContentModal';
+import SeqVIModal from '../../shared/Modal/SeqVIModal';
 import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModal';
 
 //validation
@@ -1191,7 +1191,7 @@ function IpSeqSearch() {
 
     return (
         <div className={classes.grow}>
-            <SaveContentModal
+            <SeqVIModal
                 show={showSuccessModal}
                 onMessage={t('searchSubmitted')}
                 type="seqSearch"

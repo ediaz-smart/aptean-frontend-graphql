@@ -25,7 +25,7 @@ import DatePicker from '../../shared/Fields/DatePicker';
 import RadioButton from '../../shared/Fields/RadioButton';
 import { getSeqSearchInit, submitSeqSearch } from '../../services/seqSearchService';
 import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStructure';
-import SaveContentModal from '../../shared/Modal/SaveContentModal';
+import SeqVIModal from '../../shared/Modal/SeqVIModal';
 import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModal';
 import SavedSearch from '../../services/savedsearch';
 
@@ -1194,7 +1194,7 @@ function IpSequenceVariation() {
 
     return (
         <div className={classes.grow}>
-            <SaveContentModal
+            <SeqVIModal
                 show={showSuccessModal}
                 onMessage={t('searchSubmitted')}
                 type="seqSearch"

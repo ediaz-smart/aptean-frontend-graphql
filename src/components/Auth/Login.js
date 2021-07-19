@@ -24,8 +24,20 @@ const useStyles = makeStyles((theme) => ({
     },
     navbarClass :{
         marginTop: '60px'
-    }
-    ,
+    },
+    loginSubmitDis:{
+        backgroundColor: '#EEEEEE',
+        borderColor: '#a2a2a3',
+        border: '2px solid #CCCCCC' ,
+        float: 'right',
+        color:'#777777',
+        textTransform: 'capitalize',
+        '&:hover': {
+          // backgroundColor: '#EEEEEE',
+          pointerEvents:'none',
+          boxShadow: 'none',
+        },
+       },
     forgotLink: {
         marginTop: '10px',
         a: {
@@ -121,6 +133,11 @@ function Login(props) {
             history.push('/home');
         }
     }, []);
+    const passwordVlaue = formik.values.userName;
+    const passwordCnVlaue = formik.values.password;
+    console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
+    const passValCheck = passwordVlaue.length; 
+    const passValCheck1 = passwordCnVlaue.length; 
 
     return (
         <div >
@@ -167,9 +184,11 @@ function Login(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <Button color="primary" variant="contained" className="accountInfo" type="submit">
-                        {t('submit')}
-                        </Button>
+                       {passValCheck != 0  && passValCheck1 != 0 ?
+                                <Button variant="contained" className='accountInfo' type="submit">{t('submit')}</Button> :
+                                <Button variant="contained" className='cancelButtonDisable'  disableRipple={true}>{t('submit')}</Button> 
+                             }
+                        
                     </div>
                     
                 </form>
