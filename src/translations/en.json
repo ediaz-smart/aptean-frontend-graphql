@@ -277,6 +277,7 @@
     "alertNotScheduled":"No alerts are scheduled for this result set",
     "changeSettings":"Change Settings",
     "removeAlert":"Remove Alert",
-    "setUpAlert":"set up an alert"
+    "setUpAlert":"set up an alert",
+    "255OnlyAllowed":"Maximum 255 Characters Allowed"
 
 }

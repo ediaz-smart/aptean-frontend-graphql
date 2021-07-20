@@ -19,7 +19,6 @@ export const submitLogin = (data,history, t) => async (dispatch) => {
             console.log(response,"response response response response response response response");
             if(response && response.response_status == 0)
             {
-                debugger;
                 console.log(response,"response response response response response response response");
                 await dispatch(getUserServerInfo());
                 toast.success(t('loginSuccess'));

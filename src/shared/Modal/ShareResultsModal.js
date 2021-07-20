@@ -98,7 +98,7 @@ function ShareResultsModal(props) {
 					<ul className={"list-inline " + classes.scrollList}>
 						{
 							props.data && Object.keys(props.data).map((dta, i) => {
-								return <li class="my-2" key={i}>
+								return <li className={"my-2 "+ (props.sharedUserId && props.sharedUserId.includes(props.data[dta].id) ? 'disabled' : '')} key={i}>
 									<span className={"cursorPointer " + (selectData.includes(props.data[dta].id) ? classes.projTitleActive : '')} onClick={() => getSelectVal(props.data[dta].id)}>{props.data[dta].full_name}</span>
 								</li>
 							})

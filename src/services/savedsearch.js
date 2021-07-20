@@ -104,7 +104,6 @@ function hideLoader() {
 
                 .then((response) => {
                     // hideLoader();
-                    debugger;
                     console.log(JSON.stringify(response),"getSavedSearchData getSavedSearchData");
                     return response;
                 })

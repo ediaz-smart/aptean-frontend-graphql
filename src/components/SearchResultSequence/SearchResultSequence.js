@@ -195,6 +195,9 @@ function SearchResultSequence() {
     const [updateTitle, setUpdateTitle] = useState(false);
     const [titleName, setTitleName] = useState('');
 
+	// To disable shared user ids in add share popup
+	const [sharedIds, setSharedIds] = useState([]);
+
     // reset login status
     useEffect(async () => {
         getSummaryResp();
@@ -243,6 +246,7 @@ function SearchResultSequence() {
             }
             setTitleName(getSummaryResponse.response_content.text_label);
             setGqUserId(getSummaryResponse.response_content.gq_user_id);
+			setSharedIds(getSummaryResponse.response_content.gq_user_id);
             getSummaryResponse.response_content['usedSpace'] = usedSpace;
             if(getSummaryResponse.response_content.description)
             {
@@ -280,7 +284,13 @@ function SearchResultSequence() {
                         sharedObj.push(userData[value]);
                     }
                 });
-                
+				
+				let sharedIDArr = getResultShareResponse.response_content.userIds;
+				if(gqUserId)
+				{
+					sharedIDArr.push(gqUserId);
+				}
+				setSharedIds(sharedIDArr);
                 sharedData['sharedNameObj'] = sharedObj;
                 if (sharedNames.length == 1) {
                     shareDatas = sharedNames.join(', ');
@@ -850,6 +860,7 @@ function SearchResultSequence() {
                                     onHide={() => setModalResultShow(false)}
                                     // getSelectUser={getSelectUser}
                                     shareResult={shareResultsForm}
+									sharedUserId={sharedIds}
                                     // onMessage={errorMessage}
                                     />
 

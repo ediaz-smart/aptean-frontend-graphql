@@ -138,6 +138,10 @@ function SearchResultAntibody() {
         // patientDBData[i]['ticked'] = event.target.checked;
         setPatientDBData([...patientDBData]);
     }
+    function homePage()
+    {
+      history.push('/home');
+    }
     const formik = useFormik({
         initialValues: {
             searchName: formdata && formdata.searchName ? formdata.searchName : '',
@@ -648,7 +652,7 @@ function SearchResultAntibody() {
                     </Col>
                     <Col lg="12" md="12" className="float-right mb-3">
                         <Button color={!disableSearch ? 'default' : 'primary'} variant="contained" className={" text-capitalize mr-2 float-right " + (!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} type="submit" disabled={!disableSearch}>{t('search')}</Button>&nbsp;&nbsp;&nbsp;
-                    <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} type="submit">{t('cancel')}</Button>
+                    <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={homePage} type="submit">{t('cancel')}</Button>
                     </Col>
                 </Row>
 

@@ -12,7 +12,6 @@ export const getUserServerInfo=() => async(dispatch) =>{
         .then(async (response) => {
             if(response && response.response_status == 0)
             {
-                debugger;
                 console.log(' getServerInfo getServerInfo getServerInfo getServerInfo getServerInfo getServerInfo getServerInfo', response.response_content)
                 dispatch(setUserInfo(response.response_content));
             }else {
