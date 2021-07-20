@@ -2,6 +2,10 @@ import React, { useState, useEffect, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal'
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
+import CloseIcon from '@material-ui/icons/Close';
+import Link from '@material-ui/core/Link';
+
+
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -9,10 +13,10 @@ const useStyles = makeStyles((theme) => ({
 
 	modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'11px',
-		paddingRight: '4px',
+		paddingTop:'10px',
+		paddingRight: '1px',
 		marginTop:'-7px',
-
+		display: "block !important"
 	},
 	footerDiv:{
 		padding:'0 30px',
@@ -27,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	modalClassContent:{
 		position: 'absolute',
-		width: '96%',
-		height: '37%',
+		width: '65%',
+		height: '31%',
 		top: '30%',
 		left: '50%',
 		right: 'auto',
@@ -40,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: '-32px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
-		paddingBottom: '75px',
+		// paddingBottom: '75px',
+		paddingBottom: '31px',
 		marginLeft: '7px',
 		marginRight: '7px',
 		paddingRight: '10px',
@@ -56,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid ##DB862D !important',
 
 	},
+	bodyPadding: {
+		padding: "13px"
+	}
 }));
 
 function SeqVIModal(props) {
@@ -70,13 +78,13 @@ function SeqVIModal(props) {
 			contentClassName={classes.modalClassContent}
 			className={classes.modalBoxContent}
 		>
-			<Modal.Header closeButton className={classes.modalHeader}>
-				
+			<Modal.Header  className={classes.modalHeader}>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={props.saveCallBack} /></Link>
 			</Modal.Header>
-			<Modal.Body className={"text-center"}>
+			<Modal.Body className={"text-center " + classes.bodyPadding}>
 			<div className={classes.colorContainer}>
 			    <br></br>
-				<h5> {props.onMessage}</h5>
+				<p> {props.onMessage}</p>
 				
 				
 				<br></br>

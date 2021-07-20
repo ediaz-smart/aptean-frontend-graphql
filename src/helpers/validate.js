@@ -89,18 +89,21 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
             .max(200, t('200OnlyAllowed')),
         alignments: yup
             .number()
+            .integer(t('valueMustBeInteger'))
             .required(t('alignmentsReq'))
             .typeError(t('alignmentsNotNumber'))
             .min(1, t('alignmentNotValid'))
             .max(1000000, t('alignmentNotValid')),
         minResidues: yup
             .number()
+            .integer(t('valueMustBeInteger'))
             .required(t('required'))
             .typeError(t('notNumber'))
             .min(3, t('minResiduesNotValid'))
             .typeError(t('notNumber')),
         maxResidues: yup
             .number()
+            .integer(t('valueMustBeInteger'))
             .required(t('required'))
             .typeError(t('notNumber'))
             .min(1, t('shouldBeGreaterThanZero')),
@@ -113,6 +116,7 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
             .validateSeq(t('onlyAlphabetsAllowed')),
         patientDocInp: yup
             .number()
+            .integer(t('valueMustBeInteger'))
             .min(1, t('shouldBeGreaterThanZero'))
             .typeError(t('notNumber')),
     };
@@ -137,6 +141,7 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
     if(searchAlgorithm && searchAlgorithm == "kerr") {
         validationShape.genePastPercentage = yup
             .number()
+            .integer(t('valueMustBeInteger'))
             .required(t('genePastPercentageReq'))
             .min(1, t('genePastPercentageIncorrect'))
             .max(100, t('genePastPercentageIncorrect'))
@@ -151,11 +156,13 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
     } else if(searchAlgorithm && searchAlgorithm == "fragment") {
         validationShape.fragmentStretch = yup
             .number()
+            .integer(t('valueMustBeInteger'))
             .required(t('fragmentStretchRequired'))
             .typeError(t('fragmentStretchNotNumber'))
             .min(1, t('fragmentStretchNotNumber'))
         validationShape.fragmentAminoAcid = yup
             .number()
+            .integer(t('valueMustBeInteger'))
             .required(t('genePastPercentageReq'))
             .min(1, t('genePastPercentageIncorrect'))
             .max(100, t('genePastPercentageIncorrect'))

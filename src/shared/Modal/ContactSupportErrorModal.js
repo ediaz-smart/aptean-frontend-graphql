@@ -5,39 +5,34 @@ import { useTranslation } from "react-i18next";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, useHistory } from 'react-router-dom';
+import CloseIcon from '@material-ui/icons/Close';
 
 //config
 import { supportMail } from '../../config';
 
 const useStyles = makeStyles((theme) => ({
-    // modalHeader: {
-    //     borderBottom: 'none !important'
-    // },
-    // footerDiv: {
-    //     padding: '0 30px'
-    // },
     modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'11px',
+		paddingTop:'10px',
 		paddingRight: '4px',
 		marginTop:'-7px',
-
+		display: "block !important"
 	},
 	footerDiv:{
 		padding:'0 30px',
-		marginTop:'-20px',
-		marginRight: '-31px',	
+		marginTop:'-5px',
+		marginRight: '-10px',	
 	},
-    contentPadding: {
-        padding: "45px 0px 45px 0px"
-    },
-    modalBoxContent :{
+	contentPadding: {
+		padding: "45px !important"
+	},
+	modalBoxContent :{
 		maxHeight: '675px',
 	},
 	modalClassContent:{
 		position: 'absolute',
 		width: '96%',
-		height: '51%',
+		height: '53%',
 		top: '30%',
 		left: '50%',
 		right: 'auto',
@@ -46,10 +41,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	colorContainer:{
 		backgroundColor: 'gainsboro',
-		marginTop: '-33px',
+		marginTop: '-32px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
-		paddingBottom: '65px',
+		paddingBottom: '75px',
 		marginLeft: '7px',
 		marginRight: '7px',
 		paddingRight: '10px',
@@ -74,7 +69,19 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #1F4E79 !important',
 		borderColor:'#1F4E79',
 
-	},
+    },
+    bodyPadding: {
+        padding: "13px !important"
+    },
+    mainContent: {
+        height: "150px",
+        overflow: "scroll"
+    },
+    leftAlign: {
+        textAlign: "left !important",
+        width: "57%",
+        margin: "0 auto 20px"
+    }
 }));
 
 function ContactSupportErrorModal(props) {
@@ -95,14 +102,15 @@ function ContactSupportErrorModal(props) {
             contentClassName={classes.modalClassContent}
 			className={classes.modalBoxContent}
         >
-        			<Modal.Header closeButton className={classes.modalHeader}>
+        			<Modal.Header className={classes.modalHeader}>
+                    <Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={props.modalCallBack} /></Link>
                     </Modal.Header>
-            <Modal.Body className={"text-center"}>
+            <Modal.Body className={"text-center " + classes.bodyPadding}>
                 <div className={classes.colorContainer}>
                 <br></br>
+                <div className={classes.mainContent}>
                     <p>{props.errorContent}</p>
-                    <p>{t("errorCodeIs")}{props.errorCode}</p>
-                    <br></br>
+                    <p className={classes.leftAlign}>{t("errorCodeIs")}{props.errorCode}</p>
                     <p>
                         <spoan>{t("tryAgainOrContact")}</spoan>
                         <span>
@@ -110,7 +118,7 @@ function ContactSupportErrorModal(props) {
                         </span>
                         <span>{t("forAssistance")}</span>
                     </p>
-                    <br></br>
+                    </div>
                     <div className={classes.footerDiv}>
                     <Button onClick={()=>props.modalCallBack()} className='accountInfo'  variant="default">{t("tryAgain")}</Button>
 

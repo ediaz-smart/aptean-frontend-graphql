@@ -278,6 +278,6 @@
     "changeSettings":"Change Settings",
     "removeAlert":"Remove Alert",
     "setUpAlert":"set up an alert",
-    "255OnlyAllowed":"Maximum 255 Characters Allowed"
-
+    "255OnlyAllowed":"Maximum 255 Characters Allowed",
+    "valueMustBeInteger": "Value must be an integer."
 }

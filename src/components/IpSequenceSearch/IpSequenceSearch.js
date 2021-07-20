@@ -294,7 +294,6 @@ function IpSeqSearch() {
 
     const [allChecked, setAllChecked] = useState(false);
     // using an array to store the checked items
-    const [isChecked, setIsChecked] = useState([]);
     const [proPatentData, setProPatentData] = useState([]);
     const [proReferenceData, setProReferenceData] = useState([]);
     const [proPersonalData, setProPersonalData] = useState({});
@@ -533,7 +532,7 @@ function IpSeqSearch() {
             // const resp = await getSeqSearchResults(history);
             if (resp && resp.response_content && resp.response_content.sdb_nuc_tree && resp.response_content.sdb_nuc_tree.length > 0) {
                 let nucData = resp.response_content.sdb_nuc_tree;
-                let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [];
+                let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [], nucDefaultPatentDb = [];
                 let nucFormattedData = await list_to_tree(nucData);
                 console.log('nucformatted', nucFormattedData)
                 let getNucChild = [];
@@ -543,6 +542,11 @@ function IpSeqSearch() {
                 getNucChild && getNucChild.length > 0 && getNucChild.map((item, index) => {
                     if (item && item.id == ':Patents') {
                         nucleotidePatent = item.children;
+                        item.children.filter(i=>{
+                            if(i.label.includes("Patent sequences")) {
+                                nucDefaultPatentDb.push(i.id);
+                            }
+                        });
                     } else if (item && item.id == ':Reference Data') {
                         // nucleotideReferenceData = item.children;
                         console.log('item.children', item.children);
@@ -562,10 +566,11 @@ function IpSeqSearch() {
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
                 setNucGenBankData(nucGenBank);
+                setNucDb(nucDefaultPatentDb);
             }
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
                 let proteinData = resp.response_content.sdb_pro_tree;
-                let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [];
+                let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [], proDefaultPatentDb = [];
                 let proFormattedData = await list_to_tree(proteinData);
                 console.log('proFormattedData', proFormattedData)
                 let getProChild = [];
@@ -575,6 +580,11 @@ function IpSeqSearch() {
                 getProChild && getProChild.length > 0 && getProChild.map((item, index) => {
                     if (item && item.id == ':Patents') {
                         proteinPatent = item.children;
+                        item.children.filter(i=>{
+                            if(i.label.includes("Patent sequences")) {
+                                proDefaultPatentDb.push(i.id);
+                            }
+                        });
                     } else if (item && item.id == ':Reference Data') {
                         proteinReferenceData = item.children;
                     } else if (item && item.id == ':Data Shared With Me') {
@@ -585,6 +595,7 @@ function IpSeqSearch() {
                 setProPatentData(proteinPatent);
                 setProReferenceData(proteinReferenceData);
                 setProPersonalData(proDataShardWithMe);
+                // setProDb(proDefaultPatentDb);
             }
 
             if (resp && resp.response_content && resp.response_content && resp && resp.response_content && resp.response_content.group_credits) {
@@ -852,46 +863,44 @@ function IpSeqSearch() {
         if (event.target.value == "nucleotide") {
             setScoringMatrix('NUC3.1');
             setWordSize('11');
+            nucPatentData.filter(i=>{
+                if(i.label.includes("Patent sequences")) {
+                    nucDb.push(i.id);
+                    setNucDb([...nucDb]);
+                }
+            });
+            setProDb([]);
         } else {
             setScoringMatrix('BLOSUM62');
             setWordSize('3');
+            proPatentData.filter(i=>{
+                if(i.label.includes("Patent sequences")) {
+                    proDb.push(i.id);
+                    setProDb([...proDb]);
+                }
+            });
+            setNucDb([]);
         }
     };
 
     const handleSingleCheck = e => {
         const { name, id } = e.target;
-        if (isChecked.includes(id)) {
-            setIsChecked(isChecked.filter(checked_name => checked_name !== id));
-            const index = dbTypeArray.indexOf(name);
-            if (index > -1) {
-                dbTypeArray.splice(index, 1);
-                setDbTypeArray([...dbTypeArray])
-            }
-            // setTimeout(function () {
-            //     let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "";
-            //     setIsBothDbSelected(twoDbSelected)
-            // }, 3000);
-
-            name && name == "nuc" ? setNucDb(nucDb.filter(dbName => dbName !== id)) : setProDb(proDb.filter(dbName => dbName !== id));
-            return setAllChecked(false);
-        }
-        isChecked.push(id);
-        setIsChecked([...isChecked]);
-        setAllChecked(isChecked.length === proPatentData.length)
-        dbTypeArray.push(name)
-        setDbTypeArray([...dbTypeArray]);
         if (name && name == "nuc") {
-            nucDb.push(id.toString());
-            setNucDb([...nucDb]);
+            if (nucDb.includes(id)) {
+                setNucDb(nucDb.filter(dbName => dbName !== id));
+            } else {
+                nucDb.push(id.toString());
+                setNucDb([...nucDb]);
+            }
         } else if (name && name == "pro") {
-            proDb.push(id.toString());
-            setProDb([...proDb]);
+            if (proDb.includes(id)) {
+                setProDb(proDb.filter(dbName => dbName !== id));
+            } else {
+                proDb.push(id.toString());
+                setProDb([...proDb]);
+            }
         }
         setNoDbSelected(false);
-        // setTimeout(function () {
-        //     let twoDbSelected = dbTypeArray.includes("nuc") && dbTypeArray.includes("pro") ? "on" : "";
-        //     setIsBothDbSelected(twoDbSelected)
-        // }, 3000);
     };
 
     function handleDbChange(id, name) {
@@ -913,10 +922,6 @@ function IpSeqSearch() {
         setNoDbSelected(false);
     }
 
-
-    console.log('isChecked', isChecked)
-    // console.log('isnucselecte', isNucSelected)
-    // console.log('isproselecte', isProSelected)
     console.log('dbtypearray', dbTypeArray)
     console.log('bothdbselected', isBothDbSelected)
     console.log('nucDb', nucDb)
@@ -1114,15 +1119,15 @@ function IpSeqSearch() {
     const genePastItems = [
         {
             value: "QUERY",
-            label: "my query"
+            label: "Query Sequence"
         },
         {
             value: "SUBJECT",
-            label: "any subject"
+            label: "Subject Sequence"
         },
         {
             value: "SHORTER",
-            label: "query or subject"
+            label: "Query or Subject Sequence"
         }
     ];
 
@@ -1352,7 +1357,7 @@ function IpSeqSearch() {
                                     value={formik.values.genepastPercentageOver}
                                     items={genePastItems}
                                     onChange={formik.handleChange}
-                                    className={"float-left"}
+                                    className={"float-left bodyText"}
                                 />
                             </Fragment>
                             }
@@ -1763,7 +1768,7 @@ function IpSeqSearch() {
                                                 className={"absolutePosition " + classes.checkBox}
                                                 color="primary"
                                             />
-                                            <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
+                                            <label className={classes.checkBoxContent + " bodyText cursorPointer"} for={test.id}>{test.label}</label>
                                         </div>
                                     ))
                                     }
@@ -1794,7 +1799,7 @@ function IpSeqSearch() {
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
-                                                <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
+                                                <label className={classes.checkBoxContent + " bodyText cursorPointer"} for={test.id}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1824,7 +1829,7 @@ function IpSeqSearch() {
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
-                                                <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
+                                                <label className={classes.checkBoxContent + " bodyText cursorPointer"} for={test.id}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1842,7 +1847,7 @@ function IpSeqSearch() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} />
+                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"}/>
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -1871,7 +1876,7 @@ function IpSeqSearch() {
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
-                                                <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
+                                                <label className={classes.checkBoxContent + " bodyText cursorPointer"} for={test.id}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1901,7 +1906,7 @@ function IpSeqSearch() {
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
-                                                <label className={classes.checkBoxContent + " bodyText"}>{test.label}</label>
+                                                <label className={classes.checkBoxContent + " bodyText cursorPointer"} for={test.id}>{test.label}</label>
                                             </div>
                                         ))
                                         }
@@ -1919,7 +1924,7 @@ function IpSeqSearch() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} />
+                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"}/>
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
