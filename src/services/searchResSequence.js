@@ -162,12 +162,12 @@ async function getAlertRedo(workflowId) {
         hideLoader();
     }
 }
-async function updateSeqNotes(workflowId,notes) {
+async function updateSeqNotes(workflowId,updateParam) {
 
     try {
-        let apiurl = url.updateSeqNotes;
-        apiurl = apiurl.replace('WID',workflowId)
-        apiurl = apiurl.replace('**',notes)
+        let apiurl = url.updateSeqData;
+        apiurl = apiurl.replace('WID',workflowId)+updateParam
+        // apiurl = apiurl.replace('**',notes)
        
         showLoader();
         return await get(apiurl)

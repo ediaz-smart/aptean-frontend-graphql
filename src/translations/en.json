@@ -267,5 +267,16 @@
     "queryPreloaded": "Query Preloaded",
     "alignmentNotValid": "Please input a valid number from 1 to 1000000",
     "minResiduesNotValid": "Minimum allowed value is 3",
-    "shouldBeGreaterThanZero": "Value must be greater than 0"
+    "shouldBeGreaterThanZero": "Value must be greater than 0",
+    "searchRepeatAutomatic":"The search is repeated automatically",
+    "emailGoingTo":"with an email going to",
+    "resultAccess":"The following people have access to this result",
+    "resultNotAccess":"This result set has not been shared.",
+    "addMore":"Add more",
+    "shareMore":"Share more",
+    "alertNotScheduled":"No alerts are scheduled for this result set",
+    "changeSettings":"Change Settings",
+    "removeAlert":"Remove Alert",
+    "setUpAlert":"set up an alert"
+
 }

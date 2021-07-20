@@ -15,6 +15,7 @@ import _ from "lodash";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal'
+import ReactHtmlParser from 'react-html-parser';
 
 
 import seqSearchImg from '../../assets/image/seqSearch.png';
@@ -153,7 +154,7 @@ function SearchResultSequence() {
     const [disableDelete, setDisableDelete] = useState(true);
     const [seqSummary, setSeqSummary] = useState();
     const [seqShare, setSeqShare] = useState();
-    const [alarmSetting, setAlarmSetting] = useState();
+    const [alarmSetting, setAlarmSetting] = useState({});
     const [alertData, setAlertData] = useState([]);
     const [alertRedoData, setAlertRedoData] = useState([]);
     const [redoData, setRedoData] = useState([]); 
@@ -161,6 +162,7 @@ function SearchResultSequence() {
     const [techincalData, setTechincalData] = useState();
     const { workflowId } = useParams();
     const [notes, setNotes] = useState();
+	const [searchHistoryData, setSearchHistoryData] = useState([]); 
     const updateState = useCallback(state => setSelectData(state));
     //using state
     const userInfo = useSelector(state => state.setUserInfo);
@@ -188,6 +190,10 @@ function SearchResultSequence() {
     const [userList, setUserList] = useState();
 
     const [modalResultShow, setModalResultShow] = React.useState(false); 
+
+    // To Update Title
+    const [updateTitle, setUpdateTitle] = useState(false);
+    const [titleName, setTitleName] = useState('');
 
     // reset login status
     useEffect(async () => {
@@ -235,6 +241,7 @@ function SearchResultSequence() {
                 usedSpace = (diskUsage / (1024 * 1024));
                 usedSpace = usedSpace.toFixed(2);
             }
+            setTitleName(getSummaryResponse.response_content.text_label);
             setGqUserId(getSummaryResponse.response_content.gq_user_id);
             getSummaryResponse.response_content['usedSpace'] = usedSpace;
             if(getSummaryResponse.response_content.description)
@@ -257,13 +264,15 @@ function SearchResultSequence() {
     }
     const getResultShareResp = async(userData)=>{
         const getResultShareResponse = await searchResSequence.getSequenceResultShare(workflowId);
+            let sharedNames = [];
+            let sharedObj = [];
+            let sharedData = {};
+            let shareDatas;
         if (getResultShareResponse && getResultShareResponse.response_status == 0) {
+            
             if(getResultShareResponse.response_content && getResultShareResponse.response_content.userIds)
             {
-                let sharedNames = [];
-                let sharedObj = [];
-                let sharedData = {};
-                let shareDatas;
+                
                 sharedData['sharedNames'] = '';
                 getResultShareResponse.response_content.userIds.map(function (value, key) {
                     if (userData && userData[value]) {
@@ -271,17 +280,30 @@ function SearchResultSequence() {
                         sharedObj.push(userData[value]);
                     }
                 });
+                
                 sharedData['sharedNameObj'] = sharedObj;
-                if (sharedNames.length > 1) {
-                    const last = sharedNames.pop();
-                    shareDatas = sharedNames.join(', ') + ' and ' + last;
-                    sharedData['sharedNames'] = shareDatas;
-                }else {
+                if (sharedNames.length == 1) {
                     shareDatas = sharedNames.join(', ');
+                    sharedData['sharedNames'] = '<b>'+shareDatas+'</b>';
+                }
+                else if (sharedNames.length < 4) {
+                    const last = sharedNames.pop();
+                    shareDatas = '<b>'+sharedNames.join(', ') +'</b>'+ ' and <b>' + last+'</b>';
                     sharedData['sharedNames'] = shareDatas;
+                }else if (sharedNames.length > 3) {
+                    shareDatas = sharedNames.join(', ');
+                    sharedData['sharedNames'] = '<b>'+sharedNames[0] +'</b>'+ ' et al';
                 }
                 setSeqShare(sharedData);
+            }else {
+                sharedData['sharedNameObj'] = [];
+                sharedData['sharedNames'] = '';
+                setSeqShare(sharedData);
             }
+        }else {
+            sharedData['sharedNames'] = '';
+            sharedData['sharedNameObj'] = [];
+            setSeqShare(sharedData);
         }
     }
     const getShareResp = async () => {
@@ -358,7 +380,8 @@ function SearchResultSequence() {
         const getAlertRedoResponse = await searchResSequence.getAlertRedo(workflowId);
         if (getAlertRedoResponse && getAlertRedoResponse.response_status == 0 && getAlertRedoResponse.response_content.relatives.length > 0) {
             setAlertRedoData(getAlertRedoResponse.response_content.relatives);
-            let redoArr = [], alertArr = [];
+            // let redoArr = [], alertArr = [];
+			let searchHistoryArr = [];
             let type = 'Alignments';
             getAlertRedoResponse.response_content.relatives.map(function (values, key) {
                 let tempObj = {};
@@ -422,15 +445,17 @@ function SearchResultSequence() {
                     tempObj["searchId"] = <span>Search id {values.id}</span>;
                 }
                 tempObj["id"] = values.id;
-                if (values.credit_code == "redo" || values.credit_code == null) {
-                    redoArr.push(tempObj);
-                } else {
-                    alertArr.push(tempObj);
-                }
+				searchHistoryArr.push(tempObj);
+                // if (values.credit_code == "redo" || values.credit_code == null) {
+                //     redoArr.push(tempObj);
+                // } else {
+                //     alertArr.push(tempObj);
+                // }
             });
+			setSearchHistoryData(searchHistoryArr);
             // console.log(redoArr,'redoArr');
-            setRedoData(redoArr);
-            setAlertData(alertArr);
+            // setRedoData(redoArr);
+            // setAlertData(alertArr);
         }
     }
     function updateVal(state) {
@@ -483,7 +508,7 @@ function SearchResultSequence() {
         }
         // console.log(getIds,'getIds');
         const deleteResp = await SearchManagementService.deleteSearchResult(getIds, history);
-        setModalShow(true);
+        // setModalShow(true);
         setDelLoaderContent(true);
         if (deleteResp && deleteResp.response_content && deleteResp.response_content.success.length > 0) {
             toast.success('Deleted Successfully');
@@ -495,19 +520,7 @@ function SearchResultSequence() {
             setErrorContent(true);
         }
     }
-    const updateNotes = async()=>{
-        if(notes){
-            const getnotesResponse = await searchResSequence.updateSeqNotes(workflowId,notes);
-            if (getnotesResponse && getnotesResponse.response_status == 0) {
-                toast.success('Notes Updated Successfully');
-            }else {
-                toast.error('Update in Error.');
-            }
-            // console.log(getnotesResponse,'getnotesResponse');
-        }else {
-            toast.error('Please Enter Notes to Save Changes.');
-        }
-    }
+    
     const downloadQuerySeq = async(e)=>{
         e.preventDefault()
         await searchResSequence.downloadQuerySeq(workflowId);
@@ -581,10 +594,7 @@ function SearchResultSequence() {
     }
     const removeSharing = async(data)=>{
         setModalResultRemoveShow(false);
-        console.log(data,"onMessage Support Support onMessage ")
         const removeId = data.id;
-        console.log(removeId,"removeId removeId");
-        debugger;
         let postData = {
             workflowId,
             removeId 
@@ -604,6 +614,32 @@ function SearchResultSequence() {
         setModalResultRemoveShow(true);
         setRemoveData(data);
     }
+    const updateNewTitle = async (e) => {
+		if (e.keyCode == 13) {
+			let updateParam = '&text_label='+titleName;
+			updateSeqData(workflowId,updateParam);
+        }
+    }
+	const updateNotes = async()=>{
+        if(notes){
+			let updateParam = '&description='+notes;
+			updateSeqData(workflowId,updateParam);
+            // console.log(getnotesResponse,'getnotesResponse');
+        }else {
+            toast.error('Please Enter Notes to Save Changes.');
+        }
+    }
+	const updateSeqData = async(workflowId,updateParam)=>{
+		const getnotesResponse = await searchResSequence.updateSeqNotes(workflowId,updateParam);
+		if (getnotesResponse && getnotesResponse.response_status == 0) {
+			getSummaryResp();
+			toast.success('Updated Successfully');
+			
+		}else {
+			toast.error('Update in Error.');
+		}
+		setUpdateTitle(false);
+	}
     return (
         <div className={classes.grow}>
             <Row>
@@ -631,28 +667,40 @@ function SearchResultSequence() {
                     </Typography>
                 </Col>
                 <Col lg="12" md="12" sm="12">
-                    <h6 className={"appTextColor loginTitle"}>{t('ImmunoglobulinVariationsFor')} {seqSummary && seqSummary.sdb__owner_full_name}</h6>
+                    <h6 className={"appTextColor loginTitle "+(!updateTitle ? 'd-block':'d-none')} onClick={(e)=>setUpdateTitle(true)}>{seqSummary && seqSummary.text_label}</h6>
+                    <div className={"form-group "+(updateTitle ? 'd-block':'d-none')}>
+                                    <TextInput
+                                        fullWidth={false}
+                                        id="searchTitle"
+                                        name="searchTitle"
+                                        label={t('nameYourSearch')}
+                                        variant="outlined"
+                                        value={titleName ? titleName : ''}
+                                        onChange={(e)=>setTitleName(e.target.value)}
+                                        onKeyDown={updateNewTitle}
+                                    />
+                     </div>
                     <Row>
                         <Col lg="1" md="1" sm="12" className="pr-0 text-center">
-                            <img src={seqSearchImg} alt="Immunoglobulin variations for" />
+                            <img src={seqSearchImg} alt={seqSummary && seqSummary.text_label} />
                         </Col>
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Typography className={(seqSummary ? 'd-block' : 'd-none')}>
                                 {/* <img className="float-left mx-3" src={seqSearchImg} alt={t('ImmunoglobulinVariationsFor')}/> */}
-                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /><span>{t('searchLaunchTitle')} {seqSummary && seqSummary.create_time ? format(new Date(seqSummary.create_time), 'dd-MMM-yyyy') : ''} {t('by')} {seqSummary && seqSummary.sdb__owner_full_name}.​</span></Typography>
-                            <Typography className={(seqShare ? 'd-block' : 'd-none')}>
-                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> <span>{t('sharedWithTitle')} {seqShare && seqShare.sharedNames}
+                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /><span>{t('searchLaunchTitle')} {seqSummary && seqSummary.create_time ? format(new Date(seqSummary.create_time), 'dd-MMM-yyyy') : ''} {t('by')} <b>{seqSummary && seqSummary.sdb__owner_full_name}</b>.​</span></Typography>
+                            <Typography className={(seqShare && seqShare.sharedNames ? 'd-block' : 'd-none')}>
+                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> <span>{t('sharedWithTitle')} {ReactHtmlParser(seqShare && seqShare.sharedNames)} 
                                     <a href="#" onClick={(e) => handleScroll(e, 'resultSharing')}>({t('shareSettings')}).</a></span></Typography>
                             <Typography className={(alarmSetting && alarmSetting.is_created ? 'd-block' : 'd-none')}>
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />
-                                <span>The search is repeated automatically {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]} with an email going to {alarmSetting && alarmSetting.email}.{t('alarmSettingText2')} <a href="#" onClick={(e) => handleScroll(e, 'alertSettings')}>({t('alertSettings')}).</a></span></Typography>
+                                <span>{t('searchRepeatAutomatic')} {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]} {t('emailGoingTo')} {alarmSetting && alarmSetting.email}.{t('alarmSettingText2')} <a href="#" onClick={(e) => handleScroll(e, 'alertSettings')}>({t('alertSettings')}).</a></span></Typography>
                         </Col>
                     </Row>
                     <hr />
                     <Row>
                         <Col lg="12" md="12" sm="12" className="pr-0 content">
                             <h6 className={"appTextColor loginTitle"}>{t('query')}</h6>
-                            <Typography className="appTextFont ml-3"><Link className={"appLink"} href="#" onClick={(e)=>downloadQuerySeq(e)}>These {seqSummary && seqSummary.sdb_nb_db} <span className="text-lowercase">{seqSummary && seqSummary.sdb_seq_type}</span> sequences</Link> {t('usedInSearch')}.​</Typography>
+                            <Typography className="appTextFont ml-3"><Link className={"appLink"} href="#" onClick={(e)=>downloadQuerySeq(e)}>These {seqSummary && seqSummary.qdb_nb_sequences} <span className="text-lowercase">{seqSummary && seqSummary.sdb_seq_type}</span> sequences</Link> {t('usedInSearch')}.​</Typography>
                             <br />
                             <h6 className={"appTextColor loginTitle"}>{t('subjDB')}</h6>
 
@@ -688,7 +736,10 @@ function SearchResultSequence() {
                             }
                             <br clear="all"/>
                             <h6 className={"appTextColor loginTitle mt-3"}>{t('searchStrategy')}</h6>
-                           
+							    <Col lg="12" md="12" className={"pr-0 content"}>
+                                    <Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The search strategy was <span className="text-capitalize">{seqSummary && seqSummary.params ? seqSummary.params.strat_name:''}.</span>​</Typography>
+                                </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')}>
                                     <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This strategy fits the shorter sequence (query or subject) into the longer one, keeping the number of mismatches and gaps to a minimum.​</Typography>
@@ -696,47 +747,47 @@ function SearchResultSequence() {
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Alignments with less than {seqSummary && seqSummary.params.strat_genepast_perc_id}% identity over {seqSummary && seqSummary.params.strat_genepast_perc_id_over} are discarded.​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "blast" ? 'd-block':'d-none')} >
-                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
                                         <Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc}​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc}.​</Typography>
                                         <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span>​.</Typography>
                                     </div>
-                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.stats.querytype) ? 'd-block':'d-none')}>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.comp_mode) ? 'd-block':'d-none')}>
                                         <Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_pro}​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_pro}.​</Typography>
                                         <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span>.​</Typography>
                                     </div>
-                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
                                         <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc} for nucleotide and {seqSummary && seqSummary.params.strat_blast_word_size_pro} for protein.​</Typography>
                                         <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc :"NUC.3.1"} for nucleotide and {seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"} for protein.​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc :"NUC.3.1"}</span> for nucleotide and <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> for protein.​</Typography>
                                     </div>
                                     <div className="content">
                                         <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> e-val cutoff is {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.​</Typography>
                                         <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Experimental HSP handling is {seqSummary && seqSummary.params.strat_blast_hsp ? seqSummary.params.strat_blast_hsp:'none'}​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Experimental HSP handling is {seqSummary && seqSummary.params.strat_blast_hsp ? seqSummary.params.strat_blast_hsp:'none'}​.</Typography>
                                     </div>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "sw" ? 'd-block':'d-none')} >
-                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
                                         <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> gap open / extension panelties are {seqSummary && seqSummary.params.strat_sw_gapo_nuc} / {seqSummary && seqSummary.params.strat_sw_gape_nuc}.</Typography>
                                         <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_sw_scoring_matrix_nuc ? seqSummary.params.strat_sw_scoring_matrix_nuc:"NUC.3.1"}​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_sw_scoring_matrix_nuc ? seqSummary.params.strat_sw_scoring_matrix_nuc:"NUC.3.1"}​</span>.</Typography>
                                     </div>
-                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.stats.querytype) ? 'd-block':'d-none')}>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.comp_mode) ? 'd-block':'d-none')}>
                                         <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> gap open / extension panelties are {seqSummary && seqSummary.params.strat_sw_gapo_nuc} / {seqSummary && seqSummary.params.strat_sw_gape_nuc} for nucleotide, and {seqSummary && seqSummary.params.strat_sw_gapo_pro} / {seqSummary && seqSummary.params.strat_sw_gape_pro} for protein.​</Typography>
                                         <Typography>
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_sw_scoring_matrix_pro ? seqSummary.params.strat_sw_scoring_matrix_pro:"BLOSUM62"}​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_sw_scoring_matrix_pro ? seqSummary.params.strat_sw_scoring_matrix_pro:"BLOSUM62"}</span>​.</Typography>
                                     </div>
-                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
                                         <Typography>
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is {seqSummary && seqSummary.params.strat_sw_scoring_matrix_nuc ? seqSummary.params.strat_sw_scoring_matrix_nuc:"NUC.3.1"} for nucleotide, and {seqSummary && seqSummary.params.strat_sw_scoring_matrix_pro ? seqSummary.params.strat_sw_scoring_matrix_pro:"BLOSUM62"} for protein.​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_sw_scoring_matrix_nuc ? seqSummary.params.strat_sw_scoring_matrix_nuc:"NUC.3.1"}</span> for nucleotide, and <span className="text-uppercase">{seqSummary && seqSummary.params.strat_sw_scoring_matrix_pro ? seqSummary.params.strat_sw_scoring_matrix_pro:"BLOSUM62"}</span> for protein.​</Typography>
                                     </div>
                                     <div className="content">
                                         <Typography >
@@ -744,17 +795,17 @@ function SearchResultSequence() {
                                     </div>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "fragment" ? 'd-block':'d-none')}>
-                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
                                         <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.</Typography>
                                     </div>
-                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.stats.querytype) ? 'd-block':'d-none')}>
+                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.comp_mode) ? 'd-block':'d-none')}>
                                         <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.​</Typography>
                                    </div>
-                                   <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.stats.querytype == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')} >
+                                   <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')} >
                                         <Typography>
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> For nucleotide hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded;
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> For nucleotide hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.
                                         </Typography>
                                         <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " />For protein hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.
@@ -788,8 +839,11 @@ function SearchResultSequence() {
                         <Col lg="8" md="9" sm="12" className="p-0 content">
                             <Row>
                                 {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
-                                <Typography className="mb-2">
-                                    The following people have access to this result. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >Add more …​</Link></Typography>
+                                <Typography className={"mb-2 "+(seqShare && seqShare.sharedNameObj.length > 0 ? 'd-block':'d-none')}>
+                                    {t('resultAccess')}. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
+                                    <Typography className={"mb-2 "+(seqShare && seqShare.sharedNameObj.length == 0 ? 'd-block':'d-none')}>
+                                    {t('resultNotAccess')}. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >{t('shareMore')} …​</Link></Typography>
+                                
                                     <ShareResultsModal
                                     show={modalResultShow}
                                     data={userList}
@@ -822,22 +876,33 @@ function SearchResultSequence() {
                     <Row>
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Row>
-                                <Col lg="8" md="8" className="pr-0 content">
+                                <Col lg="9" md="9" className="pr-0 content">
                                     <img className="float-left mx-3" src={alertImg} alt={t('alertSetting')} />
                                     <Typography className={(alarmSetting && alarmSetting.is_created ? 'd-block':'d-none')}>
-                                        This result is repeated automatically {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]}. New results are emailed to {alarmSetting && alarmSetting.is_created && alarmSetting.email}. ​</Typography>
+                                        {/* This result is repeated automatically {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]}. New results are emailed to {alarmSetting && alarmSetting.is_created && alarmSetting.email}. ​ */}
+                                        <span>{t('searchRepeatAutomatic')} {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]} {t('emailGoingTo')} {alarmSetting && alarmSetting.email}.{t('alarmSettingText2')}</span>
+                                    </Typography>
+									<Typography className={(alarmSetting && !alarmSetting.is_created  ? 'd-block':'d-none')}>
+                                        <span>{t('alertNotScheduled')}.</span>
+                                    </Typography>
+
                                 </Col>
                                 <Col lg="12" md="12" className="pr-0 content float-right">
-                                    <Typography className={"float-right"}>
+									<Typography className={"float-right "+(alarmSetting && alarmSetting.is_created ? 'd-block':'d-none')}>
                                         <Link href="#" title={t('resSharing')} className={"appLink appLink"} onClick={(e)=>showAlertModal(e)}>
-                                            Change Settings
+                                            {t('changeSettings')}
                                         </Link>
                                         <span className={classes.headerPipe + " appTextColor"}>|</span>
                                         <Link href="#" title={t('resSharing')} className={"failedTextColor appLink"} onClick={(e) => removeAlert(e)}>
-                                            Remove Alert
+                                            {t('removeAlert')}
                                         </Link>
                                     </Typography>
-                                </Col>
+									<Typography className={"float-right "+(alarmSetting && !alarmSetting.is_created ? 'd-block':'d-none')}>
+                                        <Link href="#" title={t('resSharing')} className={"appLink appLink"} onClick={(e)=>showAlertModal(e)}>
+                                            {t('setUpAlert')}
+                                        </Link>
+									</Typography>
+								</Col>
                             </Row>
                         </Col>
                     </Row>
@@ -857,10 +922,10 @@ function SearchResultSequence() {
                             </Row>
                         </Col>
                         <Col lg="12" md="12" className="pr-0 content float-right mt-3 ml-3">
-                            <h6 className={"appTextColor loginTitle"}>{t('alerts')}</h6>
+                            {/* <h6 className={"appTextColor loginTitle"}>{t('alerts')}</h6> */}
                             <DataTable
                                 columns={columns}
-                                data={alertData}
+                                data={searchHistoryData}
                                 defaultSortField="date"
                                 defaultSortAsc={false}
                                 sortable={false}
@@ -880,7 +945,7 @@ function SearchResultSequence() {
                             // clearSelectedRows={clearCheckedRow}
                             />
                         </Col>
-                        <Col lg="12" md="12" className="pr-0 content float-right mt-3 ml-3">
+                        {/* <Col lg="12" md="12" className="pr-0 content float-right mt-3 ml-3">
                             <h6 className={"appTextColor loginTitle"}>{t('redos')}</h6>
                             <DataTable
                                 columns={columns}
@@ -903,8 +968,8 @@ function SearchResultSequence() {
                             // onRowClicked={getRowData}
                             // clearSelectedRows={clearCheckedRow}
                             />
-                        </Col>
-                        <Col lg="12" md="12" className={"mt-3 px-5" + (redoData.length > 0 || alertData.length > 0 ? ' d-block' : ' d-none')} md="6">
+                        </Col> */}
+                        <Col lg="12" md="12" className={"mt-3 px-5" + (searchHistoryData.length > 0 ? ' d-block' : ' d-none')} md="6">
                             <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} type="submit" onClick={(e)=>deleteSearch('single')}>{t('deleteSelected')}</Button>
                             <Button color="primary" variant="contained" onClick={(e)=>deleteSearch('all')} className={"text-capitalize mr-2 loginSubmit"} type="submit">{t('delPrevResult')}</Button>
 

@@ -46,5 +46,6 @@ export const url = {
     seqAddSharee:"do=gqworkflow.add_sharees_ft&format=json&workflow=id:**&userId=UID",
     seqRemoveSharee:"do=gqworkflow.remove_sharee_ft&format=json&workflow=id:**&userId=UID",
     browseSeqDB:"do=gqfetch&db=id:**",
-    getPageCount: "do=gquser.get_paging_size"
+    getPageCount: "do=gquser.get_paging_size",
+    updateSeqData:"do=gqworkflow.update&id=WID&format=json",
 }
