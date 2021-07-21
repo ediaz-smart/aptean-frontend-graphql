@@ -22,6 +22,8 @@ export const submitLogin = (data,history, t) => async (dispatch) => {
                 console.log(response,"response response response response response response response");
                 await dispatch(getUserServerInfo());
                 toast.success(t('loginSuccess'));
+                localStorage.setItem('User_'+data.GQUSERID, response);
+
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('userName', data.GQUSERID);
                 dispatch(setUser({GQUSERID: data.GQUSERID,isLoggedIn: true }));

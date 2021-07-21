@@ -37,6 +37,16 @@ const useStyles = makeStyles((theme) => ({
 		padding: '3px',
 		borderRadius: '3px'
 	},
+	buttonStyleCancel:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		color:'white',
+		backgroundColor:'#008EC5 !important',
+        border: '2px solid #1F4E79 !important',
+		borderColor:'#1F4E79',
+
+	},
 	scrollList: {
 		height: '300px',
 		overflowX: 'scroll'
@@ -112,13 +122,13 @@ function ShareResultsModal(props) {
 					<Button
 						color={selectData.length == 0 ? "default":"secondary"}
 						variant="contained"
-						className={"float-left text-capitalize mr-2 "+ (selectData.length == 0 ? 'disableBtnBorder' : 'loginSubmit')}
+						className={"float-left text-capitalize mr-2 "+ (selectData.length == 0 ? 'cancelButtonDisable' : 'accountInfo')}
 						onClick={shareUserData}
 						disabled={selectData.length == 0 ? true:false}
 					>Share Results</Button>
 					<Button
 						onClick={props.onHide}
-						className={"float-left primaryBtn text-capitalize"}
+						className={classes.buttonStyleCancel}
 						color="secondary"
 						variant="contained"
 					>Cancel</Button>

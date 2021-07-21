@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   border: '2px solid #CCCCCC' ,
   color:'#777777',
   textTransform: 'capitalize',
-  boxShadow: 'none',
+  boxShadow: 'none !important',
   // '&:hover': {
   //   pointerEvents: 'none',
   //   boxShadow: 'none',
@@ -140,9 +140,9 @@ function AccountInfo() {
         data.email ? setuserEmail(data.email) : setuserEmail('');
         data.accounting_group_name ?  setuserAccountingGroup(data.accounting_group_name) : setuserAccountingGroup('');
         data.user_class_name ? setuserAccountType(data.user_class_name) : setuserAccountType('');
-        // moment(values.docPublicDate).format('YYYYMMDD')
+        // moment(values.docPublicDate).format('YYYYMMDD') moment(data.expire_time).format("MMMM Do YYYY"))
         data.create_time ? setuserAccountCreated(data.create_time) : setuserAccountCreated('');
-        data.expire_time ?  setuserAccountExpires('After ' + moment(data.expire_time).format("MMM Do YY")) :  setuserAccountExpires('Never');
+        data.expire_time ?  setuserAccountExpires('After ' + moment(data.expire_time).format("MMMM Do YYYY")) :  setuserAccountExpires('Never');
         data.clitoken ? setuserAccountClitoken(data.clitoken) : setuserAccountClitoken('');
         data.dspace_workflow ?  setuserAnalyses(bytesToSize(data.dspace_workflow)) :  setuserAnalyses(0);
         data.dspace_seqdb ? setuserSeqDatabase(bytesToSize(data.dspace_seqdb)) : setuserSeqDatabase(0);
@@ -380,7 +380,7 @@ function AccountInfo() {
                         {t('aisavechange')}
                         </Button>
                         : 
-                        <Button variant="contained" disableRipple={true} color="default" className={classes.loginSubmitDis}  >
+                        <Button variant="contained" disableRipple={true} color="default" className='cancelButtonAI'  >
                         {t('aisavechange')}
                         </Button>
                         }

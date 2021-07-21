@@ -15,13 +15,14 @@ const useStyles = makeStyles((theme) => ({
 		
 
 	},
-	buttonStyle:{
+	buttonStyleCan:{
 		float:'right',
 		textTransform: 'none',
 		margin:'4px',
 		backgroundColor:'#008EC5 !important',
 		border: '2px solid #1F4E79 !important',
 		borderColor:'#1F4E79',
+		color:'white'
 
 	},
 	buttonStyleCancel:{
@@ -29,7 +30,17 @@ const useStyles = makeStyles((theme) => ({
 		textTransform: 'none',
 		margin:'4px',
 	
-	}
+	},
+	buttonStyleSubmit:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		backgroundColor:'##DB862D !important',
+        border: '2px solid ##DB862D !important',
+		marginTop: '4px',
+		color:'white'
+
+	},
 
 }));
 
@@ -63,8 +74,8 @@ function ShareResultsRemoveModal(props) {
                  <br></br>
 			
 				<div className={classes.footerDiv}>
-					<Button onClick={props.onHide} className={classes.buttonStyleCancel}  color="default" variant="contained">Cancel</Button>
-					<Button onClick={sendRemoveData} className={classes.buttonStyle} color="primary" variant="contained">Remove Share</Button> 
+					<Button onClick={props.onHide} className={classes.buttonStyleCan}  color="default" >Cancel</Button>
+					<Button onClick={sendRemoveData} className='accountInfo' color="default" >Remove Share</Button> 
 
 				</div>
 				

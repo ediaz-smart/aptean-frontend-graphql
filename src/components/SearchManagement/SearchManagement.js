@@ -55,6 +55,18 @@ const useStyles = makeStyles((theme) => ({
 			color: '#008EC5'
 		}
 	},
+	loginSubmitCancel:{
+		backgroundColor: '#0182C5',
+		borderColor: '#1F4E79',
+		border: '2px solid #1F4E79' ,
+		color:'white',
+		margin: '4px',
+		textTransform: 'capitalize',
+		'&:hover': {
+		  backgroundColor: '#0182C5',
+		  boxShadow: 'none',
+		},
+	   },
 	textHeading: {
 		fontWeight: "700 !important",
 		color: "#5A6868",
@@ -817,14 +829,15 @@ function SearchManagement(props) {
 					</Col>}
 
 					<Col className={"float-left px-0 " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
-						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'loginSubmit')} type="submit">{t('deleteSelected')}</Button>
-						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('moveToFolder')}</Button>
-						<Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'disableBtnBorder' : 'primaryBtn')} type="submit">{t('mergeResult')}</Button>
+					    
+						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
+						<Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('moveToFolder')}</Button>
+						<Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('mergeResult')}</Button>
 					</Col>
 					<Col className={"float-right " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' ? ' d-block' : ' d-none')} md="6">
 						{/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
-						<Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
-						<Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} className={"text-capitalize mr-2 " + (!addFolderText ? ' disableBtnBorder disabled' : 'primaryBtn')} type="submit">{t('createSubFolder')}</Button>
+						<Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className="accountInfo mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
+						<Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
 
 					</Col>
 					{/* <Col className={classes.columnPadding} md="12"> */}
@@ -856,8 +869,8 @@ function SearchManagement(props) {
 							<p className={"float-left ml-1"}>{t('termsConditionText')}</p>
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={() => deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelItems')}</Button>
-							<Button onClick={closeModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+							<Button onClick={() => deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelItems')}</Button>
+							<Button onClick={closeModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
 						</div>
 					</div>
 					<div className={"text-center " + (delLoaderContent ? 'd-block' : 'd-none')}>
@@ -896,8 +909,8 @@ function SearchManagement(props) {
 							<p className={"float-left ml-1"}>{t('termsConditionText')}</p>
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={() => deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('deleteSelFolder')}</Button>
-							<Button onClick={closeFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+							<Button onClick={() => deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelFolder')}</Button>
+							<Button onClick={closeFolderModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
 						</div>
 					</div>
 					<div className={"text-center " + (delFolderLoaderContent ? 'd-block' : 'd-none')}>
@@ -928,8 +941,8 @@ function SearchManagement(props) {
 							<FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
 						</div>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true : false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'disableBtnBorder' : 'loginSubmit')} variant="contained">{t('moveResult')}</Button>
-							<Button onClick={closeMoveFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+							<Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true : false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('moveResult')}</Button>
+							<Button onClick={closeMoveFolderModal} className={classes.loginSubmitCancel}  >{t('cancel')}</Button>
 						</div>
 					</div>
 				</Modal.Body>
@@ -947,7 +960,7 @@ function SearchManagement(props) {
 						<p className="mb-3">{t('plsTryAgain')}</p>
 					</div>
 					<div className={classes.footerDiv + " align-center"}>
-						<Button onClick={() => setAddFolderModalShow(false)} className="mr-2 primaryBtn" color="primary" variant="contained">{t('ok')}</Button>
+						<Button onClick={() => setAddFolderModalShow(false)} className="mr-2 accountInfo" color="primary" variant="contained">{t('ok')}</Button>
 					</div>
 				</Modal.Body>
 			</Modal>

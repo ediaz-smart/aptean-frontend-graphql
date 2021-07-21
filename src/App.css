@@ -118,6 +118,15 @@
     color: white !important;
 }
 
+.cancelButtonModal {
+    background-color: #0182C5;
+    border-color: #1F4E79;
+    border: 2px solid #1F4E79;
+    color: white;
+    float: right;
+    text-transform: none !important;
+}
+
 .cancelButtonDisable {
     background-color: #EEEEEE !important;
     border: 2px solid #a2a2a3 !important;
@@ -126,6 +135,26 @@
     margin: 4px;
     text-transform: none !important;
     margin-top: 4px !important;
+    color: #777777 !important;
+    box-shadow: none !important;
+}
+
+.cancelButtonAI {
+    background-color: #EEEEEE !important;
+    border: 2px solid #a2a2a3 !important;
+    text-transform: none;
+    margin-left: -6px !important;
+    text-transform: none !important;
+    color: #777777 !important;
+    box-shadow: none !important;
+}
+
+.cancelButtonCP {
+    background-color: #EEEEEE !important;
+    border: 2px solid #a2a2a3 !important;
+    text-transform: none;
+    margin-left: 42px !important;
+    text-transform: none !important;
     color: #777777 !important;
     box-shadow: none !important;
 }
@@ -362,14 +391,16 @@ a:hover {
     font-size: 13px;
 }
 
-.MuiFormControlLabel-label ,.MuiTypography-body1 {
+.MuiFormControlLabel-label,
+.MuiTypography-body1 {
     font-family: Arial, Helvetica, sans-serif, "Helvetica Neue" !important;
     font-size: 14px !important;
     color: #777777 !important;
     font-weight: 400 !important;
 }
 
-p,label {
+p,
+label {
     font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
     font-size: 14px;
     color: #777777;
