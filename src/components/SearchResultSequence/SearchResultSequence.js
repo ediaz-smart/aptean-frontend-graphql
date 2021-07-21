@@ -681,7 +681,7 @@ function SearchResultSequence(props) {
 	}
     return (
         <div className={classes.grow}>
-            <Row>
+            <Row className="p-3">
                 <Col lg="12" md="12" sm="12" className="mb-5">
                     <Typography className={classes.root + " float-right"}>
                         <span className={"appTextColor appLink"} title={t('auditTrial')}>
