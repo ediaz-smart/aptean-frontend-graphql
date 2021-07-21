@@ -152,7 +152,7 @@
     "tryAgainOrContact": "Please try again, or contact ",
     "forAssistance": " for assistance.",
     "tryAgain": "Try again",
-    "auditTrial": "Audit Trial",
+    "auditTrial": "Audit Trail",
     "resSharing": "Result Sharing",
     "alertSetting": "Alert Setting",
     "searchHistory": "Search History",
@@ -277,7 +277,8 @@
     "alertNotScheduled":"No alerts are scheduled for this result set",
     "changeSettings":"Change Settings",
     "removeAlert":"Remove Alert",
-    "setUpAlert":"set up an alert",
+    "setUpAlert":"Set up an alert",
     "255OnlyAllowed":"Maximum 255 Characters Allowed",
-    "valueMustBeInteger": "Value must be an integer."
+    "valueMustBeInteger": "Value must be an integer.",
+    "shareNow":"Share now"
 }

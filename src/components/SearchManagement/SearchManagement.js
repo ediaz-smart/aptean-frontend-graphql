@@ -117,6 +117,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 	checkBox: {
 		transform: "scale(0.9)",
+	},
+	addNewLabel:{
+		marginTop: '-20px',
+		marginLeft: '31px'
+	},
+	addNewText:{
+		marginTop: '-6px',
+		marginLeft: '30px',
+		height: '65px'
 	}
 }));
 
@@ -231,6 +240,7 @@ function SearchManagement(props) {
 	const [addFolderText, setAddFolderText] = useState(true);
 	const [clearCheckedRow, setClearCheckedRow] = useState(false);
 
+	
 	//Pagination
 
 	const escFunction = useCallback((event) => {
@@ -505,7 +515,36 @@ function SearchManagement(props) {
 					// setFolderIds(["4086079","4087563","4087579"]);
 					setFolderIds(ids);
 					// setInfoFolderIds([res.id]);
-					setFolderDetail(getResult.response_content.items[0]);
+					// Setting Level for Disable Add Folder Button
+					res.children.forEach(child1 => {
+						if(child1.child_status == "yes")
+						{
+							child1.level = 1;
+							child1.children.forEach(child2 => {
+								if(child2.child_status == "yes")
+								{
+									child2.level = 2;
+									child2.children.forEach(child3 => {
+										if(child3.child_status == "yes")
+										{
+											child3.level = 3;
+											child3.children.forEach(child4 => {
+												child4.level = 4;
+											});
+										}else {
+											child3.level = 3;
+										}
+									});
+								}else {
+									child2.level = 2;
+								}
+							});
+						}else {
+							child1.level = 1;
+						}
+					});
+					
+					setFolderDetail(res);
 				}
 			}
 		}
@@ -555,6 +594,12 @@ function SearchManagement(props) {
 		setDefaultTitle(event.text_label);
 		setDefaultTitleId(event.id);
 		setParentFolderId(event.id);
+		if(event.level == 3)
+		{
+			setAddFolderText(false);
+		}else {
+			setAddFolderText(true);
+		}
 		// setTimeout(() => {
 		if (event.text_label != "Recent Search Results") {
 			setInfoFolderIds([]);
@@ -766,7 +811,7 @@ function SearchManagement(props) {
 							</ListGroup.Item>
 
 							{/* })} */}
-							<ListGroup.Item className={"my-2 " + (showNewFolder ? 'd-block ' : 'd-none ') + classes.projectListItem} key="addNewFolder">
+							<ListGroup.Item className={classes.projectListItem+" "+classes.addNewText+ ' ' + (defaultTitle !== 'Recent Search Results' && showNewFolder ? 'd-block' : 'd-none')} key="addNewFolder">
 								<img src={FolderIcon} className={classes.folderIcon + " float-left mt-2"} />
 								<TextInput
 									id="addFolder"
@@ -777,7 +822,7 @@ function SearchManagement(props) {
 									onKeyDown={getFolderName}
 								/>
 							</ListGroup.Item>
-							<ListGroup.Item className={classes.projectListItem} key="createNewFolder">
+							<ListGroup.Item className={classes.projectListItem+" "+classes.addNewLabel+ ' ' + (defaultTitle !== 'Recent Search Results' ? 'd-block' : 'd-none')} key="createNewFolder">
 								<img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLink " + classes.projectTitle + (!addFolderText ? ' disabled' : '')}>{t('addFolder')}</a>
 							</ListGroup.Item>
 

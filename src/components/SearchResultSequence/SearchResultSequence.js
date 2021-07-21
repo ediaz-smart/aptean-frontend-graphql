@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, Fragment } from 'react';
+import React, { useState, useCallback, useEffect, Fragment,useRef } from 'react';
 import ReactDOM from "react-dom";
 import { useHistory, useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
@@ -146,7 +146,7 @@ const customStyles = {
 };
 const isIndeterminate = indeterminate => indeterminate;
 const selectableRowsComponentProps = { indeterminate: isIndeterminate };
-function SearchResultSequence() {
+function SearchResultSequence(props) {
     const { t, i18n } = useTranslation('common');
     const classes = useStyles();
     const history = useHistory();
@@ -198,6 +198,10 @@ function SearchResultSequence() {
 	// To disable shared user ids in add share popup
 	const [sharedIds, setSharedIds] = useState([]);
 
+	// To detect outside click
+	const wrapperRef = useRef(null);
+
+	
     // reset login status
     useEffect(async () => {
         getSummaryResp();
@@ -220,8 +224,20 @@ function SearchResultSequence() {
         });
         setAlertSettingData([...alertSettingData])
         setAlertSettingValue(7);
-
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
     }, []);
+	const handleClickOutside = event => {
+		if(event.target.type !== "text")
+		{
+			disableTitleText();
+		}
+	};
+	const disableTitleText = async() =>{
+		setUpdateTitle(false);
+	};
     const getUserResp = async() =>{
         const getUserResponse = await searchResSequence.getUserList(workflowId);
         if (getUserResponse && getUserResponse.response_status == 0) {
@@ -309,6 +325,7 @@ function SearchResultSequence() {
                 sharedData['sharedNameObj'] = [];
                 sharedData['sharedNames'] = '';
                 setSeqShare(sharedData);
+				setSharedIds([]);
             }
         }else {
             sharedData['sharedNames'] = '';
@@ -522,7 +539,13 @@ function SearchResultSequence() {
         setDelLoaderContent(true);
         if (deleteResp && deleteResp.response_content && deleteResp.response_content.success.length > 0) {
             toast.success('Deleted Successfully');
-            getAlertRedoResp();
+			if(deleteType == "single")
+        	{
+            	getAlertRedoResp();
+			}else{
+				history.push('/searchResult');
+			}
+			
         } else {
             toast.error('Unable to Delete');
             setModalShow(true);
@@ -578,6 +601,7 @@ function SearchResultSequence() {
         const getremoveResponse = await searchResSequence.removeResultSharing(postData);
         if (getremoveResponse && getremoveResponse.response_status == 0) {
             getResultShareResp(userList);
+			// getUserResp();
         }else {
             toast.error('Removing in Error.');
         }
@@ -650,6 +674,11 @@ function SearchResultSequence() {
 		}
 		setUpdateTitle(false);
 	}
+	const showUpdateTitleText = (e)=> {
+		e.preventDefault();
+		setUpdateTitle(true);
+		setTitleName(seqSummary.text_label);
+	}
     return (
         <div className={classes.grow}>
             <Row>
@@ -677,7 +706,7 @@ function SearchResultSequence() {
                     </Typography>
                 </Col>
                 <Col lg="12" md="12" sm="12">
-                    <h6 className={"appTextColor loginTitle "+(!updateTitle ? 'd-block':'d-none')} onClick={(e)=>setUpdateTitle(true)}>{seqSummary && seqSummary.text_label}</h6>
+                    <h6 className={"appTextColor loginTitle "+(!updateTitle ? 'd-block':'d-none')} onClick={(e)=>showUpdateTitleText(e)}>{seqSummary && seqSummary.text_label}</h6>
                     <div className={"form-group "+(updateTitle ? 'd-block':'d-none')}>
                                     <TextInput
                                         fullWidth={false}
@@ -688,6 +717,7 @@ function SearchResultSequence() {
                                         value={titleName ? titleName : ''}
                                         onChange={(e)=>setTitleName(e.target.value)}
                                         onKeyDown={updateNewTitle}
+										ref={wrapperRef}
                                     />
                      </div>
                     <Row>
@@ -823,7 +853,7 @@ function SearchResultSequence() {
                                     </div>
                                 </Col>
                             
-                            <br />
+                            <br clear="all"/>
                             <h6 className={"appTextColor loginTitle"}>{t('techData')}</h6>
                             <Col lg="12" md="12" className="pr-0 content mb-2">
                                 <Typography >
@@ -852,7 +882,7 @@ function SearchResultSequence() {
                                 <Typography className={"mb-2 "+(seqShare && seqShare.sharedNameObj.length > 0 ? 'd-block':'d-none')}>
                                     {t('resultAccess')}. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
                                     <Typography className={"mb-2 "+(seqShare && seqShare.sharedNameObj.length == 0 ? 'd-block':'d-none')}>
-                                    {t('resultNotAccess')}. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >{t('shareMore')} …​</Link></Typography>
+                                    {t('resultNotAccess')}. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
                                 
                                     <ShareResultsModal
                                     show={modalResultShow}
