@@ -40,6 +40,11 @@ const Constant = {
         {key:"Claims",value:"Claims"},
         {key:"Abstract",value:"Abstract"},
         {key:"Description",value:"Description"}
-    ]
+    ],
+    genePastItemsText:{
+        "QUERY":" entire query sequence length",
+        "SUBJECT":" entire length of any subject sequence",
+        "SHORTER":" entire query sequence length or over the entire length of any subject sequence"
+    }
 }
 export default Constant;

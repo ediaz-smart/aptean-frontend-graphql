@@ -102,11 +102,13 @@ async function mostRecentResCalculation(data,pagetype) {
     } catch (error) {
         console.error(error);
     }
-   
 }
-
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 const UtilsService = {
-    mostRecentResCalculation
+    mostRecentResCalculation,
+    numberWithCommas
 };
 
 export default UtilsService;

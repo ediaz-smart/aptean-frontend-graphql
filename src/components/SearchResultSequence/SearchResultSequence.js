@@ -31,6 +31,7 @@ import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
 import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
+import UtilsService from '../../helpers/utils';
 
 
 
@@ -194,6 +195,7 @@ function SearchResultSequence(props) {
     // To Update Title
     const [updateTitle, setUpdateTitle] = useState(false);
     const [titleName, setTitleName] = useState('');
+	const [titleNameErr, setTitleNameErr] = useState(false);
 
 	// To disable shared user ids in add share popup
 	const [sharedIds, setSharedIds] = useState([]);
@@ -201,6 +203,7 @@ function SearchResultSequence(props) {
 	// To detect outside click
 	const wrapperRef = useRef(null);
 
+	
 	
     // reset login status
     useEffect(async () => {
@@ -650,6 +653,10 @@ function SearchResultSequence(props) {
     }
     const updateNewTitle = async (e) => {
 		if (e.keyCode == 13) {
+			if(titleNameErr)
+			{
+				return;
+			}
 			let updateParam = '&text_label='+titleName;
 			updateSeqData(workflowId,updateParam);
         }
@@ -679,6 +686,15 @@ function SearchResultSequence(props) {
 		setUpdateTitle(true);
 		setTitleName(seqSummary.text_label);
 	}
+	const updateTitleName = async(e)=>{
+		setTitleName(e.target.value);
+		if(e.target.value.length > 200)
+		{
+			setTitleNameErr(true);
+		}else{
+			setTitleNameErr(false);
+		}
+	} 
     return (
         <div className={classes.grow}>
             <Row className="p-3">
@@ -707,17 +723,19 @@ function SearchResultSequence(props) {
                 </Col>
                 <Col lg="12" md="12" sm="12">
                     <h6 className={"appTextColor loginTitle "+(!updateTitle ? 'd-block':'d-none')} onClick={(e)=>showUpdateTitleText(e)}>{seqSummary && seqSummary.text_label}</h6>
-                    <div className={"form-group "+(updateTitle ? 'd-block':'d-none')}>
+                    <div className={"form-group col-md-6 "+(updateTitle ? 'd-block':'d-none')}>
                                     <TextInput
-                                        fullWidth={false}
+                                        fullWidth={true}
                                         id="searchTitle"
                                         name="searchTitle"
                                         label={t('nameYourSearch')}
                                         variant="outlined"
                                         value={titleName ? titleName : ''}
-                                        onChange={(e)=>setTitleName(e.target.value)}
+                                        onChange={(e)=>updateTitleName(e)}
                                         onKeyDown={updateNewTitle}
 										ref={wrapperRef}
+										error={titleNameErr}
+										helperText={titleNameErr && t('200OnlyAllowed')}
                                     />
                      </div>
                     <Row>
@@ -774,42 +792,64 @@ function SearchResultSequence(props) {
                                 )
                             })
                             }
-                            <br clear="all"/>
+                            <br clear="all" /><br />
                             <h6 className={"appTextColor loginTitle mt-3"}>{t('searchStrategy')}</h6>
 							    <Col lg="12" md="12" className={"pr-0 content"}>
                                     <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The search strategy was <span className="text-capitalize">{seqSummary && seqSummary.params ? seqSummary.params.strat_name:''}.</span>​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The search strategy was <span className="text-capitalize">{seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? seqSummary.runstats.stats.algo:''}.</span>​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')}>
                                     <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This strategy fits the shorter sequence (query or subject) into the longer one, keeping the number of mismatches and gaps to a minimum.​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
                                     <Typography className="text-lowercase">
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Alignments with less than {seqSummary && seqSummary.params.strat_genepast_perc_id}% identity over {seqSummary && seqSummary.params.strat_genepast_perc_id_over} are discarded.​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Results are required to have at least {seqSummary && seqSummary.params.strat_genepast_perc_id}% identity over the 
+										{seqSummary && seqSummary.params && Constant['genePastItemsText'][seqSummary.params.strat_genepast_perc_id_over]}.​</Typography>
+									<Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? UtilsService.numberWithCommas(seqSummary.runstats.stats.kept):'0'} best alignments are reported.​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "blast" ? 'd-block':'d-none')} >
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
-                                        <Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc}.​</Typography>
-                                        <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span>​.</Typography>
+                                        {/* <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc}.
+										</Typography> */}
+										<Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> 
+											Results are obtained using the <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span> scoring matrix with a word size of {seqSummary && seqSummary.params.strat_blast_word_size_nuc} and an expected cutoff of {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.
+										​</Typography>
+                                        {/* <Typography className="text-lowercase">
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span>​.</Typography> */}
                                     </div>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.comp_mode) ? 'd-block':'d-none')}>
-                                        <Typography >
+										<Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> 
+											Results are obtained using the <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> scoring matrix with a word size of {seqSummary && seqSummary.params.strat_blast_word_size_pro} and an expected cutoff of {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.
+										​</Typography>
+                                        {/* <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_pro}.​</Typography>
                                         <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span>.​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span>.​</Typography> */}
                                     </div>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
-                                        <Typography >
+										<Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> 
+											Results are obtained using the <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span> for nucleotide and <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> for protein scoring matrix with a word size of {seqSummary && seqSummary.params.strat_blast_word_size_nuc} for nucleotide and {seqSummary && seqSummary.params.strat_blast_word_size_pro} for protein and an expected cutoff of {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.
+										​</Typography>
+                                        {/* <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc} for nucleotide and {seqSummary && seqSummary.params.strat_blast_word_size_pro} for protein.​</Typography>
                                         <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc :"NUC.3.1"}</span> for nucleotide and <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> for protein.​</Typography>
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc :"NUC.3.1"}</span> for nucleotide and <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> for protein.​</Typography> */}
                                     </div>
                                     <div className="content">
-                                        <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> e-val cutoff is {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.​</Typography>
-                                        <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Experimental HSP handling is {seqSummary && seqSummary.params.strat_blast_hsp ? seqSummary.params.strat_blast_hsp:'none'}​.</Typography>
+										<Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
+                                        {/* <Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> e-val cutoff is {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.​</Typography> */}
+                                        <Typography className={seqSummary && seqSummary.params.strat_blast_hsp ? 'd-block':'d-none'}>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> HSPs are processed​.</Typography>
+										<Typography className={seqSummary && !seqSummary.params.strat_blast_hsp ? 'd-block':'d-none'}>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> HSPs are not processed​.</Typography>
+										<Typography >
+											<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? UtilsService.numberWithCommas(seqSummary.runstats.stats.kept):'0'} best alignments are reported.​</Typography>
                                     </div>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "sw" ? 'd-block':'d-none')} >
@@ -832,24 +872,42 @@ function SearchResultSequence(props) {
                                     <div className="content">
                                         <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> score cutoff is {seqSummary && seqSummary.params.strat_sw_score_cutoff}.​</Typography>
+										<Typography >
+                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? UtilsService.numberWithCommas(seqSummary.runstats.stats.kept):'0'} best alignments are reported.​</Typography>
                                     </div>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "fragment" ? 'd-block':'d-none')}>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
-                                        <Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.</Typography>
+                                        {/* <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.</Typography> */}
+										<Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over any stretch of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} nucleotides.</Typography>
+										
                                     </div>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.comp_mode) ? 'd-block':'d-none')}>
-                                        <Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.​</Typography>
+                                        {/* <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.​</Typography> */}
+										<Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over any stretch of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} amino acids.</Typography>
                                    </div>
                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')} >
-                                        <Typography>
+								   		<Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over any stretch of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} nucleotides.</Typography>
+                                        {/* <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> For nucleotide hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.
-                                        </Typography>
-                                        <Typography>
+                                        </Typography> */}
+										<Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over any stretch of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} amino acids.</Typography>
+                                        {/* <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " />For protein hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.
-                                        </Typography>
+                                        </Typography> */}
+										
+                                    </div>
+									<div className="content">
+										<Typography >
+                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
+										<Typography >
+                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? UtilsService.numberWithCommas(seqSummary.runstats.stats.kept):'0'} best alignments are reported.​</Typography>
                                     </div>
                                 </Col>
                             
