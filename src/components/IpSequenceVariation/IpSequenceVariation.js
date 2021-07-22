@@ -61,14 +61,15 @@ const useStyles = makeStyles((theme) => ({
         marginRight: "10px"
     },
     checkBoxContent: {
-        // fontSize: "14px",
-        width: "80%",
+        fontSize: "14px",
+        // width: "100%",
         textAlign: "initial",
         marginLeft: "10px",
-        marginBottom: "10px !important"
+        marginBottom: "10px !important",
+        marginTop: "8px"
     },
     checkBox: {
-        marginTop: "3px",
+        margin: "auto",
         width: "20px",
         height: "20px"
     },
@@ -899,28 +900,8 @@ function IpSequenceVariation() {
         }
     };
 
-    const handleSingleCheck = e => {
-        const { name, id } = e.target;
-        if (name && name == "nuc") {
-            if (nucDb.includes(id)) {
-                setNucDb(nucDb.filter(dbName => dbName !== id));
-            } else {
-                nucDb.push(id.toString());
-                setNucDb([...nucDb]);
-            }
-        } else if (name && name == "pro") {
-            if (proDb.includes(id)) {
-                setProDb(proDb.filter(dbName => dbName !== id));
-            } else {
-                proDb.push(id.toString());
-                setProDb([...proDb]);
-            }
-        }
-        setNoDbSelected(false);
-    };
-
     function handleDbChange(id, name) {
-        if (name && name == "nuc") {
+        if(name && name == "nuc") {
             if (nucDb.includes(id)) {
                 setNucDb(nucDb.filter(dbName => dbName !== id));
             } else {
@@ -935,7 +916,6 @@ function IpSequenceVariation() {
                 setProDb([...proDb]);
             }
         }
-        setNoDbSelected(false);
     }
 
     console.log('dbtypearray', dbTypeArray)
@@ -1026,6 +1006,15 @@ function IpSequenceVariation() {
             // seqCount = val;            
             // calCredits(vßal);
         }
+    }
+
+    function setFormValue() {
+        setSaveFormValue(!saveFormValue);
+        formik.setFieldValue("formName", '');
+    }
+
+    function homeRedirect() {
+        history.push("/home");
     }
 
     const ColoredLine = ({ color }) => (
@@ -1574,9 +1563,7 @@ function IpSequenceVariation() {
                                         onChange={() => setIsDocPubDate(!isDocPubDate)}
                                         checked={isDocPubDate}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("docPublicationDate")} &nbsp;&nbsp;&nbsp;
-                                    </Typography>
+                                   <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1605,14 +1592,12 @@ function IpSequenceVariation() {
                                     />
                                     <CheckBox
                                         color="primary"
-                                        className={"float-left mx-2"}
+                                        className={"float-left ml-2"}
                                         name="includeGenUnknownDate"
                                         id="includeGenUnknownDate"
                                         onChange={() => { setIsDocPubUnknownDates(!isDocPubUnknownDates) }}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("includeUnknownDates")}
-                                    </Typography>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGenUnknownDate">{t("includeUnknownDates")}</label>
                                 </Col>
                             </AccordionDetails>
                         </Accordion>
@@ -1639,9 +1624,7 @@ function IpSequenceVariation() {
                                         onChange={() => setIsPublished(!isPublished)}
                                         checked={isPublished}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("publishedInGenomeQuest")} &nbsp;&nbsp;&nbsp;
-                                    </Typography>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="publishGenomeQuest">{t("publishedInGenomeQuest")}</label>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1670,14 +1653,12 @@ function IpSequenceVariation() {
                                     />
                                     <CheckBox
                                         color="primary"
-                                        className={"float-left mx-2"}
+                                        className={"float-left ml-2"}
                                         name="includeGQSpecificDate"
                                         id="includeGQSpecificDate"
                                         onChange={() => { setIspublishGQUnknownDates(!ispublishGQUnknownDates) }}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("includeUnknownDates")}
-                                    </Typography>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGQSpecificDate">{t("includeUnknownDates")}</label>
                                 </Col>
                                 <br clear="all"></br>
                                 <br clear="all"></br>
@@ -1690,9 +1671,7 @@ function IpSequenceVariation() {
                                         onChange={() => setIsPatientDoc(!isPatientDoc)}
                                         checked={isPatientDoc}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("patentDocContains")} &nbsp;&nbsp;&nbsp;
-                                </Typography>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1757,7 +1736,7 @@ function IpSequenceVariation() {
                                                 name="nuc"
                                                 id={test.id}
                                                 checked={nucDb.includes(test.id)}
-                                                onChange={handleSingleCheck}
+                                                onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                 className={"absolutePosition " + classes.checkBox}
                                                 disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                 color="primary"
@@ -1789,7 +1768,7 @@ function IpSequenceVariation() {
                                                     name="nuc"
                                                     id={test.id}
                                                     checked={nucDb.includes(test.id)}
-                                                    onChange={handleSingleCheck}
+                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                     color="primary"
@@ -1820,7 +1799,7 @@ function IpSequenceVariation() {
                                                     name="nuc"
                                                     id={test.id}
                                                     checked={nucDb.includes(test.id)}
-                                                    onChange={handleSingleCheck}
+                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                     color="primary"
@@ -1843,7 +1822,7 @@ function IpSequenceVariation() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} />
+                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseqvar"/>
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -1869,7 +1848,7 @@ function IpSequenceVariation() {
                                                     name="pro"
                                                     id={test.id}
                                                     checked={proDb.includes(test.id)}
-                                                    onChange={handleSingleCheck}
+                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     disabled={sequenceTypeValue == "protein" ? false : true}
                                                     color="primary"
@@ -1901,7 +1880,7 @@ function IpSequenceVariation() {
                                                     name="pro"
                                                     id={test.id}
                                                     checked={proDb.includes(test.id)}
-                                                    onChange={handleSingleCheck}
+                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     disabled={sequenceTypeValue == "protein" ? false : true}
                                                     color="primary"
@@ -1924,7 +1903,7 @@ function IpSequenceVariation() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} />
+                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseqvar"/>
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -2030,14 +2009,12 @@ function IpSequenceVariation() {
                         <CheckBox
                             // defaultChecked
                             color="primary"
-                            className={"float-left mx-2"}
+                            className={"float-left ml-2"}
                             name="check"
                             id="check"
                             onChange={() => { setSendMailAfterSearch(!sendMailAfterSearch) }}
                         />
-                        <Typography className={"float-left mt-2"}>
-                            {t("sendMailAfterSearch")}
-                        </Typography>
+                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="check">{t("sendMailAfterSearch")}</label>
                     </Col>
                 </Row>
                 <Row>
@@ -2045,14 +2022,12 @@ function IpSequenceVariation() {
                         <CheckBox
                             // defaultChecked
                             color="primary"
-                            className={"float-left mx-2"}
+                            className={"float-left ml-2"}
                             name="saveForm"
                             id="saveForm"
-                            onChange={() => { setSaveFormValue(!saveFormValue) }}
+                            onChange={setFormValue}
                         />
-                        <Typography className={"float-left mt-2"}>
-                            {t("SaveFormForlaterUse")}
-                        </Typography>
+                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
                     <Col md='6'>
                         <TextInput
@@ -2064,8 +2039,8 @@ function IpSequenceVariation() {
                             fullWidth={true}
                             disabled={!saveFormValue}
                             value={formik.values.formName ? formik.values.formName : ""}
-                            error={Boolean(formik.errors.formName)}
-                            helperText={formik.errors.formName}
+                            error={saveFormValue && Boolean(formik.errors.formName)}
+                            helperText={saveFormValue && formik.errors.formName}
                         />
                     </Col>
                 </Row>
@@ -2078,7 +2053,7 @@ function IpSequenceVariation() {
                         {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>
                             {t("submit")}
                         </Button>}
-                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} type="submit">
+                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} onClick={homeRedirect}>
                             {t("cancel")}
                         </Button>
                     </Col>

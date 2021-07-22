@@ -39,11 +39,11 @@ const TreeItem = withStyles({
 })(MaterialTreeItem);
 
 
-const FolderTreeStructure = ({ treeData, parentCallBack, dbName, dataArray, seQValue }) => {
+const FolderTreeStructure = ({ treeData, parentCallBack, dbName, dataArray, seQValue, pageType }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
 
-  const renderTree = (nodes, onSelect, dbName, dataArray, seQValue) =>
+  const renderTree = (nodes, onSelect, dbName, dataArray, seQValue, pageType) =>
     <TreeItem
       key={nodes.id}
       nodeId={nodes.id}
@@ -51,7 +51,7 @@ const FolderTreeStructure = ({ treeData, parentCallBack, dbName, dataArray, seQV
         <div>
           {nodes.type === "seqdb" ? (
             <>
-              {dataArray && <FormControlLabel
+              {pageType && pageType == "ipseqvar" && <FormControlLabel
                 control={
                   <Checkbox
                     name="file"
@@ -68,10 +68,11 @@ const FolderTreeStructure = ({ treeData, parentCallBack, dbName, dataArray, seQV
                 key={nodes.id}
               />
               }
-              {!dataArray && <FormControlLabel
+              {pageType && pageType == "ipseq" && <FormControlLabel
                 control={
                   <Checkbox
                     name="file"
+                    checked={dataArray.includes(nodes.id)}
                     onChange={e => {
                       onSelect(nodes.label, e.target.checked);
                       parentCallBack(nodes.id, dbName)
@@ -103,7 +104,7 @@ const FolderTreeStructure = ({ treeData, parentCallBack, dbName, dataArray, seQV
     // }}
     >
       {Array.isArray(nodes.children)
-        ? nodes.children.map(node => renderTree(node, onSelect, dbName, dataArray, seQValue))
+        ? nodes.children.map(node => renderTree(node, onSelect, dbName, dataArray, seQValue, pageType))
         : null}
     </TreeItem>
   // );
@@ -121,6 +122,7 @@ const FolderTreeStructure = ({ treeData, parentCallBack, dbName, dataArray, seQV
             dbName={dbName}
             dataArray={dataArray}
             seQValue={seQValue}
+            pageType={pageType}
           />
           {/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
         </>
@@ -143,8 +145,9 @@ const Tree = (props) => {
         dbName
         dataArray
         seQValue
+        pageType
       >
-        {props.renderTree(props.data, props.setFieldValue, props.dbName, props.dataArray, props.seQValue)}
+        {props.renderTree(props.data, props.setFieldValue, props.dbName, props.dataArray, props.seQValue, props.pageType)}
       </TreeView>
       {/* <pre>{JSON.stringify(props.values, null, 2)}</pre> */}
     </>

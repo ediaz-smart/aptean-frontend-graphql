@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams, Redirect } from 'react-router-dom';
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
@@ -63,13 +63,14 @@ const useStyles = makeStyles((theme) => ({
     },
     checkBoxContent: {
         fontSize: "14px",
-        width: "80%",
+        // width: "100%",
         textAlign: "initial",
         marginLeft: "10px",
-        marginBottom: "10px !important"
+        marginBottom: "10px !important",
+        marginTop: "8px"
     },
     checkBox: {
-        marginTop: "3px",
+        margin: "auto",
         width: "20px",
         height: "20px"
     },
@@ -883,38 +884,32 @@ function IpSeqSearch() {
         }
     };
 
-    const handleSingleCheck = e => {
-        const { name, id } = e.target;
-        if (name && name == "nuc") {
-            if (nucDb.includes(id)) {
-                setNucDb(nucDb.filter(dbName => dbName !== id));
-            } else {
-                nucDb.push(id.toString());
-                setNucDb([...nucDb]);
-            }
-        } else if (name && name == "pro") {
-            if (proDb.includes(id)) {
-                setProDb(proDb.filter(dbName => dbName !== id));
-            } else {
-                proDb.push(id.toString());
-                setProDb([...proDb]);
-            }
-        }
-        setNoDbSelected(false);
-    };
-
     function handleDbChange(id, name) {
-        if (name && name == "nuc") {
+        if(name && name == "nuc") {
             if (nucDb.includes(id)) {
+                if(nucDb.length == 1 && proDb.length > 0) {
+                    setIsBothDbSelected(false);
+                }
                 setNucDb(nucDb.filter(dbName => dbName !== id));
             } else {
+                if(nucDb.length == 0 && proDb.length > 0) {
+                    setIsBothDbSelected(true);
+                }
                 nucDb.push(id.toString());
                 setNucDb([...nucDb]);
             }
         } else if (name && name == "pro") {
             if (proDb.includes(id)) {
+                if(proDb.length == 1 && nucDb.length > 0) {
+                    console.log('inside pro', proDb.length)
+                    setIsBothDbSelected(false);
+                }
                 setProDb(proDb.filter(dbName => dbName !== id));
             } else {
+                if(proDb.length == 0 && nucDb.length > 0) {
+                    console.log('inside pro', proDb.length)
+                    setIsBothDbSelected(true);
+                }
                 proDb.push(id.toString());
                 setProDb([...proDb]);
             }
@@ -1025,14 +1020,15 @@ function IpSeqSearch() {
             // calCredits(vßal);
         }
     }
-    // setTimeout(() => {
-    // console.log('ppu2NucCredit', ppu2NucCredit, 'ppu2ProCredit', ppu2ProCredit, 'ppu2TotalCredit', ppu2TotalCredit, 'ppu2RemainingCredits', ppu2RemainingCredits, 'ppu1SubTotal',ppu1SubTotal , 'seqCount', seqCount)
-    // console.log('ppu1', ppu1SubTotal, 'nuc', ppu1NucSubTotal, 'pro', ppu1ProSubTotal, 'total', ppu1Total)
 
+    function setFormValue() {
+        setSaveFormValue(!saveFormValue);
+        formik.setFieldValue("formName", '');
+    }
 
-    // }, 10000);
-
-
+    function homeRedirect() {
+        history.push("/home");
+    }
 
     const ColoredLine = ({ color }) => (
         <hr
@@ -1518,9 +1514,7 @@ function IpSeqSearch() {
                                 checked={isBothDbSelected}
                             // onChange={() => calTextCredits("isCompare")}
                             />
-                            <Typography className={"float-left mt-2"}>
-                                {t("compareBothNucPro")} &nbsp;&nbsp;&nbsp;
-                            </Typography>
+                            <label className={classes.checkBoxContent + " bodyText cursorPointer ml-0"} for="compareboth">{t("compareBothNucPro")}</label>
                         </Col>
                     </AccordionDetails>
                 </Row>
@@ -1582,9 +1576,7 @@ function IpSeqSearch() {
                                         onChange={() => setIsDocPubDate(!isDocPubDate)}
                                         checked={isDocPubDate}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("docPublicationDate")} &nbsp;&nbsp;&nbsp;
-                                    </Typography>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1612,14 +1604,12 @@ function IpSeqSearch() {
                                     />
                                     <CheckBox
                                         color="primary"
-                                        className={"float-left mx-2"}
+                                        className={"float-left ml-2"}
                                         name="includeGenUnknownDate"
                                         id="includeGenUnknownDate"
                                         onChange={() => { setIsDocPubUnknownDates(!isDocPubUnknownDates) }}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("includeUnknownDates")}
-                                    </Typography>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGenUnknownDate">{t("includeUnknownDates")}</label>
                                 </Col>
                             </AccordionDetails>
                         </Accordion>
@@ -1646,9 +1636,7 @@ function IpSeqSearch() {
                                         onChange={() => setIsPublished(!isPublished)}
                                         checked={isPublished}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("publishedInGenomeQuest")} &nbsp;&nbsp;&nbsp;
-                                    </Typography>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="publishGenomeQuest">{t("publishedInGenomeQuest")}</label>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1677,14 +1665,12 @@ function IpSeqSearch() {
                                     />
                                     <CheckBox
                                         color="primary"
-                                        className={"float-left mx-2"}
+                                        className={"float-left ml-2"}
                                         name="includeGQSpecificDate"
                                         id="includeGQSpecificDate"
                                         onChange={() => { setIspublishGQUnknownDates(!ispublishGQUnknownDates) }}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("includeUnknownDates")}
-                                    </Typography>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGQSpecificDate">{t("includeUnknownDates")}</label>
                                 </Col>
                                 <br clear="all"></br>
                                 <br clear="all"></br>
@@ -1697,9 +1683,7 @@ function IpSeqSearch() {
                                         onChange={() => setIsPatientDoc(!isPatientDoc)}
                                         checked={isPatientDoc}
                                     />
-                                    <Typography className={"float-left mt-2"}>
-                                        {t("patentDocContains")} &nbsp;&nbsp;&nbsp;
-                                </Typography>
+                                <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1764,7 +1748,7 @@ function IpSeqSearch() {
                                                 name="nuc"
                                                 id={test.id}
                                                 checked={nucDb.includes(test.id)}
-                                                onChange={handleSingleCheck}
+                                                onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                 className={"absolutePosition " + classes.checkBox}
                                                 color="primary"
                                             />
@@ -1795,7 +1779,7 @@ function IpSeqSearch() {
                                                     name="nuc"
                                                     id={test.id}
                                                     checked={nucDb.includes(test.id)}
-                                                    onChange={handleSingleCheck}
+                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
@@ -1825,7 +1809,7 @@ function IpSeqSearch() {
                                                     name="nuc"
                                                     id={test.id}
                                                     checked={nucDb.includes(test.id)}
-                                                    onChange={handleSingleCheck}
+                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
@@ -1847,7 +1831,7 @@ function IpSeqSearch() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"}/>
+                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq"/>
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -1872,7 +1856,7 @@ function IpSeqSearch() {
                                                     name="pro"
                                                     id={test.id}
                                                     checked={proDb.includes(test.id)}
-                                                    onChange={handleSingleCheck}
+                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
@@ -1902,7 +1886,7 @@ function IpSeqSearch() {
                                                     name="pro"
                                                     id={test.id}
                                                     checked={proDb.includes(test.id)}
-                                                    onChange={handleSingleCheck}
+                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
@@ -1924,7 +1908,7 @@ function IpSeqSearch() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"}/>
+                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq"/>
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -2030,14 +2014,12 @@ function IpSeqSearch() {
                         <CheckBox
                             // defaultChecked
                             color="primary"
-                            className={"float-left mx-2"}
+                            className={"float-left ml-2"}
                             name="check"
                             id="check"
                             onChange={() => { setSendMailAfterSearch(!sendMailAfterSearch) }}
                         />
-                        <Typography className={"float-left mt-2"}>
-                            {t("sendMailAfterSearch")}
-                        </Typography>
+                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="check">{t("sendMailAfterSearch")}</label>
                     </Col>
                 </Row>
                 <Row>
@@ -2045,15 +2027,13 @@ function IpSeqSearch() {
                         <CheckBox
                             // defaultChecked
                             color="primary"
-                            className={"float-left mx-2"}
+                            className={"float-left ml-2"}
                             name="saveForm"
                             id="saveForm"
-                            onChange={() => { setSaveFormValue(!saveFormValue) }}
+                            onChange={setFormValue}
                             checked={saveFormValue}
                         />
-                        <Typography className={"float-left mt-2"}>
-                            {t("SaveFormForlaterUse")}
-                        </Typography>
+                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
                     <Col md='6'>
                         <TextInput
@@ -2065,8 +2045,8 @@ function IpSeqSearch() {
                             fullWidth={true}
                             disabled={!saveFormValue}
                             value={formik.values.formName ? formik.values.formName : ""}
-                            error={Boolean(formik.errors.formName)}
-                            helperText={formik.errors.formName}
+                            error={saveFormValue && Boolean(formik.errors.formName)}
+                            helperText={saveFormValue && formik.errors.formName}
                         />
                     </Col>
                 </Row>
@@ -2079,7 +2059,7 @@ function IpSeqSearch() {
                         {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>
                             {t("submit")}
                         </Button>}
-                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} type="submit">
+                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} onClick={homeRedirect}>
                             {t("cancel")}
                         </Button>
                     </Col>
