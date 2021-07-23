@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, Fragment,useRef } from 'react';
+import React, { useState, useCallback, useEffect, Fragment } from 'react';
 import ReactDOM from "react-dom";
 import { useHistory, useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
@@ -17,7 +17,7 @@ import { toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal'
 import ReactHtmlParser from 'react-html-parser';
 
-
+import UtilsService from '../../helpers/utils';
 import seqSearchImg from '../../assets/image/seqSearch.png';
 import resultshareImg from '../../assets/image/resultshare.png';
 import alertImg from '../../assets/image/alert.png';
@@ -31,7 +31,6 @@ import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
 import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
-import UtilsService from '../../helpers/utils';
 
 
 
@@ -147,7 +146,7 @@ const customStyles = {
 };
 const isIndeterminate = indeterminate => indeterminate;
 const selectableRowsComponentProps = { indeterminate: isIndeterminate };
-function SearchResultSequence(props) {
+function SearchResultSequence() {
     const { t, i18n } = useTranslation('common');
     const classes = useStyles();
     const history = useHistory();
@@ -195,16 +194,7 @@ function SearchResultSequence(props) {
     // To Update Title
     const [updateTitle, setUpdateTitle] = useState(false);
     const [titleName, setTitleName] = useState('');
-	const [titleNameErr, setTitleNameErr] = useState(false);
 
-	// To disable shared user ids in add share popup
-	const [sharedIds, setSharedIds] = useState([]);
-
-	// To detect outside click
-	const wrapperRef = useRef(null);
-
-	
-	
     // reset login status
     useEffect(async () => {
         getSummaryResp();
@@ -227,20 +217,8 @@ function SearchResultSequence(props) {
         });
         setAlertSettingData([...alertSettingData])
         setAlertSettingValue(7);
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
+
     }, []);
-	const handleClickOutside = event => {
-		if(event.target.type !== "text")
-		{
-			disableTitleText();
-		}
-	};
-	const disableTitleText = async() =>{
-		setUpdateTitle(false);
-	};
     const getUserResp = async() =>{
         const getUserResponse = await searchResSequence.getUserList(workflowId);
         if (getUserResponse && getUserResponse.response_status == 0) {
@@ -265,7 +243,6 @@ function SearchResultSequence(props) {
             }
             setTitleName(getSummaryResponse.response_content.text_label);
             setGqUserId(getSummaryResponse.response_content.gq_user_id);
-			setSharedIds(getSummaryResponse.response_content.gq_user_id);
             getSummaryResponse.response_content['usedSpace'] = usedSpace;
             if(getSummaryResponse.response_content.description)
             {
@@ -303,13 +280,7 @@ function SearchResultSequence(props) {
                         sharedObj.push(userData[value]);
                     }
                 });
-				
-				let sharedIDArr = getResultShareResponse.response_content.userIds;
-				if(gqUserId)
-				{
-					sharedIDArr.push(gqUserId);
-				}
-				setSharedIds(sharedIDArr);
+                
                 sharedData['sharedNameObj'] = sharedObj;
                 if (sharedNames.length == 1) {
                     shareDatas = sharedNames.join(', ');
@@ -328,7 +299,6 @@ function SearchResultSequence(props) {
                 sharedData['sharedNameObj'] = [];
                 sharedData['sharedNames'] = '';
                 setSeqShare(sharedData);
-				setSharedIds([]);
             }
         }else {
             sharedData['sharedNames'] = '';
@@ -547,13 +517,7 @@ function SearchResultSequence(props) {
         setDelLoaderContent(true);
         if (deleteResp && deleteResp.response_content && deleteResp.response_content.success.length > 0) {
             toast.success('Deleted Successfully');
-			if(deleteType == "single")
-        	{
-            	getAlertRedoResp();
-			}else{
-				history.push('/searchResult');
-			}
-			
+            getAlertRedoResp();
         } else {
             toast.error('Unable to Delete');
             setModalShow(true);
@@ -609,7 +573,6 @@ function SearchResultSequence(props) {
         const getremoveResponse = await searchResSequence.removeResultSharing(postData);
         if (getremoveResponse && getremoveResponse.response_status == 0) {
             getResultShareResp(userList);
-			// getUserResp();
         }else {
             toast.error('Removing in Error.');
         }
@@ -658,10 +621,6 @@ function SearchResultSequence(props) {
     }
     const updateNewTitle = async (e) => {
 		if (e.keyCode == 13) {
-			if(titleNameErr)
-			{
-				return;
-			}
 			let updateParam = '&text_label='+titleName;
 			updateSeqData(workflowId,updateParam);
         }
@@ -686,23 +645,9 @@ function SearchResultSequence(props) {
 		}
 		setUpdateTitle(false);
 	}
-	const showUpdateTitleText = (e)=> {
-		e.preventDefault();
-		setUpdateTitle(true);
-		setTitleName(seqSummary.text_label);
-	}
-	const updateTitleName = async(e)=>{
-		setTitleName(e.target.value);
-		if(e.target.value.length > 200)
-		{
-			setTitleNameErr(true);
-		}else{
-			setTitleNameErr(false);
-		}
-	} 
     return (
         <div className={classes.grow}>
-            <Row className="p-3">
+            <Row>
                 <Col lg="12" md="12" sm="12" className="mb-5">
                     <Typography className={classes.root + " float-right"}>
                         <span className={"appTextColor appLink"} title={t('auditTrial')}>
@@ -727,20 +672,17 @@ function SearchResultSequence(props) {
                     </Typography>
                 </Col>
                 <Col lg="12" md="12" sm="12">
-                    <h6 className={"appTextColor loginTitle "+(!updateTitle ? 'd-block':'d-none')} onClick={(e)=>showUpdateTitleText(e)}>{seqSummary && seqSummary.text_label}</h6>
-                    <div className={"form-group col-md-6 "+(updateTitle ? 'd-block':'d-none')}>
+                    <h6 className={"appTextColor loginTitle "+(!updateTitle ? 'd-block':'d-none')} onClick={(e)=>setUpdateTitle(true)}>{seqSummary && seqSummary.text_label}</h6>
+                    <div className={"form-group "+(updateTitle ? 'd-block':'d-none')}>
                                     <TextInput
-                                        fullWidth={true}
+                                        fullWidth={false}
                                         id="searchTitle"
                                         name="searchTitle"
                                         label={t('nameYourSearch')}
                                         variant="outlined"
                                         value={titleName ? titleName : ''}
-                                        onChange={(e)=>updateTitleName(e)}
+                                        onChange={(e)=>setTitleName(e.target.value)}
                                         onKeyDown={updateNewTitle}
-										ref={wrapperRef}
-										error={titleNameErr}
-										helperText={titleNameErr && t('200OnlyAllowed')}
                                     />
                      </div>
                     <Row>
@@ -797,15 +739,15 @@ function SearchResultSequence(props) {
                                 )
                             })
                             }
-                            <br clear="all" /><br />
+                            <br clear="all"/>
                             <h6 className={"appTextColor loginTitle mt-3"}>{t('searchStrategy')}</h6>
 							    <Col lg="12" md="12" className={"pr-0 content"}>
                                     <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The search strategy was <span className="text-capitalize">{seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? seqSummary.runstats.stats.algo:''}.</span>​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The search strategy was <span className="text-capitalize">{seqSummary && seqSummary.params ? seqSummary.params.strat_name:''}.</span>​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')}>
                                     <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This strategy fits the shorter sequence (query or subject) into the longer one, keeping the number of mismatches and gaps to a minimum.​</Typography>
                                     <Typography className="text-lowercase">
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Results are required to have at least {seqSummary && seqSummary.params.strat_genepast_perc_id}% identity over the 
 										{seqSummary && seqSummary.params && Constant['genePastItemsText'][seqSummary.params.strat_genepast_perc_id_over]}.​</Typography>
@@ -814,35 +756,22 @@ function SearchResultSequence(props) {
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "blast" ? 'd-block':'d-none')} >
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
-                                        {/* <Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc}.
-										</Typography> */}
-										<Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> 
-											Results are obtained using the <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span> scoring matrix with a word size of {seqSummary && seqSummary.params.strat_blast_word_size_nuc} and an expected cutoff of {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.
-										​</Typography>
-                                        {/* <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span>​.</Typography> */}
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc}.​</Typography>
+                                        <Typography className="text-lowercase">
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span>​.</Typography>
                                     </div>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.comp_mode) ? 'd-block':'d-none')}>
-										<Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> 
-											Results are obtained using the <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> scoring matrix with a word size of {seqSummary && seqSummary.params.strat_blast_word_size_pro} and an expected cutoff of {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.
-										​</Typography>
-                                        {/* <Typography >
+                                        <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_pro}.​</Typography>
                                         <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span>.​</Typography> */}
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span>.​</Typography>
                                     </div>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')}>
-										<Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> 
-											Results are obtained using the <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc:"NUC.3.1"}</span> for nucleotide and <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> for protein scoring matrix with a word size of {seqSummary && seqSummary.params.strat_blast_word_size_nuc} for nucleotide and {seqSummary && seqSummary.params.strat_blast_word_size_pro} for protein and an expected cutoff of {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.
-										​</Typography>
-                                        {/* <Typography >
+                                        <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc} for nucleotide and {seqSummary && seqSummary.params.strat_blast_word_size_pro} for protein.​</Typography>
                                         <Typography className="text-lowercase">
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc :"NUC.3.1"}</span> for nucleotide and <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> for protein.​</Typography> */}
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> scoring matrix is <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_nuc ? seqSummary.params.strat_blast_scoring_matrix_nuc :"NUC.3.1"}</span> for nucleotide and <span className="text-uppercase">{seqSummary && seqSummary.params.strat_blast_scoring_matrix_pro ? seqSummary.params.strat_blast_scoring_matrix_pro:"BLOSUM62"}</span> for protein.​</Typography>
                                     </div>
                                     <div className="content">
 										<Typography >
@@ -883,29 +812,20 @@ function SearchResultSequence(props) {
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "fragment" ? 'd-block':'d-none')}>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
-                                        {/* <Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.</Typography> */}
-										<Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over any stretch of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} nucleotides.</Typography>
-										
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.</Typography>
                                     </div>
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.comp_mode) ? 'd-block':'d-none')}>
-                                        {/* <Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.​</Typography> */}
-										<Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over any stretch of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} amino acids.</Typography>
+                                        <Typography >
+                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.​</Typography>
                                    </div>
                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')} >
-								   		<Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over any stretch of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} nucleotides.</Typography>
-                                        {/* <Typography>
+                                        <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> For nucleotide hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.
-                                        </Typography> */}
-										<Typography >
-                                            <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over any stretch of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} amino acids.</Typography>
-                                        {/* <Typography>
+                                        </Typography>
+                                        <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " />For protein hits, alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.
-                                        </Typography> */}
+                                        </Typography> 
 										
                                     </div>
 									<div className="content">
@@ -956,7 +876,6 @@ function SearchResultSequence(props) {
                                     onHide={() => setModalResultShow(false)}
                                     // getSelectUser={getSelectUser}
                                     shareResult={shareResultsForm}
-									sharedUserId={sharedIds}
                                     // onMessage={errorMessage}
                                     />
 
@@ -1077,8 +996,8 @@ function SearchResultSequence(props) {
                             />
                         </Col> */}
                         <Col lg="12" md="12" className={"mt-3 px-5" + (searchHistoryData.length > 0 ? ' d-block' : ' d-none')} md="6">
-                            <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} type="submit" onClick={(e)=>deleteSearch('single')}>{t('deleteSelected')}</Button>
-                            <Button color="primary" variant="contained" onClick={(e)=>deleteSearch('all')} className={"text-capitalize mr-2 loginSubmit"} type="submit">{t('delPrevResult')}</Button>
+                            <Button  disabled={disableDelete}  className={"mr-2 " + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit" onClick={(e)=>deleteSearch('single')}>{t('deleteSelected')}</Button>
+                            <Button  onClick={(e)=>deleteSearch('all')} className="mr-2 cancelButtonModal" type="submit">{t('delPrevResult')}</Button>
 
                         </Col>
                     </Row>
@@ -1115,7 +1034,7 @@ function SearchResultSequence(props) {
                             </Row>
                             <Row>
                                 <Col lg="10" md="10" sm="10" className="pr-0 content float-right">
-                                    <Button color="primary" variant="contained" className={"text-capitalize mr-2 loginSubmit float-right"} type="submit" onClick={updateNotes}>{t('saveChanges')}</Button>
+                                    <Button  className="mr-2 accountInfo" type="submit" onClick={updateNotes}>{t('saveChanges')}</Button>
                                 </Col>
                             </Row>
                         </Col>
@@ -1144,8 +1063,8 @@ function SearchResultSequence(props) {
                             />
 						{/* </div>  */}
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={updateAlertSettings} color={'primary'} className={"text-capitalize mr-2 loginSubmit"} variant="contained">{t('updateAlert')}</Button>
-							<Button onClick={()=>setAlertSettingModal(!alertSettingModal)} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+							<Button onClick={updateAlertSettings}  className="mr-2 accountInfo" >{t('updateAlert')}</Button>
+							<Button onClick={()=>setAlertSettingModal(!alertSettingModal)} className="cancelButtonModal mr-2" >{t('cancel')}</Button>
 						</div>
 				</Modal.Body>
 			</Modal>
@@ -1172,8 +1091,8 @@ function SearchResultSequence(props) {
                             <p className={"float-left ml-1"}>{t('termsConditionText')}</p>
                         </div>
                         <div className={classes.footerDiv + " float-right"}>
-                            <Button onClick={() => deleteConfirm()} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'disableBtnBorder' : 'deleteBtnColor')} variant="contained">{t('deleteSelItems')}</Button>
-                            <Button onClick={closeModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('cancel')}</Button>
+                            <Button onClick={() => deleteConfirm()}  disabled={!termsDisable} className={"mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} >{t('deleteSelItems')}</Button>
+                            <Button onClick={closeModal} className="cancelButtonModal mr-2">{t('cancel')}</Button>
                         </div>
                     </div>
                     <div className={"text-center " + (delLoaderContent ? 'd-block' : 'd-none')}>
@@ -1184,7 +1103,7 @@ function SearchResultSequence(props) {
                         <p className="mb-3">{t('errorDeletTitle')}</p>
                         <p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
                         <div className={classes.footerDiv + " float-right"}>
-                            <Button onClick={closeModal} className="float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+                            <Button onClick={closeModal} className="mr-2 accountInfo" >{t('close')}</Button>
                         </div>
                     </div>
                 </Modal.Body>

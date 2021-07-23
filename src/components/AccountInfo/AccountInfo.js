@@ -140,9 +140,9 @@ function AccountInfo() {
         data.email ? setuserEmail(data.email) : setuserEmail('');
         data.accounting_group_name ?  setuserAccountingGroup(data.accounting_group_name) : setuserAccountingGroup('');
         data.user_class_name ? setuserAccountType(data.user_class_name) : setuserAccountType('');
-        // moment(values.docPublicDate).format('YYYYMMDD') moment(data.expire_time).format("MMMM Do YYYY"))
+        // moment(values.docPublicDate).format('YYYYMMDD') moment(data.expire_time).format("MMMM Do YYYY"))  moment(data.expire_time).format("LL"))
         data.create_time ? setuserAccountCreated(data.create_time) : setuserAccountCreated('');
-        data.expire_time ?  setuserAccountExpires('After ' + moment(data.expire_time).format("MMMM Do YYYY")) :  setuserAccountExpires('Never');
+        data.expire_time ?  setuserAccountExpires('After ' + moment(data.expire_time).format("LL")) :  setuserAccountExpires('Never');
         data.clitoken ? setuserAccountClitoken(data.clitoken) : setuserAccountClitoken('');
         data.dspace_workflow ?  setuserAnalyses(bytesToSize(data.dspace_workflow)) :  setuserAnalyses(0);
         data.dspace_seqdb ? setuserSeqDatabase(bytesToSize(data.dspace_seqdb)) : setuserSeqDatabase(0);
