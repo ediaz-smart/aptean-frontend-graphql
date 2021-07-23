@@ -86,7 +86,7 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
         searchDetails: yup
             .string()
             .required(t('searchNameRequired'))
-            .max(200, t('200OnlyAllowed')),
+            .max(188, t('188OnlyAllowed')),
         alignments: yup
             .number()
             .integer(t('valueMustBeInteger'))
@@ -137,6 +137,7 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
         validationShape.formName = yup
             .string()
             .required(t('required'))
+            .max(48, t('48OnlyAllowed'))
     }
     if(searchAlgorithm && searchAlgorithm == "kerr") {
         validationShape.genePastPercentage = yup
