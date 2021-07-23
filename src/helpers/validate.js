@@ -331,7 +331,7 @@ function AntibodySearchValidation() {
         searchName: yup
             .string()
             .required(t('searchNameRequired'))
-            .max(255, t('255OnlyAllowed')),
+            .max(255, t('188OnlyAllowed')),
         cdrhcseq1: yup.string()
             .validateCdr(t('sequenceTextErr')),
             // .required(t('cdrhc1Req')),

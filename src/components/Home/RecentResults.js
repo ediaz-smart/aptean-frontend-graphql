@@ -107,7 +107,8 @@ const columns = [
 	  name: "Description",
 	  selector: "description",
 	  sortable: false,
-	  center: true
+	  center: true,
+		// cell: row => <div style={{ textAlign: 'left' }}>{row.description}</div>,
 	},
 	{
 		name: "",
@@ -196,8 +197,17 @@ function RecentResults() {
 						else if(datas.status == 'FAILED'){
 							tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
 						}
+						else if(datas.status == 'CANCELLED'){
+							tempObj['results'] = <span>Search cancelled</span>;
+						}
 						else {
-							tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+							if(datas.results > 0)
+							{
+								tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+							}else {
+								tempObj['results'] = <span>{datas.results ? datas.results+' '+type: ''}</span>
+							}
+							
 						}
 					}else{
 						tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
@@ -213,7 +223,7 @@ function RecentResults() {
 				{
 					tempObj["report"] = '';
 				}else{
-					if(datas.type != '' && datas.status != 'STILL_RUNNING')
+					if(datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status !='CANCELLED'))
 					{
 						if(datas.type == "GqWfABIpSearch")
 						{

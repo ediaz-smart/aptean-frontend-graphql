@@ -486,6 +486,11 @@ function SearchResultSequence(props) {
             // console.log(redoArr,'redoArr');
             // setRedoData(redoArr);
             // setAlertData(alertArr);
+        }else {
+            if(getAlertRedoResponse.response_content.type == "GQDISPATCHERPRIMARYOBJECTNOTFOUNDEXCEPTION")
+            {
+                history.push('/searchResult');
+            }
         }
     }
     function updateVal(state) {
@@ -805,7 +810,7 @@ function SearchResultSequence(props) {
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Results are required to have at least {seqSummary && seqSummary.params.strat_genepast_perc_id}% identity over the 
 										{seqSummary && seqSummary.params && Constant['genePastItemsText'][seqSummary.params.strat_genepast_perc_id_over]}.​</Typography>
 									<Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? UtilsService.numberWithCommas(seqSummary.runstats.stats.kept):'0'} best alignments are reported.​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.params && seqSummary.params.best_hit_keep_max ? UtilsService.numberWithCommas(seqSummary.params.best_hit_keep_max):'0'} best alignments are reported.​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "blast" ? 'd-block':'d-none')} >
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
@@ -844,12 +849,12 @@ function SearchResultSequence(props) {
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
                                         {/* <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> e-val cutoff is {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.​</Typography> */}
-                                        <Typography className={seqSummary && seqSummary.params.strat_blast_hsp ? 'd-block':'d-none'}>
+                                        <Typography className={seqSummary && seqSummary.params.strat_blast_hsp =="on" ? 'd-block':'d-none'}>
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> HSPs are processed​.</Typography>
-										<Typography className={seqSummary && !seqSummary.params.strat_blast_hsp ? 'd-block':'d-none'}>
+										<Typography className={seqSummary && seqSummary.params.strat_blast_hsp != "on" ? 'd-block':'d-none'}>
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> HSPs are not processed​.</Typography>
 										<Typography >
-											<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? UtilsService.numberWithCommas(seqSummary.runstats.stats.kept):'0'} best alignments are reported.​</Typography>
+											<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.params && seqSummary.params.best_hit_keep_max ? UtilsService.numberWithCommas(seqSummary.params.best_hit_keep_max):'0'} best alignments are reported.​</Typography>
                                     </div>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "sw" ? 'd-block':'d-none')} >
@@ -873,7 +878,7 @@ function SearchResultSequence(props) {
                                         <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> score cutoff is {seqSummary && seqSummary.params.strat_sw_score_cutoff}.​</Typography>
 										<Typography >
-                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? UtilsService.numberWithCommas(seqSummary.runstats.stats.kept):'0'} best alignments are reported.​</Typography>
+                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.params && seqSummary.params.best_hit_keep_max ? UtilsService.numberWithCommas(seqSummary.params.best_hit_keep_max):'0'} best alignments are reported.​</Typography>
                                     </div>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "fragment" ? 'd-block':'d-none')}>
@@ -907,10 +912,13 @@ function SearchResultSequence(props) {
 										<Typography >
                                         	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
 										<Typography >
-                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.runstats && seqSummary.runstats.stats ? UtilsService.numberWithCommas(seqSummary.runstats.stats.kept):'0'} best alignments are reported.​</Typography>
+                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.params && seqSummary.params.best_hit_keep_max ? UtilsService.numberWithCommas(seqSummary.params.best_hit_keep_max):'0'} best alignments are reported.​</Typography>
                                     </div>
                                 </Col>
-                            
+                                <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "motif" ? 'd-block':'d-none')}>
+                                    <Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.params && seqSummary.params.best_hit_keep_max ? UtilsService.numberWithCommas(seqSummary.params.best_hit_keep_max):'0'} best alignments are reported.​</Typography>
+                                </Col>
                             <br clear="all"/>
                             <h6 className={"appTextColor loginTitle"}>{t('techData')}</h6>
                             <Col lg="12" md="12" className="pr-0 content mb-2">
@@ -938,9 +946,9 @@ function SearchResultSequence(props) {
                             <Row>
                                 {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
                                 <Typography className={"mb-2 "+(seqShare && seqShare.sharedNameObj.length > 0 ? 'd-block':'d-none')}>
-                                    {t('resultAccess')}. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
+                                    {t('resultAccess')}. <Link className={"appLink cursorPointer "+(userInfo && userInfo.current_user.gq_user_id === gqUserId ?'':'d-none')}  onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
                                     <Typography className={"mb-2 "+(seqShare && seqShare.sharedNameObj.length == 0 ? 'd-block':'d-none')}>
-                                    {t('resultNotAccess')}. <Link className={"appLink cursorPointer"}  onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
+                                    {t('resultNotAccess')}. <Link className={"appLink cursorPointer "+(userInfo && userInfo.current_user.gq_user_id === gqUserId ?'':'d-none')}  onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
                                 
                                     <ShareResultsModal
                                     show={modalResultShow}
@@ -962,7 +970,7 @@ function SearchResultSequence(props) {
                                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {dbVal.full_name}</Typography>
                                         </Col>
                                         <Col lg="4" md="4" className="pr-0 content">
-                                            <Typography ><Link className={"failedTextColor"} id={dbVal.id}  onClick={() => viewRemoveModal(dbVal) }>Remove</Link></Typography>
+                                            <Typography ><Link className={"failedTextColor "+(userInfo && userInfo.current_user.gq_user_id === gqUserId ?'':'d-none')} id={dbVal.id}  onClick={() => viewRemoveModal(dbVal) }>Remove</Link></Typography>
                                         </Col>
                                     </Row>
                                 )
@@ -988,16 +996,16 @@ function SearchResultSequence(props) {
                                 </Col>
                                 <Col lg="12" md="12" className="pr-0 content float-right">
 									<Typography className={"float-right "+(alarmSetting && alarmSetting.is_created ? 'd-block':'d-none')}>
-                                        <Link href="#" title={t('resSharing')} className={"appLink appLink"} onClick={(e)=>showAlertModal(e)}>
+                                        <Link href="#" title={t('resSharing')} className={"appLink appLink "+(userInfo && userInfo.current_user.gq_user_id === gqUserId ?'':'d-none')} onClick={(e)=>showAlertModal(e)}>
                                             {t('changeSettings')}
                                         </Link>
                                         <span className={classes.headerPipe + " appTextColor"}>|</span>
-                                        <Link href="#" title={t('resSharing')} className={"failedTextColor appLink"} onClick={(e) => removeAlert(e)}>
+                                        <Link href="#" title={t('resSharing')} className={"failedTextColor appLink "+(userInfo && userInfo.current_user.gq_user_id === gqUserId ?'':'d-none')} onClick={(e) => removeAlert(e)}>
                                             {t('removeAlert')}
                                         </Link>
                                     </Typography>
 									<Typography className={"float-right "+(alarmSetting && !alarmSetting.is_created ? 'd-block':'d-none')}>
-                                        <Link href="#" title={t('resSharing')} className={"appLink appLink"} onClick={(e)=>showAlertModal(e)}>
+                                        <Link href="#" title={t('resSharing')} className={"appLink appLink "+(userInfo && userInfo.current_user.gq_user_id === gqUserId ?'':'d-none')} onClick={(e)=>showAlertModal(e)}>
                                             {t('setUpAlert')}
                                         </Link>
 									</Typography>

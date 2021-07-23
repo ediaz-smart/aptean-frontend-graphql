@@ -19,6 +19,7 @@ import CheckBox from '../../shared/Fields/CheckBox';
 import Validate from '../../helpers/validate';
 import SearchPrompt from '../../shared/Modal/SearchPromptModal'
 import searchResAntibody from '../../services/searchResAntibody';
+import UtilsService from '../../helpers/utils';
 
 
 
@@ -290,11 +291,8 @@ function SearchResultAntibody() {
                                     InputProps={{ inputProps: { min: 0 } }}
                                     className={classes.antibodyNumInput + (" float-left")}
                                     value={formik.values.hcOption1}
-                                    onChange={e => {
-                                        if (!Number.isNaN(Number(e.target.value))) {
-                                            formik.setFieldValue('hcOption1', Number(e.target.value))
-                                        }
-                                    }}
+                                    onKeyDown={UtilsService.restrictCharacter}
+                                    onChange={formik.handleChange}
                                     error={formik.touched.hcOption1 && Boolean(formik.errors.hcOption1)}
                                     helperText={formik.errors.hcOption1}
                                    
@@ -325,11 +323,13 @@ function SearchResultAntibody() {
                                     className={classes.antibodyNumInput + (" float-left")}
                                     InputProps={{ inputProps: { min: 0 } }}
                                     value={formik.values.hcOption2}
-                                    onChange={e => {
-                                        if (!Number.isNaN(Number(e.target.value))) {
-                                            formik.setFieldValue('hcOption2', Number(e.target.value))
-                                        }
-                                    }}
+                                    // onChange={e => {
+                                    //     if (!Number.isNaN(Number(e.target.value))) {
+                                    //         formik.setFieldValue('hcOption2', Number(e.target.value))
+                                    //     }
+                                    // }}
+                                    onKeyDown={UtilsService.restrictCharacter}
+                                    onChange={formik.handleChange}
                                     error={formik.touched.hcOption2 && Boolean(formik.errors.hcOption2)}
                                     helperText={formik.errors.hcOption2}
                                 />
@@ -359,11 +359,13 @@ function SearchResultAntibody() {
                                     className={classes.antibodyNumInput + (" float-left")}
                                     InputProps={{ inputProps: { min: 0 } }}
                                     value={formik.values.hcOption3}
-                                    onChange={e => {
-                                        if (!Number.isNaN(Number(e.target.value))) {
-                                            formik.setFieldValue('hcOption3', Number(e.target.value))
-                                        }
-                                    }}
+                                    // onChange={e => {
+                                    //     if (!Number.isNaN(Number(e.target.value))) {
+                                    //         formik.setFieldValue('hcOption3', Number(e.target.value))
+                                    //     }
+                                    // }}
+                                    onKeyDown={UtilsService.restrictCharacter}
+                                    onChange={formik.handleChange}
                                     error={formik.touched.hcOption3 && Boolean(formik.errors.hcOption3)}
                                     helperText={formik.errors.hcOption3}
                                 />
@@ -394,11 +396,13 @@ function SearchResultAntibody() {
                                     className={classes.antibodyNumInput + (" float-left")}
                                     InputProps={{ inputProps: { min: 0 } }}
                                     value={formik.values.lcOption1}
-                                    onChange={e => {
-                                        if (!Number.isNaN(Number(e.target.value))) {
-                                            formik.setFieldValue('lcOption1', Number(e.target.value))
-                                        }
-                                    }}
+                                    // onChange={e => {
+                                    //     if (!Number.isNaN(Number(e.target.value))) {
+                                    //         formik.setFieldValue('lcOption1', Number(e.target.value))
+                                    //     }
+                                    // }}
+                                    onKeyDown={UtilsService.restrictCharacter}
+                                    onChange={formik.handleChange}
                                     error={formik.touched.lcOption1 && Boolean(formik.errors.lcOption1)}
                                     helperText={formik.errors.lcOption1}
                                 />
@@ -428,11 +432,13 @@ function SearchResultAntibody() {
                                     className={classes.antibodyNumInput + (" float-left")}
                                     InputProps={{ inputProps: { min: 0 } }}
                                     value={formik.values.lcOption2}
-                                    onChange={e => {
-                                        if (!Number.isNaN(Number(e.target.value))) {
-                                            formik.setFieldValue('lcOption2', Number(e.target.value))
-                                        }
-                                    }}
+                                    // onChange={e => {
+                                    //     if (!Number.isNaN(Number(e.target.value))) {
+                                    //         formik.setFieldValue('lcOption2', Number(e.target.value))
+                                    //     }
+                                    // }}
+                                    onKeyDown={UtilsService.restrictCharacter}
+                                    onChange={formik.handleChange}
                                     error={formik.touched.lcOption2 && Boolean(formik.errors.lcOption2)}
                                     helperText={formik.errors.lcOption2}
                                 />
@@ -462,11 +468,13 @@ function SearchResultAntibody() {
                                     className={classes.antibodyNumInput + (" float-left")}
                                     InputProps={{ inputProps: { min: 0 } }}
                                     value={formik.values.lcOption3}
-                                    onChange={e => {
-                                        if (!Number.isNaN(Number(e.target.value))) {
-                                            formik.setFieldValue('lcOption3', Number(e.target.value))
-                                        }
-                                    }}
+                                    // onChange={e => {
+                                    //     if (!Number.isNaN(Number.isInteger(e.target.value))) {
+                                    //         formik.setFieldValue('lcOption3', Number(e.target.value))
+                                    //     }
+                                    // }}
+                                    onKeyDown={UtilsService.restrictCharacter}
+                                    onChange={formik.handleChange}
                                     error={formik.touched.lcOption3 && Boolean(formik.errors.lcOption3)}
                                     helperText={formik.errors.lcOption3}
                                 />
@@ -505,11 +513,13 @@ function SearchResultAntibody() {
                                         className={(" w-12 float-left")}
                                         value={formik.values.percId}
                                         InputProps={{ inputProps: { min: 65, max: 100 } }}
-                                        onChange={e => {
-                                            if (!Number.isNaN(Number(e.target.value))) {
-                                                formik.setFieldValue('percId', Number(e.target.value))
-                                            }
-                                        }}
+                                        // onChange={e => {
+                                        //     if (!Number.isNaN(Number(e.target.value))) {
+                                        //         formik.setFieldValue('percId', Number(e.target.value))
+                                        //     }
+                                        // }}
+                                        onKeyDown={UtilsService.restrictCharacter}
+                                        onChange={formik.handleChange}
                                         error={formik.touched.percId && Boolean(formik.errors.percId)}
                                         helperText={formik.errors.percId}
                                         disabled={authInfo && authInfo.redo}
@@ -527,11 +537,12 @@ function SearchResultAntibody() {
                                         className={classes.antibodyNumInput + (" float-left")}
                                         value={formik.values.expectCutoff}
                                         InputProps={{ inputProps: { min: 0, max: 100 } }}
-                                        onChange={e => {
-                                            if (!Number.isNaN(Number(e.target.value))) {
-                                                formik.setFieldValue('expectCutoff', Number(e.target.value))
-                                            }
-                                        }}
+                                        // onChange={e => {
+                                        //     if (!Number.isNaN(Number(e.target.value))) {
+                                        //         formik.setFieldValue('expectCutoff', Number(e.target.value))
+                                        //     }
+                                        // }}
+                                        onKeyDown={UtilsService.restrictCharacter}
                                         error={formik.touched.expectCutoff && Boolean(formik.errors.expectCutoff)}
                                         helperText={formik.errors.expectCutoff}
                                         disabled={authInfo && authInfo.redo}
@@ -546,11 +557,13 @@ function SearchResultAntibody() {
                                         className={classes.antibodyNumInput + (" float-left")}
                                         value={formik.values.wordSize}
                                         InputProps={{ inputProps: { min: 2, max: 3 } }}
-                                        onChange={e => {
-                                            if (!Number.isNaN(Number(e.target.value))) {
-                                                formik.setFieldValue('wordSize', Number(e.target.value))
-                                            }
-                                        }}
+                                        // onChange={e => {
+                                        //     if (!Number.isNaN(Number(e.target.value))) {
+                                        //         formik.setFieldValue('wordSize', Number(e.target.value))
+                                        //     }
+                                        // }}
+                                        onKeyDown={UtilsService.restrictCharacter}
+                                        onChange={formik.handleChange}
                                         error={formik.touched.wordSize && Boolean(formik.errors.wordSize)}
                                         helperText={formik.errors.wordSize}
                                         disabled={authInfo && authInfo.redo}

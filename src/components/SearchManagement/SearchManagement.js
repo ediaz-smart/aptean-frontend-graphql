@@ -177,12 +177,15 @@ const columns = [
 	{
 		name: "",
 		selector: "info",
-		center: true
+		// center: true
+		cell: row => <div data-tag="allowRowEvents"><div style={{ textAlign: 'left' }}>{row.info}</div></div>,
+
 	},
 	{
 		name: "Description",
 		selector: "description",
-		center: true
+		center: true,
+		// cell: row => <div style={{ textAlign: 'left' }}>{row.description}</div>,
 	},
 	{
 		name: "",
@@ -434,12 +437,21 @@ function SearchManagement(props) {
 					else if (datas.status == 'FAILED') {
 						tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor' : '')} onClick={(e) => e.preventDefault()}>Search Failed</a>;
 					}
+					else if(datas.status == 'CANCELLED'){
+						tempObj['results'] = <span>Search cancelled</span>;
+					}
 					else {
 						if (datas.type == 'DlPhysicalSeqdb' || datas.type == 'DlVirtualSeqdb') {
 							type = 'Sequences';
 							typeUrl = process.env.REACT_APP_API_URL + url.browseSeqDB.replace('**', id);
 						}
-						tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+						// tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+						if(datas.results && datas.results > 0)
+						{
+							tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
+						}else {
+							tempObj['results'] = <span>{datas.results ? datas.results+' '+type: ''}</span>
+						}
 					}
 				} else {
 					let folderLabel = 'Empty';
@@ -458,7 +470,7 @@ function SearchManagement(props) {
 			if (datas.status == 'FAILED') {
 				tempObj["report"] = '';
 			} else {
-				if (datas.type != '' && datas.status != 'STILL_RUNNING') {
+				if (datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status !='CANCELLED')) {
 					if (datas.type == "GqWfABIpSearch") {
 						let mostRecentReportUrl = url.mostRecentReportUrl
 						mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
