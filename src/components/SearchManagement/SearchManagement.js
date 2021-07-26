@@ -217,6 +217,9 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '5px',
 
     },
+	popupFolderIcon:{
+		width:'3%'
+	}
 }));
 
 const customStyles = {
@@ -290,7 +293,7 @@ const columns = [
 
 const isIndeterminate = indeterminate => indeterminate;
 const selectableRowsComponentProps = { indeterminate: isIndeterminate, color: 'primary' };
-
+var lookup = {}
 function SearchManagement(props) {
     const classes = useStyles();
     const history = useHistory();
@@ -332,6 +335,9 @@ function SearchManagement(props) {
     const [parentFolderId, setParentFolderId] = useState('');
     const [addFolderText, setAddFolderText] = useState(true);
     const [clearCheckedRow, setClearCheckedRow] = useState(false);
+
+    // Get Parent Object for display in delete popup
+    const [parentTreeObj,setParentTreeObj] = useState([]);
 
     
     //Pagination
@@ -623,7 +629,7 @@ function SearchManagement(props) {
                         {
                             child1.level = 1;
                             child1.children.forEach(child2 => {
-                                if(child2.child_status == "yes")
+                               if(child2.child_status == "yes")
                                 {
                                     child2.level = 2;
                                     child2.children.forEach(child3 => {
@@ -645,7 +651,8 @@ function SearchManagement(props) {
                             child1.level = 1;
                         }
                     });
-                    
+                    // Getting All Array and map to find parent Object
+                    mapIt(res);
                     setFolderDetail(res);
                 }
             }
@@ -696,6 +703,8 @@ function SearchManagement(props) {
         setDefaultTitle(event.text_label);
         setDefaultTitleId(event.id);
         setParentFolderId(event.id);
+        // Finding Parent Object to display in Popup While Delete
+        findParentObj(event);
         if(event.level == 3)
         {
             setAddFolderText(false);
@@ -726,9 +735,41 @@ function SearchManagement(props) {
 
         // }, 1000);
     };
+    
+    function mapIt (node) {
+        lookup[node.id] = node;
+        //recursive on all the children
+        node.children && node.children.forEach(mapIt);
+    }
+    async function findParentObj(obj){
+        console.log(folderDetail,  'folderDetail');
+        let parentObj = await findAncestors(obj.id);
+        parentObj.push(obj.id);
+        console.log(parentObj,  'findParentObj');
+        setParentTreeObj(...[parentObj]);
+        // setTimeout(() => {
+        //     console.log(parentTreeObj,  'parentTreeObj');
+        // }, 1000);
+        
+    }
+    async function findAncestors (nodeId) {
+        var ancestors = [];
+        // ancestors.unshift(nodeId);
+        console.log(lookup,'lookup');
+        var parentId = lookup[nodeId] && lookup[nodeId].parent_gq_folder_id;
+        var desc = lookup[parentId] && lookup[parentId].description;
+        var regex = new RegExp('home folder for', "i");
+        var checkRootFolder = regex.test(desc);
+        console.log(checkRootFolder,'checkRootFolder');
+        while(parentId !== undefined && parentId != '2')  {
+            ancestors.unshift(parentId)
+            parentId = lookup[parentId] && lookup[parentId].parent_gq_folder_id;
+        }
+        // console.log(ancestors,'ancestors');
+        return ancestors;
+    }
     const selectedFolder = (event) => {
         setMoveFolderId(event.id);
-
     }
     async function moveToFolder() {
         var getIds = selectData.selectedRows.map(function (a) { return a.id; }).join(',');
@@ -1043,6 +1084,18 @@ function SearchManagement(props) {
                 <Modal.Body className="appTextColor">
                     <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
                         <p className="mb-3"><b>{t('deleteSelFolder')}</b></p>
+                        <div className="ml-4">
+                        {parentTreeObj.length > 0 && parentTreeObj.map((value, index) => {
+                            let i=0;
+                            if(index > 0)
+                            {
+                                i = index + 2;
+                            }
+                            return (
+                                <p key={index} className={"mb-1 "+"ml-"+i}><img src={FolderIcon} className={classes.popupFolderIcon} /><span className={"ml-1 "+(parentTreeObj.length == index+1 ? classes.projTitleActive:'')}>{lookup[value] && lookup[value].text_label}</span></p>
+                            )
+                        })}
+                        </div>
                         <p className="mb-3">{t('deleteSelFolderContent')}.<b>{t('deleteSelItemContent1')}</b>.</p>
                         <div className="mb-5 h-100">
                             <Checkbox

@@ -13,7 +13,9 @@ const Constant = {
     folderRestrictNames:["Recent Search Results","My Data",'Reference Data','Data Shared With Me','Raw Uploaded Files','Search Folders'],
     strategies:[
         {value: "genepast", label: "GenePAST Search",val:"kerr"},
-        {value: "blast", label: "BLAST Search", val:"blast"}
+        {value: "blast", label: "BLAST Search", val:"blast"},
+        {value: "fragment",label: "Fragment Search",val:"fragment"},
+        {value: "motif",label: "MOTIF Search",val: "motif"}
     ],
     patientSearchDatabases:[
         {value: "GQPAT_PRT", label: "GQ-Pat Gold+ Protein", ticked: true, selected: true},
@@ -45,6 +47,12 @@ const Constant = {
         "QUERY":" entire query sequence length",
         "SUBJECT":" entire length of any subject sequence",
         "SHORTER":" entire query sequence length or over the entire length of any subject sequence"
+    },
+    searchStrategies:{
+        "kerr":"GenePAST Search",
+        "blast":"BLAST Search",
+        "fragment": "Fragment Search",
+        "motif":"MOTIF Search"
     }
 }
 export default Constant;

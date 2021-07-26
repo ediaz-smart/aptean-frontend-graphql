@@ -457,7 +457,7 @@ function SearchResultSequence() {
             // setRedoData(redoArr);
             // setAlertData(alertArr);
         }else {
-            if(getAlertRedoResponse.response_content.type == "GQDISPATCHERPRIMARYOBJECTNOTFOUNDEXCEPTION")
+            if(getAlertRedoResponse && getAlertRedoResponse.response_content.type == "GQDISPATCHERPRIMARYOBJECTNOTFOUNDEXCEPTION")
             {
                 history.push('/searchResult');
             }
@@ -743,7 +743,7 @@ function SearchResultSequence() {
                             <h6 className={"appTextColor loginTitle mt-3"}>{t('searchStrategy')}</h6>
 							    <Col lg="12" md="12" className={"pr-0 content"}>
                                     <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The search strategy was <span className="text-capitalize">{seqSummary && seqSummary.params ? seqSummary.params.strat_name:''}.</span>​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The search strategy was <span className="text-capitalize">{seqSummary && seqSummary.params && Constant['searchStrategies'][seqSummary.params.strat_name] ? Constant['searchStrategies'][seqSummary.params.strat_name]:''}.</span>​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')}>
                                     <Typography >
