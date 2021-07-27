@@ -671,6 +671,7 @@ function SearchManagement(props) {
         setDefaultTitle(type);
         setDefaultTitleId('')
         getDefaultSearchResult('defaultText', '');
+        setShowNewFolder(false);
 
     }
     // const deleteRecord = () => {
@@ -717,6 +718,7 @@ function SearchManagement(props) {
         if(event.level == 3)
         {
             setAddFolderText(false);
+            setShowNewFolder(false);
         }else {
             setAddFolderText(true);
         }
@@ -800,7 +802,7 @@ function SearchManagement(props) {
     }
     const addNewFolder = (e) => {
         e.preventDefault();
-        setShowNewFolder(!showNewFolder);
+        setShowNewFolder(true);
         setAddFolderText(!addFolderText);
     }
     const getFolderName = async (e) => {
@@ -963,14 +965,14 @@ function SearchManagement(props) {
                             </ListGroup.Item>
 
                             {/* })} */}
-                            <ListGroup.Item className={classes.projectListItem+" "+classes.addNewText+ ' ' + (defaultTitle !== 'Recent Search Results' && showNewFolder ? 'd-block' : 'd-none')+(!addFolderText ? ' disabled' : '')} key="addNewFolder">
+                            <ListGroup.Item className={classes.projectListItem+" "+classes.addNewText+ ' ' + (defaultTitle !== 'Recent Search Results' && showNewFolder ? 'd-block' : 'd-none')} key="addNewFolder">
                                 <img src={FolderIcon} className={classes.folderIcon + " float-left mt-2"} />
                                 <TextInput
                                     id="addFolder"
                                     name="addFolder"
                                     label={t('newFolder')}
                                     variant="outlined"
-                                    className={"float-left ml-2"}
+                                    className={"float-left ml-2 w-75"}
                                     onKeyDown={getFolderName}
                                 />
                             </ListGroup.Item>
