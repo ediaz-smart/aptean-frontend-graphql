@@ -358,7 +358,9 @@ function IpSeqSearch() {
         ppu2RemainingCredits: 0
     };
     const [creditValues, setCreditValues] = useState(initialCreditValues);
-
+    let pubFormatted = moment()._d;
+    console.log('moment', moment()._d)
+    // pubFormatted = moment(pubFormatted).format('MMMM-DD-YYYY')
     let redoInitialObj = {
         searchDetails: '',
         querySequence: '',
@@ -370,8 +372,8 @@ function IpSeqSearch() {
         docPublicSel: "BEF",
         publishGQSel: "BEF",
         patientDocSel: "LTE",
-        docPublicDate: moment(),
-        publishGQDate: moment(),
+        docPublicDate: pubFormatted,
+        publishGQDate: pubFormatted,
         genepastPercentageOver: "QUERY",
         patientDocInp: 100000,
         minResidues: 6,
@@ -440,11 +442,11 @@ function IpSeqSearch() {
                     if (item && item.P && item.P == "SEQUENCE_D1") {
                         console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
                         redoInitialState.docPublicSel = item.O;
-                        redoInitialState.docPublicDate = moment(item.V);
+                        redoInitialState.docPublicDate = moment(item.V)._d;
                         setIsDocPubDate(true);
                     } else if (item && item.P && item.P == "SEQUENCE_D2") {
                         redoInitialState.publishGQSel = item.O;
-                        redoInitialState.publishGQDate = moment(item.V);
+                        redoInitialState.publishGQDate = moment(item.V)._d;
                         setIsPublished(true);
                     } else if (item && item.P && item.P == "SEQUENCE_P9") {
                         redoInitialState.patientDocSel = item.O;
@@ -511,11 +513,11 @@ function IpSeqSearch() {
                         if (item && item.P && item.P == "SEQUENCE_D1") {
                             console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
                             redoInitialState.docPublicSel = item.O;
-                            redoInitialState.docPublicDate = moment(item.V);
+                            redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
                         } else if (item && item.P && item.P == "SEQUENCE_D2") {
                             redoInitialState.publishGQSel = item.O;
-                            redoInitialState.publishGQDate = moment(item.V);
+                            redoInitialState.publishGQDate = moment(item.V)._d;
                             setIsPublished(true);
                         } else if (item && item.P && item.P == "SEQUENCE_P9") {
                             redoInitialState.patientDocSel = item.O;
@@ -1592,11 +1594,11 @@ function IpSeqSearch() {
                                         margin="normal"
                                         id="docPublicDate"
                                         name="docPublicDate"
-                                        format="dd/MM/yyyy"
+                                        dateFormat="MMMM-d-yyyy"
                                         label="Date picker inline"
                                         value={formik.values.docPublicDate}
                                         inputVariant="outlined"
-                                        className={"float-left m-0 ml-4"}
+                                        className={"float-left ml-4 bodyText"}
                                         onChange={val => {
                                             formik.setFieldValue("docPublicDate", val);
                                         }}
@@ -1626,7 +1628,7 @@ function IpSeqSearch() {
                                     <span className={classes.arrowIconTitle}>{t("GQPatSpecificDbFilters")}</span>
                                 </p>
                             </AccordionSummary>
-                            <AccordionDetails className="subHeading">
+                            <AccordionDetails >
                                 <Col md="12">
                                     <CheckBox
                                         color="primary"
@@ -1652,10 +1654,10 @@ function IpSeqSearch() {
                                         margin="normal"
                                         id="publishGQDate"
                                         name="publishGQDate"
-                                        format="dd/MM/yyyy"
+                                        dateFormat="MMMM-d-yyyy"
                                         value={formik.values.publishGQDate}
                                         inputVariant="outlined"
-                                        className={"float-left m-0 ml-4"}
+                                        className={"float-left ml-4 bodyText"}
                                         allowKeyboardControl={false}
                                         onChange={val => {
                                             formik.setFieldValue("publishGQDate", val);

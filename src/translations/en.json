@@ -281,5 +281,6 @@
     "255OnlyAllowed":"Maximum 255 Characters Allowed",
     "valueMustBeInteger": "Value must be an integer.",
     "shareNow":"Share now",
-    "48OnlyAllowed": "Maximum 48 characters allowed"
+    "48OnlyAllowed": "Maximum 48 characters allowed",
+    "enterValidData": "Please enter valid data"
 }

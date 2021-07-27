@@ -6,14 +6,13 @@ import CloseIcon from '@material-ui/icons/Close';
 import Link from '@material-ui/core/Link';
 
 
-
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
 
 	modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'10px',
+		paddingTop:'14px',
 		paddingRight: '1px',
 		marginTop:'-7px',
 		display: "block !important"
@@ -31,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	modalClassContent:{
 		position: 'absolute',
-		width: '65%',
+		width: '96%',
 		height: '31%',
 		top: '30%',
 		left: '50%',
@@ -40,12 +39,12 @@ const useStyles = makeStyles((theme) => ({
 		transform: 'translate(-50%, -50%)'
 	},
 	colorContainer:{
-		backgroundColor: 'gainsboro',
+		backgroundColor: '#EEEEEE',
 		marginTop: '-32px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		// paddingBottom: '75px',
-		paddingBottom: '31px',
+		paddingBottom: '34px',
 		marginLeft: '7px',
 		marginRight: '7px',
 		paddingRight: '10px',
@@ -79,7 +78,9 @@ function SeqVIModal(props) {
 			className={classes.modalBoxContent}
 		>
 			<Modal.Header  className={classes.modalHeader}>
-				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={props.saveCallBack} /></Link>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}>
+				<CloseIcon onClick={props.saveCallBack} />
+				</Link>
 			</Modal.Header>
 			<Modal.Body className={"text-center " + classes.bodyPadding}>
 			<div className={classes.colorContainer}>

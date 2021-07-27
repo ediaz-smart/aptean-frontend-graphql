@@ -13,7 +13,7 @@ import { supportMail } from '../../config';
 const useStyles = makeStyles((theme) => ({
     modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'10px',
+		paddingTop:'16px',
 		paddingRight: '4px',
 		marginTop:'-7px',
 		display: "block !important"
@@ -40,11 +40,11 @@ const useStyles = makeStyles((theme) => ({
 		transform: 'translate(-50%, -50%)'
 	},
 	colorContainer:{
-		backgroundColor: 'gainsboro',
+		backgroundColor: '#EEEEEE',
 		marginTop: '-32px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
-		paddingBottom: '75px',
+		paddingBottom: '79px',
 		marginLeft: '7px',
 		marginRight: '7px',
 		paddingRight: '10px',

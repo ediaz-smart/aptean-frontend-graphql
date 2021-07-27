@@ -7,10 +7,15 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { makeStyles } from "@material-ui/core/styles";
+import DatePickerNew from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 const useStyles = makeStyles((theme) => ({
     root: {
        display:'block',
+       padding: '9px',
+       marginTop: '2px'
     },
     gridRoot:{
         width:'257px'
@@ -28,6 +33,7 @@ export default function DatePicker(props) {
   // The first commit of Material-UI
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+  const [startDate, setStartDate] = React.useState(new Date());
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -36,7 +42,19 @@ export default function DatePicker(props) {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid container justify="space-around" className={classes.gridRoot+" d-block float-left"}>
-        <KeyboardDatePicker
+      <DatePickerNew
+        id={props.id}
+        name={props.name}
+        format={props.format}
+        showWeekNumbers 
+        className={classes.root+' '+props.className} 
+        disabled={props.disabled} 
+        onChange={props.onChange} 
+        selected={props.value}
+        onFocus={e => e.target.blur()}
+        dateFormat={props.dateFormat}
+        />
+        {/* <KeyboardDatePicker
           margin={props.margin}
           id={props.id}
           name={props.name}
@@ -52,7 +70,9 @@ export default function DatePicker(props) {
           disablePast={props.disablePast}
           InputProps={{ readOnly: true }}
           disabled={props.disabled}
-        />
+          variant="inline"
+          showWeekNumbers
+        /> */}
       </Grid>
     </MuiPickersUtilsProvider>
   );
