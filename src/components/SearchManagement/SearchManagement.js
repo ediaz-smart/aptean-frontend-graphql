@@ -489,8 +489,8 @@ function SearchManagement(props) {
             if (id) {
                 const result = await SearchManagementService.getFolderData(id, history, start, stop);
                 if (result && result.response_content) {
+                    setFolderResultCount(result.response_content.totalcount);
                     if (result.response_content.results.length > 0) {
-                        setFolderResultCount(result.response_content.totalcount);
                         // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
                         tempArr = await getSearchDataArr(result, 'searchfolder');
                         console.log('inside folder', folderResultCount)
@@ -1023,20 +1023,24 @@ function SearchManagement(props) {
                         clearSelectedRows={clearCheckedRow}
 
                     />
-                    {defaultTitle && defaultTitle != "Recent Search Results" && <Col className='d-flex justify-content-center' md="12">
+                    {defaultTitle && defaultTitle != "Recent Search Results" && <Row>
+                    <Col className={' justify-content-center' + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="12">
                         <CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton />
-                    </Col>}
-
-                    <Col className={"float-left px-0 " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
-                        
-                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
-                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('moveToFolder')}</Button>
-                        <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 " + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('mergeResult')}</Button>
                     </Col>
+                    </Row> }
+
+                    <Col className={"float-left px-0 " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
+                    
+                    <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
+                    <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('moveToFolder')}</Button>
+                    <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + (defaultTitle == 'Recent Search Results' ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>        
+                    </Col>
+
                     <Col className={"float-right " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' ? ' d-block' : ' d-none')} md="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
-                        <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className="accountInfo mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
                         <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
+                        <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={"accountInfo mr-2 " + (defaultTitle == 'My Searches' ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
+                        
 
                     </Col>
                     {/* <Col className={classes.columnPadding} md="12"> */}
