@@ -355,17 +355,26 @@ function SearchManagement(props) {
     // unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
     const updateState = useCallback(state => setSelectData(state));
     function updateVal(state) {
-        console.log(state, 'state');
+        // console.log(state, 'state');
         let mergeData = [];
+        let mergeType = [];
         state.selectedRows.map((value, index) => {
             if (value.type !== 'GqFolder') {
                 mergeData.push(value.id);
+                if(mergeType.length == 0)
+                {
+                    mergeType.push(value.type);
+                }else {
+                    if(mergeType.includes(value.type)){
+                        mergeType.push(value.type);
+                    }
+                }
+                
             }
         });
-
         if (state.selectedCount > 0) {
             setDisableDelete(false);
-            if (state.selectedCount >= 2 && mergeData.length >= 2) {
+            if (state.selectedCount >= 2 && mergeType.length >= 2) {
                 setDisableMergeBtn(false);
             } else {
                 setDisableMergeBtn(true);
@@ -954,7 +963,7 @@ function SearchManagement(props) {
                             </ListGroup.Item>
 
                             {/* })} */}
-                            <ListGroup.Item className={classes.projectListItem+" "+classes.addNewText+ ' ' + (defaultTitle !== 'Recent Search Results' && showNewFolder ? 'd-block' : 'd-none')} key="addNewFolder">
+                            <ListGroup.Item className={classes.projectListItem+" "+classes.addNewText+ ' ' + (defaultTitle !== 'Recent Search Results' && showNewFolder ? 'd-block' : 'd-none')+(!addFolderText ? ' disabled' : '')} key="addNewFolder">
                                 <img src={FolderIcon} className={classes.folderIcon + " float-left mt-2"} />
                                 <TextInput
                                     id="addFolder"
@@ -1025,7 +1034,7 @@ function SearchManagement(props) {
                     <Col className={"float-right " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' ? ' d-block' : ' d-none')} md="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
                         <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className="accountInfo mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
-                        <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
+                        <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
 
                     </Col>
                     {/* <Col className={classes.columnPadding} md="12"> */}
