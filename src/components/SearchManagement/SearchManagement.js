@@ -1024,7 +1024,7 @@ function SearchManagement(props) {
 
                     />
                     {defaultTitle && defaultTitle != "Recent Search Results" && <Row>
-                    <Col className={' justify-content-center' + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="12">
+                    <Col className={'d-flex justify-content-center' + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="12">
                         <CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton />
                     </Col>
                     </Row> }

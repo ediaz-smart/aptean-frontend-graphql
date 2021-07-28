@@ -120,10 +120,10 @@ const useStyles = makeStyles((theme) => ({
     },
     '@media (min-width: 900px)': {
         blastMargin: {
-            marginLeft: "190px"
+            marginLeft: "211px"
         },
         processHsps: {
-            marginLeft: "150px"
+            marginLeft: "168px"
         }
     }
 
@@ -569,7 +569,9 @@ function IpSeqSearch() {
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
                 setNucGenBankData(nucGenBank);
+                if(!parentId && !tempname){
                 setNucDb(nucDefaultPatentDb);
+                }
             }
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
                 let proteinData = resp.response_content.sdb_pro_tree;
@@ -836,6 +838,7 @@ function IpSeqSearch() {
     }
 
     const handleSearchAlgorithm = (event) => {
+        console.log('target', event.target)
         setSearchAlgorithm(event.target.value);
         if (sequenceTypeValue == "nucleotide") {
             setScoringMatrix('NUC3.1');
@@ -1371,6 +1374,7 @@ function IpSeqSearch() {
                                     value={scoringMatrixValue}
                                     items={nucleotideMatrixItems}
                                     className={"float-left"}
+                                    onChange={e=>setScoringMatrix(e.target.value)}
                                 />
                                 }
                                 {sequenceTypeValue == 'protein' && <SelectBox
@@ -1381,6 +1385,7 @@ function IpSeqSearch() {
                                     value={scoringMatrixValue}
                                     items={proteinMatrixItems}
                                     className={"float-left"}
+                                    onChange={e=>setScoringMatrix(e.target.value)}
                                 />
                                 }
                                 <Typography className={"float-left " + classes.seqText}>
@@ -1394,6 +1399,7 @@ function IpSeqSearch() {
                                     value={wordSizeValue}
                                     items={nucleotidewordSizeItems}
                                     className={"float-left " + classes.smallTextBox}
+                                    onChange={e=>setWordSize(e.target.value)}
                                 />
                                 }
                                 {sequenceTypeValue == 'protein' && <SelectBox
@@ -1404,6 +1410,7 @@ function IpSeqSearch() {
                                     value={wordSizeValue}
                                     items={proteinwordSizeItems}
                                     className={"float-left " + classes.smallTextBox}
+                                    onChange={e=>setWordSize(e.target.value)}
                                 />
                                 }
                                 <div className={classes.blastMargin}>
@@ -1480,6 +1487,8 @@ function IpSeqSearch() {
                             }
                         </Col>
                     </AccordionDetails>
+                    </Row>
+                    <Row>
                     <AccordionDetails className="appTextColor">
                         <Col md="12">
                             <Typography className={"float-left " + classes.seqText}>
@@ -1516,7 +1525,7 @@ function IpSeqSearch() {
                                 checked={isBothDbSelected}
                             // onChange={() => calTextCredits("isCompare")}
                             />
-                            <label className={classes.checkBoxContent + " bodyText cursorPointer ml-0"} for="compareboth">{t("compareBothNucPro")}</label>
+                            <label className={classes.checkBoxContent + " bodyText ml-0" + (searchAlgorithmValue !== 'motif' ? " cursorPointer": "")} for="compareboth">{t("compareBothNucPro")}</label>
                         </Col>
                     </AccordionDetails>
                 </Row>

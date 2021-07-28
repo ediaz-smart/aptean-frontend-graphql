@@ -115,10 +115,10 @@ const useStyles = makeStyles((theme) => ({
     },
     '@media (min-width: 900px)': {
         blastMargin: {
-            marginLeft: "190px"
+            marginLeft: "211px"
         },
         processHsps: {
-            marginLeft: "150px"
+            marginLeft: "168px"
         }
     }
 
@@ -568,7 +568,9 @@ function IpSequenceVariation() {
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
                 setNucGenBankData(nucGenBank);
-                setNucDb(nucDefaultPatentDb);
+                if(!parentId && !tempname){
+                    setNucDb(nucDefaultPatentDb);
+                }
             }
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
                 let proteinData = resp.response_content.sdb_pro_tree;
@@ -1175,6 +1177,9 @@ function IpSequenceVariation() {
     ];
     console.log('formik', formik)
 
+    console.log('scoring', scoringMatrixValue, wordSizeValue)
+
+
     let subjectText = "GenomeQuest: Error updating account information [Error code: " + errorMsg + "]";
 
     return (
@@ -1356,6 +1361,7 @@ function IpSequenceVariation() {
                                     value={scoringMatrixValue}
                                     items={nucleotideMatrixItems}
                                     className={"float-left"}
+                                    onChange={e=>setScoringMatrix(e.target.value)}
                                 />
                                 }
                                 {sequenceTypeValue == 'protein' && <SelectBox
@@ -1366,6 +1372,7 @@ function IpSequenceVariation() {
                                     value={scoringMatrixValue}
                                     items={proteinMatrixItems}
                                     className={"float-left"}
+                                    onChange={e=>setScoringMatrix(e.target.value)}
                                 />
                                 }
                                 <Typography className={"float-left " + classes.seqText}>
@@ -1379,6 +1386,7 @@ function IpSequenceVariation() {
                                     value={wordSizeValue}
                                     items={nucleotidewordSizeItems}
                                     className={"float-left " + classes.smallTextBox}
+                                    onChange={e=>setWordSize(e.target.value)}
                                 />
                                 }
                                 {sequenceTypeValue == 'protein' && <SelectBox
@@ -1389,6 +1397,7 @@ function IpSequenceVariation() {
                                     value={wordSizeValue}
                                     items={proteinwordSizeItems}
                                     className={"float-left " + classes.smallTextBox}
+                                    onChange={e=>setWordSize(e.target.value)}
                                 />
                                 }
                                 <div className={classes.blastMargin}>
@@ -1465,6 +1474,8 @@ function IpSequenceVariation() {
                             }
                         </Col>
                     </AccordionDetails>
+                    </Row>
+                    <Row>
                     <AccordionDetails className="appTextColor">
                         <Col md="12">
                             <Typography className={"float-left " + classes.seqText}>
