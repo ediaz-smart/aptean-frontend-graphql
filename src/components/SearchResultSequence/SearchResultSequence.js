@@ -212,6 +212,7 @@ function SearchResultSequence(props) {
         getAlertResp();
         getAlertRedoResp();
         
+        document.addEventListener("keydown", escFunction, false);
         // console.log(userInfo, 'userInfo');
         let tempAlertArr = [];
 
@@ -230,7 +231,17 @@ function SearchResultSequence(props) {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 
+        return () => {
+            document.removeEventListener("keydown", escFunction, false);
+        };
 
+    }, []);
+
+    const escFunction = useCallback((event) => {
+        if (event.keyCode === 27) {
+            //Do whatever when esc is pressed
+            disableTitleText();
+        }
     }, []);
     const handleClickOutside = event => {
 		if(event.target.type !== "text")
