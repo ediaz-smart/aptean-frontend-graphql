@@ -604,6 +604,7 @@ function SearchManagement(props) {
 
                     {datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
                     {datas.type === "Variation" && <Link to={"/ipseqvariation/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>}
+                    {datas.type === "Antibody" && <Link to={"/searchresantibody/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>}
 
                     {/* {datas.type === "IP Sequence" && <Link  ><RedoIcon className="mr-2 appLink" /></Link>}
                     {datas.type === "Variation" && <Link ><RedoIcon className="mr-2 appLink" /></Link>} */}

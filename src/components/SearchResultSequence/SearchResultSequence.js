@@ -816,12 +816,12 @@ function SearchResultSequence(props) {
                             <h6 className={"appTextColor loginTitle mt-3"}>{t('searchStrategy')}</h6>
 							    <Col lg="12" md="12" className={"pr-0 content"}>
                                     <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The search strategy was <span className="text-capitalize">{seqSummary && seqSummary.params && Constant['searchStrategies'][seqSummary.params.strat_name] ? Constant['searchStrategies'][seqSummary.params.strat_name]:''}.</span>​</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> The sequence comparison algorithm used is <span className="text-capitalize">{seqSummary && seqSummary.params && Constant['searchStrategies'][seqSummary.params.strat_name] ? Constant['searchStrategies'][seqSummary.params.strat_name]:''}.</span>​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "kerr" ? 'd-block':'d-none')}>
                                     <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.</Typography>
-                                    <Typography className="text-lowercase">
+                                    <Typography>
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Results are required to have at least {seqSummary && seqSummary.params.strat_genepast_perc_id}% identity over the 
 										{seqSummary && seqSummary.params && Constant['genePastItemsText'][seqSummary.params.strat_genepast_perc_id_over]}.​</Typography>
                                     <Typography >
@@ -909,13 +909,13 @@ function SearchResultSequence(props) {
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && Constant['nucleotideDB'].includes(seqSummary.runstats.comp_mode) ? 'd-block':'d-none')}>
                                         {/* <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_pro} are discarded.​</Typography> */}
-                                        <Typography className="text-lowercase">
+                                        <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over any stretch of {seqSummary && seqSummary.params && seqSummary.params.strat_fragment_window_length_pro} amino acids.​</Typography>
                                    </div>
                                    <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-MIX" ? 'd-block':'d-none')} >
-                                        <Typography className="text-lowercase">
+                                        <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over any stretch of {seqSummary && seqSummary.params && seqSummary.params.strat_fragment_window_length_nuc} nucleotides.​</Typography>
-                                         <Typography className="text-lowercase">
+                                         <Typography>
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor " /> Results are required to have at least {seqSummary && seqSummary.params.strat_fragment_perc_id_pro}% identity over any stretch of {seqSummary && seqSummary.params && seqSummary.params.strat_fragment_window_length_pro} amino acids.​</Typography>
 										
                                     </div>

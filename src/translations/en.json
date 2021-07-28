@@ -8,7 +8,7 @@
     "enterPass": "Enter Your Password",
     "passMinChar": "Password should be of minimum 8 characters length",
     "submit": "Submit",
-    "forgotLogin": "Forgot your login details?",
+    "forgotLogin": "Forgot your password?",
     "pwdRecovery": "Password Recovery",
     "pwdRecoveryTitle": "Please fill in the information below, and we will send instructions to the email address you registered with us:​",
     "codeShown": "Enter the code shown below",
