@@ -556,6 +556,7 @@ function SearchManagement(props) {
                             tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
                         }else {
                             tempObj['results'] = <span>{datas.results ? datas.results+' '+type: ''}</span>
+                            // tempObj['results'] = <span></span>
                         }
                     }
                 } else {
@@ -576,19 +577,25 @@ function SearchManagement(props) {
                 tempObj["report"] = '';
             } else {
                 if (datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status !='CANCELLED')) {
-                    if (datas.type == "GqWfABIpSearch") {
-                        let mostRecentReportUrl = url.mostRecentReportUrl
-                        mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
-                        let reportLink = process.env.REACT_APP_BASE_URL + mostRecentReportUrl
-                        tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
-                            <span className="mx-2">|</span>
-                            <a href={classicLink} target="_blank">Classic</a>
-                        </Fragment>
-                    } else if (datas.type !== "GqFolder" && datas.type !== "DlPhysicalSeqdb" && datas.type !== "DlVirtualSeqdb") {
-                        tempObj["report"] = <Fragment>
-                            <a href={classicLink} target="_blank">Classic</a>
-                        </Fragment>
-                    } else {
+                    if(datas.results.props.children && datas.results.props.children[0] > 0)
+					{
+                        if (datas.type == "GqWfABIpSearch") {
+                            let mostRecentReportUrl = url.mostRecentReportUrl
+                            mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
+                            let reportLink = process.env.REACT_APP_BASE_URL + mostRecentReportUrl
+                            tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
+                                <span className="mx-2">|</span>
+                                <a href={classicLink} target="_blank">Classic</a>
+                            </Fragment>
+                        } else if (datas.type !== "GqFolder" && datas.type !== "DlPhysicalSeqdb" && datas.type !== "DlVirtualSeqdb") {
+                            tempObj["report"] = <Fragment>
+                                <a href={classicLink} target="_blank">Classic</a>
+                            </Fragment>
+                        } else {
+                            tempObj["report"] = '';
+                        }
+                    }
+                    else {
                         tempObj["report"] = '';
                     }
                 } else {

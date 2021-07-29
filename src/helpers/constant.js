@@ -49,10 +49,10 @@ const Constant = {
         "SHORTER":" entire query sequence length or over the entire length of any subject sequence"
     },
     searchStrategies:{
-        "kerr":"GenePAST Search",
-        "blast":"BLAST Search",
-        "fragment": "Fragment Search",
-        "motif":"MOTIF Search"
+        "kerr":"GenePAST",
+        "blast":"BLAST",
+        "fragment": "Fragment",
+        "motif":"MOTIF"
     }
 }
 export default Constant;

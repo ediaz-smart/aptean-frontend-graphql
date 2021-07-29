@@ -277,7 +277,7 @@ function SearchResultSequence(props) {
             }
             setTitleName(getSummaryResponse.response_content.text_label);
             setGqUserId(getSummaryResponse.response_content.gq_user_id);
-            setSharedIds(getSummaryResponse.response_content.gq_user_id);
+            // setSharedIds(getSummaryResponse.response_content.gq_user_id);
             getSummaryResponse.response_content['usedSpace'] = usedSpace;
             if(getSummaryResponse.response_content.description)
             {
@@ -339,13 +339,19 @@ function SearchResultSequence(props) {
             }else {
                 sharedData['sharedNameObj'] = [];
                 sharedData['sharedNames'] = '';
-                setSharedIds([]);
+                if(gqUserId)
+				{
+					setSharedIds([gqUserId]);
+				}
                 setSeqShare(sharedData);
             }
         }else {
             sharedData['sharedNames'] = '';
             sharedData['sharedNameObj'] = [];
-            setSharedIds([]);
+            if(gqUserId)
+			{
+				setSharedIds([gqUserId]);
+			}
             setSeqShare(sharedData);
         }
     }
@@ -828,6 +834,10 @@ function SearchResultSequence(props) {
 											<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.params && seqSummary.params.best_hit_keep_max ? UtilsService.numberWithCommas(seqSummary.params.best_hit_keep_max):'0'} best alignments are reported.​</Typography>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "blast" ? 'd-block':'d-none')} >
+                                    <div className="content">
+										<Typography >
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
+                                    </div>  
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
                                         {/* <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> word size is {seqSummary && seqSummary.params.strat_blast_word_size_nuc}.
@@ -863,9 +873,7 @@ function SearchResultSequence(props) {
 
                                     </div>
                                     <div className="content">
-										<Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
-                                        {/* <Typography >
+										{/* <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> e-val cutoff is {seqSummary && seqSummary.params.strat_blast_eval_cutoff}.​</Typography> */}
                                         <Typography className={seqSummary && seqSummary.params.strat_blast_hsp =="on" ? 'd-block':'d-none'}>
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> HSPs are processed​.</Typography>
@@ -900,6 +908,10 @@ function SearchResultSequence(props) {
                                     </div>
                                 </Col>
                                 <Col lg="12" md="12" className={"pr-0 content "+(seqSummary && seqSummary.params &&seqSummary.params.strat_name == "fragment" ? 'd-block':'d-none')}>
+                                    <div className="content">
+                                        <Typography >
+                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
+                                    </div> 
                                     <div className={"pr-0 content "+(seqSummary && seqSummary.runstats && seqSummary.runstats.comp_mode == "NUCLEOTIDE-NUCLEOTIDE"? 'd-block':'d-none')}>
                                         {/* <Typography >
                                             <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> alignments with less than {seqSummary && seqSummary.params.strat_fragment_perc_id_nuc}% identity over window size of {seqSummary && seqSummary.params.strat_fragment_window_length_nuc} are discarded.</Typography> */}
@@ -920,8 +932,6 @@ function SearchResultSequence(props) {
 										
                                     </div>
 									<div className="content">
-                                        <Typography >
-                                        	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> This algorithm fits the entire shorter sequence (query or subject) into the longer one.​</Typography>
                                         <Typography >
                                         	<RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />  For each query sequence the {seqSummary && seqSummary.params && seqSummary.params.best_hit_keep_max ? UtilsService.numberWithCommas(seqSummary.params.best_hit_keep_max):'0'} best alignments are reported.​</Typography>
                                     </div>

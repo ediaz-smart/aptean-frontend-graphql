@@ -146,6 +146,8 @@ function RecentResults() {
 			// tempArr = await UtilsService.mostRecentResCalculation(result,'home');
 			tempArr = await getSearchDataArr(result, 'home');
 		}
+
+		
 		// Getting only 9 array from the response as per the ppt documentation
 		tempArr = tempArr.slice(0, 9);
 		setSearchResultData(tempArr);
@@ -206,6 +208,7 @@ function RecentResults() {
 								tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
 							}else {
 								tempObj['results'] = <span>{datas.results ? datas.results+' '+type: ''}</span>
+								// tempObj['results'] = <span></span>
 							}
 							
 						}
@@ -215,7 +218,7 @@ function RecentResults() {
 				}else {
 					tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
 				}
-				
+				// console.log(parseInt(datas.results),'datas.results');
 				let mostRecentClassicUrl = url.mostRecentClassicUrl
 				mostRecentClassicUrl = mostRecentClassicUrl.replace('**', id);
 				let classicLink = process.env.REACT_APP_API_URL+mostRecentClassicUrl
@@ -223,21 +226,28 @@ function RecentResults() {
 				{
 					tempObj["report"] = '';
 				}else{
+					
 					if(datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status !='CANCELLED'))
 					{
-						if(datas.type == "GqWfABIpSearch")
+						// console.log(datas.results.props,'datas.results');
+						if(datas.results.props.children && datas.results.props.children[0] > 0)
 						{
-							let mostRecentReportUrl = url.mostRecentReportUrl
-							mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
-							let reportLink = process.env.REACT_APP_BASE_URL+mostRecentReportUrl
-							tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
-												<span className="mx-2">|</span>
-												<a href={classicLink} target="_blank">Classic</a>
-												</Fragment>
-						}else if(datas.type !== "GqFolder"){
-							tempObj["report"] = <Fragment>
-												<a href={classicLink} target="_blank">Classic</a>
-												</Fragment>
+							if(datas.type == "GqWfABIpSearch")
+							{
+								let mostRecentReportUrl = url.mostRecentReportUrl
+								mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
+								let reportLink = process.env.REACT_APP_BASE_URL+mostRecentReportUrl
+								tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
+													<span className="mx-2">|</span>
+													<a href={classicLink} target="_blank">Classic</a>
+													</Fragment>
+							}else if(datas.type !== "GqFolder"){
+								tempObj["report"] = <Fragment>
+													<a href={classicLink} target="_blank">Classic</a>
+													</Fragment>
+							}else {
+								tempObj["report"] = '';
+							}
 						}else {
 							tempObj["report"] = '';
 						}
