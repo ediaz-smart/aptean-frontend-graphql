@@ -81,7 +81,7 @@ export default function ProgressBar({datas,getStatus}) {
                
                 setInitialData(false);
                 progressData(progressres);
-                if(progressres.response_content.status !== 'STILL_RUNNING')
+                if(progressres && progressres.response_content.status !== 'STILL_RUNNING')
                 {
                     setInitialData(false);
                     setShowProgress(false);
