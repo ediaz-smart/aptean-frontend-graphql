@@ -304,7 +304,7 @@ function IpSeqSearch() {
     const [nucPersonalData, setNucPersonalData] = useState({});
 
     const [searchAlgorithmValue, setSearchAlgorithm] = useState("kerr");
-    const [scoringMatrixValue, setScoringMatrix] = useState("NUC3.1");
+    const [scoringMatrixValue, setScoringMatrix] = useState("NUC.3.1");
     const [sequenceTypeValue, setSequenceType] = useState("nucleotide");
     const [wordSizeValue, setWordSize] = useState("11");
     const [nucleotideData, setNucleotideData] = useState();
@@ -364,11 +364,11 @@ function IpSeqSearch() {
     let redoInitialObj = {
         searchDetails: '',
         querySequence: '',
-        alignments: 5000,
-        genePastPercentage: 80,
-        expectCutoff: 10,
-        fragmentStretch: 50,
-        fragmentAminoAcid: 96,
+        alignments: '5000',
+        genePastPercentage: '80',
+        expectCutoff: '10',
+        fragmentStretch: '50',
+        fragmentAminoAcid: '96',
         docPublicSel: "BEF",
         publishGQSel: "BEF",
         patientDocSel: "LTE",
@@ -763,7 +763,7 @@ function IpSeqSearch() {
                 // Blast
                 data.strat_blast_word_size_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? wordSizeValue : "11"; // Word Size - Nucleotide
                 data.strat_blast_scoring_matrix_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? scoringMatrixValue : "NUC.3.1"; // Scoring matrix - Nucleotide
-                data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : "10"; // Word Size - Protein
+                data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : "3"; // Word Size - Protein
                 data.strat_blast_scoring_matrix_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? scoringMatrixValue : "BLOSUM62"; // Scoring matrix - Protein
                 data.strat_blast_eval_cutoff = values.expectCutoff; // Expect Cutoff
                 data.strat_blast_hsp = processHsp ? "on" : ""; // HSP handling, "on" when the checkbox is selected
@@ -841,7 +841,7 @@ function IpSeqSearch() {
         console.log('target', event.target)
         setSearchAlgorithm(event.target.value);
         if (sequenceTypeValue == "nucleotide") {
-            setScoringMatrix('NUC3.1');
+            setScoringMatrix('NUC.3.1');
             setWordSize('11');
         } else {
             setScoringMatrix('BLOSUM62');
@@ -867,8 +867,10 @@ function IpSeqSearch() {
         creditValues.ppu2RemainingCredits = 0;
         setCreditValues({ ...creditValues });
         if (event.target.value == "nucleotide") {
-            setScoringMatrix('NUC3.1');
+            setScoringMatrix('NUC.3.1');
             setWordSize('11');
+            formik.setFieldValue("fragmentStretch", '50');
+            formik.setFieldValue("fragmentAminoAcid", '96');
             nucPatentData.filter(i=>{
                 if(i.label.includes("Patent sequences")) {
                     nucDb.push(i.id);
@@ -879,6 +881,8 @@ function IpSeqSearch() {
         } else {
             setScoringMatrix('BLOSUM62');
             setWordSize('3');
+            formik.setFieldValue("fragmentStretch", '20');
+            formik.setFieldValue("fragmentAminoAcid", '95');
             proPatentData.filter(i=>{
                 if(i.label.includes("Patent sequences")) {
                     proDb.push(i.id);
@@ -933,9 +937,13 @@ function IpSeqSearch() {
         if (isBothDbSelected == true) {
             setIsBothDbSelected(false);
             calTextCredits(null, false, type);
+            sequenceTypeValue == "nucleotide" ? setProDb([]) : setNucDb([]);
         } else {
             setIsBothDbSelected(true);
             calTextCredits(null, true, type);
+        }
+        if(sequenceTypeValue == "nucleotide") {
+
         }
         console.log('bothdb2', isBothDbSelected)
     }
@@ -1134,16 +1142,16 @@ function IpSeqSearch() {
 
     const nucleotideMatrixItems = [
         {
-            value: "NUC3.1",
-            label: "NUC3.1"
+            value: "NUC.3.1",
+            label: "NUC.3.1"
         },
         {
-            value: "NUC2.2",
-            label: "NUC2.2"
+            value: "NUC.2.2",
+            label: "NUC.2.2"
         },
         {
-            value: "NUC4.4",
-            label: "NUC4.4"
+            value: "NUC.4.4",
+            label: "NUC.4.4"
         }];
     const nucleotidewordSizeItems = [
         {
@@ -1334,7 +1342,7 @@ function IpSeqSearch() {
                             {searchAlgorithmValue && searchAlgorithmValue == 'kerr' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     {t("findAtleast")}&nbsp;&nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 <TextInput
                                     fullWidth={false}
                                     id="genePastPercentage"
@@ -1349,7 +1357,7 @@ function IpSeqSearch() {
                                 />
                                 <Typography className={"float-left " + classes.seqText}>
                                     &nbsp;&nbsp;% {t("identityOver")} &nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 <SelectBox
                                     margin="normal"
                                     variant="outlined"
@@ -1365,7 +1373,7 @@ function IpSeqSearch() {
                             {searchAlgorithmValue && searchAlgorithmValue == 'blast' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     {t("scoringMatrix")}&nbsp;&nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 {sequenceTypeValue == 'nucleotide' && <SelectBox
                                     margin="normal"
                                     variant="outlined"
@@ -1390,7 +1398,7 @@ function IpSeqSearch() {
                                 }
                                 <Typography className={"float-left " + classes.seqText}>
                                     &nbsp;&nbsp;{t("wordSize")} &nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 {sequenceTypeValue == 'nucleotide' && <SelectBox
                                     margin="normal"
                                     variant="outlined"
@@ -1416,7 +1424,7 @@ function IpSeqSearch() {
                                 <div className={classes.blastMargin}>
                                     <Typography className={"float-left " + classes.seqText}>
                                         {t("expectCutOff")}&nbsp;&nbsp;&nbsp;
-                            </Typography>
+                                    </Typography>
                                     <TextInput
                                         fullWidth={false}
                                         id="expectCutoff"
@@ -1446,7 +1454,7 @@ function IpSeqSearch() {
                             {searchAlgorithmValue && searchAlgorithmValue == 'fragment' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     {t("findStretchAtLeast")}&nbsp;&nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 <TextInput
                                     fullWidth={false}
                                     id="fragmentStretch"
@@ -1459,9 +1467,12 @@ function IpSeqSearch() {
                                     error={formik.touched.fragmentStretch && Boolean(formik.errors.fragmentStretch)}
                                     helperText={formik.touched.fragmentStretch && formik.errors.fragmentStretch}
                                 />
-                                <Typography className={"float-left mt-2"}>
+                                {sequenceTypeValue && sequenceTypeValue == "protein" && <Typography className={"float-left mt-2"}>
                                     &nbsp;&nbsp;{t("aminoAcidWith")} &nbsp;&nbsp;
-                            </Typography>
+                                </Typography>}
+                                {sequenceTypeValue && sequenceTypeValue == "nucleotide" && <Typography className={"float-left mt-2"}>
+                                    &nbsp;&nbsp;{t("nucleotidesWith")} &nbsp;&nbsp;
+                                </Typography>}
                                 <TextInput
                                     fullWidth={false}
                                     id="fragmentAminoAcid"

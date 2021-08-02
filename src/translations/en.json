@@ -282,5 +282,7 @@
     "valueMustBeInteger": "Value must be an integer.",
     "shareNow":"Share now",
     "48OnlyAllowed": "Maximum 48 characters allowed",
-    "enterValidData": "Please enter valid data"
+    "enterValidData": "Please enter valid data",
+    "nucleotidesWith": "Nucleotides with",
+    "probWithSearch": "Problem with search execution, possibly incorrect input format."
 }

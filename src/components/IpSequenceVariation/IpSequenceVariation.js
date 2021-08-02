@@ -296,7 +296,7 @@ function IpSequenceVariation() {
     const [nucPersonalData, setNucPersonalData] = useState({});
 
     const [searchAlgorithmValue, setSearchAlgorithm] = useState("kerr");
-    const [scoringMatrixValue, setScoringMatrix] = useState("NUC3.1");
+    const [scoringMatrixValue, setScoringMatrix] = useState("NUC.3.1");
     const [sequenceTypeValue, setSequenceType] = useState("nucleotide");
     const [wordSizeValue, setWordSize] = useState("11");
     const [nucleotideData, setNucleotideData] = useState();
@@ -352,11 +352,11 @@ function IpSequenceVariation() {
     let redoInitialObj = {
         searchDetails: '',
         querySequence: '',
-        alignments: 5000,
-        genePastPercentage: 80,
-        expectCutoff: 10,
-        fragmentStretch: 50,
-        fragmentAminoAcid: 96,
+        alignments: '5000',
+        genePastPercentage: '80',
+        expectCutoff: '10',
+        fragmentStretch: '50',
+        fragmentAminoAcid: '96',
         docPublicSel: "BEF",
         publishGQSel: "BEF",
         patientDocSel: "LTE",
@@ -380,81 +380,80 @@ function IpSequenceVariation() {
     useEffect(() => {
         (async () => {
             let resp;
-            console.log(tempname,"tempname tempname tempname tempname ")
-            console.log(parentId,"parentId parentId parentId parentId ")
-            if(tempname)
-            { 
-               const dat = await SavedSearch.getParticularTemplate(tempname,'Variation');
-               if (dat && dat.response_content && dat.response_content.map) {
-                const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = dat.response_content.map;
-                console.log('qdb_seq_type', qdb_seq_type)
-                qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
-                qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
+            console.log(tempname, "tempname tempname tempname tempname ")
+            console.log(parentId, "parentId parentId parentId parentId ")
+            if (tempname) {
+                const dat = await SavedSearch.getParticularTemplate(tempname, 'Variation');
+                if (dat && dat.response_content && dat.response_content.map) {
+                    const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = dat.response_content.map;
+                    console.log('qdb_seq_type', qdb_seq_type)
+                    qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
+                    qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
 
-                nucdbs && nucdbs.length > 0 ? setNucDb(nucdbs) : setNucDb([]);
-                protdbs && protdbs.length > 0 ? setProDb(protdbs) : setProDb([]);
-                if (qdb_seq_type && qdb_seq_type == "protein") {
-                    setNucDb([]);
-                } else if (qdb_seq_type && qdb_seq_type == "nucloetide") {
-                    setProDb([]);
+                    nucdbs && nucdbs.length > 0 ? setNucDb(nucdbs) : setNucDb([]);
+                    protdbs && protdbs.length > 0 ? setProDb(protdbs) : setProDb([]);
+                    if (qdb_seq_type && qdb_seq_type == "protein") {
+                        setNucDb([]);
+                    } else if (qdb_seq_type && qdb_seq_type == "nucloetide") {
+                        setProDb([]);
+                    }
+                    redoInitialState.searchDetails = title ? title : "";
+                    redoInitialState.querySequence = qdb_seq ? qdb_seq : "";
+                    strat_name ? setSearchAlgorithm(strat_name) : setSearchAlgorithm("kerr");
+                    redoInitialState.alignments = best_hit_keep_max ? redoInitialState.alignments = best_hit_keep_max : "";
+                    // nucandprot && nucandprot == "on" ? setIsBothDbSelected(true) : setIsBothDbSelected(false);
+                    redoInitialState.formName = template_name ? redoInitialState.formName = template_name : "";
+                    template_name ? setSaveFormValue(true) : setSaveFormValue(false);
+                    email ? setSendMailAfterSearch(true) : setSendMailAfterSearch(false);
+                    redoInitialState.minResidues = seqlenrange_low ? seqlenrange_low : 6;
+                    redoInitialState.maxResidues = seqlenrange_high ? seqlenrange_high : 100000;
+
+                    // setRedoInitialState({...redoInitialState});
+
+                    if (strat_name && strat_name == "kerr" && strat_genepast_perc_id && strat_genepast_perc_id_over) {
+                        redoInitialState.genePastPercentage = strat_genepast_perc_id;
+                        redoInitialState.genepastPercentageOver = strat_genepast_perc_id_over;
+                        // setRedoInitialState({...redoInitialState});
+                    } else if (strat_name == "blast") {
+                        if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_blast_word_size_nuc && strat_blast_scoring_matrix_nuc) {
+                            setWordSize(strat_blast_word_size_nuc);
+                            setScoringMatrix(strat_blast_scoring_matrix_nuc);
+                        } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro && strat_blast_scoring_matrix_pro) {
+                            setWordSize(strat_blast_word_size_pro);
+                            setScoringMatrix(strat_blast_scoring_matrix_pro);
+                        }
+                        redoInitialState.expectCutoff = strat_blast_eval_cutoff ? strat_blast_eval_cutoff : 10;
+                        // setRedoInitialState({...redoInitialState});
+                        strat_blast_hsp && strat_blast_hsp == "on" ? setProcessHsp(true) : setProcessHsp(false);
+                    } else if (strat_name == "fragment") {
+                        if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_fragment_window_length_nuc && strat_fragment_perc_id_nuc) {
+                            redoInitialState.fragmentStretch = strat_fragment_window_length_nuc;
+                            redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_nuc;
+                        } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_fragment_window_length_pro && strat_fragment_perc_id_pro) {
+                            redoInitialState.fragmentStretch = strat_fragment_window_length_pro;
+                            redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_pro;
+                        }
+                    }
+                    let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
+                    redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
+                        if (item && item.P && item.P == "SEQUENCE_D1") {
+                            console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
+                            redoInitialState.docPublicSel = item.O;
+                            redoInitialState.docPublicDate = moment(item.V)._d;
+                            setIsDocPubDate(true);
+                        } else if (item && item.P && item.P == "SEQUENCE_D2") {
+                            redoInitialState.publishGQSel = item.O;
+                            redoInitialState.publishGQDate = moment(item.V)._d;
+                            setIsPublished(true);
+                        } else if (item && item.P && item.P == "SEQUENCE_P9") {
+                            redoInitialState.patientDocSel = item.O;
+                            redoInitialState.patientDocInp = item.V;
+                            setIsPatientDoc(true);
+                        }
+                        // setRedoInitialState({...redoInitialState});
+                    });
+                    setRedoInitialState({ ...redoInitialState });
                 }
-                redoInitialState.searchDetails = title ? title : "";
-                redoInitialState.querySequence = qdb_seq ? qdb_seq : "";
-                strat_name ? setSearchAlgorithm(strat_name) : setSearchAlgorithm("kerr");
-                redoInitialState.alignments = best_hit_keep_max ? redoInitialState.alignments = best_hit_keep_max : "";
-                // nucandprot && nucandprot == "on" ? setIsBothDbSelected(true) : setIsBothDbSelected(false);
-                redoInitialState.formName = template_name ? redoInitialState.formName = template_name : "";
-                template_name ? setSaveFormValue(true) : setSaveFormValue(false);
-                email ? setSendMailAfterSearch(true) : setSendMailAfterSearch(false);
-                redoInitialState.minResidues = seqlenrange_low ? seqlenrange_low : 6;
-                redoInitialState.maxResidues = seqlenrange_high ? seqlenrange_high : 100000;
-
-                // setRedoInitialState({...redoInitialState});
-
-                if (strat_name && strat_name == "kerr" && strat_genepast_perc_id && strat_genepast_perc_id_over) {
-                    redoInitialState.genePastPercentage = strat_genepast_perc_id;
-                    redoInitialState.genepastPercentageOver = strat_genepast_perc_id_over;
-                    // setRedoInitialState({...redoInitialState});
-                } else if (strat_name == "blast") {
-                    if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_blast_word_size_nuc && strat_blast_scoring_matrix_nuc) {
-                        setWordSize(strat_blast_word_size_nuc);
-                        setScoringMatrix(strat_blast_scoring_matrix_nuc);
-                    } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro && strat_blast_scoring_matrix_pro) {
-                        setWordSize(strat_blast_word_size_pro);
-                        setScoringMatrix(strat_blast_scoring_matrix_pro);
-                    }
-                    redoInitialState.expectCutoff = strat_blast_eval_cutoff ? strat_blast_eval_cutoff : 10;
-                    // setRedoInitialState({...redoInitialState});
-                    strat_blast_hsp && strat_blast_hsp == "on" ? setProcessHsp(true) : setProcessHsp(false);
-                } else if (strat_name == "fragment") {
-                    if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_fragment_window_length_nuc && strat_fragment_perc_id_nuc) {
-                        redoInitialState.fragmentStretch = strat_fragment_window_length_nuc;
-                        redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_nuc;
-                    } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_fragment_window_length_pro && strat_fragment_perc_id_pro) {
-                        redoInitialState.fragmentStretch = strat_fragment_window_length_pro;
-                        redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_pro;
-                    }
-                }
-                let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
-                redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
-                    if (item && item.P && item.P == "SEQUENCE_D1") {
-                        console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
-                        redoInitialState.docPublicSel = item.O;
-                        redoInitialState.docPublicDate = moment(item.V)._d;
-                        setIsDocPubDate(true);
-                    } else if (item && item.P && item.P == "SEQUENCE_D2") {
-                        redoInitialState.publishGQSel = item.O;
-                        redoInitialState.publishGQDate = moment(item.V)._d;
-                        setIsPublished(true);
-                    } else if (item && item.P && item.P == "SEQUENCE_P9") {
-                        redoInitialState.patientDocSel = item.O;
-                        redoInitialState.patientDocInp = item.V;
-                        setIsPatientDoc(true);
-                    }
-                    // setRedoInitialState({...redoInitialState});
-                });
-                setRedoInitialState({ ...redoInitialState });
-            }
             }
             if (parentId) {
                 resp = await getSeqSearchInit(history, parentId);
@@ -544,8 +543,8 @@ function IpSequenceVariation() {
                 getNucChild && getNucChild.length > 0 && getNucChild.map((item, index) => {
                     if (item && item.id == ':Patents') {
                         nucleotidePatent = item.children;
-                        item.children.filter(i=>{
-                            if(i.label.includes("Patent sequences")) {
+                        item.children.filter(i => {
+                            if (i.label.includes("Patent sequences")) {
                                 nucDefaultPatentDb.push(i.id);
                             }
                         });
@@ -568,7 +567,7 @@ function IpSequenceVariation() {
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
                 setNucGenBankData(nucGenBank);
-                if(!parentId && !tempname){
+                if (!parentId && !tempname) {
                     setNucDb(nucDefaultPatentDb);
                 }
             }
@@ -673,7 +672,7 @@ function IpSequenceVariation() {
         validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue, searchAlgorithmValue),
         onSubmit: async (values) => {
             console.log('formikValues', values)
-            if((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
+            if ((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
                 // setNoDbSelected(true);
             } else {
                 setNoDbSelected(true);
@@ -766,18 +765,18 @@ function IpSequenceVariation() {
                 data.strat_genepast_perc_id_over = values.genepastPercentageOver;
             } else if (searchAlgorithmValue == "blast") {
                 // Blast
-                data.strat_blast_word_size_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? wordSizeValue : ""; // Word Size - Nucleotide
-                data.strat_blast_scoring_matrix_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? scoringMatrixValue : ""; // Scoring matrix - Nucleotide
-                data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : ""; // Word Size - Protein
-                data.strat_blast_scoring_matrix_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? scoringMatrixValue : ""; // Scoring matrix - Protein
+                data.strat_blast_word_size_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? wordSizeValue : "11"; // Word Size - Nucleotide
+                data.strat_blast_scoring_matrix_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? scoringMatrixValue : "NUC.3.1"; // Scoring matrix - Nucleotide
+                data.strat_blast_word_size_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? wordSizeValue : "3"; // Word Size - Protein
+                data.strat_blast_scoring_matrix_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? scoringMatrixValue : "BLOSUM62"; // Scoring matrix - Protein
                 data.strat_blast_eval_cutoff = values.expectCutoff; // Expect Cutoff
                 data.strat_blast_hsp = processHsp ? "on" : ""; // HSP handling, "on" when the checkbox is selected
             } else if (searchAlgorithmValue == "fragment") {
                 // Fragment
-                data.strat_fragment_window_length_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentStretch : ""; // Window Length - Nuc
-                data.strat_fragment_perc_id_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentAminoAcid : ""; // Percentage Identity - Nuc
-                data.strat_fragment_window_length_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentStretch : ""; // Window Length - Prt
-                data.strat_fragment_perc_id_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentAminoAcid : ""; // Percentage Identity - Prt
+                data.strat_fragment_window_length_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentStretch : "50"; // Window Length - Nuc
+                data.strat_fragment_perc_id_nuc = sequenceTypeValue && sequenceTypeValue == "nucleotide" ? values.fragmentAminoAcid : "96"; // Percentage Identity - Nuc
+                data.strat_fragment_window_length_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentStretch : "20"; // Window Length - Prt
+                data.strat_fragment_perc_id_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentAminoAcid : "95"; // Percentage Identity - Prt
             }
 
 
@@ -786,11 +785,11 @@ function IpSequenceVariation() {
             if (resp && resp.response_status == 0) {
                 setShowSuccessModal(true);
                 closeSuccessModal();
-            } else if(resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
+            } else if (resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
                 // setWarningMsg("Warning: "+resp.response_content.qdb.msg);
                 setIsWarningReturned(true);
                 setShowErrorModal(true);
-                setErrorMsg("Warning: "+resp.response_content.qdb.msg);
+                setErrorMsg("Warning: " + resp.response_content.qdb.msg);
                 setErrorHeading('Please notice the warnings below and either fix it or submit as is.')
                 // window.scrollTo(0,0);
             } else {
@@ -845,7 +844,7 @@ function IpSequenceVariation() {
     const handleSearchAlgorithm = (event) => {
         setSearchAlgorithm(event.target.value);
         if (sequenceTypeValue == "nucleotide") {
-            setScoringMatrix('NUC3.1');
+            setScoringMatrix('NUC.3.1');
             setWordSize('11');
         } else {
             setScoringMatrix('BLOSUM62');
@@ -880,11 +879,13 @@ function IpSequenceVariation() {
         creditValues.ppu2RemainingCredits = 0;
         setCreditValues({ ...creditValues });
         if (event.target.value == "nucleotide") {
-            setScoringMatrix('NUC3.1');
+            setScoringMatrix('NUC.3.1');
             setWordSize('11');
             setProDb([]);
-            nucPatentData.filter(i=>{
-                if(i.label.includes("Patent sequences")) {
+            formik.setFieldValue("fragmentStretch", '50');
+            formik.setFieldValue("fragmentAminoAcid", '96');
+            nucPatentData.filter(i => {
+                if (i.label.includes("Patent sequences")) {
                     nucDb.push(i.id);
                     setNucDb([...nucDb]);
                 }
@@ -893,8 +894,11 @@ function IpSequenceVariation() {
             setScoringMatrix('BLOSUM62');
             setWordSize('3');
             setNucDb([]);
-            proPatentData.filter(i=>{
-                if(i.label.includes("Patent sequences")) {
+            formik.setFieldValue("fragmentStretch", '20');
+            formik.setFieldValue("fragmentAminoAcid", '95');
+
+            proPatentData.filter(i => {
+                if (i.label.includes("Patent sequences")) {
                     proDb.push(i.id);
                     setProDb([...proDb]);
                 }
@@ -903,7 +907,7 @@ function IpSequenceVariation() {
     };
 
     function handleDbChange(id, name) {
-        if(name && name == "nuc") {
+        if (name && name == "nuc") {
             if (nucDb.includes(id)) {
                 setNucDb(nucDb.filter(dbName => dbName !== id));
             } else {
@@ -1118,16 +1122,16 @@ function IpSequenceVariation() {
 
     const nucleotideMatrixItems = [
         {
-            value: "NUC3.1",
-            label: "NUC3.1"
+            value: "NUC.3.1",
+            label: "NUC.3.1"
         },
         {
-            value: "NUC2.2",
-            label: "NUC2.2"
+            value: "NUC.2.2",
+            label: "NUC.2.2"
         },
         {
-            value: "NUC4.4",
-            label: "NUC4.4"
+            value: "NUC.4.4",
+            label: "NUC.4.4"
         }];
     const nucleotidewordSizeItems = [
         {
@@ -1321,7 +1325,7 @@ function IpSequenceVariation() {
                             {searchAlgorithmValue && searchAlgorithmValue == 'kerr' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     {t("findAtleast")}&nbsp;&nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 <TextInput
                                     fullWidth={false}
                                     id="genePastPercentage"
@@ -1336,7 +1340,7 @@ function IpSequenceVariation() {
                                 />
                                 <Typography className={"float-left " + classes.seqText}>
                                     &nbsp;&nbsp;% {t("identityOver")} &nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 <SelectBox
                                     margin="normal"
                                     variant="outlined"
@@ -1352,7 +1356,7 @@ function IpSequenceVariation() {
                             {searchAlgorithmValue && searchAlgorithmValue == 'blast' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     {t("scoringMatrix")}&nbsp;&nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 {sequenceTypeValue == 'nucleotide' && <SelectBox
                                     margin="normal"
                                     variant="outlined"
@@ -1361,7 +1365,7 @@ function IpSequenceVariation() {
                                     value={scoringMatrixValue}
                                     items={nucleotideMatrixItems}
                                     className={"float-left"}
-                                    onChange={e=>setScoringMatrix(e.target.value)}
+                                    onChange={e => setScoringMatrix(e.target.value)}
                                 />
                                 }
                                 {sequenceTypeValue == 'protein' && <SelectBox
@@ -1372,12 +1376,12 @@ function IpSequenceVariation() {
                                     value={scoringMatrixValue}
                                     items={proteinMatrixItems}
                                     className={"float-left"}
-                                    onChange={e=>setScoringMatrix(e.target.value)}
+                                    onChange={e => setScoringMatrix(e.target.value)}
                                 />
                                 }
                                 <Typography className={"float-left " + classes.seqText}>
                                     &nbsp;&nbsp;{t("wordSize")} &nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 {sequenceTypeValue == 'nucleotide' && <SelectBox
                                     margin="normal"
                                     variant="outlined"
@@ -1386,7 +1390,7 @@ function IpSequenceVariation() {
                                     value={wordSizeValue}
                                     items={nucleotidewordSizeItems}
                                     className={"float-left " + classes.smallTextBox}
-                                    onChange={e=>setWordSize(e.target.value)}
+                                    onChange={e => setWordSize(e.target.value)}
                                 />
                                 }
                                 {sequenceTypeValue == 'protein' && <SelectBox
@@ -1397,13 +1401,13 @@ function IpSequenceVariation() {
                                     value={wordSizeValue}
                                     items={proteinwordSizeItems}
                                     className={"float-left " + classes.smallTextBox}
-                                    onChange={e=>setWordSize(e.target.value)}
+                                    onChange={e => setWordSize(e.target.value)}
                                 />
                                 }
                                 <div className={classes.blastMargin}>
                                     <Typography className={"float-left " + classes.seqText}>
                                         {t("expectCutOff")}&nbsp;&nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                     <TextInput
                                         fullWidth={false}
                                         id="expectCutoff"
@@ -1446,10 +1450,13 @@ function IpSequenceVariation() {
                                     error={formik.touched.fragmentStretch && Boolean(formik.errors.fragmentStretch)}
                                     helperText={formik.touched.fragmentStretch && formik.errors.fragmentStretch}
                                 />
-                                <Typography className={"float-left mt-2"}>
+                                {sequenceTypeValue && sequenceTypeValue == "protein" && <Typography className={"float-left mt-2"}>
                                     &nbsp;&nbsp;{t("aminoAcidWith")} &nbsp;&nbsp;
-                            </Typography>
-                            <TextInput
+                                </Typography>}
+                                {sequenceTypeValue && sequenceTypeValue == "nucleotide" && <Typography className={"float-left mt-2"}>
+                                    &nbsp;&nbsp;{t("nucleotidesWith")} &nbsp;&nbsp;
+                                </Typography>}
+                                <TextInput
                                     fullWidth={false}
                                     id="fragmentAminoAcid"
                                     name="fragmentAminoAcid"
@@ -1474,8 +1481,8 @@ function IpSequenceVariation() {
                             }
                         </Col>
                     </AccordionDetails>
-                    </Row>
-                    <Row>
+                </Row>
+                <Row>
                     <AccordionDetails className="appTextColor">
                         <Col md="12">
                             <Typography className={"float-left " + classes.seqText}>
@@ -1574,7 +1581,7 @@ function IpSequenceVariation() {
                                         onChange={() => setIsDocPubDate(!isDocPubDate)}
                                         checked={isDocPubDate}
                                     />
-                                   <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1704,7 +1711,7 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.patientDocInp && Boolean(formik.errors.patientDocInp)}
                                         helperText={formik.touched.patientDocInp && formik.errors.patientDocInp}
-                                        className={"float-left mx-4 "+ classes.mediumSizedTextBox}
+                                        className={"float-left mx-4 " + classes.mediumSizedTextBox}
                                         disabled={isPatientDoc ? false : true}
                                     />
                                     <Typography className={"float-left mt-2"}>
@@ -1747,7 +1754,7 @@ function IpSequenceVariation() {
                                                 name="nuc"
                                                 id={test.id}
                                                 checked={nucDb.includes(test.id)}
-                                                onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                 className={"absolutePosition " + classes.checkBox}
                                                 disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                 color="primary"
@@ -1779,7 +1786,7 @@ function IpSequenceVariation() {
                                                     name="nuc"
                                                     id={test.id}
                                                     checked={nucDb.includes(test.id)}
-                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                    onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                     color="primary"
@@ -1810,7 +1817,7 @@ function IpSequenceVariation() {
                                                     name="nuc"
                                                     id={test.id}
                                                     checked={nucDb.includes(test.id)}
-                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                    onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     disabled={sequenceTypeValue == "nucleotide" ? false : true}
                                                     color="primary"
@@ -1833,7 +1840,7 @@ function IpSequenceVariation() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseqvar"/>
+                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseqvar" />
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -1859,7 +1866,7 @@ function IpSequenceVariation() {
                                                     name="pro"
                                                     id={test.id}
                                                     checked={proDb.includes(test.id)}
-                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                    onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     disabled={sequenceTypeValue == "protein" ? false : true}
                                                     color="primary"
@@ -1891,7 +1898,7 @@ function IpSequenceVariation() {
                                                     name="pro"
                                                     id={test.id}
                                                     checked={proDb.includes(test.id)}
-                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                    onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     disabled={sequenceTypeValue == "protein" ? false : true}
                                                     color="primary"
@@ -1914,7 +1921,7 @@ function IpSequenceVariation() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseqvar"/>
+                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseqvar" />
                                     </AccordionDetails>
                                 </Accordion>
                             </div>

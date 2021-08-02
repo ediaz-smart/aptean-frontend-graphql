@@ -110,7 +110,8 @@ function ContactSupportErrorModal(props) {
                 <br></br>
                 <div className={classes.mainContent}>
                     <p>{props.errorContent}</p>
-                    <p className={classes.leftAlign}>{t("errorCodeIs")}{props.errorCode}</p>
+                    {props.errorCode !==<p className={classes.leftAlign}>{t("errorCodeIs")}{props.errorCode}</p>}
+                    {props.errorCode == "executeBiofacetCommand failed" && <p className={classes.leftAlign}>{t("probWithSearch")}</p>}
                     <p>
                         <spoan>{t("tryAgainOrContact")}</spoan>
                         <span>
