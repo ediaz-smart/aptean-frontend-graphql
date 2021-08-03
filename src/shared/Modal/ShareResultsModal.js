@@ -8,7 +8,11 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
-		borderBottom: "none !important",
+		borderBottom: 'none !important',
+		paddingTop:'11px',
+		paddingRight: '4px',
+		marginTop:'-7px',
+
 	},
 	footerDiv: {
 		padding: "0 30px",
@@ -50,7 +54,32 @@ const useStyles = makeStyles((theme) => ({
 	scrollList: {
 		height: '300px',
 		overflowX: 'scroll'
-	}
+	},
+	modalBoxContent :{
+		maxHeight: '675px',
+	},
+	modalClassContent:{
+		position: 'absolute',
+		width: '96%',
+		height: '86%',
+		top: '44%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
+	},
+	colorContainer:{
+		backgroundColor: 'gainsboro',
+		marginTop: '-33px',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		paddingBottom: '65px',
+		marginLeft: '7px',
+		marginRight: '7px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
 }));
 
 function ShareResultsModal(props) {
@@ -82,22 +111,27 @@ function ShareResultsModal(props) {
 			size="lg"
 			aria-labelledby="contained-modal-title-vcente"
 			centered
-			contentClassName="modalPromptContent"
+			contentClassName={classes.modalClassContent}
+			className={classes.modalBoxContent}
 		>
 			<Modal.Header
 				closeButton
-				className={classes.modalHeader + " appTextColor pt-4 pl-4 pb-0"}
+				className={classes.modalHeader }
 			>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
           </Modal.Title> */}
-				<h5>
-					<b>Share these Results</b>
-				</h5>
+			
+
 			</Modal.Header>
 			{/* <h5>Share these Results.</h5> */}
 			<Modal.Body className="appTextColor">
 				{/* <h5>{props.onMessage}</h5> */}
+
+				<div className={classes.colorContainer}>
+				<h5>
+				  &nbsp;<b>Share these Results</b>
+				</h5>
 				<div className={classes.ModalDesign}>
 					<p className="pl-2 pb-0">
 						Select one or more people to share these results with.
@@ -119,10 +153,11 @@ function ShareResultsModal(props) {
 
 
 					{/* <Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Share Results</Button>  */}
+					
 					<Button
 						color={selectData.length == 0 ? "default":"secondary"}
 						variant="contained"
-						className={"float-left text-capitalize mr-2 "+ (selectData.length == 0 ? 'cancelButtonDisable' : 'accountInfo')}
+						className={"text-capitalize mr-2 "+ (selectData.length == 0 ? 'cancelButtonDisable' : 'accountInfo')}
 						onClick={shareUserData}
 						disabled={selectData.length == 0 ? true:false}
 					>Share Results</Button>
@@ -132,6 +167,8 @@ function ShareResultsModal(props) {
 						color="secondary"
 						variant="contained"
 					>Cancel</Button>
+				
+				</div>
 				</div>
 			</Modal.Body>
 			{/* <Modal.Footer>

@@ -54,7 +54,7 @@ class Routes extends React.Component {
                     <React.Fragment>
                     <Route exact path="/home" title="" component={Home} />
                     <Route exact path="/changePassword" title="changePassMange" component={ChangePassword} />
-                    <Route exact path="/search" component={SearchResult} /> 
+                    <Route exact path="/search" title="savedsearchForm" component={SearchResult} /> 
                     <Route exact path="/recent" component={Recent} />
                     <Route exact path="/applicationPanel" component={ApplicationPanel} />
                     <Route exact path="/ipseqsearch" title="ipseqsearch" component={IpSequenceSearch} />

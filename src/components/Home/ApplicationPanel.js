@@ -33,7 +33,13 @@ const useStyles = makeStyles((theme) => ({
         // color: "#008EC5",
         // fontSize:"15px",
         // cursor: 'pointer',
-        wordWrap: 'break-word'
+      
+        // width: 80px;
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        display: 'block',
+        textOverflow: 'ellipsis'
+        // line-height: 55px;
     },
     p: {
         color: "#008EC5",
@@ -126,19 +132,19 @@ function ApplicationPanel() {
                                      {
                                         dbVal.type == 'GqWfIpSearch_launch'  ?  
                                         <Fragment>
-                                        <Link to={"/ipseqsearch/template/" +dbVal.name} >{dbVal.name}</Link> 
-                                        <br></br>
+                                        <Link  to={"/ipseqsearch/template/" +dbVal.name} >
+                                        <span className={classes.anchorTag}> {dbVal.name}</span>
+                                       
+                                        </Link> 
                                         </Fragment>
                                          :
                                          <Fragment>
-                                         <Link to={"/ipseqvariation/template/" +dbVal.name} >{dbVal.name}</Link>
-                                         <br></br>
+                                         <Link  to={"/ipseqvariation/template/" +dbVal.name} >
+                                         <span className={classes.anchorTag}> {dbVal.name}</span>
+                                         </Link>
                                         </Fragment>
-
                                     }
                                      </Fragment>
-              
-          
                                 )
                                }
                             })

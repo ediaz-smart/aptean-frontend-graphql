@@ -276,6 +276,7 @@ function SearchResults() {
           const dta = await result.response_content.templates;
           constrainTemplateData(dta);
            setSearchFormsData(dta);
+           
           
         }
     }

@@ -8,7 +8,10 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
-		borderBottom: 'none !important'
+		borderBottom: 'none !important',
+		paddingTop:'11px',
+		paddingRight: '4px',
+		marginTop:'-7px',
 	},
 	footerDiv:{
 		padding:'0 30px',
@@ -41,6 +44,34 @@ const useStyles = makeStyles((theme) => ({
 		color:'white'
 
 	},
+	modalBoxContent :{
+		maxHeight: '675px',
+	},
+	modalClassContent:{
+		position: 'absolute',
+		width: '96%',
+		height: '40%',
+		top: '30%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
+	},
+	colorContainer:{
+		backgroundColor: '#EEEEEE',
+		marginTop: '-36px',
+		fontFamily: 'Arial, Helvetica, sans-serif, Helvetica Neue',
+        fontsize: '14px',
+         fontWeight: '400',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		paddingBottom: '65px',
+		marginLeft: '7px',
+		marginRight: '7px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
 
 }));
 
@@ -61,7 +92,8 @@ function ShareResultsRemoveModal(props) {
 			size="lg"
 			aria-labelledby="contained-modal-title-vcente"
 			centered
-			contentClassName='modalPromptContent'
+			contentClassName={classes.modalClassContent}
+			className={classes.modalBoxContent}
 		>
 			<Modal.Header closeButton className={classes.modalHeader}>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
@@ -70,15 +102,17 @@ function ShareResultsRemoveModal(props) {
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
 				{/* <h5>{props.onMessage}</h5> */}
-				<h5>Are you sure you want to stop sharing this result set with {props.onMessage ? props.onMessage.full_name : ""}?</h5>
-                 <br></br>
-			
+				<div className={classes.colorContainer}>
+				<br></br>
+				<p>Are you sure you want to stop sharing this result set with  {props.onMessage ? props.onMessage.full_name : ""}?</p>
+                <br></br>
+				<br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.onHide} className={classes.buttonStyleCan}  color="default" >Cancel</Button>
 					<Button onClick={sendRemoveData} className='accountInfo' color="default" >Remove Share</Button> 
+					<Button onClick={props.onHide} className={classes.buttonStyleCan}  color="default" >Cancel</Button>
 
 				</div>
-				
+				</div>
 				
 			</Modal.Body>
 			{/* <Modal.Footer>

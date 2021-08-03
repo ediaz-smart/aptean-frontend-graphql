@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+import CloseIcon from '@material-ui/icons/Close';
 
 import TextInput from '../../shared/Fields/TextInput';
 import HomeService from '../../services/home'
@@ -73,6 +74,27 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 'larger'
         // marginBottom: "400px",
 
+    },
+    modalClassConEF:{
+        position: 'absolute',
+        width: '96%',
+        height: '55%',
+        top: '30%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        transform: 'translate(-50%, -50%)'
+    },
+    colorConDSIEF :{
+        backgroundColor: 'gainsboro',
+        marginTop: '-32px',
+        padding:'28px',
+        paddingTop: '28px',
+        paddingBottom: '65px',
+        marginLeft: '7px',
+        marginRight: '7px',
+        paddingRight: '10px',
+        borderRadius: '5px',
     },
     columnPadding: {
         paddingTop: '20px',
@@ -153,6 +175,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: 'auto',
         transform: 'translate(-50%, -50%)'
     },
+    modaltext:{
+       float:'right',
+       marginLeft:'724px'
+    },
     
     colorConDSI :{
         backgroundColor: 'gainsboro',
@@ -172,7 +198,7 @@ const useStyles = makeStyles((theme) => ({
 
     modalClassConMTF:{
         position: 'absolute',
-        width: '81%',
+        width: '96%',
         height: '62%',
         top: '30%',
         left: '50%',
@@ -1062,9 +1088,18 @@ function SearchManagement(props) {
                 size="lg"
                 aria-labelledby="contained-modal-title-vcente"
                 centered
-                contentClassName='modalPromptContent'
+                contentClassName={classes.modalClassConDSI}
+                className={classes.modalBoxContent}
+
             >
+                       <Modal.Header  className={classes.modalHeader}>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={classes.modaltext}>
+				<CloseIcon onClick={closeModal} />
+				</Link>
+			</Modal.Header>
+
                 <Modal.Body className="appTextColor">
+                <div className={classes.colorConDSI}>
                     <div className={(confirmContent ? 'd-block' : 'd-none')}>
                         <p className="mb-3"><b>{t('deleteSelItems')}</b></p>
                         <p className="mb-3">{t('deleteSelItemContent')}.<b>{t('deleteSelItemContent1')}</b>.</p>
@@ -1080,8 +1115,9 @@ function SearchManagement(props) {
                             <p className={"float-left ml-1"}>{t('termsConditionText')}</p>
                         </div>
                         <div className={classes.footerDiv + " float-right"}>
+                             <Button onClick={closeModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
+
                             <Button onClick={() => deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelItems')}</Button>
-                            <Button onClick={closeModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
                         </div>
                     </div>
                     <div className={"text-center " + (delLoaderContent ? 'd-block' : 'd-none')}>
@@ -1091,9 +1127,10 @@ function SearchManagement(props) {
                     <div className={(errorContent ? 'd-block' : 'd-none')}>
                         <p className="mb-3">{t('errorDeletTitle')}</p>
                         <p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
-                        <div className={classes.footerDiv + " float-right"}>
+                        <div className={classes.footerDivDSI + " float-right"}>
                             <Button onClick={closeModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
                         </div>
+                    </div>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -1102,9 +1139,20 @@ function SearchManagement(props) {
                 size="lg"
                 aria-labelledby="contained-modal-title-vcente"
                 centered
-                contentClassName='modalPromptContent'
+                contentClassName={classes.modalClassConEF}
+                className={classes.modalBoxContent}
+
             >
+                        {/* <Modal.Header closeButton className={classes.modalHeader}>
+              </Modal.Header> */}
+              <Modal.Header  className={classes.modalHeader}>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={classes.modaltext}>
+				<CloseIcon onClick={closeFolderModal} />
+				</Link>
+			</Modal.Header>
+
                 <Modal.Body className="appTextColor">
+                <div className={classes.colorConDSIEF}>
                     <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
                         <p className="mb-3"><b>{t('deleteSelFolder')}</b></p>
                         <div className="ml-4">
@@ -1132,8 +1180,9 @@ function SearchManagement(props) {
                             <p className={"float-left ml-1"}>{t('termsConditionText')}</p>
                         </div>
                         <div className={classes.footerDiv + " float-right"}>
-                            <Button onClick={() => deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelFolder')}</Button>
                             <Button onClick={closeFolderModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
+
+                            <Button onClick={() => deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelFolder')}</Button>
                         </div>
                     </div>
                     <div className={"text-center " + (delFolderLoaderContent ? 'd-block' : 'd-none')}>
@@ -1143,30 +1192,42 @@ function SearchManagement(props) {
                     <div className={(errorFolderContent ? 'd-block' : 'd-none')}>
                         <p className="mb-3">{t('errorDeleteFolderTitle')}</p>
                         <p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
-                        <div className={classes.footerDiv + " float-right"}>
+                        <div className={classes.footerDivDSI + " float-right"}>
                             <Button onClick={closeFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
                         </div>
+                    </div>
                     </div>
                 </Modal.Body>
             </Modal>
             <Modal
                 show={moveFolderModalShow}
-                size="md"
+                size="lg"
                 aria-labelledby="contained-modal-title-vcente"
                 centered
-                contentClassName='modalPromptContent'
+                contentClassName={classes.modalClassConMTF}
+                className={classes.modalBoxContent}
+
             >
+            <Modal.Header  className={classes.modalHeader}>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={classes.modaltext }>
+				<CloseIcon onClick={closeMoveFolderModal} />
+				</Link>
+			</Modal.Header>
+
                 <Modal.Body className="appTextColor">
-                    <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
+                <div className={classes.colorConMTF}>
+                    <div className={(confirmFolderContent ? 'd-block scrollMoveItem' : 'd-none')}>
                         <p className="mb-3"><b>{t('moveToFolder')}</b></p>
                         <p className="mb-3">{t('selFolderToMove')}</p>
                         <div className="mb-5 h-100">
                             <FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
                         </div>
-                        <div className={classes.footerDiv + " float-right"}>
-                            <Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true : false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('moveResult')}</Button>
-                            <Button onClick={closeMoveFolderModal} className={classes.loginSubmitCancel}  >{t('cancel')}</Button>
+                        <div className={classes.footerDivMTF + " float-right"}>      
+                        <Button onClick={closeMoveFolderModal} className={classes.loginSubmitCancel}  >{t('cancel')}</Button>
+    
+                           <Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true : false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('moveResult')}</Button>
                         </div>
+                    </div>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -1175,15 +1236,24 @@ function SearchManagement(props) {
                 size="lg"
                 aria-labelledby="contained-modal-title-vcente"
                 centered
-                contentClassName='modalPromptContent'
+                contentClassName={classes.modalClassContent}
+                className={classes.modalBoxContent}
+
             >
+              <Modal.Header  className={classes.modalHeader}>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={classes.modaltext }>
+				<CloseIcon onClick={closeFolderModal} />
+				</Link>
+			</Modal.Header>
                 <Modal.Body className="appTextColor text-center">
+                <div className={classes.colorContainer}>
                     <div>
                         <p className="mb-3">{t('folderNameNotAllowed')}</p>
                         <p className="mb-3">{t('plsTryAgain')}</p>
                     </div>
                     <div className={classes.footerDiv + " align-center"}>
                         <Button onClick={() => setAddFolderModalShow(false)} className="mr-2 accountInfo" color="primary" variant="contained">{t('ok')}</Button>
+                    </div>
                     </div>
                 </Modal.Body>
             </Modal>

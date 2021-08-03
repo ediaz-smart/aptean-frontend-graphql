@@ -118,6 +118,12 @@ export default function Header(props) {
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
+
+  
+    const routeToDocLink = () => {
+        console.log("SDAASDADSADSDAS");
+        window.location.assign('http://github.com');
+    };
     
     useEffect(() => {
 		(async () => {
@@ -176,11 +182,16 @@ export default function Header(props) {
             <MenuItem onClick={() => setModalShow(true)}>
                 <Button color="inherit"><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button>
             </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <Button color="inherit"><span className="appLink text-capitalize appTextFont" >{t('documentation')}</span></Button>
+            <MenuItem >
+            
+            {/* <a href='https://docs.genomequestlive.com/' className="appLink text-capitalize appTextFont"> {t('documentation')}</a> */}
+                <Button color="inherit">
+                <a href="https://docs.genomequestlive.com/"  className="appLink text-capitalize appTextFont" target="_blank" >{t('documentation')}</a>
+                </Button>
             </MenuItem>
         </Menu>
     );
+    // https://docs.genomequestlive.com/
     return (
 
         <div className={classes.grow}>
@@ -227,7 +238,11 @@ export default function Header(props) {
                             // onMessage={errorMessage}
                         />
                         <span className={classes.headerPipe}>|</span>
-                        <Button color="inherit"><span className="appLink text-capitalize appTextFont" >{t('documentation')}</span></Button>
+                        <Button color="inherit">
+                        <a href="https://docs.genomequestlive.com/" target="_blank" className="appLink text-capitalize appTextFont" >{t('documentation')}</a>
+
+                        {/* <span className="appLink text-capitalize appTextFont" >{t('documentation')}</span> */}
+                        </Button>
 
                     </div>
                     <div className={classes.sectionMobile}>

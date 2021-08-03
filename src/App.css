@@ -127,6 +127,11 @@
     text-transform: none !important;
 }
 
+.vl {
+    border-left: 6px solid #a2a2a3;
+    height: 200px;
+}
+
 .cancelButtonDisable {
     background-color: #EEEEEE !important;
     border: 2px solid #a2a2a3 !important;
@@ -137,6 +142,16 @@
     margin-top: 4px !important;
     color: #777777 !important;
     box-shadow: none !important;
+}
+
+.scrollMoveItem {
+    height: 234px;
+    overflow: scroll;
+}
+
+.scaleContent {
+    float: right !important;
+    margin: 10px
 }
 
 .cancelButtonAI {

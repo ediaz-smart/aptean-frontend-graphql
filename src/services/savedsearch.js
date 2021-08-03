@@ -73,7 +73,7 @@ function hideLoader() {
            
             if(data && count)
             {
-                 if(count == 1)
+                 if(count === 1)
                 {
                     const templateName = data[0].name;
                     const templateType = data[0].map && data[0].map.workflow_type ? data[0].map.workflow_type : 'GqWfIpSearch';
@@ -84,7 +84,9 @@ function hideLoader() {
                     let apiurls = 'do=gqtemplate.deletemulti&format=json&';
                     let dataMapping = [];
                     data.forEach(item =>{
-                        const renamedUrl = 'template_name['+item.name+']='+item.map.workflow_type;
+                    
+                        const tempNameCheckVal = item.map.workflow_type == 'GqWfIpSearch' ? 'GqWfIpSearch_launch' : 'GqWfVMIpSearch_launch';
+                        const renamedUrl = 'template_name['+item.name+']='+tempNameCheckVal;
                         dataMapping.push(renamedUrl);
                       
                     });

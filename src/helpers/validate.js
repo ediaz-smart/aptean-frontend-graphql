@@ -6,6 +6,7 @@ import { number } from "yup/lib/locale";
 const Validate = {
     LoginValidate,
     ForgotValidate,
+    NewPassValidate,
     IpSeqSearchValidate,
     InformationDataValidate,
     ChangePasswordValidate,
@@ -16,12 +17,32 @@ function LoginValidate() {
     const { t, i18n } = useTranslation('common');
     const validationSchema = yup.object({
         userName: yup
-            .string(t('enteruserName'))
-            .required(t('userNameReq')),
+            .string(t('enterconfirmPassword'))
+            .required(t('confirmPasswordReq')),
         password: yup
             .string(t('enterPass'))
             // .min(8, t('passMinChar'))
             .required(t('passwordReq')),
+    });
+    return validationSchema;
+}
+function NewPassValidate() {
+    const { t, i18n } = useTranslation('common');
+    const validationSchema = yup.object({
+        newPassword: yup
+            .string(t('enternewPassword'))
+            .min(9, 'Password is too short - should be 9 chars minimum.')
+            .matches("^(?=.*[a-z])", 'Password should contain at least one lowercase letter.')
+            .matches("^(?=.*[A-Z])", 'Password should contain at least one uppercase letter.')
+            .matches("^(?=.*[0-9])", 'Password should contain at least one numbers.')
+            .required(t('newPasswordReq')),
+        confirmPassword: yup
+            .string(t('enterconfirmPassword'))
+            .min(9, 'Password is too short - should be 9 chars minimum.')
+            .matches("^(?=.*[a-z])", 'Password should contain at least one lowercase letter.')
+            .matches("^(?=.*[A-Z])", 'Password should contain at least one uppercase letter.')
+            .matches("^(?=.*[0-9])", 'Password should contain at least one numbers.')
+            .required(t('confirmPasswordReq')),
     });
     return validationSchema;
 }

@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal'
 import ReactHtmlParser from 'react-html-parser';
-
+import CloseIcon from '@material-ui/icons/Close';
 import UtilsService from '../../helpers/utils';
 import seqSearchImg from '../../assets/image/seqSearch.png';
 import resultshareImg from '../../assets/image/resultshare.png';
@@ -31,6 +31,9 @@ import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
 import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
+
+
+
 
 
 
@@ -65,7 +68,109 @@ const useStyles = makeStyles((theme) => ({
     },
     alertSelect:{
         width:'70%'
-    }
+    },
+    loginSubmitCancel:{
+        backgroundColor: '#0182C5',
+        borderColor: '#1F4E79',
+        border: '2px solid #1F4E79' ,
+        color:'white',
+        margin: '4px',
+        textTransform: 'capitalize',
+        '&:hover': {
+          backgroundColor: '#0182C5',
+          boxShadow: 'none',
+        },
+       },
+    cancelButtonModal:{
+        backgroundColor: '#EEEEEE',
+        border: '2px solid #a2a2a3',
+        float: 'left',
+        textTransform: 'none',
+        margin: '4px',
+        textTransform: 'none',
+        marginTop: '4px',
+        color: '#777777',
+        boxShadow: 'none' 
+    },
+    modalHeader: {
+		borderBottom: 'none !important',
+		paddingTop:'14px',
+		paddingRight: '1px',
+		marginTop:'-7px',
+		display: "block !important"
+	},
+	footerDiv:{
+		padding:'0 30px',
+		marginTop:'-5px',
+		marginRight: '-10px',	
+	},
+	contentPadding: {
+		padding: "45px !important"
+	},
+	modalBoxContent :{
+		maxHeight: '675px',
+	},
+    modalClassContentDSI:{
+		position: 'absolute',
+		width: '96%',
+		height: '42%',
+		top: '30%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
+	},
+	colorContainerDSI:{
+		backgroundColor: '#EEEEEE',
+		marginTop: '-32px',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		// paddingBottom: '75px',
+		paddingBottom: '75px',
+		marginLeft: '10px',
+		marginRight: '10px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
+	modalClassContent:{
+		position: 'absolute',
+		width: '96%',
+		height: '42%',
+		top: '30%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		transform: 'translate(-50%, -50%)'
+	},
+	colorContainer:{
+		backgroundColor: '#EEEEEE',
+		marginTop: '-32px',
+		// marginLeft: 0px;
+		paddingTop: '28px',
+		// paddingBottom: '75px',
+        textAlign: 'left',
+		paddingBottom: '53px',
+		marginLeft: '10px',
+		marginRight: '10px',
+		paddingRight: '10px',
+		borderRadius: '5px',
+
+	},
+	buttonStyle:{
+		float:'right',
+		textTransform: 'none',
+		margin:'4px',
+		color:'white',
+		backgroundColor:'##DB862D !important',
+        border: '2px solid ##DB862D !important',
+
+	},
+	bodyPadding: {
+		padding: "13px"
+	}
+
+    
 }));
 const columns = [
     {
@@ -1098,8 +1203,20 @@ function SearchResultSequence(props) {
                             />
                         </Col> */}
                         <Col lg="12" md="12" className={"mt-3 px-5" + (searchHistoryData.length > 0 && (userInfo && userInfo.current_user.gq_user_id === gqUserId) ? ' d-block' : ' d-none')} md="6">
-                            <Button  disabled={disableDelete}  className={"mr-2 " + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit" onClick={(e)=>deleteSearch('single')}>{t('deleteSelected')}</Button>
-                            <Button  onClick={(e)=>deleteSearch('all')} className="mr-2 cancelButtonModal" type="submit">{t('delPrevResult')}</Button>
+                            {
+                                disableDelete ? 
+                                <Button    className={classes.cancelButtonModal}  >{t('deleteSelected')}</Button>
+                                :
+                                <Button    className='accountInfo float-left  scaleContent'  type="submit" onClick={(e)=>deleteSearch('single')}>{t('deleteSelected')}</Button>
+
+
+
+                            } 
+                            
+                            <Button  onClick={(e)=>deleteSearch('all')} className="float-left  accountInfo" type="submit">{t('delPrevResult')}</Button>
+
+                            {/* <Button  disabled={disableDelete}  className={ 'float-left' + (disableDelete ? classes.cancelButtonModal : 'accountInfo')} type="submit" onClick={(e)=>deleteSearch('single')}>{t('deleteSelected')}</Button> */}
+
 
                         </Col>
                     </Row>
@@ -1145,14 +1262,22 @@ function SearchResultSequence(props) {
             </Row>
             <Modal
 				show={alertSettingModal}
-				size="md"
+				size="lg"
 				aria-labelledby="contained-modal-title-vcente"
 				centered
-				contentClassName='modalPromptContent'
-			>
-				<Modal.Body className="appTextColor">
+                contentClassName={classes.modalClassContentDSI}
+			className={classes.modalBoxContent}
+		>
+			<Modal.Header  className={classes.modalHeader}>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}>
+				<CloseIcon onClick={()=>setAlertSettingModal(!alertSettingModal)} />
+				</Link>
+			</Modal.Header>
+            <Modal.Body className={"text-center appTextColor" + classes.bodyPadding}>
+			<div className={classes.colorContainerDSI}>
 					<label className="mb-3 mt-2 float-left">{t('alertSetting')}</label>
 						{/* <div className="mb-5 h-100"> */}
+                            
                             <SelectBox
                                 margin="normal"
                                 variant="outlined"
@@ -1164,20 +1289,32 @@ function SearchResultSequence(props) {
                                 className={"float-left ml-3"+' '+(classes.alertSelect)}
                             />
 						{/* </div>  */}
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
 						<div className={classes.footerDiv + " float-right"}>
-							<Button onClick={updateAlertSettings}  className="mr-2 accountInfo" >{t('updateAlert')}</Button>
-							<Button onClick={()=>setAlertSettingModal(!alertSettingModal)} className="cancelButtonModal mr-2" >{t('cancel')}</Button>
+							<Button onClick={updateAlertSettings}  className="accountInfo" >{t('updateAlert')}</Button>
+							<Button onClick={()=>setAlertSettingModal(!alertSettingModal)} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
 						</div>
+                        </div>
 				</Modal.Body>
 			</Modal>
             <Modal
                 show={modalShow}
-                size="md"
+                size="lg"
                 aria-labelledby="contained-modal-title-vcente"
                 centered
-                contentClassName='modalPromptContent'
+                contentClassName={classes.modalClassContent}
+			className={classes.modalBoxContent}
             >
-                <Modal.Body className="appTextColor">
+            <Modal.Header  className={classes.modalHeader}>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}>
+				<CloseIcon onClick={closeModal} />
+				</Link>
+			</Modal.Header>
+            <Modal.Body className={"text-center appTextColor" + classes.bodyPadding}>
+            <div className={classes.colorContainer}>
                     <div className={(confirmContent ? 'd-block' : 'd-none')}>
                         <p className="mb-3"><b>{t('deleteSelItems')}</b></p>
                         <p className="mb-3">{t('deleteSelItemContent')}</p>
@@ -1194,7 +1331,7 @@ function SearchResultSequence(props) {
                         </div>
                         <div className={classes.footerDiv + " float-right"}>
                             <Button onClick={() => deleteConfirm()}  disabled={!termsDisable} className={"mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} >{t('deleteSelItems')}</Button>
-                            <Button onClick={closeModal} className="cancelButtonModal mr-2">{t('cancel')}</Button>
+                            <Button onClick={closeModal} className={classes.loginSubmitCancel}>{t('cancel')}</Button>
                         </div>
                     </div>
                     <div className={"text-center " + (delLoaderContent ? 'd-block' : 'd-none')}>
@@ -1207,6 +1344,7 @@ function SearchResultSequence(props) {
                         <div className={classes.footerDiv + " float-right"}>
                             <Button onClick={closeModal} className="mr-2 accountInfo" >{t('close')}</Button>
                         </div>
+                    </div>
                     </div>
                 </Modal.Body>
             </Modal>

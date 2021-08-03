@@ -12,45 +12,48 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
+import ClientCaptcha from "react-client-captcha"
+import "react-client-captcha/dist/index.css"
 import { Link, useHistory } from 'react-router-dom';
 import PasswordService from '../../services/forgotpassword'
 import { supportMail } from '../../config';
 import Footer from '../../shared/footer';
 
+
 const useStyles = makeStyles((theme) => ({
-    loginDiv: {
+
+   
+    passwordRecoverDiv:{
+        padding: '15px 25px 20px',
         border: '2px solid #bfb4b4',
-        borderRadius: '6px',
-        padding: '20px',
-        height: '100%'
+        borderRadius: '6px'
     },
     navbarClass :{
-        marginTop: '60px'
-    }
-    ,
-    forgotLink: {
-        marginTop: '10px',
-        a: {
-            color: '#008EC5'
-        }
+        marginTop: '0px'
     },
-    titleContent :{
-        color: '#505F5F',
-        margin: '5px 0 40px',
-        fontWeight: '600'
-    },
-    loginLogoDiv: {
+    passwordContents:{
+        marginTop: '82px',
+        marginLeft: '28px',
+        padding:'10px',
+        fontSize:'14px',
+        backgroundColor: 'gainsboro'
+
+      },
+      loginSubmitCancel:{
+        backgroundColor: '#0182C5',
+        borderColor: '#1F4E79',
+        border: '2px solid #1F4E79' ,
+        color:'white',
+        textTransform: 'capitalize',
+        '&:hover': {
+          backgroundColor: '#0182C5',
+          boxShadow: 'none',
+        },
+       },
+    loginLogoDiv:{
         position: 'relative',
         left: '0px',
         width: '200px'
-    },
-    root: {
-        "& .Mui-error": {
-            fontStyle:'italic'
-        },
-        "& .MuiFormHelperText-root": {
-            fontStyle:'italic'
-        }
     },
     '@media (min-width: 768px)' : {
         loginLogoDiv:{
@@ -62,35 +65,9 @@ const useStyles = makeStyles((theme) => ({
     '@media (min-width: 1024px)' : {
         loginLogoDiv:{
             position: 'relative',
-            left: '6px',
+            left: '80px',
             width:'100%'
         }
-    },
-    passwordContents:{
-        lineHeight: '22px',
-        marginTop: '100px',
-        marginLeft: '25px',
-        padding:'15px',
-        fontSize:'14px',
-        backgroundColor: 'gainsboro'
-
-    },
-    conType:{
-        marginLeft: '30px',
-        fontSize:'14px',
-    },
-    buttonAlignment :{
-        float:'right',
-        text :'capitalize',
-        marginRight: '16px'
-    },
-    straightLine:{
-        borderLeft: '1px solid #d8d4d4',
-        height: '340px'
-    },
-    columnDesign:{
-        flexGrow :0,
-        marginLeft:'25px',
     }
 }));
 
@@ -98,7 +75,6 @@ function NewPassword() {
     const classes = useStyles();
     const {t, i18n} = useTranslation('common');
     const [errorMsg,setErrorMsg] = useState(0);
-
     // const [retryState, setRetryState] = useState(false);
     const [passwordForm, setPasswordForm] = useState(true);
     const [verifycaptchaCode, setcaptchaCode] = useState(); 
@@ -106,95 +82,102 @@ function NewPassword() {
     const history = useHistory();
      const formik = useFormik({
         initialValues: {
-            userName: '',
-            captchaCode: '',
+            newPassword: '',
+            confirmPassword: '',
         },
-        validationSchema: Validate.ForgotValidate(),
+        validationSchema: Validate.NewPassValidate(),
          onSubmit: async(values) => {
             // setErrorMsg(0);
             
+            
         },
     });
-    function updateCode(captchaCode)
-    {    
-        setcaptchaCode(captchaCode);
-        console.log(captchaCode,"captchaCode");
-    }
+   
     // reset login status
     useEffect(() => {
         //dispatch(userActions.logout()); 
     }, []);
 
-    
+    const passwordVlaue = formik.values.newPassword;
+    const passwordCnVlaue = formik.values.confirmPassword;
+    console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
+    const passValCheck = passwordVlaue.length; 
+    const passValCheck1 = passwordCnVlaue.length; 
+
     return (
-        <div >
         <Container className="mt-100">
+            
             <Row className={classes.loginLogoDiv}>
-                <Col md="3" className="p-0 ml-4">
-                    <Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link>
-                </Col>
+                <Col sm="12" md="3" className="p-0 ml-4"><Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link></Col>
+
             </Row>
             <Row className="justify-content-md-center">
-                <Col sm="12" md="5" className="mb-5 mt-4" className={(passwordForm ? 'd-block' : 'd-none')}>
-            
-                <form name="loginForm" onSubmit={formik.handleSubmit} className={classes.loginDiv+" content"}>
-                <h5 className={classes.titleContent}>New Password</h5>
-                    <div className="form-group">
-                        <TextInput 
-                        fullWidth
-                        id="userName"
-                        name="userName"
-                        label={t('userName')}
-                        variant="outlined"
-                        value={formik.values.userName}
-                        onChange={formik.handleChange} 
-                        error={formik.touched.userName && Boolean(formik.errors.userName)}
-                        helperText={formik.touched.userName && formik.errors.userName}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <TextInput 
-                            fullWidth
-                            variant="outlined"
-                            id="password"
-                            name="password"
-                            label={t('password')}
-                            type="password"
-                            value={formik.values.password}
-                            onChange={formik.handleChange}
-                            error={formik.touched.password && Boolean(formik.errors.password)}
-                            helperText={formik.touched.password && formik.errors.password}
-                        />
-                    </div>
-                    <br></br>
-                    <div className="form-group">
-                    <Button color="default" variant="contained" className={classes.buttonAlignment} type="submit">
-                        Save New Password
-                        </Button>
-                        <Button color="default" variant="contained" className={classes.buttonAlignment} type="submit">
-                         Cancel
-                        </Button>
-                        <br></br>
-                    </div>
-                </form>
-                <div className={'p-4 ' +(passwordForm ? 'd-none' : 'd-block')}>
+                {/* <Col sm="12" md="6" className="loginDiv"> */}
+                <Col sm="12" md="5" className={'mb-5 mt-4 '+classes.passwordRecoverDiv}>
+                    <form name="passwordForm" onSubmit={formik.handleSubmit} 
+                    onKeyDown={(e) => {
+                      
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                        }
+                     }}
+                     className={(passwordForm ? 'd-block' : 'd-block')}>
 
-                            <h5>{t('pwdRecovery')}</h5>
-                            <br />
-                            <p>{t('thankYou')}</p>
-                            <p>{t('loginInfoText')}</p>
-                            <p>{t('pleaseContactText1')} <a href={"mailto:"+supportMail}>{supportMail}</a> {t('pleaseContactText2')}</p>
-                   </div>
-                <br></br>
+                        <h5 className="loginTitle">New Password</h5>
+                        {errorMsg == 1 ? <h6 className="loginFailedTitle">The code was incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> : errorMsg == 3 ? <h6 className="loginFailedTitle">Invalid username</h6>:'' }
+                        <br></br>
+                        <div className="form-group">
+                            <TextInput 
+                                fullWidth
+                                id="newPassword"
+                                name="newPassword"
+                                label={t('newpass')}
+                                variant="outlined"
+                                value={formik.values.newPassword}
+                                onChange={formik.handleChange} 
+                                error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
+                                helperText={formik.touched.newPassword && formik.errors.newPassword}
+                            />
+                        </div>
+                        <div className="form-group">
+                            
+                            <TextInput
+                                fullWidth
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                label={t('renpass')}
+                                variant="outlined"
+                                value={formik.values.confirmPassword}
+                                onChange={formik.handleChange}
+                                error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                                helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+                            />
+                        </div>
+                        <br></br>
+                        <div className="form-group">
+                        <Button variant="contained" className={classes.loginSubmitCancel} >{t('cancel')}</Button>
+                            {passValCheck != 0  && passValCheck1 != 0  ?
+                                <Button variant="contained" className={classes.loginSubmitButton} type="submit">{t('cpsavenewpass')}</Button> :
+                                <Button variant="contained" className='cancelButtonCP'  disableRipple={true}>{t('cpsavenewpass')}</Button> 
+                             }
+                      
+                       
+                        </div>
+                    </form>
+                  
                 </Col>
-                 <Col className={classes.columnDesign} >
-                 <div className={classes.straightLine} />
-                 </Col>
-                <Col sm="12" md="6">
+                
+                
+                <Col sm="12" md="6" className="ml-3">
+             
+
                 <div className={classes.passwordContents}>
+                      <div >
                          <p>{t('cpconentstitle')}</p>
                          <h6><strong>{t('cppassrules')}</strong></h6>
-                         <div className={classes.conType}>
+                      </div>
+                     
+                       <div className={classes.conType}>
                         <p>{t('cpsubtitle')}</p>
                                <ul>
                                 <li>{t('cprule1')}</li>
@@ -203,16 +186,16 @@ function NewPassword() {
                                 <li>{t('cprule4')}</li>
                                 </ul>
                     </div>
-                 </div>
-                    
+                      
+
+                  </div>
                 </Col>
             </Row>
-        </Container>
-        <div className={classes.navbarClass}>
+            <div className={classes.navbarClass}>
             <Footer />
         </div>
-        </div>
-      
+        </Container>
+
     );
 }
 
