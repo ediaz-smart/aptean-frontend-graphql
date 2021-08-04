@@ -162,13 +162,17 @@ async function addFolder(parentFolderId,folderName,history) {
         console.error(error);
     }
 }
-async function getSearchResultSet(search,history) {
+async function getSearchResultSet(search,history, start, stop) {
     try {
         
         let searchResultSet = url.searchResultSet
         searchResultSet = searchResultSet.replace('**', search);
+        let urlParam = searchResultSet;
+        if(start && stop) {
+            urlParam  = urlParam+"&start="+start+"&stop="+stop;
+        }
         showLoader();
-        return await get(searchResultSet,history)
+        return await get(urlParam,history)
         .then((response) => {
             hideLoader();
             return response;

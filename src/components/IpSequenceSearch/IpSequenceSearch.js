@@ -1217,6 +1217,7 @@ function IpSeqSearch() {
                 modalCallBack={handleErrorModal}
                 subjectText={subjectText}
                 errorContent={errorHeading}
+                isWarning={isWarningReturned}
             />
             <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
                 <Row>

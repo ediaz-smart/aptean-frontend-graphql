@@ -19,7 +19,8 @@ const useStyles = makeStyles({
     }
 });
 
-export default function CustomPagination({ count, showFirstButton, showLastButton, recordPerPage, changePage, className }) {
+export default function CustomPagination({ count, showFirstButton, showLastButton, recordPerPage, changePage, className, defaultPage, page }) {
+    console.log('defaultPage', defaultPage, 'page', page)
     const classes = useStyles();
     const { t, i18n } = useTranslation('common');
     let recrdperPage = Math.ceil(count / recordPerPage);
@@ -38,7 +39,9 @@ export default function CustomPagination({ count, showFirstButton, showLastButto
             count={recrdperPage}
             onChange={changePage}
             showFirstButton={showFirstButton}
-            showLastButton={showLastButton} 
+            showLastButton={showLastButton}
+            defaultPage={defaultPage}
+            page={page}
             />
     )
 }

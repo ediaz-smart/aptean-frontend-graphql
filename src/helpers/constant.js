@@ -7,7 +7,9 @@ const Constant = {
         "GqWfSeqSearch": "Blast Search",
         "GqWfAlndbCopy": "Save Filtered Result",
         "DlPhysicalSeqdb": "Sequence Database",
-        "DlVirtualSeqdb": "Sequence Database"
+        "DlVirtualSeqdb": "Sequence Database",
+        "DlWorkflow": "Sequence",
+        "DlFolder": "Folder"
         //"GqWfSeqSearch": "Blast Search"
     },
     folderRestrictNames:["Recent Search Results","My Data",'Reference Data','Data Shared With Me','Raw Uploaded Files','Search Folders'],

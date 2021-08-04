@@ -110,9 +110,10 @@ function ContactSupportErrorModal(props) {
                 <br></br>
                 <div className={classes.mainContent}>
                     <p>{props.errorContent}</p>
-                    {props.errorCode !==<p className={classes.leftAlign}>{t("errorCodeIs")}{props.errorCode}</p>}
+                    {!props.isWarning && props.errorCode !== "executeBiofacetCommand failed" && <p className={classes.leftAlign}>{t("errorCodeIs")}{props.errorCode}</p>}
                     {props.errorCode == "executeBiofacetCommand failed" && <p className={classes.leftAlign}>{t("probWithSearch")}</p>}
                     <p>
+                        {props.isWarning && props.errorCode !== "executeBiofacetCommand failed" && <p className={classes.leftAlign}>{props.errorCode}</p>}
                         <spoan>{t("tryAgainOrContact")}</spoan>
                         <span>
                             <a className={"appTextFont appLink"} href={mailUrl} target="_blank" rel="noopener noreferrer">{supportMail}</a>

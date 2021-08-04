@@ -317,6 +317,49 @@ const columns = [
     }
 ];
 
+const searchColumns = [
+    {
+        name: "Name",
+        selector: "name",
+        center: true,
+        cell: row => <div data-tag="allowRowEvents"><div style={{ textAlign: 'left' }}>{row.name}</div></div>,
+
+    },
+    {
+        name: " ",
+        selector: "icon",
+        center: true,
+        width: "5%"
+        // cell: row => <div style={{ width: '5px' }}>{row.icon}</div>,
+
+    },
+    {
+        name: "Description",
+        selector: "description",
+        center: true
+    },
+    {
+        name: "Owner",
+        selector: "owner",
+        center: true,
+        cell: row => <div data-tag="allowRowEvents"><div style={{ textAlign: 'left' }}>{row.owner}</div></div>,
+
+    },
+    {
+        name: "Location",
+        selector: "location",
+        center: true,
+        cell: row => <div data-tag="allowRowEvents"><div style={{ textAlign: 'left' }}>{row.location}</div></div>,
+    },
+    {
+        name: "Update Time",
+        selector: "updateTime",
+        center: true,
+        cell: row => <div data-tag="allowRowEvents"><div style={{ textAlign: 'left' }}>{row.updateTime}</div></div>,
+
+    }
+];
+
 const isIndeterminate = indeterminate => indeterminate;
 const selectableRowsComponentProps = { indeterminate: isIndeterminate, color: 'primary' };
 var lookup = {}
@@ -365,6 +408,8 @@ function SearchManagement(props) {
     // Get Parent Object for display in delete popup
     const [parentTreeObj,setParentTreeObj] = useState([]);
 
+    const [isSearchDone, setIsSearchDone] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     
     //Pagination
 
@@ -498,7 +543,7 @@ function SearchManagement(props) {
             // toast.error('Unable to Delete');
         }
     }
-    async function getDefaultSearchResult(type, id, start, stop) {
+    async function getDefaultSearchResult(type, id, start, stop, isSearch) {
         let tempArr = [];
         console.log('pagesize', pageCount)
         // setSearchResultData([]);
@@ -512,7 +557,7 @@ function SearchManagement(props) {
 
             }
         } else {
-            if (id) {
+            if (id && !isSearch) {
                 const result = await SearchManagementService.getFolderData(id, history, start, stop);
                 if (result && result.response_content) {
                     setFolderResultCount(result.response_content.totalcount);
@@ -521,6 +566,19 @@ function SearchManagement(props) {
                         tempArr = await getSearchDataArr(result, 'searchfolder');
                         console.log('inside folder', folderResultCount)
                     }
+                }
+            } else if(isSearch){
+                const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history, start, stop);
+                if (getSearchResp && getSearchResp.response_content) {
+                    setFolderResultCount(getSearchResp.response_content.totalcount);
+                    if (getSearchResp.response_content.results.length > 0) {
+                        // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
+                        tempArr = await getSearchResultArr(getSearchResp, 'searchResults');
+                        console.log('inside folder', tempArr)
+                    }
+                    // setSearchResultData(tempArr);
+                    // setDefaultTitle(`All data which contains: "${searchResSet}"`);
+                    // setDefaultTitleId('searchResult');
                 }
             }
 
@@ -649,6 +707,26 @@ function SearchManagement(props) {
         })
         return tempArr;
     }
+    async function getSearchResultArr(data) {
+        let tempArr = [];
+        let resultData = data.response_content.results;
+        resultData.forEach(datas => {
+            let tempObj = datas;
+            // tempObj.description = datas.text_label;
+            tempObj['type'] = Constant['searchType'][datas.class] ? Constant['searchType'][datas.class] : datas.class;
+            tempObj.name = datas.text_label;
+            tempObj.icon = <Fragment>
+            {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
+            {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>;
+            tempObj.description = datas.description;
+            tempObj.owner = datas._owner_full_name;
+            tempObj.location = datas._absolute_path;
+            tempObj.updateTime = datas.update_time;
+            tempArr.push(tempObj);
+        });
+        console.log('dataArr', tempArr)
+        return tempArr;
+    }
     async function getFolderResultData() {
         const folderData = await SearchManagementService.getProjectFolders(history);
         if (folderData && folderData.response_content) {
@@ -706,7 +784,10 @@ function SearchManagement(props) {
         setDefaultTitleId('')
         getDefaultSearchResult('defaultText', '');
         setShowNewFolder(false);
-
+        setIsSearchDone(false);
+        setSearchResSet('');
+        setClearCheckedRow(!clearCheckedRow);
+        setCurrentPage(1);
     }
     // const deleteRecord = () => {
     //  console.log(deleteRecord,'deleteRecord');
@@ -777,7 +858,9 @@ function SearchManagement(props) {
 
             setDisableFolderDelete(true);
         }
-
+        setIsSearchDone(false);
+        setSearchResSet('');
+        setCurrentPage(1);
         // }, 1000);
     };
     
@@ -823,7 +906,12 @@ function SearchManagement(props) {
         if (getResponse.response_status == 0) {
             setClearCheckedRow(!clearCheckedRow);
             // if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
-            getDefaultSearchResult('folder', defaultTitleId);
+            if (defaultTitle === 'Recent Search Results') {
+                    getDefaultSearchResult('defaultText', '');
+            } else {
+                    getDefaultSearchResult('folder', defaultTitleId);
+                }
+            // getDefaultSearchResult('folder', defaultTitleId);
             getFolderResultData();
             toast.success('Folder Moved Successfully');
             // }
@@ -871,7 +959,7 @@ function SearchManagement(props) {
         e.preventDefault();
         // console.log(data,'data');
         if (data) {
-            setDefaultTitle(data.description);
+            setDefaultTitle(isSearchDone ? data.text_label : data.description);
             setDefaultTitleId(data.id);
             let infoFId = [];
             if (infoFolderIds && infoFolderIds.length == 0) {
@@ -884,6 +972,7 @@ function SearchManagement(props) {
 
 
             getDefaultSearchResult('folder', data.id);
+            setIsSearchDone(false);
             // getFolderResultData();
         }
 
@@ -893,8 +982,24 @@ function SearchManagement(props) {
         // Enter or Click
         if (e.keyCode == 13 || e.type == "click") {
             console.log(searchResSet, 'searchResSet');
+            let tempArr = [];
             if (searchResSet) {
-                const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history);
+                setIsSearchDone(true);
+                let start = 1;
+                let stop = pageCount;
+                const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history, start, stop);
+                if (getSearchResp && getSearchResp.response_content) {
+                    setFolderResultCount(getSearchResp.response_content.totalcount);
+                    if (getSearchResp.response_content.results.length > 0) {
+                        // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
+                        tempArr = await getSearchResultArr(getSearchResp, 'searchResults');
+                        console.log('inside folder', tempArr)
+                    }
+                    setSearchResultData(tempArr);
+                    setDefaultTitle(`All data which contains: "${searchResSet}"`);
+                    setDefaultTitleId('searchResult');
+                    setCurrentPage(1);
+                }
                 // console.log(getSearchResp,'getSearchResp');
             }
 
@@ -921,12 +1026,13 @@ function SearchManagement(props) {
         console.log(page, 'page');
         let start, stop;
         if (page) {
-            start = ((page - 1) * 10) + 1;
-            stop = page * 10;
+            start = ((page - 1) * pageCount) + 1;
+            stop = page * pageCount;
             // start= page+1;
             // stop =page+2;
+            setCurrentPage(page)
         }
-        getDefaultSearchResult('folder', defaultTitleId, start, stop);
+        getDefaultSearchResult('folder', defaultTitleId, start, stop, isSearchDone);
     }
     useEffect(() => {
         // (async () => {
@@ -981,6 +1087,7 @@ function SearchManagement(props) {
                                 }}
                                 onChange={(e) => setSearchResSet(e.target.value)}
                                 onKeyDown={getsearchResultSet}
+                                value={searchResSet}
                             />
                         </div>
                     </Col>
@@ -1037,7 +1144,8 @@ function SearchManagement(props) {
                 <Col md="9">
                     <h6 className="appTextColor mb-4"><b><img src={FolderIcon} /> <span className={classes.projectTitle}>{defaultTitleId ? defaultTitle : 'Recent Search Results'}</span></b></h6>
                     <DataTable
-                        columns={columns}
+                        columns={isSearchDone ? searchColumns : columns}
+                        // columns={columns}
                         data={searchResultData}
                         defaultSortField="date"
                         defaultSortAsc={false}
@@ -1057,9 +1165,9 @@ function SearchManagement(props) {
                         clearSelectedRows={clearCheckedRow}
 
                     />
-                    {defaultTitle && defaultTitle != "Recent Search Results" && <Row>
+                    {defaultTitle && defaultTitle != "Recent Search Results" && searchResultData.length > 0 && <Row>
                     <Col className={'d-flex justify-content-center' + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="12">
-                        <CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton />
+                        <CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton defaultPage={1} page={currentPage}/>
                     </Col>
                     </Row> }
 
@@ -1067,10 +1175,10 @@ function SearchManagement(props) {
                     
                     <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
                     <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('moveToFolder')}</Button>
-                    <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + (defaultTitle == 'Recent Search Results' ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>        
+                    <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>        
                     </Col>
 
-                    <Col className={"float-right " + classes.columnPadding + (defaultTitle !== 'Recent Search Results' ? ' d-block' : ' d-none')} md="6">
+                    <Col className={"float-right " + classes.columnPadding + ((defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
                         <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
                         <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={"accountInfo mr-2 " + (defaultTitle == 'My Searches' ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
