@@ -648,7 +648,7 @@ function SearchManagement(props) {
                     if (datas.results > 0) {
                         folderLabel = datas.results + ' Search Results';
                     }
-                    tempObj['results'] = <a href="#" onClick={(e) => getInfoIconData(e, tempObj)}>{folderLabel}</a>;
+                    tempObj['results'] = <a href="#" onClick={(e) => getInfoIconData(e, tempObj, null)}>{folderLabel}</a>;
                 }
             } else {
                 tempObj['results'] = <a href="#" onClick={(e) => e.preventDefault()}>Empty</a>;
@@ -690,7 +690,7 @@ function SearchManagement(props) {
             if (pagetype === "searchmanagement" || pagetype === "searchfolder") {
                 tempObj["info"] = <Fragment>
 
-                    {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj)}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
+                    {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, null)}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
                     {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
 
                     {datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
@@ -716,7 +716,7 @@ function SearchManagement(props) {
             tempObj['type'] = Constant['searchType'][datas.class] ? Constant['searchType'][datas.class] : datas.class;
             tempObj.name = datas.text_label;
             tempObj.icon = <Fragment>
-            {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
+            {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, datas.text_label)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
             {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>;
             tempObj.description = datas.description;
             tempObj.owner = datas._owner_full_name;
@@ -788,6 +788,7 @@ function SearchManagement(props) {
         setSearchResSet('');
         setClearCheckedRow(!clearCheckedRow);
         setCurrentPage(1);
+        setDisableMergeBtn(true);
     }
     // const deleteRecord = () => {
     //  console.log(deleteRecord,'deleteRecord');
@@ -861,6 +862,7 @@ function SearchManagement(props) {
         setIsSearchDone(false);
         setSearchResSet('');
         setCurrentPage(1);
+        setDisableMergeBtn(true);
         // }, 1000);
     };
     
@@ -955,11 +957,11 @@ function SearchManagement(props) {
 
         }
     }
-    async function getInfoIconData(e, data) {
+    async function getInfoIconData(e, data, textLabel) {
         e.preventDefault();
         // console.log(data,'data');
         if (data) {
-            setDefaultTitle(isSearchDone ? data.text_label : data.description);
+            setDefaultTitle(textLabel ? textLabel : data.description);
             setDefaultTitleId(data.id);
             let infoFId = [];
             if (infoFolderIds && infoFolderIds.length == 0) {
@@ -983,7 +985,7 @@ function SearchManagement(props) {
         if (e.keyCode == 13 || e.type == "click") {
             console.log(searchResSet, 'searchResSet');
             let tempArr = [];
-            if (searchResSet) {
+            if (searchResSet || searchResSet == "") {
                 setIsSearchDone(true);
                 let start = 1;
                 let stop = pageCount;
@@ -996,7 +998,7 @@ function SearchManagement(props) {
                         console.log('inside folder', tempArr)
                     }
                     setSearchResultData(tempArr);
-                    setDefaultTitle(`All data which contains: "${searchResSet}"`);
+                    searchResSet != "" ? setDefaultTitle(`All data which contains: "${searchResSet}"`) : setDefaultTitle("All data");
                     setDefaultTitleId('searchResult');
                     setCurrentPage(1);
                 }

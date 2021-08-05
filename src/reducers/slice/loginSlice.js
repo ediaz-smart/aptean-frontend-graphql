@@ -3,7 +3,7 @@ import { post } from '../../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
 import { url } from '../url';
 import { getUserServerInfo } from './userServerDataSlice';
-
+import { getPageCount } from '../../reducers/slice/comonSlice';
 
 const initialState = { isLoggedIn: false }
 
@@ -21,6 +21,7 @@ export const submitLogin = (data,history, t) => async (dispatch) => {
             {
                 console.log(response,"response response response response response response response");
                 await dispatch(getUserServerInfo());
+                await dispatch(getPageCount());
                 toast.success(t('loginSuccess'));
                 localStorage.setItem('User_'+data.GQUSERID, response);
 
