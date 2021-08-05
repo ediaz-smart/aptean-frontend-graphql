@@ -188,13 +188,15 @@ function SearchResults() {
     const handleAction = value => setThing(value);
     const [modalShow, setModalShow] = React.useState(false); 
     const [checkTemplate, setCheckTemplate] = React.useState(false); 
+    const [checkValIn, setCheckValIn] = React.useState(false); 
+
     const [errorMessage, setErrorMessage] = useState('');
     const [checkValue, setCheckValue] =  React.useState(false); 
 
     const history = useHistory();
 
     const [searchFormsData, setSearchFormsData] = useState([]);
-    const [selectedTemplateData, setSelectedTemplateData] = useState([]);
+    const [selectedTemplateData, setSelectedTemplateData] = useState(false);
     // unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
     const updateState = useCallback(state =>  setThing(state));
     function updateVal(state)
@@ -205,7 +207,13 @@ function SearchResults() {
           setCheckValue(true);
           console.log(state,"updateVal updateVal updateVal");
         }
-        setCheckValue(false);
+        else if(state.selectedCount == 1)
+        {
+          setCheckValue(true);
+        }
+        else{
+          setCheckValue(false);
+        }
        
     }
     // useEffect(() => {
@@ -352,6 +360,9 @@ function SearchResults() {
          const result = await SavedSearch.deleteSavedTemplate(thing.selectedRows,thing.selectedCount);
          getSavedTemplateData();
          setModalShow(false);
+         setCheckValue(false);
+         setThing([]);
+
        }
        else{
            toast.error("Select Any One Item");
@@ -360,6 +371,7 @@ function SearchResults() {
       // setModalShow(true);
      }
    console.log(thing,"thing thing thing");
+   console.log(searchFormsData,"searchFormsData searchFormsData searchFormsData");
 
   return (
     <div >
@@ -374,6 +386,7 @@ function SearchResults() {
           onSelectedRowsChange={updateVal}
           customStyles={customStyles}
 				   noHeader={true}
+           noDataComponent='No items were found.'
         //   pagination
           // conditionalRowStyles={conditionalRowStyles}
           selectableRows
@@ -390,18 +403,23 @@ function SearchResults() {
   
       </Col> */}
       <div className={classes.footerDiv}>
-                  {thing.selectedCount >= 1 ? 
+      { searchFormsData && searchFormsData.length !=0 ?
+              <Fragment>
+                  { checkValue && thing.selectedCount >= 1 ? 
                     <Button  className='accountInfo' color="default" disableRipple={true} onClick={()=>deleteTemplate()}  variant="contained">Delete Selected Saved Search Forms</Button> 
                     :   <Button  className='cancelButtonDisable' color="default" disableRipple={true}  variant="contained">Delete Selected Saved Search Forms</Button> 
 
                   }
-                    <Button className={classes.buttonStyleCancel} onClick={()=>homePage} disableRipple={true}  color="default" variant="contained">Cancel</Button>
+                    <Button className={classes.buttonStyleCancel} onClick={()=>cancelForm()} disableRipple={true}  color="default" variant="contained">Cancel</Button>
                     <SavedSearchModal
                             show={modalShow}
                             onHide={() => cancelForm()}
                             tryAgain={()=> deleteForm()}
                             // onMessage={errorMessage}
                         />
+                        </Fragment>
+                        : <p></p> 
+       }
         </div>
     </Row>
               

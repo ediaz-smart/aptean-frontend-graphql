@@ -185,7 +185,7 @@ function Login(props) {
                     </div>
                     <div className="form-group">
                        {passValCheck != 0  && passValCheck1 != 0 ?
-                                <Button variant="contained" className='accountInfo' type="submit">{t('submit')}</Button> :
+                                <Button variant="contained" disableRipple={true} className='accountInfo' type="submit">{t('submit')}</Button> :
                                 <Button variant="contained" className='cancelButtonDisable'  disableRipple={true}>{t('submit')}</Button> 
                              }
                         

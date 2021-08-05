@@ -145,13 +145,17 @@
 }
 
 .scrollMoveItem {
-    height: 234px;
+    height: 195px;
     overflow: scroll;
 }
 
 .scaleContent {
     float: right !important;
     margin: 10px
+}
+
+.popupFolderIcon {
+    width: 3% !important;
 }
 
 .cancelButtonAI {
@@ -168,10 +172,38 @@
     background-color: #EEEEEE !important;
     border: 2px solid #a2a2a3 !important;
     text-transform: none;
-    margin-left: 42px !important;
+    margin: 4px;
+    margin-right: 4px !important;
+    margin-left: -6px !important;
+    /* margin-left: 42px !important; */
     text-transform: none !important;
     color: #777777 !important;
     box-shadow: none !important;
+}
+
+.cancelButtonCPM {
+    background-color: #EEEEEE !important;
+    border: 2px solid #a2a2a3 !important;
+    text-transform: none;
+    /* margin-left: 42px !important; */
+    text-transform: none !important;
+    color: #777777 !important;
+    box-shadow: none !important;
+    margin-left: 18px !important;
+    width: 208px !important;
+}
+
+.accountInfoCPM {
+    float: right;
+    text-transform: none;
+    margin: 4px;
+    text-transform: none !important;
+    margin-top: 4px !important;
+    background-color: #db862c !important;
+    border: 2px solid #ca751b !important;
+    color: white !important;
+    margin-left: 18px !important;
+    width: 208px !important;
 }
 
 .cancelButtonDisable:hover {

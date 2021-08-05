@@ -36,13 +36,13 @@ const useStyles = makeStyles((theme) => ({
 		transform: 'translate(-50%, -50%)'
 	},
 	colorContainer:{
-		backgroundColor: 'gainsboro',
+		backgroundColor: '#EEEEEE',
 		marginTop: '-32px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		paddingBottom: '75px',
-		marginLeft: '7px',
-		marginRight: '7px',
+		marginLeft: '10px',
+		marginRight: '10px',
 		paddingRight: '10px',
 		borderRadius: '5px',
 
@@ -81,7 +81,7 @@ function ChangePasswordModal(props) {
 				
 				<br></br>
 				<div className={classes.footerDiv}>
-				<Button onClick={props.onHide} className='accountInfo' color="default"  variant="contained">OK</Button> 
+				<Button onClick={props.onHide} disableRipple={true} className='accountInfo' color="default"  variant="contained">OK</Button> 
 
 					{/* <Button onClick={props.onHide} className={classes.buttonStyle} color="default" variant="contained">OK</Button> */}
 				</div>

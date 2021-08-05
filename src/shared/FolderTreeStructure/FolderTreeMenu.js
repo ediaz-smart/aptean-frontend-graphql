@@ -4,6 +4,7 @@ import TreeView from "@material-ui/lab/TreeView";
 import MuiTreeItem from "@material-ui/lab/TreeItem";
 import { Formik, useField } from "formik";
 import FolderIcon from '../../assets/image/folder.png';
+import FolderIcons from '../../assets/image/folder3.png';
 
 const initialValues = {};
 
@@ -32,6 +33,9 @@ const useStyles = makeStyles({
 	},
 	folderIcon:{
 		width:'8%'
+	},
+	folderIcons:{
+		width:'3%'
 	}
 });
 const TreeItem = withStyles({
@@ -90,7 +94,7 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle,selectedTitleId,t
 							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (defaultTitleId === nodes.id ? classes.projTitleActive : '')} title={nodes.text_label}>{showString(nodes.text_label)}</span></a>
 						}
 						{type === "moveFolder" && <a className="cursorPointer text-decoration-none appTextColor">
-							<img src={FolderIcon} className={classes.folderIcon} /> <span className={classes.projectTitle + ' ' + (moveFolderId === nodes.id ? classes.projTitleActive : '')} title={nodes.text_label}>{showString(nodes.text_label)}</span></a>
+							<img src={FolderIcon} className={classes.folderIcons} /> <span className={classes.projectTitle + ' ' + (moveFolderId === nodes.id ? classes.projTitleActive : '')} title={nodes.text_label}>{showString(nodes.text_label)}</span></a>
 						}
 					</>
 				</div>

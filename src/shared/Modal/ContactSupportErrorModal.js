@@ -45,8 +45,8 @@ const useStyles = makeStyles((theme) => ({
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		paddingBottom: '79px',
-		marginLeft: '7px',
-		marginRight: '7px',
+		marginLeft: '10px',
+		marginRight: '10px',
 		paddingRight: '10px',
 		borderRadius: '5px',
 
@@ -122,9 +122,9 @@ function ContactSupportErrorModal(props) {
                     </p>
                     </div>
                     <div className={classes.footerDiv}>
-                    <Button onClick={()=>props.modalCallBack()} className='accountInfo'  variant="default">{t("tryAgain")}</Button>
+                    <Button onClick={()=>props.modalCallBack()} disableRipple={true} className='accountInfo'  variant="default">{t("tryAgain")}</Button>
 
-                        <Button onClick={() => redirect()} className={classes.buttonStyleCancel} color="default" variant="contained">{t("cancel")}</Button>
+                        <Button onClick={() => redirect()} disableRipple={true} className={classes.buttonStyleCancel} color="default" variant="contained">{t("cancel")}</Button>
 
                     </div>
                 </div>

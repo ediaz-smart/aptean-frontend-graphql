@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 		transform: 'translate(-50%, -50%)'
 	},
 	colorContainer:{
-		backgroundColor: 'gainsboro',
+		backgroundColor: '#EEEEEE',
 		marginTop: '-33px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
@@ -100,8 +100,8 @@ function ChangePassCheckModal(props) {
               </p> */}
 				<br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={props.tryAgain} className='accountInfo' color="primary" variant="contained">Try Again</Button> 
-					<Button onClick={props.onHide} className={classes.buttonStyle}  color="default" variant="contained">Cancel</Button>
+					<Button onClick={props.tryAgain} disableRipple={true} className='accountInfo' color="primary" variant="contained">Try Again</Button> 
+					<Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyle}  color="default" variant="contained">Cancel</Button>
 				</div>
 				</div>
 				

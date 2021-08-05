@@ -62,8 +62,8 @@ function SearchResModal(props) {
                 </div>
 				{/* <br></br>  <br></br> */}
 				<div className={classes.footerDiv}>
-                    <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} variant="contained" type="submit">{t('deleteSelItems')}</Button>
-					<Button onClick={props.onHide} className="float-right m-2"  color="primary" variant="contained">{t('cancel')}</Button>
+                    <Button color={(disableDelete ? 'default' : 'secondary')} disableRipple={true} disabled={disableDelete} className={"text-capitalize mr-2 " + ' ' + (disableDelete ? 'disableBtnBorder' : 'deleteBtnColor')} variant="contained" type="submit">{t('deleteSelItems')}</Button>
+					<Button onClick={props.onHide} className="float-right m-2" disableRipple={true}  color="primary" variant="contained">{t('cancel')}</Button>
 				</div>
 			</Modal.Body>
 		</Modal>

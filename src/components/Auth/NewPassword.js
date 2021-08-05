@@ -44,6 +44,8 @@ const useStyles = makeStyles((theme) => ({
         borderColor: '#1F4E79',
         border: '2px solid #1F4E79' ,
         color:'white',
+        margin: '4px',
+        marginRight: '18px',
         textTransform: 'capitalize',
         '&:hover': {
           backgroundColor: '#0182C5',
@@ -154,10 +156,10 @@ function NewPassword() {
                             />
                         </div>
                         <br></br>
-                        <div className="form-group">
+                        <div className='float-right'>
                         <Button variant="contained" className={classes.loginSubmitCancel} >{t('cancel')}</Button>
                             {passValCheck != 0  && passValCheck1 != 0  ?
-                                <Button variant="contained" className={classes.loginSubmitButton} type="submit">{t('cpsavenewpass')}</Button> :
+                                <Button variant="contained" className='accountInfo' type="submit">{t('cpsavenewpass')}</Button> :
                                 <Button variant="contained" className='cancelButtonCP'  disableRipple={true}>{t('cpsavenewpass')}</Button> 
                              }
                       

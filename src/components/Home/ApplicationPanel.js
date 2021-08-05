@@ -212,7 +212,10 @@ function ApplicationPanel() {
                             <Col lg="10" md="9">
                                 <p className={classes.pTagMargin}>
                                     <Link className={classes.anchorTag+' appLink'} to='/searchResult'>{t('allSearchResults')}</Link>
+                                    
                                 </p>
+                                
+
                             </Col>
                         </Row>
                         <p className={'subHeading '+classes.textHeading}>{t('sequenceTools')}</p>
@@ -222,7 +225,10 @@ function ApplicationPanel() {
                             </Col>
                             <Col lg="10" md="9">
                                 <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href={url.stageAlignSequencesDirectly} target="_blank">{t('alignSequencesDirectly')}</a></p>
-                                <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p>
+                                {/* <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p> */}
+                                <p className={classes.pTagMargin}>
+                                <Link className={classes.anchorTag} to='convertsequence'>{t('convertSequenceFormats')}</Link>
+                                </p>
                             </Col>
                         </Row>
                         <p className={'subHeading '+classes.textHeading}>{t('myAccount')}</p>

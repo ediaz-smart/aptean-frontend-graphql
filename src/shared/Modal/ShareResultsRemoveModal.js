@@ -66,8 +66,8 @@ const useStyles = makeStyles((theme) => ({
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		paddingBottom: '65px',
-		marginLeft: '7px',
-		marginRight: '7px',
+		marginLeft: '10px',
+		marginRight: '10px',
 		paddingRight: '10px',
 		borderRadius: '5px',
 
@@ -108,8 +108,8 @@ function ShareResultsRemoveModal(props) {
                 <br></br>
 				<br></br>
 				<div className={classes.footerDiv}>
-					<Button onClick={sendRemoveData} className='accountInfo' color="default" >Remove Share</Button> 
-					<Button onClick={props.onHide} className={classes.buttonStyleCan}  color="default" >Cancel</Button>
+					<Button onClick={sendRemoveData} disableRipple={true} className='accountInfo' color="default" >Remove Share</Button> 
+					<Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyleCan}  color="default" >Cancel</Button>
 
 				</div>
 				</div>

@@ -52,13 +52,13 @@ const useStyles = makeStyles((theme) => ({
 		transform: 'translate(-50%, -50%)'
 	},
 	colorContainer:{
-		backgroundColor: 'gainsboro',
+		backgroundColor: '#EEEEEE',
 		marginTop: '-32px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		paddingBottom: '65px',
-		marginLeft: '7px',
-		marginRight: '7px',
+		marginLeft: '10px',
+		marginRight: '10px',
 		paddingRight: '10px',
 		borderRadius: '5px',
 
@@ -99,8 +99,8 @@ function LogoutModal(props) {
 				<br></br>
                 <div className={classes.footerDiv}>
 
-                    <Button onClick={props.tryAgain} className='accountInfo' color="default"  variant="contained">Log out</Button> 
-                    <Button onClick={props.onHide} className={classes.buttonStyleCancel}  color="default" variant="contained">Cancel</Button>
+                    <Button onClick={props.tryAgain} disableRipple={true} className='accountInfo' color="default"  variant="contained">Log out</Button> 
+                    <Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyleCancel}  color="default" variant="contained">Cancel</Button>
                 </div>
                 
                 </div>

@@ -84,6 +84,19 @@ const useStyles = makeStyles((theme) => ({
         // textAlign: "center",
         fontStyle: "italic"
     },
+    loginSubmitCancel:{
+        backgroundColor: '#0182C5',
+        borderColor: '#1F4E79',
+        border: '2px solid #1F4E79' ,
+        color:'white',
+        marigin:'4px !important',
+        float:'right',
+        textTransform: 'capitalize',
+        '&:hover': {
+          backgroundColor: '#0182C5',
+          boxShadow: 'none',
+        },
+    },
     mediumSizedTextBox: {
         width: "20%"
     },
@@ -2074,15 +2087,18 @@ function IpSeqSearch() {
                     </Col>
                 </Row>
                 <br></br>
+                
                 <Row >
-                    <Col>
-                        {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize " + classes.submitCss} type="submit">
+                <div>
+                </div>
+                    <Col  >
+                        {isSubmitActive && <Button  className="accountInfo" type="submit">
                             {t("submit")}
                         </Button>}
-                        {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>
+                        {!isSubmitActive && <Button  className="accountInfo" disabled>
                             {t("submit")}
                         </Button>}
-                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} onClick={homeRedirect}>
+                        <Button className={classes.loginSubmitCancel} onClick={homeRedirect}>
                             {t("cancel")}
                         </Button>
                     </Col>

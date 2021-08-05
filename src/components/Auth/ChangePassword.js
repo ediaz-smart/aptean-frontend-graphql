@@ -36,6 +36,8 @@ loginSubmitButton : {
     border: '2px solid #db862c' ,
     color:'white',
     textTransform: 'capitalize',
+    marginLeft: '18px',
+    width: '208px',
     '&:hover': {
       backgroundColor: '#db862c',
       boxShadow: 'none',
@@ -269,10 +271,10 @@ function ChangePassword() {
                         </div>
                        
                         <div className={classes.rootButton}>
-                            <Button variant="contained" className={classes.loginSubmitCancel} onClick={homePage}>{t('cancel')}</Button>
+                            <Button variant="contained" disableRipple={true} className={classes.loginSubmitCancel} onClick={homePage}>{t('cancel')}</Button>
                             {passValCheck != 0  && passValCheck1 != 0 && passValCheck2 != 0 ?
-                                <Button variant="contained" className={classes.loginSubmitButton} type="submit">{t('cpsavenewpass')}</Button> :
-                                <Button variant="contained" className='cancelButtonCP'  disableRipple={true}>{t('cpsavenewpass')}</Button> 
+                                <Button variant="contained" disableRipple={true} className={classes.loginSubmitButton} type="submit">{t('cpsavenewpass')}</Button> :
+                                <Button variant="contained" className='cancelButtonCPM'  disableRipple={true}>{t('cpsavenewpass')}</Button> 
                              }
                         </div>
 

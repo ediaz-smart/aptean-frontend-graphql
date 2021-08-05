@@ -20,6 +20,9 @@ import SearchResultAntibody from '../components/SearchResultAntibody/SearchResul
 import ResultReportFolder from '../components/ResultReportFolder/ResultReportFolder';
 import FullTextSearch from '../components/FullTextSearch/FullTextSearch';
 import NewPassword from '../components/Auth/NewPassword';
+import ConvertSequence from '../components/ConvertSequence/ConvertSequence';
+import ParsedXml from '../components/ConvertSequence/ParsedXml';
+
 // import {isAdminLogin} from './helpers/authorizedInfo'
 
 
@@ -73,6 +76,8 @@ class Routes extends React.Component {
 
                     <Route exact path="/report/folder" component={ResultReportFolder} />
                     <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
+                    <Route exact path="/convertsequence" title="Sequence format Conversion" component={ConvertSequence} />
+                    <Route exact path="/parsedxml" title="Sequence format Conversion" component={ParsedXml} />
 
                     </React.Fragment>
                    {/* :  */}

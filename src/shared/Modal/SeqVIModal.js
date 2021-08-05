@@ -45,8 +45,8 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop: '28px',
 		// paddingBottom: '75px',
 		paddingBottom: '34px',
-		marginLeft: '7px',
-		marginRight: '7px',
+		marginLeft: '10px',
+		marginRight: '10px',
 		paddingRight: '10px',
 		borderRadius: '5px',
 
@@ -85,7 +85,7 @@ function SeqVIModal(props) {
 			<Modal.Body className={"text-center " + classes.bodyPadding}>
 			<div className={classes.colorContainer}>
 			    <br></br>
-				<p> {props.onMessage}</p>
+				<h5> {props.onMessage}</h5>
 				
 				
 				<br></br>

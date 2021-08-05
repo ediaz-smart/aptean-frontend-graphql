@@ -84,9 +84,9 @@ function hideLoader() {
                     let apiurls = 'do=gqtemplate.deletemulti&format=json&';
                     let dataMapping = [];
                     data.forEach(item =>{
-                    
-                        const tempNameCheckVal = item.map.workflow_type == 'GqWfIpSearch' ? 'GqWfIpSearch_launch' : 'GqWfVMIpSearch_launch';
-                        const renamedUrl = 'template_name['+item.name+']='+tempNameCheckVal;
+                        console.log(item.type,"type content");
+                        const tempNameCheckVal = item.map.workflow_type && item.map.workflow_type == 'GqWfIpSearch' ? 'GqWfIpSearch_launch' : 'GqWfVMIpSearch_launch';
+                        const renamedUrl = 'template_name['+item.name+']='+item.type;
                         dataMapping.push(renamedUrl);
                       
                     });

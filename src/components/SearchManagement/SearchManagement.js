@@ -28,6 +28,8 @@ import SearchManagementService from '../../services/searchmanagement'
 import FolderTreeMenu from '../../shared/FolderTreeStructure/FolderTreeMenu';
 // import UtilsService from '../../helpers/utils';
 import FolderIcon from '../../assets/image/folder.png';
+import FolderIcons from '../../assets/image/folder1.png';
+
 import FolderPlusIcon from '../../assets/image/folder-plus.png';
 import Checkbox from "@material-ui/core/Checkbox";
 import Constant from '../../helpers/constant';
@@ -244,7 +246,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
 	popupFolderIcon:{
-		width:'3%'
+		width:'3% !important'
 	}
 }));
 
@@ -1273,7 +1275,7 @@ function SearchManagement(props) {
                                 i = index + 2;
                             }
                             return (
-                                <p key={index} className={"mb-1 "+"ml-"+i}><img src={FolderIcon} className={classes.popupFolderIcon} /><span className={"ml-1 "+(parentTreeObj.length == index+1 ? classes.projTitleActive:'')}>{lookup[value] && lookup[value].text_label}</span></p>
+                                <p key={index} className={"mb-1 "+"ml-"+i}><img src={FolderIcon}  className={classes.popupFolderIcon} /><span className={"ml-1 "+(parentTreeObj.length == index+1 ? classes.projTitleActive:'')}>{lookup[value] && lookup[value].text_label}</span></p>
                             )
                         })}
                         </div>
@@ -1326,12 +1328,16 @@ function SearchManagement(props) {
 
                 <Modal.Body className="appTextColor">
                 <div className={classes.colorConMTF}>
-                    <div className={(confirmFolderContent ? 'd-block scrollMoveItem' : 'd-none')}>
-                        <p className="mb-3"><b>{t('moveToFolder')}</b></p>
-                        <p className="mb-3">{t('selFolderToMove')}</p>
+                    <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
+                    <p className="mb-3"><b>{t('moveToFolder')}</b></p>
+
+                    <div className='scrollMoveItem'> 
+                    <p className="mb-3">{t('selFolderToMove')}</p>
                         <div className="mb-5 h-100">
                             <FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
                         </div>
+                    </div>
+                       
                         <div className={classes.footerDivMTF + " float-right"}>      
                         <Button onClick={closeMoveFolderModal} className={classes.loginSubmitCancel}  >{t('cancel')}</Button>
     

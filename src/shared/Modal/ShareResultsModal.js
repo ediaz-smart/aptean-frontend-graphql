@@ -69,13 +69,13 @@ const useStyles = makeStyles((theme) => ({
 		transform: 'translate(-50%, -50%)'
 	},
 	colorContainer:{
-		backgroundColor: 'gainsboro',
+		backgroundColor: '#EEEEEE',
 		marginTop: '-33px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		paddingBottom: '65px',
-		marginLeft: '7px',
-		marginRight: '7px',
+		marginLeft: '10px',
+		marginRight: '10px',
 		paddingRight: '10px',
 		borderRadius: '5px',
 
@@ -159,12 +159,14 @@ function ShareResultsModal(props) {
 						variant="contained"
 						className={"text-capitalize mr-2 "+ (selectData.length == 0 ? 'cancelButtonDisable' : 'accountInfo')}
 						onClick={shareUserData}
+						disableRipple={true}
 						disabled={selectData.length == 0 ? true:false}
 					>Share Results</Button>
 					<Button
 						onClick={props.onHide}
 						className={classes.buttonStyleCancel}
 						color="secondary"
+						disableRipple={true}
 						variant="contained"
 					>Cancel</Button>
 				

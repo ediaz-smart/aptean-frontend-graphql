@@ -25,7 +25,7 @@ function SearchPrompt({searchModal}) {
             contentClassName='modalPromptContent'
             >
             <Modal.Body className="appTextColor text-center">
-                Your search has been submitted
+               <h5>Your search has been submitted</h5> 
             </Modal.Body>
         </Modal>
 	);

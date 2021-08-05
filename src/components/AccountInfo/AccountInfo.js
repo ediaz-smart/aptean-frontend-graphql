@@ -373,10 +373,10 @@ function AccountInfo() {
               </div>
             
           <div className={classes.rootButton}>
-              <Button variant="contained" className={classes.loginSubmitCancel} onClick={homePage}>{t('cancel')}</Button>
+              <Button variant="contained" disableRipple={true} className={classes.loginSubmitCancel} onClick={homePage}>{t('cancel')}</Button>
               
              
-             {passValCheck !=0 ? <Button variant="contained" className={classes.loginSubmitButton} type="submit">
+             {passValCheck !=0 ? <Button variant="contained" disableRipple={true} className={classes.loginSubmitButton} type="submit">
                         {t('aisavechange')}
                         </Button>
                         : 
