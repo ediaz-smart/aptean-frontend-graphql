@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
     modalClassContentDSI:{
 		position: 'absolute',
 		width: '96%',
-		height: '42%',
+		height: '41%',
 		top: '30%',
 		left: '50%',
 		right: 'auto',
@@ -122,11 +122,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 	colorContainerDSI:{
 		backgroundColor: '#EEEEEE',
-		marginTop: '-32px',
+		marginTop: '-26px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		// paddingBottom: '75px',
-		paddingBottom: '75px',
+		paddingBottom: '78px',
 		marginLeft: '10px',
 		marginRight: '10px',
 		paddingRight: '10px',
@@ -167,8 +167,15 @@ const useStyles = makeStyles((theme) => ({
 
 	},
 	bodyPadding: {
-		padding: "13px"
-	}
+		padding: "10px !important"
+    },
+    modalHeaderDSI: {
+		borderBottom: 'none !important',
+		paddingTop:'20px',
+		paddingRight: '1px',
+		marginTop:'-16px',
+		display: "block !important"
+	},
 
     
 }));
@@ -1207,7 +1214,7 @@ function SearchResultSequence(props) {
                                 disableDelete ? 
                                 <Button    className={classes.cancelButtonModal}  >{t('deleteSelected')}</Button>
                                 :
-                                <Button    className='accountInfo float-left  scaleContent'  type="submit" onClick={(e)=>deleteSearch('single')}>{t('deleteSelected')}</Button>
+                                <Button    className='accountInfo float-left  scaleContent m-1'  type="submit" onClick={(e)=>deleteSearch('single')}>{t('deleteSelected')}</Button>
 
 
 
@@ -1268,13 +1275,13 @@ function SearchResultSequence(props) {
                 contentClassName={classes.modalClassContentDSI}
 			className={classes.modalBoxContent}
 		>
-			<Modal.Header  className={classes.modalHeader}>
+			<Modal.Header  className={classes.modalHeaderDSI}>
 				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}>
 				<CloseIcon onClick={()=>setAlertSettingModal(!alertSettingModal)} />
 				</Link>
 			</Modal.Header>
-            <Modal.Body className={"text-center appTextColor" + classes.bodyPadding}>
-			<div className={classes.colorContainerDSI}>
+            <Modal.Body className={"text-center appTextColor " + classes.bodyPadding}>
+			<div className={classes.colorContainerDSI + " pl-5"}>
 					<label className="mb-3 mt-2 float-left">{t('alertSetting')}</label>
 						{/* <div className="mb-5 h-100"> */}
                             

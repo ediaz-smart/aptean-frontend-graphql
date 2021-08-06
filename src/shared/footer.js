@@ -22,6 +22,9 @@ const useStyles = makeStyles({
         '& p':{
             fontSize:'14px'
         }
+    },
+    footerMargin: {
+        marginTop: '75px'
     }
 });
 
@@ -47,7 +50,7 @@ export default function Footer() {
             <AppBar position="static" color="primary" className={classes.footerNav}>
                 <Container>
                     <Toolbar>
-                        <p className="w-100 text-center appTextColor">{ReactHtmlParser(copyRightData)}</p>
+                        <p className={"w-100 text-center appTextColor " + classes.footerMargin}>{ReactHtmlParser(copyRightData)}</p>
                     </Toolbar>
                 </Container>
             </AppBar>

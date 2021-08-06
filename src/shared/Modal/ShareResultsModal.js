@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { supportMail } from "../../config";
 import _ from "lodash";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from 'react-router-dom';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
@@ -12,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop:'11px',
 		paddingRight: '4px',
 		marginTop:'-7px',
-
+		display: "block !important"
 	},
 	footerDiv: {
 		padding: "0 30px",
@@ -73,12 +75,12 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: '-33px',
 		// marginLeft: 0px;
 		paddingTop: '28px',
-		paddingBottom: '65px',
-		marginLeft: '10px',
-		marginRight: '10px',
+		paddingBottom: '70px',
+		marginLeft: '5px',
+		marginRight: '4px',
 		paddingRight: '10px',
 		borderRadius: '5px',
-
+		paddingLeft: '10px'
 	},
 }));
 
@@ -105,6 +107,11 @@ function ShareResultsModal(props) {
 		props.shareResult(selectData)
 		setSelectData([]);
 	}
+
+	const closeModal = () => {
+		props.onHide();
+		setSelectData([]);
+	}
 	return (
 		<Modal
 			{...props}
@@ -115,9 +122,10 @@ function ShareResultsModal(props) {
 			className={classes.modalBoxContent}
 		>
 			<Modal.Header
-				closeButton
+				// closeButton
 				className={classes.modalHeader }
 			>
+				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={closeModal} /></Link>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
           </Modal.Title> */}
@@ -163,7 +171,7 @@ function ShareResultsModal(props) {
 						disabled={selectData.length == 0 ? true:false}
 					>Share Results</Button>
 					<Button
-						onClick={props.onHide}
+						onClick={closeModal}
 						className={classes.buttonStyleCancel}
 						color="secondary"
 						disableRipple={true}
