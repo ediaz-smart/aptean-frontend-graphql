@@ -52,6 +52,7 @@ class Routes extends React.Component {
                     <Route exact path="/login" title="login" component={Login} />
                     <Route exact path="/forgot" title="forgot" component={Forgotpassword} />
                     <Route exact path="/newpassword" component={NewPassword} />
+                    <Route exact path="/reset_password&key=:key&userId:userId" component={NewPassword} />
 
                     {/* {isUserLogin ?  */}
                     <React.Fragment>
@@ -74,7 +75,7 @@ class Routes extends React.Component {
                     <Route exact path="/ipseqvariation/:parentId" title="ipseqvariation" component={IpSequenceVariation} />
                     <Route exact path="/ipseqvariation/template/:tempname" title="ipseqvariation" component={IpSequenceVariation} />
 
-                    <Route exact path="/report/folder" component={ResultReportFolder} />
+                    <Route exact path="/report/folder/:folderId" title='foldermoduletitle' component={ResultReportFolder} />
                     <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
                     <Route exact path="/convertsequence" title="Sequence format Conversion" component={ConvertSequence} />
                     <Route exact path="/parsedxml" title="Sequence format Conversion" component={ParsedXml} />

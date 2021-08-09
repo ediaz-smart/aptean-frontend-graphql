@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
         borderColor: '#1F4E79',
         border: '2px solid #1F4E79' ,
         color:'white',
-        marigin:'4px !important',
+        margin:"4px",
         float:'right',
         textTransform: 'capitalize',
         '&:hover': {

@@ -147,7 +147,7 @@
     "onlyAlphabetsAllowed": "Only alphabets are allowed for this field",
     "onlyAtgcnAllowed": "Only ATGCN characters were allowed for this field",
     "searchSubmitted": "Your search has been submitted.",
-    "seqSearchErrorOccured": "An error was ancountered when attempting to submit your search.",
+    "seqSearchErrorOccured": "An error was encountered when attempting to submit your search.",
     "errorCodeIs": "The error code is: ",
     "tryAgainOrContact": "Please try again, or contact ",
     "forAssistance": " for assistance.",
@@ -285,7 +285,8 @@
     "enterValidData": "Please enter valid data",
     "nucleotidesWith": "Nucleotides with",
     "probWithSearch": "Problem with search execution, possibly incorrect input format.",
-
+    "savedsearchForm": "Saved Search Forms",
+    "foldermoduletitle": "Search Result Report – Folder",
     "newpass": "New Password",
     "renpass": "Re-enter new password"
 }

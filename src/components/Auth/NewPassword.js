@@ -14,10 +14,12 @@ import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
 import ClientCaptcha from "react-client-captcha"
 import "react-client-captcha/dist/index.css"
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory ,useParams} from 'react-router-dom';
 import PasswordService from '../../services/forgotpassword'
 import { supportMail } from '../../config';
 import Footer from '../../shared/footer';
+import AccountService from '../../services/accountInfo';
+import ChangePassCheckModal from '../../shared/Modal/ChangePassCheckModal'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -57,6 +59,14 @@ const useStyles = makeStyles((theme) => ({
         left: '0px',
         width: '200px'
     },
+    lengthLine:{
+            borderLeft: '1px solid grey',
+            height: '318px',
+            marginLeft: '40px'
+       
+      
+    
+    },
     '@media (min-width: 768px)' : {
         loginLogoDiv:{
             position: 'relative',
@@ -67,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
     '@media (min-width: 1024px)' : {
         loginLogoDiv:{
             position: 'relative',
-            left: '80px',
+            left: '20px',
             width:'100%'
         }
     }
@@ -78,9 +88,15 @@ function NewPassword() {
     const {t, i18n} = useTranslation('common');
     const [errorMsg,setErrorMsg] = useState(0);
     // const [retryState, setRetryState] = useState(false);
-    const [passwordForm, setPasswordForm] = useState(true);
+    const [passwordForm, setPasswordForm] = useState(false);
+    const [sucPasswordForm, setSucPasswordForm] = useState(false);
+
     const [verifycaptchaCode, setcaptchaCode] = useState(); 
     const dispatch = useDispatch();
+    const [modalCheckPass, setModalCheckPass] = React.useState(false); 
+    const { key } = useParams();
+    const { userId } = useParams();
+
     const history = useHistory();
      const formik = useFormik({
         initialValues: {
@@ -89,23 +105,70 @@ function NewPassword() {
         },
         validationSchema: Validate.NewPassValidate(),
          onSubmit: async(values) => {
+
             // setErrorMsg(0);
+            console.log(values.newPassword,'1');
+            console.log(values.confirmPassword,'12');
+            if(values && values.newPassword == values.confirmPassword )
+            {
+                console.log(values.newPassword,'13');
+                console.log(values.confirmPassword,'14');
+                const result = await AccountService.updateResetPass(userId,key,values.newPassword);
+                console.log(result);
+                setSucPasswordForm(true);
+                setPasswordForm(false);
+                
+
+            }else{
+                setModalCheckPass(true);
+            }
             
             
         },
     });
    
+    function tryAgainFormNew()
+    {
+     
+      formik.setFieldValue('newPassword','') && formik.setFieldValue('confirmPassword',''); 
+      formik.setFieldValue('default','')
+      setModalCheckPass(false);
+    }
+   
     // reset login status
+   
     useEffect(() => {
-        //dispatch(userActions.logout()); 
-    }, []);
-
+        (async () => {
+            console.log(key,"key value");
+            console.log(userId,"userId userId userId value");
+            if(key && userId)
+            {
+                const result = await AccountService.authCheckInfo(userId,key);
+                console.log(result,"result value");
+                if(result && result.response_content && result.response_content.status)
+                {
+                    result.response_content.status == 'valid_auth' ? setPasswordForm(true) : setPasswordForm(false);
+                    
+                }
+    
+            }
+         
+        })()
+      }, []);
+    function cancelForm()
+    {
+      setModalCheckPass(false);
+      history.push('/login');
+    }
     const passwordVlaue = formik.values.newPassword;
     const passwordCnVlaue = formik.values.confirmPassword;
     console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
     const passValCheck = passwordVlaue.length; 
     const passValCheck1 = passwordCnVlaue.length; 
-
+    function loginPage()
+    {
+        history.push('/login');
+    }
     return (
         <Container className="mt-100">
             
@@ -123,7 +186,7 @@ function NewPassword() {
                             e.preventDefault();
                         }
                      }}
-                     className={(passwordForm ? 'd-block' : 'd-block')}>
+                     className={( !sucPasswordForm && passwordForm ? 'd-block' : 'd-none')}>
 
                         <h5 className="loginTitle">New Password</h5>
                         {errorMsg == 1 ? <h6 className="loginFailedTitle">The code was incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> : errorMsg == 3 ? <h6 className="loginFailedTitle">Invalid username</h6>:'' }
@@ -135,6 +198,7 @@ function NewPassword() {
                                 name="newPassword"
                                 label={t('newpass')}
                                 variant="outlined"
+                                type="password"
                                 value={formik.values.newPassword}
                                 onChange={formik.handleChange} 
                                 error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
@@ -149,6 +213,7 @@ function NewPassword() {
                                 name="confirmPassword"
                                 label={t('renpass')}
                                 variant="outlined"
+                                type="password"
                                 value={formik.values.confirmPassword}
                                 onChange={formik.handleChange}
                                 error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
@@ -166,14 +231,55 @@ function NewPassword() {
                        
                         </div>
                     </form>
-                  
+                    <div className={'p-4 ' +( !sucPasswordForm && !passwordForm ? 'd-block' : 'd-none')}>
+
+                            <h5>Password Recovery</h5>
+                            <br />
+                            <br />
+                            <p>Too many unsuccessful attempts to access this account have been received. For your protection, the account has been locked.</p>
+                            <p>Please contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.
+                            </p>
+                            </div>
+                     <div className={'p-4 ' +(sucPasswordForm && !passwordForm ? 'd-block' : 'd-none')}>
+
+                            <h5>Password Recovery</h5>
+                            <br />
+                            <br />
+                            <p> Your new password has been saved. Please use it to log in to the application.</p>
+                         
+                            <br />
+                            <br />
+                            <Button variant="contained" className='accountInfo' onClick={()=>loginPage()}>Login</Button> :
+
+                            </div>
+
+                            {/* <div className={'p-4 ' +(passwordForm ? 'd-block' : 'd-block')}>
+
+                                <h5>Password Recovery</h5>
+                                <br />
+                                <br />
+                                <p> Your new password has been saved. Please use it to log in to the application.</p>
+                         
+                                </div> */}
+                           
+
+                    <ChangePassCheckModal
+                            show={modalCheckPass}
+                            onHide={() => cancelForm()}
+                            tryAgain={()=> tryAgainFormNew()}
+                            // onMessage={errorMessage}
+                        />
                 </Col>
-                
+
+                { passwordForm ?  <div  className={classes.lengthLine} /> : <p></p>
+
+                }
+               
                 
                 <Col sm="12" md="6" className="ml-3">
              
-
-                <div className={classes.passwordContents}>
+                { passwordForm ? 
+                    <div className={classes.passwordContents}>
                       <div >
                          <p>{t('cpconentstitle')}</p>
                          <h6><strong>{t('cppassrules')}</strong></h6>
@@ -191,7 +297,14 @@ function NewPassword() {
                       
 
                   </div>
+                  :
+                  <Newsupdate />
+               
+                }
+               
+                 
                 </Col>
+
             </Row>
             <div className={classes.navbarClass}>
             <Footer />

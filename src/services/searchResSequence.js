@@ -316,6 +316,33 @@ async function getUserList(workflowId) {
         hideLoader();
     }
 }
+async function getFolderResultData(datas,folderId)
+{
+    try {
+        let apiurl = 'do=gqfolder.get_folder_info&format=json&id='+folderId;
+        const data= {
+            id: folderId
+        }
+        console.log(data,"data")
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                console.log(JSON.stringify(response),"getFolderResultData getFolderResultData getFolderResultData");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
 async function addResultSharing(postdata) {
 
     try {
@@ -355,7 +382,8 @@ const searchResSequence = {
     addResultSharing,
     removeResultSharing,
     getUserList,
-    getSequenceResultShare
+    getSequenceResultShare,
+    getFolderResultData
 };
 
 export default searchResSequence;

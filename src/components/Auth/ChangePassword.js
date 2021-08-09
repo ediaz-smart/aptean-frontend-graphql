@@ -195,6 +195,11 @@ function ChangePassword() {
         setModalShow(false);
         history.push('/home');
       }
+      function cancelForms()
+      {
+        setModalCheckPass(false);
+        history.push('/home');
+      }
       function tryAgainFormNew()
       {
        
@@ -305,7 +310,7 @@ function ChangePassword() {
         </Container>
         <ChangePassCheckModal
                             show={modalCheckPass}
-                            onHide={() => cancelForm()}
+                            onHide={() => cancelForms()}
                             tryAgain={()=> tryAgainFormNew()}
                             // onMessage={errorMessage}
                         />
