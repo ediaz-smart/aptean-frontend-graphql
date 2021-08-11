@@ -167,7 +167,7 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
             .number()
             .integer(t('valueMustBeInteger'))
             .required(t('genePastPercentageReq'))
-            .min(1, t('genePastPercentageIncorrect'))
+            .min(65, t('genePastPercentageIncorrect'))
             .max(100, t('genePastPercentageIncorrect'))
             .typeError(t('genePastPercentageIncorrect'))
     } else if(searchAlgorithm && searchAlgorithm == "blast") {
