@@ -36,6 +36,7 @@ import Constant from '../../helpers/constant';
 import ProgressBar from '../../shared/ProgressBar/Progress';
 import { url } from '../../reducers/url';
 import CustomPagination from '../../shared/CustomPagination';
+import MergeResults from '../MergeResults/MergeResults';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -412,6 +413,7 @@ function SearchManagement(props) {
 
     const [isSearchDone, setIsSearchDone] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [showMergeModal, setShowMergeModal] = useState(false);
     
     //Pagination
 
@@ -719,7 +721,8 @@ function SearchManagement(props) {
             tempObj['type'] = Constant['searchType'][datas.class] ? Constant['searchType'][datas.class] : datas.class;
             tempObj.name = datas.text_label;
             tempObj.icon = <Fragment>
-            {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, datas.text_label)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>}
+            {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, datas.text_label)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
+            {datas.type === "Folder" && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
             {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>;
             tempObj.description = datas.description;
             tempObj.owner = datas._owner_full_name;
@@ -1180,7 +1183,7 @@ function SearchManagement(props) {
                     
                     <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
                     <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')+((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('moveToFolder')}</Button>
-                    <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={greetUser} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>        
+                    <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() =>{setShowMergeModal(!showMergeModal)}} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>        
                     </Col>
 
                     <Col className={"float-right " + classes.columnPadding + ((defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6">
@@ -1374,6 +1377,10 @@ function SearchManagement(props) {
                     </div>
                 </Modal.Body>
             </Modal>
+            <MergeResults 
+            show={showMergeModal}
+            selectData={selectData}
+            close={()=>setShowMergeModal(!showMergeModal)}/>
         </div>
 
     );

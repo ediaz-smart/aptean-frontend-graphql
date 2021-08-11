@@ -97,10 +97,10 @@ async function deleteSearchResult(ids,history) {
         let deleteSearchResult = url.deleteSearchResult
         deleteSearchResult = deleteSearchResult.replace('**', ids);
         let urlParam = deleteSearchResult;
-        showLoader();
+        // showLoader();
         return await post(urlParam,history)
         .then((response) => {
-            hideLoader();
+            // hideLoader();
             return response;
         })
         .catch((error) => {

@@ -357,7 +357,8 @@ function IpSeqSearch() {
     const [warningMsg, setWarningMsg] = useState("");
     const [isWarningReturned, setIsWarningReturned] = useState(false);
     const [errorHeading, setErrorHeading] = useState("");
-
+    const [nucDefaultDb, setNucDefaultDb] = useState([]);
+    const [proDefaultDb, setProDefaultDb] = useState([]);
 
     let initialCreditValues = {
         ppu1SubTotal: 0,
@@ -584,6 +585,7 @@ function IpSeqSearch() {
                 setNucGenBankData(nucGenBank);
                 if(!parentId && !tempname){
                 setNucDb(nucDefaultPatentDb);
+                setNucDefaultDb(nucDefaultPatentDb);
                 }
             }
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
@@ -613,6 +615,7 @@ function IpSeqSearch() {
                 setProPatentData(proteinPatent);
                 setProReferenceData(proteinReferenceData);
                 setProPersonalData(proDataShardWithMe);
+                // setProDefaultDb(proDefaultPatentDb);
                 // setProDb(proDefaultPatentDb);
             }
 
@@ -890,6 +893,7 @@ function IpSeqSearch() {
                     setNucDb([...nucDb]);
                 }
             });
+            // setNucDb(nucDefaultDb);
             setProDb([]);
         } else {
             setScoringMatrix('BLOSUM62');
@@ -902,6 +906,7 @@ function IpSeqSearch() {
                     setProDb([...proDb]);
                 }
             });
+            // setProDb(proDefaultDb);
             setNucDb([]);
         }
     };
@@ -954,13 +959,29 @@ function IpSeqSearch() {
         } else {
             setIsBothDbSelected(true);
             calTextCredits(null, true, type);
-        }
-        if(sequenceTypeValue == "nucleotide") {
 
+            // sequenceTypeValue == "nucleotide" ? setProDb(proDefaultDb) : setNucDb(nucDefaultDb);
+            if(sequenceTypeValue == "nucleotide") {
+                
+                proPatentData.filter(i=>{
+                    if(i.label.includes("Patent sequences")) {
+                        proDb.push(i.id);
+                        setProDb([...proDb]);
+                    }
+                });
+            } else if(sequenceTypeValue == "protein") {
+                nucPatentData.filter(i=>{
+                    if(i.label.includes("Patent sequences")) {
+                        nucDb.push(i.id);
+                        setNucDb([...nucDb]);
+                    }
+                });
+            }
         }
+
         console.log('bothdb2', isBothDbSelected)
     }
-
+console.log('default', nucDefaultDb, 'pro', proDefaultDb)
     function calTextCredits(e, bothDb, type) {
         console.log('texte', e)
         //     if(type && type =="isCompare"){
