@@ -349,6 +349,10 @@ function SearchResults() {
       history.push('/home');
 
      }
+     function cancelForms()
+     {
+      setModalShow(false);
+     }
      async function deleteForm()
      {
        console.log("deleteForm");
@@ -413,7 +417,7 @@ function SearchResults() {
                     <Button className={classes.buttonStyleCancel} onClick={()=>cancelForm()} disableRipple={true}  color="default" variant="contained">Cancel</Button>
                     <SavedSearchModal
                             show={modalShow}
-                            onHide={() => cancelForm()}
+                            onHide={() => cancelForms()}
                             tryAgain={()=> deleteForm()}
                             // onMessage={errorMessage}
                         />

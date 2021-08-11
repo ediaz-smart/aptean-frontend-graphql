@@ -160,6 +160,11 @@ function NewPassword() {
       setModalCheckPass(false);
       history.push('/login');
     }
+    function validVar()
+    {
+        formik.setFieldValue('newPassword','') && formik.setFieldValue('confirmPassword',''); 
+        formik.setFieldValue('default','')
+    }
     const passwordVlaue = formik.values.newPassword;
     const passwordCnVlaue = formik.values.confirmPassword;
     console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
@@ -222,7 +227,7 @@ function NewPassword() {
                         </div>
                         <br></br>
                         <div className='float-right'>
-                        <Button variant="contained" className={classes.loginSubmitCancel} >{t('cancel')}</Button>
+                        <Button variant="contained" onClick={()=>validVar()} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
                             {passValCheck != 0  && passValCheck1 != 0  ?
                                 <Button variant="contained" className='accountInfo' type="submit">{t('cpsavenewpass')}</Button> :
                                 <Button variant="contained" className='cancelButtonCP'  disableRipple={true}>{t('cpsavenewpass')}</Button> 
@@ -246,7 +251,7 @@ function NewPassword() {
                             <br />
                             <br />
                             <p> Your new password has been saved. Please use it to log in to the application.</p>
-                         
+                               
                             <br />
                             <br />
                             <Button variant="contained" className='accountInfo' onClick={()=>loginPage()}>Login</Button> :
