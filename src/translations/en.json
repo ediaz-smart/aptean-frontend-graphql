@@ -261,7 +261,7 @@
     "proCreditSubTotal": "Sub-total of credits used for protein search",
     "totalCredits": "TOTAL Credits used by this search",
     "creditsReamining": "Credits remaining after this search is submitted",
-    "fulltextsearch": "Life Sciences Full Text Search",
+    "fulltextsearch": "Full Text Search",
     "fulltext": "Full Text Search",
     "redoAlertText": "This search is being redone, you cannot change your query, but can change other options on this form.",
     "queryPreloaded": "Query Preloaded",

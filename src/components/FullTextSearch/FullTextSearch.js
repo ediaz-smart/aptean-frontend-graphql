@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect,useRef } from "react";
+import { useHistory,useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@material-ui/core/Button";
 import { Row, Col } from "react-bootstrap";
@@ -7,15 +7,13 @@ import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 import ReactHtmlParser from 'react-html-parser';
 
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+
 import Popover from '@material-ui/core/Popover';
 
 
 import Constant from '../../helpers/constant';
-import TextInput from '../../shared/Fields/TextInput';
 import lucenequeryparser from '../../assets/lib/lucene-query-parser';
-
+import fullTextService from '../../services/fulltextsearch';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -29,16 +27,27 @@ const useStyles = makeStyles((theme) => ({
     popverDiv:{
         // height:'500px',
         // overflowX:'scroll'
+    },
+    searchTermPopup:{
+        width:'40%'
+    },
+    searchMenuList:{
+        padding:'20px !important'
     }
     
 }));
-let ANDString = ' <span class="operatorClass">AND</span>';
-let ORString = ' <span class="operatorClass">OR</span>';
+let ANDString = '<span class="andClass opClass">AND</span>';
+let ORString = '<span class="orClass opClass">OR</span> ';
+let NOTString = '<span class="notClass opClass">NOT</span> ';
+let SpaceString = '<span class="space"> </span>';
+let queryString = '<span class="query"></span>';
 function FullTextSearch() {
     const { t, i18n } = useTranslation("common");
     const classes = useStyles();
+    const history = useHistory();
     const [fulltext,setFullText] = useState();
     const [testOutput,setTestOutput] = useState();
+    const [queryParser,setQueryParser] = useState({});
 
     // For Popup
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -46,6 +55,27 @@ function FullTextSearch() {
     const [topPosition,setTopPosition] = useState(220);
     const [leftPosition,setLeftPosition] = useState(65);
     const [keyCode, setKeyCode] = React.useState(null);
+
+    // For Auto Complete Search
+    const [searchTermPopup, setSearchTermPopup] = React.useState(false);
+    const [ontology, setOntology] = React.useState(';GO');
+    const [searchTermData, setSearchTermData] = React.useState(null);
+
+    // For Search
+    const [grouping,setGrouping] = React.useState('Document');
+    const [useDateSort,setUseDateSort] = React.useState(true);
+    const [dateSorting,setDateSorting] = React.useState('desc');
+    const [dateSortField,setDateSortField] = React.useState('pub_date');
+    const [searchStartPage,setSearchStartPage] = React.useState(0);
+    const [searchStopPage,setSearchStopPage] = React.useState(50);
+    const [authoritySorting,setAuthoritySorting] = React.useState(false);
+    const [authorities,setAuthorities] = React.useState('');
+
+
+    const userInfo = useSelector(state => state.setUserInfo);
+
+    // To detect outside click for Autocomplete popup
+	const wrapperRef = useRef(null);
 
     const openPopup = () => {
         // console.log(event.currentTarget,'event.currentTarget');
@@ -57,6 +87,7 @@ function FullTextSearch() {
     const closePopup = () => {
         setAnchorEl(null);
         setopen(false);
+        setSearchTermPopup(false);
         let htmlElement = document.getElementById("textareaDiv");
         placeCaretAtEnd(htmlElement);
     };
@@ -66,30 +97,64 @@ function FullTextSearch() {
     // reset login status
     useEffect(async () => {
         //dispatch(userActions.logout());
+        document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
     }, []);
+
+    const handleClickOutside = event => {
+        
+        if(event.target.id != "megamenu")
+        {
+            // Delay some seconds to get popup value before close
+            setTimeout(() => {
+                // we already define dataclass attr to megamenu list, if outside of any event will close the popup
+                if(event.target.attributes.dataclass == undefined)
+                {
+                    setSearchTermPopup(false);
+                }
+            }, 100);
+        }
+	};
     const getKeyCode = (e)=>{
         setKeyCode(e.keyCode)
     }
+    
     const parseQuery = (value,element) =>{
         // let value = element.target.textContent;
         console.log(element,'innerHTML');
         
-        let currentElText = element.nativeEvent.data;
         console.log(keyCode,'keyCode');
         console.log(value,'value');
         // localStorage.setItem('searchData',value);
         // setFullText(value);
         let getLength = value.length;
         let checkLastChar = value.slice(-1);
-        let getRemString = '';
+        
+        
+        // let htmlElement = document.getElementById("textareaDiv");
+        // If Space Enters without any string
+        if(keyCode == 32)
+        {
+            if(value.length > 1)
+            {
+                replaceStringHtml(value,keyCode,element);
+                
+            }else {
+                value="";
+                updateHtmlElement(value);
+            }
+        }else {
+            replaceStringHtml(value,keyCode,element);
+            // replaceStringHtml(value,keyCode);
+        }
+        
         // For Popup open on current pointer position
         // console.log(checkLastChar,'checkLastChar');
-        let htmlElement = document.getElementById("textareaDiv");
-        let checkLast5 = value.slice(-5);
-        let checkLast4 = value.slice(-4);
-        let checkLast3 = value.slice(-3);
-        // console.log(checkLast5,'checkLast5')
-        // console.log(checkLast4,'checkLast4')
+        
+        
+
         if(checkLastChar == "?")
         {
             let getXYCoordinates = getCaretGlobalPosition();
@@ -100,56 +165,403 @@ function FullTextSearch() {
             }
             openPopup(element);
         }
-        // else if(checkLastChar == " ")
-        // {
-            
-        //     if(checkLast5 == " AND ")
-        //     {
-        //         value = value;
-        //     }else if(checkLast4 == " AND"){
-        //         value = value+' ';
-        //     }
-        //     else if(checkLast4 == " OR"){
-        //         value = value+' ';
-        //     }
-        //     else if(checkLast4 == " OR "){
-        //         value = value+' ';
-        //     }
-        //     else if(checkLastChar == " "){
-        //         if(checkLast3 === " AN " || checkLast3 === " AN" || checkLast3 === "AN " || checkLast3 === " A "  || checkLast3 === " A")
-        //         {
-        //             value = value;
-        //         }else if(checkLast3 === " OR " || checkLast3 === " OR" || checkLast3 === "OR " || checkLast3 === " O "  || checkLast3 === " O")
-        //         {
-        //             value = value;
-        //         }else if(keyCode != 8){
-        //             // value = value+'AND';
-        //         }
-        //     }
-        //     // console.log(value,'value')
-        // }
-        // else if(checkLast5 == " AND"+currentElText)
-        // {
-        //     getLength = getLength - 5;
-        //     getRemString = value.substring(0, getLength);
-        //     value = getRemString+" AND "+currentElText;
-        // }
-        // else if(checkLast5 == " OR"+currentElText)
-        // {
-        //     getLength = getLength - 5;
-        //     getRemString = value.substring(0, getLength);
-        //     value = getRemString+" OR "+currentElText;
-            
-        // }
-        // updateHtmlElement(value);
-        // placeCaretAtEnd(htmlElement);
-        // Replacing AND OR with text function
-        replaceANDORString(value);
         
-        var results = lucenequeryparser.parse(value);
-        results = JSON.stringify(results, undefined, 2);
-        results = results.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
-        setTestOutput(results)
+        
+        
+    }
+    
+    function replaceStringHtml(value,keyCode,element){
+
+        console.log(value,'value');
+        let htmlElement = document.getElementById("textareaDiv");
+        // console.log(htmlElement,'htmlElement');
+        let lastValue = value.slice(-1);
+        let lastPrevValue = value.charAt(value.length-2);
+        // console.log(lastChildEl,'lastChildEl1');
+        console.log(lastValue,'lastValue');
+        console.log(htmlElement.children,'children');
+        let lastChild = htmlElement.children[htmlElement.children.length - 1];
+        let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
+        
+        // if(lastChild)
+        // {
+        //     console.log(lastChild,'lastChild');
+        //     console.log(lastChild.attributes,'lastChildattributes');
+        // }
+        let getChildClass='',getChildClassName='',getChildText='';
+        // let getPrevChildClass='',getPrevChildClassName='',getPrevChildText='';
+        if(lastChild && lastChild.attributes.length > 0)
+        {
+            getChildClass = lastChild.attributes.class ? lastChild.attributes.class:'';
+            getChildClassName = getChildClass ? getChildClass.value:'';
+            getChildText = lastChild.textContent;
+            console.log('firstchild',getChildText);
+            console.log('lastChild',lastChild);
+        }
+        else if(lastPrevChild && lastPrevChild.attributes.length > 0)
+        {
+            getChildClass = lastPrevChild.attributes.class ? lastPrevChild.attributes.class:'';
+            getChildClassName = getChildClass ? getChildClass.value:'';
+            getChildText = lastPrevChild.textContent;
+            console.log('prevchild',getChildText);
+            console.log('lastPrevChild',lastPrevChild);
+        }
+        let checkLastThreeVal = getChildText+lastValue;
+        // For Auto complete
+        if(checkLastThreeVal.length > 2)
+        {
+            searchTerm(checkLastThreeVal);
+        }
+        // Removing Common CSS class for functionality
+        getChildClassName = getChildClassName.split(" ")[0];
+        console.log(getChildClassName,'getChildClassName');
+        console.log(getChildText,'getChildText');
+        let checkORValues = ['OR ','or ','or','OR','o','O'];
+        let checkANDValues = ['AND ','and ','and','AND','a','A'];
+        let checkNOTValues = ['NOT ','not ','not','NOT','n','N'];
+        // If Delete event for key 8
+        // If Space Enters
+        if(keyCode == 32)
+        {
+            console.log(lastPrevValue.trim().length,'isEmptyOrSpaces(lastPrevValue)')
+           
+                if(lastPrevValue.trim().length > 0)
+                {
+                    
+                    if(lastChild && lastChild.attributes.length > 0)
+                    {
+                        if(getChildClassName == "autoquery")
+                        {
+                            htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                            var newSpan = document.createElement('span');
+                            newSpan.setAttribute('class', 'space');
+                            newSpan.innerHTML = "";
+                            htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                        }
+                        else if(getChildClassName == "query")
+                        {
+                            if(checkANDValues.includes(getChildText))
+                            {
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString;
+                            }else if(checkORValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = ORString
+                                // lastChildEl.innerHTML = ORString;
+                                // console.log(lastChildEl1,'lastChildEl1');
+                            }else if(checkNOTValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = NOTString;
+                            }else {
+                                htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                                var newSpan = document.createElement('span');
+                                newSpan.setAttribute('class', 'space');
+                                newSpan.innerHTML = "";
+                                htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                            }
+                            
+                        }else if(getChildClassName == "space"){
+                            if(checkORValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = ORString
+                                // lastChildEl.innerHTML = ORString;
+                                // console.log(lastChildEl1,'lastChildEl1');
+                            }else if(checkANDValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString;
+                            }else if(checkNOTValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = NOTString;
+                            }else {
+                                // // Adding AND operator if space enters
+                                // htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                //create the DOM object
+                                var newSpan = document.createElement('span');
+                                // add the class to the 'span'
+                                newSpan.setAttribute('class', 'query');
+                                newSpan.innerHTML = htmlElement.children[htmlElement.children.length - 1].textContent.trimRight();
+                                // newSpan.textContent = htmlElement.children[htmlElement.children.length - 1].textContent.trimRight();
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+newSpan.outerHTML;
+                                htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
+                                htmlElement.innerHTML = htmlElement.innerHTML.trimRight();
+                            }
+                            
+                        }
+                    }else if(lastPrevChild && lastPrevChild.attributes.length > 0){
+                        
+                        if(getChildClassName == "space")
+                        {
+                            if(checkORValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 2].outerHTML = ORString
+                                // lastChildEl.innerHTML = ORString;
+                                // console.log(lastChildEl1,'lastChildEl1');
+                            }else if(checkANDValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 2].outerHTML = ANDString;
+                            }else if(checkNOTValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 2].outerHTML = NOTString;
+                            }else {
+                                // // Adding AND operator if space enters
+                                // htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                //create the DOM object
+                                var newSpan = document.createElement('span');
+                                // add the class to the 'span'
+                                newSpan.setAttribute('class', 'query');
+                                newSpan.innerHTML = htmlElement.children[htmlElement.children.length - 2].textContent.trimRight();
+                                htmlElement.children[htmlElement.children.length - 2].outerHTML = ANDString+' '+newSpan.outerHTML;
+                                htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
+                                htmlElement.innerHTML = htmlElement.innerHTML.trimRight();
+                            }
+                        }else if(getChildClassName == "query")
+                        {
+                            if(checkANDValues.includes(getChildText))
+                            {
+                                htmlElement.children[htmlElement.children.length - 2].outerHTML = ANDString;
+                            }else if(checkORValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 2].outerHTML = ORString
+                            }else if(checkNOTValues.includes(getChildText)){
+                                htmlElement.children[htmlElement.children.length - 2].outerHTML = NOTString;
+                            }else {
+                                htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                                var newSpan = document.createElement('span');
+                                newSpan.setAttribute('class', 'space');
+                                newSpan.innerHTML = "";
+                                htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                            }
+                        }
+                    }
+                    else {
+                        // if(lastChildEl.tagName != "BR")
+                        // {
+                            htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                            var newSpan = document.createElement('span');
+                            newSpan.setAttribute('class', 'space');
+                            newSpan.innerHTML = "";
+                            htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                            htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                        // }               
+                    }
+                    
+                    placeCaretAtEnd(htmlElement);
+                }else {
+                    htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                    htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
+                    placeCaretAtEnd(htmlElement);
+                }
+        
+            
+        }
+        else if(keyCode == 8)
+        {
+            let classArray = ['andClass','orClass','notClass','autoquery']
+            if(lastChild && lastChild.attributes.length > 0)
+            {
+                
+                if((htmlElement.children[htmlElement.children.length - 1].textContent.length == 0) || (classArray.includes(getChildClassName))){
+                    htmlElement.children[htmlElement.children.length - 1].outerHTML = '';
+                    setSearchTermPopup(false);
+                }
+            }else if(lastPrevChild && lastPrevChild.attributes.length > 0){
+                if((htmlElement.children[htmlElement.children.length - 2].textContent.length == 0) || (classArray.includes(getChildClassName))){
+                    htmlElement.children[htmlElement.children.length - 2].outerHTML = '';
+                    setSearchTermPopup(false);
+                }
+            }
+            
+            // Replacing Last Empty Space in Inner Html to edit from the last character if we delete the characters
+            var currentIndex = htmlElement.innerHTML.lastIndexOf("&nbsp;");
+            htmlElement.innerHTML = htmlElement.innerHTML.slice(0, currentIndex) + htmlElement.innerHTML.slice(currentIndex).replace('&nbsp;','');
+
+            
+            // htmlElement.innerHTML = htmlElement.innerHTML.substring(0, currentIndex) +strReplacedWith+ htmlElement.innerHTML.substring(currentIndex + 1, htmlElement.innerHTML.length);
+            htmlElement.innerHTML = htmlElement.innerHTML.trimRight();
+            placeCaretAtEnd(htmlElement);
+        }    
+        else {
+            if(value != "")
+            {
+                let checkOperatorText = ['and','AND','or','OR','not','NOT'];
+                    if(lastChild && lastChild.attributes.length > 0)
+                    {
+                        if(getChildClassName == "autoquery")
+                        {
+                            htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                            var newSpan = document.createElement('span');
+                            newSpan.setAttribute('class', 'query');
+                            newSpan.innerHTML = lastValue;
+                            if(lastChild.innerText.length == 0)
+                            {
+                                htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                
+                                newSpan.innerHTML = lastValue;
+                            }else {
+                                newSpan.innerHTML = lastChild.innerText+lastValue;
+                            }
+                            htmlElement.innerHTML = htmlElement.innerHTML+ANDString+' '+newSpan.outerHTML;
+                        }
+                        else if(getChildClassName == "space")
+                        {
+                            if((lastValue == "o" || lastValue == "O") || (lastValue == "a" || lastValue == "A") || (lastValue == "n" || lastValue == "N"))
+                            {
+                                if(htmlElement.children[htmlElement.children.length - 1].textContent.length == 0)
+                                {
+                                    htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                    htmlElement.children[htmlElement.children.length - 1].textContent = lastValue;
+                                }else {
+                                    htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                    htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;        
+                                }
+                                
+                            }else if(checkORValues.includes(getChildText) || checkANDValues.includes(getChildText) || checkNOTValues.includes(getChildText)){
+                                htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;    
+                            }else {
+                                // // Adding AND operator if space enters
+                                htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                //create the DOM object
+                                var newSpan = document.createElement('span');
+                                // add the class to the 'span'
+                                newSpan.setAttribute('class', 'query');
+                                // let checkOpText = lastPrevChild.innerText+lastValue;
+                                if(lastChild.innerText.length == 0)
+                                {
+                                    htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                    
+                                    newSpan.innerHTML = lastValue;
+                                }else {
+                                    newSpan.innerHTML = lastChild.innerText+lastValue;
+                                }
+                                // htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+newSpan.outerHTML;
+                                
+                                if(checkOperatorText.includes(newSpan.textContent))
+                                {
+                                    htmlElement.children[htmlElement.children.length - 1].outerHTML = newSpan.outerHTML;
+                                }else {
+                                    htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+newSpan.outerHTML;
+                                }
+
+                                // htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                // htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;
+                            }
+                            htmlElement.innerHTML = htmlElement.innerHTML.replace('<br>',"");
+                        }else if(getChildClassName == "orClass" || getChildClassName == "andClass" || getChildClassName == "notClass" || getChildClassName == "autoquery")
+                        {
+                            htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                            //create the DOM object
+                            var newSpan = document.createElement('span');
+                            // add the class to the 'span'
+                            newSpan.setAttribute('class', 'query');
+                            newSpan.innerHTML = lastValue;
+                            htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                        }
+                        else if(getChildClassName == "query")
+                        {
+                            htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                            htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;
+                        }
+                    }else if(lastPrevChild && lastPrevChild.attributes.length > 0){
+                        if(getChildClassName == "autoquery")
+                        {
+                            htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                            var newSpan = document.createElement('span');
+                            newSpan.setAttribute('class', 'query');
+                            newSpan.innerHTML = lastValue;
+                            if(lastChild.innerText.length == 0)
+                            {
+                                htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                
+                                newSpan.innerHTML = lastValue;
+                            }else {
+                                newSpan.innerHTML = lastChild.innerText+lastValue;
+                            }
+                            htmlElement.innerHTML = htmlElement.innerHTML+ANDString+' '+newSpan.outerHTML;
+                        }else if(getChildClassName == "space")
+                        {
+                            if((lastValue == "o" || lastValue == "O") || (lastValue == "a" || lastValue == "A") || (lastValue == "n" || lastValue == "N"))
+                            {
+                                if(htmlElement.children[htmlElement.children.length - 2].textContent.length == 0)
+                                {
+                                    htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                    htmlElement.children[htmlElement.children.length - 2].textContent = lastValue;
+                                }else {
+                                    htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                    htmlElement.children[htmlElement.children.length - 2].textContent = htmlElement.children[htmlElement.children.length - 2].textContent+lastValue;        
+                                }
+                            }else if(checkORValues.includes(getChildText) || checkANDValues.includes(getChildText) || checkNOTValues.includes(getChildText)){
+                                htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                htmlElement.children[htmlElement.children.length - 2].textContent = htmlElement.children[htmlElement.children.length - 2].textContent+lastValue;    
+                            }else {
+                                // Adding AND operator if space enters
+                                htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                //create the DOM object
+                                var newSpan = document.createElement('span');
+                                // add the class to the 'span'
+                                newSpan.setAttribute('class', 'query');
+                                let checkOpText = lastPrevChild.innerText+lastValue;
+                                
+                                if(lastPrevChild.innerText.length == 0)
+                                {
+                                    htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                    
+                                    newSpan.innerHTML = lastValue;
+                                }else {
+                                    newSpan.innerHTML = lastPrevChild.innerText+lastValue;
+                                }
+                                if(checkOperatorText.includes(newSpan.textContent))
+                                {
+                                    htmlElement.children[htmlElement.children.length - 2].outerHTML = newSpan.outerHTML;
+                                }else {
+                                    htmlElement.children[htmlElement.children.length - 2].outerHTML = ANDString+' '+newSpan.outerHTML;
+                                }
+
+                            }
+                            htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
+                        }
+                        else if(getChildClassName == "orClass" || getChildClassName == "andClass"  || getChildClassName == "notClass" || getChildClassName == "autoquery")
+                        {
+                            htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                            //create the DOM object
+                            var newSpan = document.createElement('span');
+                            // add the class to the 'span'
+                            newSpan.setAttribute('class', 'query');
+                            newSpan.innerHTML = lastValue;
+                            htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                        }
+                    }else {
+                        //create the DOM object
+                        var newSpan = document.createElement('span');
+                        // add the class to the 'span'
+                        newSpan.setAttribute('class', 'query');
+                        newSpan.innerHTML = value;
+                        htmlElement.innerHTML = newSpan.outerHTML;
+                        htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                    }
+                
+            }
+            htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
+            placeCaretAtEnd(htmlElement);
+            // trimText = htmlElement.textContent.toString();
+            // console.log(trimText,'trimText');
+            
+            
+            
+            
+            
+            // updateHtmlElement(value);
+        }
+        try {
+            console.log(htmlElement,'htmlElement');
+            var results = lucenequeryparser.parse(htmlElement.textContent);
+
+            
+            setQueryParser(JSON.stringify(results));
+            results = JSON.stringify(results, undefined, 2);
+            results = results.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
+            console.log(queryParser,'queryParser');
+            setTestOutput(results)
+          
+        } catch (err) {
+            console.log(err,'err')
+            // error handling
+          
+        }
+        // Place Curstor at Last in Textarea
+        // placeCaretAtEnd(htmlElement);
+        
+        
     }
     function updateHtmlElement(value){
         localStorage.setItem('searchValue',value);
@@ -167,72 +579,6 @@ function FullTextSearch() {
         
         
     }
-    function replaceANDORString(value){
-        let checkAnd,checkAndStr = '';
-        let checkOr,checkOrStr = '';
-        checkAnd = value.slice(-3);
-        checkOr = value.slice(-2);
-
-        // value = value.slice(-3);
-        let getLength = value.length;
-        let getRemString = '';
-        let checkANDValues = ['AND','and','And','anD','ANd','aNd'];
-        let checkORValues = ['OR','or','Or','oR'];
-        // let ANDString = ' <span class="operatorClass">AND</span>';
-        // let ORString = ' <span class="operatorClass">OR</span>';
-        let htmlElement = document.getElementById("textareaDiv");
-        
-        if(checkANDValues.includes(checkAnd))
-        {
-            getLength = getLength - 3;
-            let checkAndSpace = " ";
-            if(getLength > 0)
-            {
-                checkAndStr = value.slice(-4);
-                checkAndSpace = checkAndStr.charAt(0);
-            }
-            
-            // console.log(checkAndSpace,'checkAndSpace');
-            if(checkAndSpace == " ")
-            {
-                
-                getRemString = value.substring(0, getLength);
-                if(getRemString)
-                {
-                    let storageValue = getRemString+'AND';
-                    updateHtmlElement(storageValue);
-                }else {
-                    htmlElement.innerHTML = '';
-                    htmlElement.innerHTML = ANDString;
-                    placeCaretAtEnd(htmlElement);
-                }
-                
-                
-                // localStorage.setItem('searchValue',value);
-            }
-        }else if(checkORValues.includes(checkOr))
-        {
-            getLength = getLength - 2;
-            checkOrStr = value.slice(-3);
-            let checkORSpace = checkOrStr.charAt(0);
-            if(checkORSpace == " ")
-            {
-                
-                getRemString = value.substring(0, getLength);
-                if(getRemString)
-                {
-                    let storageValue = getRemString+'OR';
-                    updateHtmlElement(storageValue);
-                }else {
-                    htmlElement.innerHTML = '';
-                    htmlElement.innerHTML = ORString;
-                    placeCaretAtEnd(htmlElement);
-                }
-                
-                // localStorage.setItem('searchValue',value);
-            }
-        }
-    }
     function placeCaretAtEnd(e) {
         const el = document.getElementById('textareaDiv');  
         const selection = window.getSelection();  
@@ -242,48 +588,6 @@ function FullTextSearch() {
         range.collapse(false);  
         selection.addRange(range);  
         el.focus();
-        // const e = document.getElementById('textareaDiv');  
-        // console.log(e,'ee');
-        // let placeholderText = e.innerText;
-        // e.innerText = '';
-        // e.innerText = placeholderText;
-        // console.log(e.innerText.length,'e.innerHTML.length');
-        // if(e.innerText && document.createRange)
-        // {
-        // let range = document.createRange();
-        // let selection = window.getSelection();
-        // range.selectNodeContents(e);
-        // range.setStart(e.firstChild.textContent,e.innerText.length);
-        // range.setEnd(e.firstChild.textContent,e.innerText.length);
-        // selection.removeAllRanges();
-        // selection.addRange(range);
-        // }
-
-        // let chars = 5;
-        // var tag = document.getElementById("textareaDiv");
-        // console.log(el,'tag.childNodes[0]')
-        // console.log(tag.childNodes,'tag.childNodes[0]')
-        // // Creates range object
-        // var setpos = document.createRange();
-          
-        // // Creates object for selection
-        // var set = window.getSelection();
-          
-        // // Set start position of range
-        // setpos.setStart(el.textContent, chars);
-          
-        // // Collapse range within its boundary points
-        // // Returns boolean
-        // setpos.collapse(true);
-          
-        // // Remove all ranges set
-        // set.removeAllRanges();
-          
-        // // Add range with respect to range object.
-        // set.addRange(setpos);
-          
-        // // Set cursor on focus
-        // tag.focus();
     }
 
     function getCaretGlobalPosition(){
@@ -319,6 +623,121 @@ function FullTextSearch() {
         placeCaretAtEnd(htmlElement);
         
     }
+    const searchTerm = async (value)=>{
+        let userId=userInfo && userInfo.current_user.gq_user_id;
+        let searchParam = `&json_query=${value}&rows=25&ontologies=${ontology}&user_id=${userId}`;
+        const searchRes = await fullTextService.getFullTextSearchTerm(history,searchParam);
+        if(searchRes && searchRes.response_status == 0){
+            if(searchRes.response_content.length > 0)
+            {
+                setSearchTermData(searchRes.response_content);
+                let getXYCoordinates = getCaretGlobalPosition();
+                let top = getXYCoordinates.top;
+                if(getXYCoordinates)
+                {
+                    setTopPosition(top);
+                    setLeftPosition(getXYCoordinates.left);
+                }
+                setSearchTermPopup(true);
+                // setTimeout(() => {
+                    let htmlElement = document.getElementById("textareaDiv");
+                    // htmlElement.focus();
+                    
+                    placeCaretAtEnd(htmlElement);
+                    // placeCaretAtEnd(htmlElement);
+                    // htmlElement.innerHTML.focus();
+                // }, 500);
+                
+            }
+        }
+        
+        console.log(searchRes,'searchRes');
+    }
+    function placeCaretAtEnd(el) {
+        el.focus();
+        if (typeof window.getSelection != "undefined"
+                && typeof document.createRange != "undefined") {
+            var range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        } else if (typeof document.body.createTextRange != "undefined") {
+            var textRange = document.body.createTextRange();
+            textRange.moveToElementText(el);
+            textRange.collapse(false);
+            textRange.select();
+        }
+    }
+    const selectSearchTerm=(data)=>{
+        console.log(data,'data');
+        let htmlElement = document.getElementById("textareaDiv");
+        let lastChild = htmlElement.children[htmlElement.children.length - 1];
+        let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
+        let getChildClass='',getChildClassName='',getChildText='';
+        // let getPrevChildClass='',getPrevChildClassName='',getPrevChildText='';
+        if(lastChild && lastChild.attributes.length > 0)
+        {
+            getChildClass = lastChild.attributes.class ? lastChild.attributes.class:'';
+            getChildClassName = getChildClass ? getChildClass.value:'';
+            getChildText = lastChild.textContent;
+            console.log('firstchild');
+        }
+        else if(lastPrevChild && lastPrevChild.attributes.length > 0)
+        {
+            getChildClass = lastPrevChild.attributes.class ? lastPrevChild.attributes.class:'';
+            getChildClassName = getChildClass ? getChildClass.value:'';
+            getChildText = lastPrevChild.textContent;
+            console.log('prevchild');
+        }
+        var spaceSpan = document.createElement('span');
+        // add the class to the 'span'
+        spaceSpan.setAttribute('class', 'space');
+        var newSpan = document.createElement('span');
+        // add the class to the 'span'
+        newSpan.setAttribute('class', 'autoquery');
+        newSpan.innerHTML = data.term+' ';
+        if(lastChild && lastChild.attributes.length > 0)
+        {
+            htmlElement.children[htmlElement.children.length - 1].outerHTML = newSpan.outerHTML+spaceSpan.outerHTML;
+        }else {
+            htmlElement.children[htmlElement.children.length - 2].outerHTML = newSpan.outerHTML+spaceSpan.outerHTML;
+        }
+        // htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
+        placeCaretAtEnd(htmlElement);
+        setSearchTermPopup(false);
+        console.log(htmlElement,'htmlElementauto');
+    }
+    const showOntologyCode=(id)=>{
+        let splitId = id.split(':');
+        return splitId[0];
+    }
+    const clearParser=()=>{
+        console.log('clear');
+        let htmlElement = document.getElementById("textareaDiv");
+        htmlElement.innerHTML = '';
+    }
+    const searchResult=async()=>{
+        console.log(queryParser,'queryParser');
+        let searchParam = `&json_query=${queryParser}&use_authority_sorting=${authoritySorting}`;
+        if(useDateSort)
+        {
+            searchParam += `&date_sorting_field=${dateSortField}`;
+            searchParam += `&date_sorting_dir=${dateSorting}`;
+            searchParam += `&use_date_sorting=${useDateSort}`;
+        }
+        searchParam += `&start=${searchStartPage}`;
+        searchParam += `&rows=${searchStopPage}`;
+        if(authorities)
+        {
+            searchParam += `&authorities=${authorities}`;
+        }
+        searchParam += `&grouping=${grouping}`;
+        console.log(searchParam,'searchParam');
+        const searchQueryRes = await fullTextService.getFullTextSearchResult(history,searchParam);
+        console.log(searchQueryRes,'searchQueryRes');
+    }
     return (
         <div className={classes.grow}>
             <Row>
@@ -340,6 +759,27 @@ function FullTextSearch() {
                         <div id="textareaDiv" contentEditable='true' onKeyDown={getKeyCode} onInput={e => parseQuery(e.target.textContent,e)}>
                         
                         </div>
+                        <div className={"popup-box "+(searchTermPopup ? 'd-block':'d-none')} style={{top: topPosition, left: leftPosition}} ref={wrapperRef}>
+                            <div className="box">
+                                {/* <span className="close-icon" onClick={props.handleClose}>x</span> */}
+                                <ul id="megamenu" className={"megamenu row "+classes.searchMenuList}>
+                                            {
+                                                searchTermData && searchTermData.length > 0 && searchTermData.map((data, i) =>{
+                                                    return (
+                                                        <li key={i} className="col-md-12 list-inline" onClick={()=>selectSearchTerm(data)}>
+                                                            <span><span dataClass="autoList" className="border px-0 py-1 col-md-3 align-center float-left">{showOntologyCode(data.id)}</span> <span dataClass="autoList" className="float-left col-md-9">{data.term}</span></span>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                            
+                                        </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <Button variant="contained" disableRipple={true} className={'loginSubmitButton float-right'} onClick={searchResult}>{t('submit')}</Button>
+                        <Button variant="contained" disableRipple={true} className={'loginSubmitCancel float-right mx-2'} onClick={clearParser}>{t('clear')}</Button>
                         <div>{ReactHtmlParser(testOutput)}</div>
                         <Popover
                             id={"simple-popover"}
@@ -407,10 +847,43 @@ function FullTextSearch() {
                                 </li>
                             </ul>
                         </Popover>
+                        
                     </div>
                 </Col>
             </Row>
+            
+            {/* <Popover
+                            id={"autocomplete-popover"}
+                            open={searchTermPopup}
+                            anchorEl={anchorEl}
+                            onClose={closePopup}
+                            anchorReference="anchorPosition"
+                            anchorPosition={{ top: topPosition, left: leftPosition }}
+                            anchorOrigin={{
+                              vertical: 'top',
+                              horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'left',
+                            }}
+                            className={classes.searchTermPopup}
+                        >
+                            <ul className={"megamenu row "+classes.searchMenuList}>
+                                {
+                                    searchTermData && searchTermData.length > 0 && searchTermData.map((data, i) =>{
+                                        return (
+                                            <li key={i} className="col-md-12 list-inline" onClick={()=>selectSearchTerm(data)}>
+                                                <span><span className="border px-0 py-1 col-md-3 align-center float-left">{showOntologyCode(data.id)}</span> <span className="float-left col-md-9">{data.term}</span></span>
+                                            </li>
+                                        )
+                                    })
+                                }
+                                
+                            </ul>
+                        </Popover> */}
         </div>
+        
     );
 }
 

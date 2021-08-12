@@ -48,4 +48,6 @@ export const url = {
     browseSeqDB:"do=gqfetch&db=id:**",
     getPageCount: "do=gquser.get_paging_size",
     updateSeqData:"do=gqworkflow.update&id=WID&format=json",
+    fullTextSearchTerm:"do=gqft.suggest_term&format=json",
+    fullTextSearchResult:"do=gqft.search_by_text&format=json"
 }

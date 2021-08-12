@@ -27,7 +27,7 @@
               this.found    = found;
               this.location = location;
               this.name     = "SyntaxError";
-  
+
               if (typeof Error.captureStackTrace === "function") {
                   Error.captureStackTrace(this, peg$SyntaxError);
               }
@@ -89,10 +89,14 @@
                           realright = null;
                       else if (right[0]['right'] == null) {
                           realright = right[0]['left'];
-                          if (right[0]['bad_operator'])
+                          if(realright)
+                          {
+                            if (right[0]['bad_operator'])
                               realright['bad_operator'] = right[0]['bad_operator'];
-                          else if (right[0]['operator'])
+                            else if (right[0]['operator'])
                               realright['operator'] = right[0]['operator'];
+                          }
+                          
                       } else
                           realright = right[0];
   
@@ -927,6 +931,7 @@
               }
   
               function peg$buildException(message, expected, found, location) {
+                  
                   function cleanupExpected(expected) {
                       var i = 1;
   
@@ -988,7 +993,8 @@
                   if (expected !== null) {
                       cleanupExpected(expected);
                   }
-  
+                  
+                //   console.log(buildMessage(expected, found),'buildMessage(expected, found)');
                   return new peg$SyntaxError(
                       message !== null ? message : buildMessage(expected, found),
                       expected,

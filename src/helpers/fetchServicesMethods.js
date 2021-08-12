@@ -164,7 +164,7 @@ export function get(url, history) {
         //         });
         // } else {
             const headers = {
-                // 'Accept': 'application/json',
+                'Accept': 'application/json',
                 // 'Cookie': 'PHPSESSID=ou3h9cqpcdm0sh3tq4adb5ipq2'
             };
             return axios.get(baseUrl + url, { headers })
