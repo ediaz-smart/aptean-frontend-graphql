@@ -288,5 +288,9 @@
     "savedsearchForm": "Saved Search Forms",
     "foldermoduletitle": "Search Result Report – Folder",
     "newpass": "New Password",
-    "renpass": "Re-enter new password"
+    "renpass": "Re-enter new password",
+    "fragmentNucPerError": "Please specify a valid required % identity for your search. The number must be between 91 and 100.",
+    "fragmentProPerError": "Please specify a valid required % identity for your search. The number must be between 81 and 100.",
+    "fragNucStretchError": "Please specify a valid number of required residues to match in your search. The number must be between 10 and 1000.",
+    "fragProStretchError": "Please specify a valid number of required residues to match in your search. The number must be between 5 and 1000."
 }

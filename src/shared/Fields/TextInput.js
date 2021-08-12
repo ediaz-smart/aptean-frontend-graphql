@@ -30,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
             fontWeight: '400',
             fontStyle: 'italic',
             lineHeight: '2px'
+    },
+    smallText: {
+        "& .MuiFormHelperText-root.Mui-error": {
+            fontStyle: 'italic',
+            width: "200px"
+        }
     }
 }));
 
@@ -46,7 +52,7 @@ export default function TextInput(props) {
         value={props.value}
         onChange={props.onChange}
         onKeyDown={props.onKeyDown}
-        className={classes.root+' '+props.className} 
+        className={classes.root+' '+props.className+' '+(!props.fullWidth  ? classes.smallText : "")} 
         error={props.error}
         helperText={props.helperText}
         InputLabelProps={{

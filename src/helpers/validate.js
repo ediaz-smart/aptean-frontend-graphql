@@ -178,19 +178,44 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
             .min(0, t('expectCutOffErr'))
             .max(100, t('expectCutOffErr'))
     } else if(searchAlgorithm && searchAlgorithm == "fragment") {
+        console.log('fragSeq', seqType)
         validationShape.fragmentStretch = yup
             .number()
             .integer(t('valueMustBeInteger'))
             .required(t('fragmentStretchRequired'))
             .typeError(t('fragmentStretchNotNumber'))
             .min(1, t('fragmentStretchNotNumber'))
-        validationShape.fragmentAminoAcid = yup
-            .number()
-            .integer(t('valueMustBeInteger'))
-            .required(t('genePastPercentageReq'))
-            .min(1, t('genePastPercentageIncorrect'))
-            .max(100, t('genePastPercentageIncorrect'))
-            .typeError(t('genePastPercentageIncorrect'))
+            if(seqType && seqType == "nucleotide") {
+                validationShape.fragmentAminoAcid = yup
+                .number()
+                .integer(t('valueMustBeInteger'))
+                .required(t('genePastPercentageReq'))
+                .min(91, t('fragmentNucPerError'))
+                .max(100, t('fragmentNucPerError'))
+                .typeError(t('fragmentNucPerError'))
+                validationShape.fragmentStretch = yup
+                .number()
+                .integer(t('valueMustBeInteger'))
+                .required(t('fragmentStretchRequired'))
+                .typeError(t('fragmentStretchNotNumber'))
+                .min(10, t('fragNucStretchError'))
+                .max(1000, t('fragNucStretchError'))
+            } else if(seqType && seqType == "protein") {
+                validationShape.fragmentAminoAcid = yup
+                .number()
+                .integer(t('valueMustBeInteger'))
+                .required(t('genePastPercentageReq'))
+                .min(81, t('fragmentProPerError'))
+                .max(100, t('fragmentProPerError'))
+                .typeError(t('fragmentProPerError'))
+                validationShape.fragmentStretch = yup
+                .number()
+                .integer(t('valueMustBeInteger'))
+                .required(t('fragmentStretchRequired'))
+                .typeError(t('fragmentStretchNotNumber'))
+                .min(5, t('fragProStretchError'))
+                .max(1000, t('fragProStretchError'))
+            }
     } 
 
     const validationSchema = yup.object().shape(validationShape);
@@ -346,7 +371,7 @@ yup.addMethod(yup.string, "validateSeq", function (message) {
 
     })
 })
-function AntibodySearchValidation() {
+function AntibodySearchValidation(saveFormValue) {
     // console.log('seqType', seqType)
     const { t, i18n } = useTranslation('common');
 
@@ -396,6 +421,13 @@ function AntibodySearchValidation() {
         lcFullSeq: yup.string()
             .validateSeq(t('fullSeqErr')),
 
+    }
+    if (saveFormValue) {
+        validationShape.formName = yup
+            .string()
+            .required(t('required'))
+            .max(48, t('48OnlyAllowed'))
+            .trim()
     }
 
     const validationSchema = yup.object().shape(validationShape);

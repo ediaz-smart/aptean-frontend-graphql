@@ -56,6 +56,8 @@ function SearchResultAntibody() {
     const [patientDBData, setPatientDBData] = useState(Constant.patientSearchDatabases);
     const [disableSearch, setDisableSearch] = React.useState(false);
     const [formdata, setFormData] = useState({});
+    const [saveFormValue, setSaveFormValue] = useState(false);
+
     const { workflowId } = useParams();
 
 
@@ -166,10 +168,10 @@ function SearchResultAntibody() {
             lcFullSeq: formdata && formdata.lcFullSeq ? formdata.lcFullSeq : ''
         },
         enableReinitialize: true,
-        validationSchema: Validate.AntibodySearchValidation(),
+        validationSchema: Validate.AntibodySearchValidation(saveFormValue),
         onSubmit: async (values) => {
             console.log(values, 'values');
-            let { searchName, cdrhcseq1, cdrhcseq2, cdrhcseq3, cdrlcseq1, cdrlcseq2, cdrlcseq3, hcOption1, hcOption2, hcOption3, lcOption1, lcOption2, lcOption3, strategy, percId, expectCutoff, wordSize, hcFullSeq, lcFullSeq } = values;
+            let { searchName, cdrhcseq1, cdrhcseq2, cdrhcseq3, cdrlcseq1, cdrlcseq2, cdrlcseq3, hcOption1, hcOption2, hcOption3, lcOption1, lcOption2, lcOption3, strategy, percId, expectCutoff, wordSize, hcFullSeq, lcFullSeq, formName } = values;
             if (cdrhcseq1 == '' && cdrhcseq2 == '' && cdrhcseq3 == '' && cdrlcseq1 == '' && cdrlcseq2 == '' && cdrlcseq3 == '') {
                 toast.error(t('CDRSeqValidation'));
                 return false;
@@ -215,9 +217,11 @@ function SearchResultAntibody() {
                 strat_blast_scoring_matrix_pro: 'BLOSUM62',
                 protdbs: selectDB,
                 protdb_type: 'multiple',
-                parent_id: parentId
+                parent_id: parentId,
+                template_name: saveFormValue ? formName : '', // Set this value when selecting "Save this form for later use as"
+
             }
-            // console.log(postData, 'postData');
+            console.log(postData, 'postData');
             const getResponse = await searchResAntibody.submitAnitbodySearch(postData, history, t);
             setSearchModal(false);
             if (getResponse && getResponse.response_status == 0) {
@@ -230,6 +234,13 @@ function SearchResultAntibody() {
             // history.push('/home');
         },
     });
+
+
+    function setFormValue() {
+        setSaveFormValue(!saveFormValue);
+        formik.setFieldValue("formName", '');
+    }
+
     return (
         <div className={classes.grow}>
             <form name="antibodySearchForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
@@ -661,8 +672,41 @@ function SearchResultAntibody() {
                                 </Typography>
                             </Col>
                         </Row>
+                        
                         <hr />
                     </Col>
+                    <Col lg="12" md="12" className="p-0">
+                            <Row>
+                                <Col md='4' className="">
+                                    <CheckBox
+                                        // defaultChecked
+                                        color="primary"
+                                        className={"float-left ml-2"}
+                                        name="saveForm"
+                                        id="saveForm"
+                                        onChange={setFormValue}
+                                        // checked={saveFormValue}
+                                    />
+                                    <label className={"checkBoxContent" + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
+                                </Col>
+                                <Col md='6'>
+                                    <TextInput
+                                        id="formName"
+                                        name="formName"
+                                        label='Name the form'
+                                        variant="outlined"
+                                        onChange={formik.handleChange}
+                                        fullWidth={true}
+                                        disabled={!saveFormValue}
+                                        value={formik.values.formName ? formik.values.formName : ""}
+                                        error={saveFormValue && Boolean(formik.errors.formName)}
+                                        helperText={saveFormValue && formik.errors.formName}
+                                    />
+                                </Col>
+                            </Row>
+                    <hr />
+                    </Col>
+                    
                     <Col lg="12" md="12" className="float-right mb-3">
                         <Button color={!disableSearch ? 'default' : 'primary'} variant="contained" className={" text-capitalize mr-2 float-right " + (!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} type="submit" disabled={!disableSearch}>{t('search')}</Button>&nbsp;&nbsp;&nbsp;
                     <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={homePage} type="submit">{t('cancel')}</Button>

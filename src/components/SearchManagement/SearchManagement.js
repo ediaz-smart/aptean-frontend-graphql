@@ -161,7 +161,7 @@ const useStyles = makeStyles((theme) => ({
     modalClassConDSI:{
         position: 'absolute',
         width: '96%',
-        height: '42%',
+        height: 'auto',
         top: '30%',
         left: '50%',
         right: 'auto',
@@ -202,7 +202,7 @@ const useStyles = makeStyles((theme) => ({
     modalClassConMTF:{
         position: 'absolute',
         width: '96%',
-        height: '62%',
+        height: 'auto',
         top: '30%',
         left: '50%',
         right: 'auto',
@@ -227,7 +227,7 @@ const useStyles = makeStyles((theme) => ({
     modalClassContent:{
         position: 'absolute',
         width: '96%',
-        height: '37%',
+        height: 'auto',
         top: '30%',
         left: '50%',
         right: 'auto',

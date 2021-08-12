@@ -804,6 +804,12 @@ function IpSeqSearch() {
                 setErrorMsg("Warning: "+resp.response_content.qdb.msg);
                 setErrorHeading('Please notice the warnings below and either fix it or submit as is.')
                 // window.scrollTo(0,0);
+            } else if(resp.response_status == 1 && resp.response_content.qdb && resp.response_content.qdb.msg) {
+                // setWarningMsg("Warning: "+resp.response_content.qdb.msg);
+                setShowErrorModal(true);
+                setErrorMsg(resp.response_content.qdb.msg);
+                setErrorHeading(t("seqSearchErrorOccured"))
+                // window.scrollTo(0,0);
             } else {
                 let setMessage = resp && resp.response_content && resp.response_content.message ? resp.response_content.message : "Unknown";
                 // setMessage = resp && resp.response_content && resp.response_content.qdb && resp && resp.response_content && resp.response_content.qdb.msg ? resp.response_content.qdb.msg : "Unknown";
