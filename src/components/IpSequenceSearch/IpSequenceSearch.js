@@ -922,11 +922,13 @@ function IpSeqSearch() {
             if (nucDb.includes(id)) {
                 if(nucDb.length == 1 && proDb.length > 0) {
                     setIsBothDbSelected(false);
+                    calTextCredits(null, false, "isCompare");
                 }
                 setNucDb(nucDb.filter(dbName => dbName !== id));
             } else {
                 if(nucDb.length == 0 && proDb.length > 0) {
                     setIsBothDbSelected(true);
+                    calTextCredits(null, true, "isCompare");
                 }
                 nucDb.push(id.toString());
                 setNucDb([...nucDb]);
@@ -936,12 +938,14 @@ function IpSeqSearch() {
                 if(proDb.length == 1 && nucDb.length > 0) {
                     console.log('inside pro', proDb.length)
                     setIsBothDbSelected(false);
+                    calTextCredits(null, false, "isCompare");
                 }
                 setProDb(proDb.filter(dbName => dbName !== id));
             } else {
                 if(proDb.length == 0 && nucDb.length > 0) {
                     console.log('inside pro', proDb.length)
                     setIsBothDbSelected(true);
+                    calTextCredits(null, true, "isCompare");
                 }
                 proDb.push(id.toString());
                 setProDb([...proDb]);
@@ -2122,7 +2126,7 @@ console.log('default', nucDefaultDb, 'pro', proDefaultDb)
                         {isSubmitActive && <Button  className="accountInfo" type="submit">
                             {t("submit")}
                         </Button>}
-                        {!isSubmitActive && <Button  className="accountInfo" disabled>
+                        {!isSubmitActive && <Button  className="cancelButtonDisable" disabled>
                             {t("submit")}
                         </Button>}
                         <Button className={classes.loginSubmitCancel} onClick={homeRedirect}>

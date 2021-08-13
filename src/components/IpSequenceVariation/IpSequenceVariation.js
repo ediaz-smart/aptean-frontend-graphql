@@ -82,6 +82,19 @@ const useStyles = makeStyles((theme) => ({
     mediumSizedTextBox: {
         width: "20%"
     },
+    loginSubmitCancel:{
+        backgroundColor: '#0182C5',
+        borderColor: '#1F4E79',
+        border: '2px solid #1F4E79' ,
+        color:'white',
+        margin:"4px",
+        float:'right',
+        textTransform: 'capitalize',
+        '&:hover': {
+          backgroundColor: '#0182C5',
+          boxShadow: 'none',
+        },
+    },
     '@media (min-width: 768px)': {
         desktopHelpLink: {
             display: 'block'
@@ -2064,7 +2077,7 @@ function IpSequenceVariation() {
                 </Row>
                 <br></br>
                 <Row >
-                    <Col>
+                    {/* <Col>
                         {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize " + classes.submitCss} type="submit">
                             {t("submit")}
                         </Button>}
@@ -2072,6 +2085,17 @@ function IpSequenceVariation() {
                             {t("submit")}
                         </Button>}
                         <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} onClick={homeRedirect}>
+                            {t("cancel")}
+                        </Button>
+                    </Col> */}
+                    <Col  >
+                        {isSubmitActive && <Button  className="accountInfo" type="submit">
+                            {t("submit")}
+                        </Button>}
+                        {!isSubmitActive && <Button  className="cancelButtonDisable" disabled>
+                            {t("submit")}
+                        </Button>}
+                        <Button className={classes.loginSubmitCancel} onClick={homeRedirect}>
                             {t("cancel")}
                         </Button>
                     </Col>

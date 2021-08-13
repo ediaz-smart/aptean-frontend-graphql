@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     smallText: {
         "& .MuiFormHelperText-root.Mui-error": {
             fontStyle: 'italic',
-            width: "200px"
+            width: "184px"
         }
     }
 }));
