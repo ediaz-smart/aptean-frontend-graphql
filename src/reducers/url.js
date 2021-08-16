@@ -49,5 +49,6 @@ export const url = {
     getPageCount: "do=gquser.get_paging_size",
     updateSeqData:"do=gqworkflow.update&id=WID&format=json",
     fullTextSearchTerm:"do=gqft.suggest_term&format=json",
-    fullTextSearchResult:"do=gqft.search_by_text&format=json"
+    fullTextSearchResult:"do=gqft.search_by_text&format=json",
+    getSearchCount:"do=gqfolder.get_folder_info&format=json"
 }

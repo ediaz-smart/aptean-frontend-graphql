@@ -547,13 +547,34 @@ function SearchManagement(props) {
             // toast.error('Unable to Delete');
         }
     }
-    async function getDefaultSearchResult(type, id, start, stop, isSearch) {
+    async function getDefaultSearchResult(type, id, start, stop) {
         let tempArr = [];
+        let pageStart, pageStop;
+        if(start && stop) {
+            pageStart = start;
+            pageStop = stop;
+        } else {
+            pageStart = 1;
+            pageStop = pageCount;
+        }
         console.log('pagesize', pageCount)
         // setSearchResultData([]);
         if (type == "defaultText") {
-            const result = await HomeService.getSearchResults(history);
-            if (result && result.response_content && result.response_content.length > 0) {
+            let recentParentId = parentFolderId;
+            let folderData;
+            if(!recentParentId) {
+                folderData = await SearchManagementService.getProjectFolders(history);
+                if (folderData && folderData.response_content) {
+                recentParentId = folderData.response_content.id;
+            }
+            }
+            const result = await HomeService.getSearchResults(history, pageStart, pageStop);
+            let recentCountResult;
+            if(recentParentId) {
+                recentCountResult = await HomeService.getSearchCount(recentParentId);
+            }
+            if (result && result.response_content && result.response_content.length > 0 && recentParentId) {
+                setFolderResultCount( recentCountResult && recentCountResult.response_content && recentCountResult.response_content.numerics && recentCountResult.response_content.numerics[0].resultSets);
                 // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchmanagement');
                 tempArr = await getSearchDataArr(result, 'searchmanagement');
                 // tempArr = _.orderBy(tempArr, [(obj) => new Date(obj.date)], ['desc']);
@@ -561,8 +582,8 @@ function SearchManagement(props) {
 
             }
         } else {
-            if (id && !isSearch) {
-                const result = await SearchManagementService.getFolderData(id, history, start, stop);
+            if (id && !isSearchDone) {
+                const result = await SearchManagementService.getFolderData(id, history, pageStart, pageStop);
                 if (result && result.response_content) {
                     setFolderResultCount(result.response_content.totalcount);
                     if (result.response_content.results.length > 0) {
@@ -571,8 +592,8 @@ function SearchManagement(props) {
                         console.log('inside folder', folderResultCount)
                     }
                 }
-            } else if(isSearch){
-                const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history, start, stop);
+            } else if(isSearchDone){
+                const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history, pageStart, pageStop);
                 if (getSearchResp && getSearchResp.response_content) {
                     setFolderResultCount(getSearchResp.response_content.totalcount);
                     if (getSearchResp.response_content.results.length > 0) {
@@ -723,7 +744,7 @@ function SearchManagement(props) {
             tempObj.icon = <Fragment>
             {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, datas.text_label)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
             {datas.type === "Folder" && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
-            {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>;
+            {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>
             tempObj.description = datas.description;
             tempObj.owner = datas._owner_full_name;
             tempObj.location = datas._absolute_path;
@@ -847,12 +868,13 @@ function SearchManagement(props) {
         // setTimeout(() => {
         if (event.text_label != "Recent Search Results") {
             setInfoFolderIds([]);
-            let start = 1;
-            let stop = pageCount;
-            getDefaultSearchResult('folder', event.id, start, stop);
-        } else {
-            getDefaultSearchResult('folder', event.id);
         }
+            // let start = 1;
+            // let stop = pageCount;
+            getDefaultSearchResult('folder', event.id, null);
+        // } else {
+        //     getDefaultSearchResult('folder', event.id);
+        // }
         // getDefaultSearchResult('folder', event.id);
         setDisableDelete(true);
         setDisableFolderDelete(false);
@@ -1036,18 +1058,20 @@ function SearchManagement(props) {
         if (page) {
             start = ((page - 1) * pageCount) + 1;
             stop = page * pageCount;
-            // start= page+1;
-            // stop =page+2;
             setCurrentPage(page)
         }
-        getDefaultSearchResult('folder', defaultTitleId, start, stop, isSearchDone);
+        if(defaultTitle == "Recent Search Results") {
+            getDefaultSearchResult('defaultText', '', start, stop);
+        } else {
+            getDefaultSearchResult('folder', defaultTitleId, start, stop);
+        }
     }
     useEffect(() => {
         // (async () => {
         // const result = dispatch(getSearchResult());
         getFolderResultData();
         getDefaultSearchResult('defaultText', '');
-
+            
         document.addEventListener("keydown", escFunction, false);
         // var elements = document.getElementsByClassName("infoIcon");
         // for (var i = 0; i < elements.length; i++) {
@@ -1173,11 +1197,11 @@ function SearchManagement(props) {
                         clearSelectedRows={clearCheckedRow}
 
                     />
-                    {defaultTitle && defaultTitle != "Recent Search Results" && searchResultData.length > 0 && <Row>
+                    {/* {defaultTitle && defaultTitle != "Recent Search Results" && searchResultData.length > 0 && <Row> */}
                     <Col className={'d-flex justify-content-center' + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="12">
                         <CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton defaultPage={1} page={currentPage}/>
                     </Col>
-                    </Row> }
+                    {/* </Row> } */}
 
                     <Col className={"float-left px-0 " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
                     
