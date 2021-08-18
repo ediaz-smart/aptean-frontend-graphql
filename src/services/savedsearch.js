@@ -15,7 +15,7 @@ function hideLoader() {
    async function getSavedSearchData() {
         try {
             // let apiurl = "do=gqtemplate.get_all&format=json&context=GqWfIpSearch_launch";
-            let apiurl = 'do=gqtemplate.get_all_ft&format=json&context[]=GqWfVMIpSearch_launch&context[]=GqWfIpSearch_launch';
+            let apiurl = 'do=gqtemplate.get_all_ft&format=json&context[]=GqWfVMIpSearch_launch&context[]=GqWfIpSearch_launch&context[]=GqWfABIpSearch_launch';
             return await get(apiurl)
                 .then((response) => {
                     // hideLoader();
