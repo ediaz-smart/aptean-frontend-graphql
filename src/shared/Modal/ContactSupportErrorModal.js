@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 	modalClassContent:{
 		position: 'absolute',
 		width: '96%',
-		height: '53%',
+		height: 'auto',
 		top: '30%',
 		left: '50%',
 		right: 'auto',
@@ -124,8 +124,8 @@ function ContactSupportErrorModal(props) {
                     <div className={classes.footerDiv}>
                     <Button onClick={()=>props.modalCallBack()} disableRipple={true} className='accountInfo'  variant="default">{t("tryAgain")}</Button>
 
-                        <Button onClick={() => redirect()} disableRipple={true} className={classes.buttonStyleCancel} color="default" variant="contained">{t("cancel")}</Button>
-
+                       {!props.type &&  <Button onClick={() => redirect()} disableRipple={true} className={classes.buttonStyleCancel} color="default" variant="contained">{t("cancel")}</Button>}
+                       {props.type && props.type == "mergeResult" &&  <Button onClick={()=>props.modalCallBack('cancel')} disableRipple={true} className={classes.buttonStyleCancel} color="default" variant="contained">{t("cancel")}</Button>}
                     </div>
                 </div>
             </Modal.Body>

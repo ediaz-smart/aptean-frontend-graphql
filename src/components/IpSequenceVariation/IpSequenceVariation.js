@@ -761,7 +761,7 @@ function IpSequenceVariation() {
                 // [{"P":"SEQUENCE_D1","O":"BEF","V":20210527},
                 //  {"P":"SEQUENCE_P9","O":"LTE","V":100000},
                 //  {"P":"SEQUENCE_D2","O":"BEF","V":20210527}]
-                sdb_filters: sdbFilterData && sdbFilterData.length > 0 ? sdbFilterData : "",
+                sdb_filters: sdbFilterData && sdbFilterData.length > 0 ? JSON.stringify(sdbFilterData) : "",
                 nucdb_type: "multiple", // always multiple
                 nucdbs: nucDb,
                 // nucdbs: "[\"p:GQPAT_NUC\", \"p:GENA\"]", // string array of databases
@@ -2025,10 +2025,9 @@ function IpSequenceVariation() {
                                     name="checkTerms"
                                     id="checkTerms"
                                     onChange={() => { setIsSubmitActive(!isSubmitActive) }}
+                                    checked={isSubmitActive}
                                 />
-                                <Typography className={"float-left mt-2"}>
-                                    {t("acceptTermsCheckBox")}
-                                </Typography>
+                                <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="checkTerms">{t("acceptTermsCheckBox")}</label>
                             </Col>
                         </Row>
                         }
@@ -2044,12 +2043,13 @@ function IpSequenceVariation() {
                             name="check"
                             id="check"
                             onChange={() => { setSendMailAfterSearch(!sendMailAfterSearch) }}
+                            checked={sendMailAfterSearch}
                         />
                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="check">{t("sendMailAfterSearch")}</label>
                     </Col>
                 </Row>
                 <Row>
-                    <Col md='4' className="">
+                    <Col md='4'>
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2057,6 +2057,7 @@ function IpSequenceVariation() {
                             name="saveForm"
                             id="saveForm"
                             onChange={setFormValue}
+                            checked={saveFormValue}
                         />
                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
@@ -2077,17 +2078,6 @@ function IpSequenceVariation() {
                 </Row>
                 <br></br>
                 <Row >
-                    {/* <Col>
-                        {isSubmitActive && <Button color="primary" variant="contained" className={"float-right text-capitalize " + classes.submitCss} type="submit">
-                            {t("submit")}
-                        </Button>}
-                        {!isSubmitActive && <Button variant="contained" className="float-right text-capitalize" disabled>
-                            {t("submit")}
-                        </Button>}
-                        <Button color="primary" variant="contained" className={"float-right  text-capitalize " + classes.marginRightCancel} onClick={homeRedirect}>
-                            {t("cancel")}
-                        </Button>
-                    </Col> */}
                     <Col  >
                         {isSubmitActive && <Button  className="accountInfo" type="submit">
                             {t("submit")}

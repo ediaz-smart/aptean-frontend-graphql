@@ -48,11 +48,9 @@ async function getSearchResults(history, start, stop) {
 }
 async function getSearchResultsStatus(id) {
     try {
-        showLoader();
         let urlParam = url.searchResultStatus+'&workflow=id:'+id;
         return await get(urlParam)
         .then((response) => {
-            hideLoader();
             // if(response && response.data.response_status == 0)
             // {
             // }else {

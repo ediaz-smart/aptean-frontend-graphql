@@ -10,7 +10,8 @@ const Validate = {
     IpSeqSearchValidate,
     InformationDataValidate,
     ChangePasswordValidate,
-    AntibodySearchValidation
+    AntibodySearchValidation,
+    MergeResultsValidate    
 };
 
 function LoginValidate() {
@@ -444,5 +445,15 @@ yup.addMethod(yup.string, "validateFormName", function(message, isSaveForm) {
         return isValid || createError(path, message)
     })
 });
+
+function MergeResultsValidate() {
+    const { t, i18n } = useTranslation('common');
+    const validationSchema = yup.object({
+        title: yup
+            .string()
+            .required(t('requird'))
+    });
+    return validationSchema;
+}
 
 export default Validate;

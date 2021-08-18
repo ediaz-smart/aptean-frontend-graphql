@@ -2066,10 +2066,9 @@ console.log('default', nucDefaultDb, 'pro', proDefaultDb)
                                     name="checkTerms"
                                     id="checkTerms"
                                     onChange={() => { setIsSubmitActive(!isSubmitActive) }}
+                                    checked={isSubmitActive}
                                 />
-                                <Typography className={"float-left mt-2"}>
-                                    {t("acceptTermsCheckBox")}
-                                </Typography>
+                                <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="checkTerms">{t("acceptTermsCheckBox")}</label>
                             </Col>
                         </Row>
                         }
@@ -2085,12 +2084,13 @@ console.log('default', nucDefaultDb, 'pro', proDefaultDb)
                             name="check"
                             id="check"
                             onChange={() => { setSendMailAfterSearch(!sendMailAfterSearch) }}
+                            checked={sendMailAfterSearch}
                         />
                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="check">{t("sendMailAfterSearch")}</label>
                     </Col>
                 </Row>
                 <Row>
-                    <Col md='4' className="">
+                    <Col md='4'>
                         <CheckBox
                             // defaultChecked
                             color="primary"

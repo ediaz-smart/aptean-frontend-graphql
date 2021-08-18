@@ -119,10 +119,10 @@
 }
 
 .cancelButtonModal {
-    background-color: #0182C5;
-    border-color: #1F4E79;
-    border: 2px solid #1F4E79;
-    color: white;
+    background-color: #0182C5 !important;
+    border-color: #1F4E79 !important;
+    border: 2px solid #1F4E79 !important;
+    color: white !important;
     float: right;
     text-transform: none !important;
 }
@@ -211,27 +211,24 @@
 }
 
 .cancelButtonClass {
-    background-color: #0182C5;
-    border-color: #1F4E79;
-    border: 2px solid #1F4E79;
-    color: white;
-    text-transform: capitalize;
+    background-color: #0182C5 !important;
+    border: 2px solid #1F4E79 !important;
+    color: white !important;
+    text-transform: capitalize !important;
 }
 
 .submitButtonClass {
-    background-color: #db862c;
-    border-color: #ca751b;
-    border: 2px solid #ca751b;
-    color: white;
-    text-transform: capitalize;
+    background-color: #db862c !important;
+    border: 2px solid #ca751b !important;
+    color: white !important;
+    text-transform: capitalize !important;
 }
 
 .disableButtonClass {
-    background-color: #EEEEEE;
-    border-color: #a2a2a3;
-    border: 2px solid #CCCCCC;
-    color: #777777;
-    text-transform: capitalize;
+    background-color: #EEEEEE !important;
+    border: 2px solid #CCCCCC !important;
+    color: #777777 !important;
+    text-transform: capitalize !important;
 }
 
 .loginSubmit {

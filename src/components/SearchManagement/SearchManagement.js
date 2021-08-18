@@ -851,6 +851,7 @@ function SearchManagement(props) {
         setMoveFolderModalShow(true);
     }
     const changeTitle = (event) => {
+        //clear check box
         setClearCheckedRow(!clearCheckedRow);
 
         setDefaultTitle(event.text_label);
@@ -1064,6 +1065,14 @@ function SearchManagement(props) {
             getDefaultSearchResult('defaultText', '', start, stop);
         } else {
             getDefaultSearchResult('folder', defaultTitleId, start, stop);
+        }
+    }
+
+    function mergeModalFunction(type) {
+        console.log('searchType', type)
+        setShowMergeModal(!showMergeModal);
+        if(type && type == "success") {
+            updateDefaultValue('Recent Search Results');
         }
     }
     useEffect(() => {
@@ -1404,7 +1413,7 @@ function SearchManagement(props) {
             <MergeResults 
             show={showMergeModal}
             selectData={selectData}
-            close={()=>setShowMergeModal(!showMergeModal)}/>
+            close={(type)=> mergeModalFunction(type)}/>
         </div>
 
     );

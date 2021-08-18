@@ -187,6 +187,29 @@ async function getSearchResultSet(search,history, start, stop) {
         console.error(error);
     }
 }
+
+async function mergeResults(groupA, groupB, title, mergeType) {
+    try {
+        
+        let mergeUrl = `${url.mergeResults}&title=${title}&merge_type=${mergeType}`
+        // &groupA=${groupA}&groupB=${groupB}&title=${title}&merge_type=${mergeType}`;
+        mergeUrl = groupA && groupA.length > 0 && groupB && groupB.length > 0 ? `${mergeUrl}&groupA=${groupA.join(',')}&groupB=${groupB.join(',')}` : groupA && groupA.length  == 0 && groupB && groupB.length > 0 ? `${mergeUrl}&groupB=${groupB.join(',')}` : groupB && groupB.length  == 0 && groupA && groupA.length > 0 ? `${mergeUrl}&groupA=${groupA.join(',')}` : mergeUrl ;
+        showLoader();
+        return await get(mergeUrl)
+        .then((response) => {
+            hideLoader();
+            return response;
+        })
+        .catch((error) => {
+            hideLoader();
+            //toast.error('A');
+            console.log("error::", error);
+        });
+    } catch (error) {
+        hideLoader();
+        console.error(error);
+    }
+}
 const SearchManagementService = {
     getProjectFolders,
     getProjectFolderData,
@@ -194,7 +217,8 @@ const SearchManagementService = {
     deleteSearchResult,
     moveToFolder,
     addFolder,
-    getSearchResultSet
+    getSearchResultSet,
+    mergeResults
 };
 
 export default SearchManagementService;

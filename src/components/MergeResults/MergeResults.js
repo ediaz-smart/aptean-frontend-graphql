@@ -27,6 +27,13 @@ import nonOverlap from '../../assets/image/nonOverlap.png';
 import nonOverlapGroupA from '../../assets/image/nonOverlapGroupA.png';
 import nonOverlapGroupB from '../../assets/image/nonOverlapGroupB.png';
 
+//service
+import SearchManagementService from '../../services/searchmanagement';
+
+//component
+import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModal';
+
+
 
 const useStyles = makeStyles((theme) => ({
 
@@ -107,71 +114,29 @@ const data = [
     {
         name: "Complete merge, every document in group A and B",
         result: "pass",
-        value: "complete"
+        value: "COMPLETE"
     },
     {
         name: "Overlap, only documents common to both group A and B",
         result: "pass",
-        value: "overlap"
+        value: "OVERLAP"
     },
     {
         name: "Non-overlap, only documents unique to group A or B",
         result: "pass",
-        value: "nonOverlap"
+        value: "ONLY_A_B"
     },
     {
         name: "Non-overlap group A, only documents unique to group A",
         result: "pass",
-        value: "nonOverlapGroupA"
+        value: "ONLY_A"
     },
     {
         name: "Non-overlap group B, only documents unique to group B",
         result: "pass",
-        value: "nonOverlapGroupB"
+        value: "ONLY_B"
     },
 
-];
-
-const columns = [
-    {
-        name: "Group A",
-        selector: "groupA",
-        center: true,
-        width: "11%",
-        cell: row => <RadioButton
-            color="primary"
-            // className={"float-left p-0 " + classes.checkBox}
-            name="groupA"
-            id="groupA"
-        // checked={termsDisable}
-        // onClick={() => setTermsDisable(!termsDisable)}
-        />
-    },
-    {
-        name: "Group B",
-        selector: "groupB",
-        center: true,
-        width: "11%",
-        cell: row => <RadioButton
-            color="primary"
-            // className={"float-left p-0 " + classes.checkBox}
-            name="acceptTerms"
-            id="acceptTerms"
-        // checked={termsDisable}
-        // onClick={() => setTermsDisable(!termsDisable)}
-        />
-    },
-    {
-        name: "Type",
-        selector: "type",
-        center: true,
-        width: "30%"
-    },
-    {
-        name: "Description",
-        selector: "description",
-        center: true
-    }
 ];
 
 const customStyles = {
@@ -223,11 +188,82 @@ function MergeResults(props) {
     const [formData, setFormData] = useState(data);
     const [allChecked, setAllChecked] = useState(false);
     const [isChecked, setIsChecked] = useState([]);
-    const [mergeType, setMergeType] = useState("complete");
+    const [mergeType, setMergeType] = useState("COMPLETE");
+    const [groupAValue, setGroupAValue] = useState([]);
+    const [groupBValue, setGroupBValue] = useState([]);
+    const [groupValue, setGroupValue] = useState([]);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errorMsg, setErrorMsg] = useState();
+    const [errorHeading, setErrorHeading] = useState("");
+
+    const { show, selectData, close } = props;
+
     // reset login status
     useEffect(() => {
         //dispatch(userActions.logout()); 
     }, []);
+    let initialValues = { title: "" }
+    const formik = useFormik({
+        initialValues,
+        validationSchema: Validate.MergeResultsValidate(),
+        onSubmit: async (values, { resetForm }) => {
+            console.log('values', values)
+            // let data = {
+            //     groupA: groupAValue,
+            //     groupB: groupBValue,
+            //     title: values.title,
+            //     merge_type: mergeType
+            // }
+            let resp = await SearchManagementService.mergeResults(groupAValue, groupBValue, values.title, mergeType);
+            // console.log('JSON.parse(result)', JSON.parse(result))
+            // let resp =  result ? JSON.parse(result.) : "";
+            if (resp && resp.response_status == 0) {
+                let result = resp.response_content ? JSON.parse(resp.response_content) : "";
+                console.log('result', result)
+
+                if (result.status && result.status == "success") {
+                    // setShowSuccessModal(true);
+                    // closeSuccessModal();
+                    // close();
+                    // resetForm(initialValues);
+                    clearForm('closeMergeModal', 'success');
+                } else if (result.status && result.status == "error") {
+                    setShowErrorModal(true);
+                    setErrorMsg(result.error.message ? result.
+                        error.message : "Unknown");
+                    setErrorHeading(t("mergeResultErrorHeading"))
+                }
+            } else {
+                setShowErrorModal(true);
+                    setErrorMsg(resp.response_content.message ? resp.response_content.message : "Unknown");
+                    setErrorHeading(t("mergeResultErrorHeading"))
+            }
+        }
+    });
+
+    function handleErrorModal(type) {
+        setShowErrorModal(!showErrorModal);
+        // close()
+        if(type && type == "cancel") {
+            clearForm();
+        }
+    }
+     function clearForm(type, resultType) {
+        setGroupAValue([]);
+        setGroupBValue([]);
+        setMergeType("COMPLETE");
+        formik.setFieldValue("title", "");
+        if(type && type == "closeMergeModal" && !resultType) {
+            close();
+        } else if(type && type == "closeMergeModal" && resultType) {
+            close(resultType);
+        }
+     }
+
+    function closeSaveModal() {
+        setShowSuccessModal(false);
+    }
 
     const handleSingleCheck = e => {
         const { name } = e.target;
@@ -241,13 +277,129 @@ function MergeResults(props) {
         setAllChecked(isChecked.length === formData.length)
     };
 
-    const { show, selectData, close } = props;
+    const setGroupClass = (name, value) => {
+        // console.log('target', e.target)
+        // const { name, value } = e.target;
+        // if (groupAValue.includes(value)) {
+        //     setGroupValue(groupValue.filter(checked_name => checked_name !== value));
+        // } else {
+        //     groupValue.push(value);
+        //     setGroupValue([...groupValue])
+        // }
+
+        if (name && name == "groupA" && value) {
+            if (groupAValue.includes(value)) {
+                setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
+            } else {
+                groupAValue.push(value);
+                setGroupAValue([...groupAValue]);
+                // groupValue.push(value);
+                // setGroupValue([...groupValue]);
+            }
+            if (groupBValue.includes(value)) {
+                setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
+            }
+            // setGroupAValue(value);
+        } else if (name && name == "groupB" && value) {
+            // setGroupBValue(value);
+            if (groupBValue.includes(value)) {
+                setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
+            } else {
+                groupBValue.push(value);
+                setGroupBValue([...groupBValue]);
+                // groupValue.push(value);
+                // setGroupValue([...groupValue]);
+            }
+            if (groupAValue.includes(value)) {
+                setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
+            }
+        }
+    }
+
+    console.log('groupA', groupAValue, 'groupB', groupBValue)
+
+
+    const columns = [
+        {
+            name: "Group A",
+            selector: "groupA",
+            center: true,
+            width: "11%",
+            cell: (row, index) => <FormControl component="fieldset">
+                <RadioGroup row name={"groupValue_" + index} onChange={(e) => setGroupClass('groupA', e.target.value)} value={groupAValue.includes(row.id) ? row.id : ""}>
+                    <FormControlLabel value={row.id} control={<RadioButton />} className="bodyText" />
+                </RadioGroup>
+            </FormControl>
+            // <input
+            // type="radio"
+            //     color="primary"
+            //     // className={"float-left p-0 " + classes.checkBox}
+            //     name={"groupValue_"+index}
+            //     id="groupValue"
+            //     value={row.id}
+            //     checked={groupAValue.includes(row.id)}
+            //     onChange={(e)=>setGroupClass('groupA', e.target.value)}
+            // />
+
+
+        },
+        {
+            name: "Group B",
+            selector: "groupB",
+            center: true,
+            width: "11%",
+            cell: (row, index) => <FormControl component="fieldset">
+                <RadioGroup row name={"groupValue_" + index} onChange={(e) => setGroupClass('groupB', e.target.value)} value={groupBValue.includes(row.id) ? row.id : ""}>
+                    <FormControlLabel value={row.id} control={<RadioButton />} className="bodyText" />
+                </RadioGroup>
+            </FormControl>
+            // <input
+            // type="radio"
+            //     color="primary"
+            //     // className={"float-left p-0 " + classes.checkBox}
+            //     name={"groupValue_"+index}
+            //     id="groupValue"
+            //     value={row.id}
+            //     checked={groupBValue.includes(row.id)}
+            //     onChange={(e)=>setGroupClass('groupB', e.target.value)}
+            // />
+        },
+        {
+            name: "Type",
+            selector: "type",
+            center: true,
+            width: "30%"
+        },
+        {
+            name: "Description",
+            selector: "description",
+            center: true
+        }
+    ];
+
     console.log('data', mergeType)
 
-    let imageSrc = mergeType == "complete" ? complete : mergeType == "overlap" ? overlap : mergeType == "nonOverlap" ? nonOverlap : mergeType == "nonOverlapGroupA" ? nonOverlapGroupA : nonOverlapGroupB;
+    let imageSrc = mergeType == "COMPLETE" ? complete : mergeType == "OVERLAP" ? overlap : mergeType == "ONLY_A_B" ? nonOverlap : mergeType == "ONLY_A" ? nonOverlapGroupA : nonOverlapGroupB;
+    console.log('formik', formik)
+
+    let subjectText = "GenomeQuest: Error merging the selected items [Error code: " + errorMsg + "]";
 
     return (
         <Container className="mt-100">
+            {/* <SeqVIModal
+                show={showSuccessModal}
+                onMessage={t('searchSubmitted')}
+                saveCallBack={closeSaveModal}
+            /> */}
+            <ContactSupportErrorModal
+                show={showErrorModal}
+                errorCode={errorMsg}
+                modalCallBack={handleErrorModal}
+                subjectText={subjectText}
+                errorContent={errorHeading}
+                isWarning={false}
+                type="mergeResult"
+            />
             {/* <Button onClick={() => setLgShow(true)}>Large modal</Button> */}
             <Modal
                 size="lg"
@@ -256,60 +408,65 @@ function MergeResults(props) {
                 aria-labelledby="example-modal-sizes-title-lg"
             >
                 <Modal.Header className={classes.modalHeader}>
-                    <Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={close} /></Link>
+                    <Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={() => clearForm("closeMergeModal")} /></Link>
                 </Modal.Header>
                 <Modal.Body className={classes.modalBody}>
-                    <h4 className={"subHeading " + classes.titleFont}>Merge Result Sets</h4>
-                    <p><span className={classes.subTitleFont}>Step 1 - </span><span>Name the new result set</span></p>
-                    <div className="form-group mb-4">
-                        <TextInput
-                            fullWidth
-                            id="userName"
-                            name="userName"
-                            label='Result Name'
-                            variant="outlined"
-                            value=''
-                            className={classes.resultTextField}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <p><span className={classes.subTitleFont}>Step 2 - </span><span>Put the contributing result sets into one of two groups</span></p>
-                        <DataTable
-                            columns={columns}
-                            data={selectData && selectData.selectedRows}
-                            defaultSortField="date"
-                            defaultSortAsc={false}
-                            sortable={false}
-                            sortServer={true}
-                            noDataComponent={t('noSearchSubmit')}
-                            customStyles={customStyles}
-                            selectableRowsNoSelectAll
-                            noHeader={true}
-                        />
-                    </div>
-                    <Row className="mb-4">
-                        <Col sm="12" md="8">
-                            <p><span className={classes.subTitleFont}>Step 3 - </span><span>Choose how these two groups are merged</span></p>
-                            <div className="form-group">
-                                <FormControl component="fieldset">
-                                    <RadioGroup row name="mergeType" value={mergeType} onChange={(e) => setMergeType(e.target.value)}>
-                                        {formData.map((test, index) => (
-                                            <FormControlLabel value={test.value} control={<RadioButton />} label={test.name} className="bodyText" />
-                                        ))
-                                        }
-                                    </RadioGroup>
-                                </FormControl>
+                    <form name="mergeResultsForm" onSubmit={formik.handleSubmit}>
+                        <h4 className={"subHeading " + classes.titleFont}>Merge Result Sets</h4>
+                        <p><span className={classes.subTitleFont}>Step 1 - </span><span>Name the new result set</span></p>
+                        <div className="form-group mb-4">
+                            <TextInput
+                                fullWidth
+                                id="title"
+                                name="title"
+                                label='Result Name'
+                                variant="outlined"
+                                value={formik.values.title}
+                                onChange={formik.handleChange}
+                                className={classes.resultTextField}
+                                error={formik.touched.title && Boolean(formik.errors.title)}
+                                helperText={formik.touched.title && formik.errors.title}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <p><span className={classes.subTitleFont}>Step 2 - </span><span>Put the contributing result sets into one of two groups</span></p>
+                            <DataTable
+                                columns={columns}
+                                data={selectData && selectData.selectedRows}
+                                defaultSortField="date"
+                                defaultSortAsc={false}
+                                sortable={false}
+                                sortServer={true}
+                                noDataComponent={t('noSearchSubmit')}
+                                customStyles={customStyles}
+                                selectableRowsNoSelectAll
+                                noHeader={true}
+                            />
+                        </div>
+                        <Row className="mb-4">
+                            <Col sm="12" md="8">
+                                <p><span className={classes.subTitleFont}>Step 3 - </span><span>Choose how these two groups are merged</span></p>
+                                <div className="form-group">
+                                    <FormControl component="fieldset">
+                                        <RadioGroup row name="mergeType" value={mergeType} onChange={(e) => setMergeType(e.target.value)}>
+                                            {formData.map((test, index) => (
+                                                <FormControlLabel value={test.value} control={<RadioButton />} label={test.name} className="bodyText" />
+                                            ))
+                                            }
+                                        </RadioGroup>
+                                    </FormControl>
 
-                            </div>
-                        </Col>
-                        <Col sm="12" md="4" >
-                            <img src={imageSrc} alt="ModuleImage" className={classes.imageStyle} />
-                        </Col>
-                    </Row>
-                    <div className='float-right'>
-                        <Button className={"cancelButtonClass"} onClick={close}>Cancel</Button>
-                        <Button className={"submitButtonClass"}>Merge Results</Button>
-                    </div>
+                                </div>
+                            </Col>
+                            <Col sm="12" md="4" >
+                                <img src={imageSrc} alt="ModuleImage" className={classes.imageStyle} />
+                            </Col>
+                        </Row>
+                        <div id="mergeButtonDiv">
+                            <Button type="submit" className={"submitButtonClass float-right ml-2"} id="mergeSubmit">Merge Results</Button>
+                            <Button className={"cancelButtonClass float-right"} onClick={() => clearForm("closeMergeModal")} id="mergeCancel">Cancel</Button>
+                        </div>
+                    </form>
                 </Modal.Body>
             </Modal>
         </Container>
