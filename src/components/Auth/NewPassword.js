@@ -90,6 +90,7 @@ function NewPassword() {
     // const [retryState, setRetryState] = useState(false);
     const [passwordForm, setPasswordForm] = useState(false);
     const [sucPasswordForm, setSucPasswordForm] = useState(false);
+    const [sucKey, setSucKey] = useState(false);
 
     const [verifycaptchaCode, setcaptchaCode] = useState(); 
     const dispatch = useDispatch();
@@ -148,7 +149,9 @@ function NewPassword() {
                 if(result && result.response_content && result.response_content.status)
                 {
                     result.response_content.status == 'valid_auth' ? setPasswordForm(true) : setPasswordForm(false);
-                    
+                    result.response_content.status == 'invalid_auth' ? setSucKey(false) : setSucKey(true);
+                    var test = sucKey;
+                    console.log('test');
                 }
     
             }
@@ -236,7 +239,7 @@ function NewPassword() {
                        
                         </div>
                     </form>
-                    <div className={'p-4 ' +( !sucPasswordForm && !passwordForm ? 'd-block' : 'd-none')}>
+                    <div className={'p-4 ' +(sucKey && !sucPasswordForm && !passwordForm ? 'd-block' : 'd-none')}>
 
                             <h5>Password Recovery</h5>
                             <br />
@@ -245,7 +248,7 @@ function NewPassword() {
                             <p>Please contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.
                             </p>
                             </div>
-                     <div className={'p-4 ' +(sucPasswordForm && !passwordForm ? 'd-block' : 'd-none')}>
+                            <div className={'p-4 ' +(sucKey && sucPasswordForm && !passwordForm ? 'd-block' : 'd-none')}>
 
                             <h5>Password Recovery</h5>
                             <br />
@@ -257,6 +260,14 @@ function NewPassword() {
                             <Button variant="contained" className='accountInfo' onClick={()=>loginPage()}>Login</Button> :
 
                             </div>
+                            <div className={'p-4 ' +( !sucKey ? 'd-block' : 'd-none')}>
+
+                                    <h5>Password Recovery</h5>
+                                    <br />
+                                    <br />
+                                    <p>The password recovery link is invalid. It might be expired, please try <a href="query?do=gquser.recover_password">Password Recovery</a> again to get a new link.</p>
+                            </div>
+
 
                             {/* <div className={'p-4 ' +(passwordForm ? 'd-block' : 'd-block')}>
 
