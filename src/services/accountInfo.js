@@ -18,7 +18,7 @@ async function getAccountInfo() {
             return await get(url.accountInfo)
             .then((response) => {
                 hideLoader();
-                console.log(JSON.stringify(response));
+                // console.log(JSON.stringify(response));
                 return response;
             })
             .catch((error) => {
@@ -55,10 +55,6 @@ async function updateUser(id, firstName, lastName, currentPassword){
 }
 
 async function updatePass(id, newPassword1, newPassword2, currentPassword){
-    console.log(id,"id");
-    console.log(newPassword1,"newPassword1");
-    console.log(newPassword2,"newPassword2");
-    console.log(currentPassword,"currentPassword");
     if( id == "" || newPassword1 == "" || newPassword2 == "" || currentPassword == "" ){
         console.error("needs all Parameters");
         toast.error("Failed to update password");
@@ -68,7 +64,7 @@ async function updatePass(id, newPassword1, newPassword2, currentPassword){
         let stringBuild= "do=gquser.update&id="+id+"&password1="+newPassword1+"&user_password_again="+newPassword2+"&curr_password="+currentPassword+"&format=json";
 
         let url= stringBuild;
-        console.log(url,"jfyhgfhjfhjhjghjghjghjghjgjhghjghjghjghj");
+        // console.log(url,"jfyhgfhjfhjhjghjghjghjghjgjhghjghjghjghj");
         const responseData = await update(url);
         return responseData;
     }
@@ -80,7 +76,7 @@ async function updateResetPass(userId,key, newPassword1)
         const pass = {
             password1 :newPassword1
         }
-        console.log(userId,"USERID USERID USERID USERID USERID USERID USERID USERID USERID USERID USERID USERID");
+        // console.log(userId,"USERID USERID USERID USERID USERID USERID USERID USERID USERID USERID USERID USERID");
         const urlParam = 'do=gquser.reset_password&userid'+userId+'&key='+key+'&format=json';
         showLoader();
         return await post(urlParam,pass)
@@ -100,7 +96,7 @@ async function updateResetPass(userId,key, newPassword1)
 }
 async function authCheckInfo(userId,key)
 { 
-    console.log(userId,"userID value");
+    // console.log(userId,"userID value");
      
         try {
             let apiUrl = 'do=gquser.reset_password&userid'+userId+'&key='+key+'&format=json';
@@ -109,7 +105,7 @@ async function authCheckInfo(userId,key)
             return await get(apiUrl)
             .then((response) => {
                 hideLoader();
-                console.log(JSON.stringify(response));
+                // console.log(JSON.stringify(response));
                 return response;
             })
             .catch((error) => {

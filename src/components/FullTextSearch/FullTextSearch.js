@@ -41,6 +41,8 @@ let ORString = '<span class="orClass opClass">OR</span> ';
 let NOTString = '<span class="notClass opClass">NOT</span> ';
 let SpaceString = '<span class="space"> </span>';
 let queryString = '<span class="query"></span>';
+let classArray = ['andClass','orClass','notClass','autoquery']
+let removeClassArray = ['andClass','orClass','notClass']
 function FullTextSearch() {
     const { t, i18n } = useTranslation("common");
     const classes = useStyles();
@@ -55,6 +57,7 @@ function FullTextSearch() {
     const [topPosition,setTopPosition] = useState(220);
     const [leftPosition,setLeftPosition] = useState(65);
     const [keyCode, setKeyCode] = React.useState(null);
+    const [keyCodeEvent, setKeyCodeEvent] = React.useState(null);
 
     // For Auto Complete Search
     const [searchTermPopup, setSearchTermPopup] = React.useState(false);
@@ -118,9 +121,60 @@ function FullTextSearch() {
         }
 	};
     const getKeyCode = (e)=>{
-        setKeyCode(e.keyCode)
+        setKeyCode(e.keyCode);
+        setKeyCodeEvent(e);
+        let getCurrentSel = window.getSelection();
+        console.log(e.keyCode,'e.keyCodee.keyCode');
+        console.log(getCurrentSel,'getCurrentSel');
+        if(e.keyCode == 8)
+        {
+            if(getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode)
+            {
+                if(getCurrentSel.focusNode.parentNode.className)
+                {
+                    let getClass = getCurrentSel.focusNode.parentNode.className.split(' ');
+                    console.log(getClass,'getClass');
+                    console.log(getCurrentSel.focusNode.parentNode.className,'getCurrentSelclassName1');
+                    console.log(getClass[0],'getClass1');
+                    if(removeClassArray.includes(getClass[0]))
+                    {
+                        e.preventDefault();
+                    }
+                }
+            }
+        }
     }
-    
+    const callParseQuery = (value,element)=>{
+        setTimeout(() => {
+            console.log(keyCode,'checkkeyCode');
+            console.log(keyCodeEvent,'keyCodeEvent');
+            let getCurrentSel = window.getSelection();
+            console.log(getCurrentSel,'getCurrentSel1');
+            console.log(element,'element');
+            
+            if(keyCode == 8 && getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode)
+            {
+                if(getCurrentSel.focusNode.parentNode.className)
+                {
+                    let getClass = getCurrentSel.focusNode.parentNode.className.split(' ');
+                    console.log(getClass,'getClass');
+                    console.log(getCurrentSel.focusNode.parentNode.className,'getCurrentSelclassName2');
+                    console.log(getClass[0],'getClass2');
+                    if(removeClassArray.includes(getClass[0]))
+                    {
+                        keyCodeEvent.preventDefault();
+                        element.preventDefault();
+                    }else {
+                        parseQuery(value,element)
+                    }
+                }
+            }else {
+                parseQuery(value,element)
+            }
+            
+            
+        }, 100);
+    }
     const parseQuery = (value,element) =>{
         // let value = element.target.textContent;
         console.log(element,'innerHTML');
@@ -139,14 +193,14 @@ function FullTextSearch() {
         {
             if(value.length > 1)
             {
-                replaceStringHtml(value,keyCode,element);
+                replaceStringHtml(value,keyCode,checkLastChar);
                 
             }else {
                 value="";
                 updateHtmlElement(value);
             }
         }else {
-            replaceStringHtml(value,keyCode,element);
+            replaceStringHtml(value,keyCode,checkLastChar);
             // replaceStringHtml(value,keyCode);
         }
         
@@ -170,16 +224,16 @@ function FullTextSearch() {
         
     }
     
-    function replaceStringHtml(value,keyCode,element){
-
-        console.log(value,'value');
+    function replaceStringHtml(value,keyCode,checkLastChar){
+        let getCurrentSel = window.getSelection();
+        console.log(getCurrentSel,'getCurrentSel');
+        console.log(keyCodeEvent,'keyCodeEvent');
         let htmlElement = document.getElementById("textareaDiv");
         // console.log(htmlElement,'htmlElement');
         let lastValue = value.slice(-1);
         let lastPrevValue = value.charAt(value.length-2);
         // console.log(lastChildEl,'lastChildEl1');
         console.log(lastValue,'lastValue');
-        console.log(htmlElement.children,'children');
         let lastChild = htmlElement.children[htmlElement.children.length - 1];
         let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
         
@@ -208,9 +262,16 @@ function FullTextSearch() {
         }
         let checkLastThreeVal = getChildText+lastValue;
         // For Auto complete
-        if(checkLastThreeVal.length > 2)
+        let checkCharLen = checkLastThreeVal.length;
+        if(keyCode == 8)
+        {
+            checkCharLen = checkCharLen - 1;
+        }
+        if(checkCharLen > 2)
         {
             searchTerm(checkLastThreeVal);
+        }else if(checkCharLen < 3){
+            setSearchTermPopup(false);
         }
         // Removing Common CSS class for functionality
         getChildClassName = getChildClassName.split(" ")[0];
@@ -346,7 +407,7 @@ function FullTextSearch() {
         }
         else if(keyCode == 8)
         {
-            let classArray = ['andClass','orClass','notClass','autoquery']
+            
             if(lastChild && lastChild.attributes.length > 0)
             {
                 
@@ -361,14 +422,32 @@ function FullTextSearch() {
                 }
             }
             
-            // Replacing Last Empty Space in Inner Html to edit from the last character if we delete the characters
-            var currentIndex = htmlElement.innerHTML.lastIndexOf("&nbsp;");
-            htmlElement.innerHTML = htmlElement.innerHTML.slice(0, currentIndex) + htmlElement.innerHTML.slice(currentIndex).replace('&nbsp;','');
+            
+            // // Replacing Last Empty Space in Inner Html to edit from the last character if we delete the characters
+            // var currentIndex = htmlElement.innerHTML.lastIndexOf("&nbsp;");
+            // htmlElement.innerHTML = htmlElement.innerHTML.slice(0, currentIndex) + htmlElement.innerHTML.slice(currentIndex).replace('&nbsp;','');
 
             
-            // htmlElement.innerHTML = htmlElement.innerHTML.substring(0, currentIndex) +strReplacedWith+ htmlElement.innerHTML.substring(currentIndex + 1, htmlElement.innerHTML.length);
-            htmlElement.innerHTML = htmlElement.innerHTML.trimRight();
-            placeCaretAtEnd(htmlElement);
+            // // htmlElement.innerHTML = htmlElement.innerHTML.substring(0, currentIndex) +strReplacedWith+ htmlElement.innerHTML.substring(currentIndex + 1, htmlElement.innerHTML.length);
+            // htmlElement.innerHTML = htmlElement.innerHTML.trimRight();
+
+
+            
+            // element.focus();
+            // placeCaretAtEnd(htmlElement);
+            // const el = document.getElementById("editable");
+            // el.focus()
+            // let char = 1, sel; // character at which to place caret
+
+            // if (document.selection) {
+            //     sel = document.selection.createRange();
+            //     sel.moveStart('character', char);
+            //     sel.select();
+            // }
+            // else {
+            //     sel = window.getSelection();
+            //     sel.collapse(el.lastChild, char);
+            // }
         }    
         else {
             if(value != "")
@@ -445,12 +524,16 @@ function FullTextSearch() {
                             // add the class to the 'span'
                             newSpan.setAttribute('class', 'query');
                             newSpan.innerHTML = lastValue;
-                            htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                            htmlElement.innerHTML = htmlElement.innerHTML+' '+newSpan.outerHTML;
                         }
                         else if(getChildClassName == "query")
                         {
-                            htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
-                            htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;
+                            if(htmlElement.innerHTML.slice(-1) != ">")
+                            {
+                                htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;
+                            }
+                            
                         }
                     }else if(lastPrevChild && lastPrevChild.attributes.length > 0){
                         if(getChildClassName == "autoquery")
@@ -518,7 +601,7 @@ function FullTextSearch() {
                             // add the class to the 'span'
                             newSpan.setAttribute('class', 'query');
                             newSpan.innerHTML = lastValue;
-                            htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                            htmlElement.innerHTML = htmlElement.innerHTML+' '+newSpan.outerHTML;
                         }
                     }else {
                         //create the DOM object
@@ -529,10 +612,10 @@ function FullTextSearch() {
                         htmlElement.innerHTML = newSpan.outerHTML;
                         htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
                     }
-                
+                htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
+                placeCaretAtEnd(htmlElement);
             }
-            htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
-            placeCaretAtEnd(htmlElement);
+            
             // trimText = htmlElement.textContent.toString();
             // console.log(trimText,'trimText');
             
@@ -543,8 +626,23 @@ function FullTextSearch() {
             // updateHtmlElement(value);
         }
         try {
+            let queryTxt = '';
+            Object.keys(htmlElement.children).forEach(function(key) {
+                let getClass = htmlElement.children[key].attributes.class.value;
+                htmlElement.children[key].setAttribute('dataId',parseInt(key)+1);
+                if(htmlElement.children[key].textContent != '')
+                {
+                    if(getClass == 'autoquery')
+                    {
+                        queryTxt += '"'+htmlElement.children[key].id+'-'+htmlElement.children[key].textContent.trim()+'"'+' ';
+                    }else {
+                        queryTxt += htmlElement.children[key].textContent.trim()+' ';
+                    }
+                }
+            });
             console.log(htmlElement,'htmlElement');
-            var results = lucenequeryparser.parse(htmlElement.textContent);
+            console.log(queryTxt,'queryTxt');
+            var results = lucenequeryparser.parse(queryTxt);
 
             
             setQueryParser(JSON.stringify(results));
@@ -673,6 +771,10 @@ function FullTextSearch() {
     const selectSearchTerm=(data)=>{
         console.log(data,'data');
         let htmlElement = document.getElementById("textareaDiv");
+        
+        
+
+        
         let lastChild = htmlElement.children[htmlElement.children.length - 1];
         let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
         let getChildClass='',getChildClassName='',getChildText='';
@@ -691,23 +793,56 @@ function FullTextSearch() {
             getChildText = lastPrevChild.textContent;
             console.log('prevchild');
         }
+       
         var spaceSpan = document.createElement('span');
         // add the class to the 'span'
         spaceSpan.setAttribute('class', 'space');
         var newSpan = document.createElement('span');
         // add the class to the 'span'
         newSpan.setAttribute('class', 'autoquery');
+        newSpan.setAttribute('id', data.id);
         newSpan.innerHTML = data.term+' ';
         if(lastChild && lastChild.attributes.length > 0)
         {
             htmlElement.children[htmlElement.children.length - 1].outerHTML = newSpan.outerHTML+spaceSpan.outerHTML;
         }else {
             htmlElement.children[htmlElement.children.length - 2].outerHTML = newSpan.outerHTML+spaceSpan.outerHTML;
+            
         }
+        let queryText = htmlElement.textContent;
+        let queryTxt = '';
+        Object.keys(htmlElement.children).forEach(function(key) {
+            let getClass = htmlElement.children[key].attributes.class.value;
+            if(htmlElement.children[key].textContent != '')
+            {
+                if(getClass == 'autoquery')
+                {
+                    queryTxt += '"'+htmlElement.children[key].id+'-'+htmlElement.children[key].textContent.trim()+'"'+' ';
+                }else {
+                    queryTxt += htmlElement.children[key].textContent.trim()+' ';
+                }
+            }
+        });
+        
         // htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
         placeCaretAtEnd(htmlElement);
         setSearchTermPopup(false);
         console.log(htmlElement,'htmlElementauto');
+        try {
+            var results = lucenequeryparser.parse(queryTxt);
+
+            
+            setQueryParser(JSON.stringify(results));
+            results = JSON.stringify(results, undefined, 2);
+            results = results.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
+            console.log(queryParser,'queryParser');
+            setTestOutput(results)
+          
+        } catch (err) {
+            console.log(err,'err')
+            // error handling
+          
+        }
     }
     const showOntologyCode=(id)=>{
         let splitId = id.split(':');
@@ -718,25 +853,143 @@ function FullTextSearch() {
         let htmlElement = document.getElementById("textareaDiv");
         htmlElement.innerHTML = '';
     }
+    var countKeys = function(obj, key) {
+        //define the variable count to return later, set it to 0
+        var count = 0;
+        //look through the object, if I kind the key in question increment count. 
+        for(let k in obj){
+            if(k === key){
+                count++;
+            }
+     
+            //if I find a nested object go into it with my function
+            if(typeof obj[k] === "object"){
+            //set count to += the return value of calling my function again. do not pass it count becouse i want count inside the recurrsion to start at 0
+            //again so when it returns and adds with what I have already I get the right number. 
+            count += countKeys(obj[k], key);
+            }
+        }
+        //if the loop finds no nest objects return count.
+        return count;
+    };
+    const parseCustomObj = async(parseData,checkRightCount)=>{
+        // await Promise.all(Object.keys(parseData).forEach(key => {
+        //     console.log(key, parseData[key]);
+        //     if(key == 'left' && (parseData[key].quoted_term && parseData[key].quoted_term != ''))
+        //     {   
+        //         let splitTerm = parseData[key].quoted_term.split('-');
+        //         console.log(splitTerm,'splitTerm');
+        //         parseData[key]['term'] = {
+        //             quoted_term:splitTerm[0]
+        //         }
+        //         parseData[key]['decoration'] = splitTerm[1];
+        //     }else if(key == 'right')
+        //     {
+        //         if(parseData[key].hasOwnProperty('right'))
+        //         {
+        //             parseCustomObj(parseData[key]['right']);
+        //         }
+        //         if(parseData[key].hasOwnProperty('left') && (parseData[key].quoted_term && parseData[key].quoted_term != '')){
+        //             let splitTerm = parseData[key].quoted_term.split('-');
+        //             console.log(splitTerm,'splitTerm');
+        //             parseData[key]['term'] = {
+        //                 quoted_term:splitTerm[0]
+        //             }
+        //             parseData[key]['decoration'] = splitTerm[1];
+        //         }
+        //     }
+        // }));
+        
+        Object.keys(parseData).forEach(async key => {
+            if(key == 'left' && (parseData[key].quoted_term && parseData[key].quoted_term != ''))
+                {   
+                    let splitTerm = parseData[key].quoted_term.split('-');
+                    // console.log(splitTerm,'splitTerm');
+                    parseData[key]['term'] = {
+                        quoted_term:splitTerm[0]
+                    }
+                    parseData[key]['decoration'] = splitTerm[1];
+                    delete parseData[key].quoted_term;
+                }else if(key == 'right')
+                {
+                    let rightOp = [];
+                    let getOpObj = '';
+                    for(let i=1;i<=checkRightCount;i++){
+                        rightOp.push("right");
+                        getOpObj = rightOp.join('.');
+                        // Updating the Decoration tag in Object, if Quoted Term Field Exists.
+                        parseData = await leaf(parseData, getOpObj);
+                        console.log(parseData,'parseData'+i);
+                    }
+                }
+            
+        });
+        return parseData;
+        // console.log(parserDataObj,'parserDataObj');
+    }
+    async function leaf(obj, path) {
+        const pList = path.split('.');
+        const key = pList.pop();
+        const pointer = pList.reduce((accumulator, currentValue) => {
+          if (accumulator[currentValue] === undefined) accumulator[currentValue] = {};
+          return accumulator[currentValue];
+        }, obj);
+        console.log(key,'keyyy');
+        console.log(pointer[key],'pointer');
+        let splitTerm='';
+        if(pointer[key].hasOwnProperty('left') && (pointer[key]['left'].quoted_term && pointer[key]['left'].quoted_term != ''))
+        {
+            splitTerm = pointer[key]['left'].quoted_term.split('-');
+            // console.log(splitTerm,'splitTerm');
+            pointer[key]['left']['term'] = {
+                quoted_term:splitTerm[0]
+            }
+            pointer[key]['left']['decoration'] = splitTerm[1];
+            delete pointer[key]['left'].quoted_term;
+        }else if((pointer[key].quoted_term && pointer[key].quoted_term != ''))
+        {
+            splitTerm = pointer[key].quoted_term.split('-');
+            // console.log(splitTerm,'splitTerm');
+            pointer[key]['term'] = {
+                quoted_term:splitTerm[0]
+            }
+            pointer[key]['decoration'] = splitTerm[1];
+            delete pointer[key].quoted_term;
+        }
+        pointer[key] = pointer[key];
+        return obj;
+    }
+ 
+    
     const searchResult=async()=>{
         console.log(queryParser,'queryParser');
-        let searchParam = `&json_query=${queryParser}&use_authority_sorting=${authoritySorting}`;
-        if(useDateSort)
-        {
-            searchParam += `&date_sorting_field=${dateSortField}`;
-            searchParam += `&date_sorting_dir=${dateSorting}`;
-            searchParam += `&use_date_sorting=${useDateSort}`;
-        }
-        searchParam += `&start=${searchStartPage}`;
-        searchParam += `&rows=${searchStopPage}`;
-        if(authorities)
-        {
-            searchParam += `&authorities=${authorities}`;
-        }
-        searchParam += `&grouping=${grouping}`;
-        console.log(searchParam,'searchParam');
-        const searchQueryRes = await fullTextService.getFullTextSearchResult(history,searchParam);
-        console.log(searchQueryRes,'searchQueryRes');
+        let parseData = JSON.parse(queryParser);
+        let checkRightCount = await countKeys(parseData,'right');
+        // console.log(checkRightCount,'checkRightCount');
+        // Parsing Object for Autocomplete search
+        let customParseObj = await parseCustomObj(parseData,checkRightCount);
+        console.log(customParseObj,'customParseObj');
+        setTimeout(async() => {
+            let parseJsonData = JSON.stringify(customParseObj);
+            console.log(parseJsonData,'parseJsonData');
+            let searchParam = `&json_query=${parseJsonData}&use_authority_sorting=${authoritySorting}`;
+            if(useDateSort)
+            {
+                searchParam += `&date_sorting_field=${dateSortField}`;
+                searchParam += `&date_sorting_dir=${dateSorting}`;
+                searchParam += `&use_date_sorting=${useDateSort}`;
+            }
+            searchParam += `&start=${searchStartPage}`;
+            searchParam += `&rows=${searchStopPage}`;
+            if(authorities)
+            {
+                searchParam += `&authorities=${authorities}`;
+            }
+            searchParam += `&grouping=${grouping}`;
+            console.log(searchParam,'searchParam');
+            const searchQueryRes = await fullTextService.getFullTextSearchResult(history,searchParam);
+            console.log(searchQueryRes,'searchQueryRes');
+        }, 1000);
     }
     return (
         <div className={classes.grow}>
@@ -756,7 +1009,7 @@ function FullTextSearch() {
                             value={fulltext || ''}
                             // onChange={(e) => setNotes(e.target.value)}
                         /> */}
-                        <div id="textareaDiv" contentEditable='true' onKeyDown={getKeyCode} onInput={e => parseQuery(e.target.textContent,e)}>
+                        <div id="textareaDiv" contentEditable='true' onKeyDown={getKeyCode} onInput={e => callParseQuery(e.target.textContent,e)}>
                         
                         </div>
                         <div className={"popup-box "+(searchTermPopup ? 'd-block':'d-none')} style={{top: topPosition, left: leftPosition}} ref={wrapperRef}>
