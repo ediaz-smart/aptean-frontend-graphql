@@ -740,7 +740,7 @@ function IpSeqSearch() {
                 qdb_seq_type: sequenceTypeValue, // nucleotide or protein, query sequence type based on the above query seq.
                 qdb_id: "", // will have such value for virtual query database, not included in this release yet
                 searchtype: "FTO", // leave it as always "FTO"
-                title: values.searchDetails, // Workflow name
+                title: values.searchDetails.trim(), // Workflow name
                 email: sendMailAfterSearch ? userMail : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
                 send_email: sendMailAfterSearch ? "on" : "",
                 nucandprot: isBothDbSelected ? "on" : "", // "on" when selecting both NUC and PRO databases
@@ -767,7 +767,7 @@ function IpSeqSearch() {
                 // nucdbs: "[\"p:GQPAT_NUC\", \"p:GENA\"]", // string array of databases
                 protdb_type: "multiple", // always multiple
                 protdbs: proDb, // Similar like nucdbs
-                template_name: saveFormValue ? values.formName : '', // Set this value when selecting "Save this form for later use as"
+                template_name: saveFormValue ? values.formName.trim() : '', // Set this value when selecting "Save this form for later use as"
                 parent_id: parentId ? parentId : "", // When having the patent workflow, for the "redo" scenario
                 ignore_warning: isWarningReturned ? "1" : "",
             };
@@ -888,33 +888,36 @@ function IpSeqSearch() {
         creditValues.ppu2TotalCredit = 0;
         creditValues.ppu2RemainingCredits = 0;
         setCreditValues({ ...creditValues });
-        if (event.target.value == "nucleotide") {
-            setScoringMatrix('NUC.3.1');
-            setWordSize('11');
-            formik.setFieldValue("fragmentStretch", '50');
-            formik.setFieldValue("fragmentAminoAcid", '96');
-            nucPatentData.filter(i=>{
-                if(i.label.includes("Patent sequences")) {
-                    nucDb.push(i.id);
-                    setNucDb([...nucDb]);
-                }
-            });
-            // setNucDb(nucDefaultDb);
-            setProDb([]);
-        } else {
-            setScoringMatrix('BLOSUM62');
-            setWordSize('3');
-            formik.setFieldValue("fragmentStretch", '20');
-            formik.setFieldValue("fragmentAminoAcid", '95');
-            proPatentData.filter(i=>{
-                if(i.label.includes("Patent sequences")) {
-                    proDb.push(i.id);
-                    setProDb([...proDb]);
-                }
-            });
-            // setProDb(proDefaultDb);
-            setNucDb([]);
+        if(!isBothDbSelected) {
+            if (event.target.value == "nucleotide") {
+                setScoringMatrix('NUC.3.1');
+                setWordSize('11');
+                formik.setFieldValue("fragmentStretch", '50');
+                formik.setFieldValue("fragmentAminoAcid", '96');
+                nucPatentData.filter(i=>{
+                    if(i.label.includes("Patent sequences")) {
+                        nucDb.push(i.id);
+                        setNucDb([...nucDb]);
+                    }
+                });
+                // setNucDb(nucDefaultDb);
+                setProDb([]);
+            } else {
+                setScoringMatrix('BLOSUM62');
+                setWordSize('3');
+                formik.setFieldValue("fragmentStretch", '20');
+                formik.setFieldValue("fragmentAminoAcid", '95');
+                proPatentData.filter(i=>{
+                    if(i.label.includes("Patent sequences")) {
+                        proDb.push(i.id);
+                        setProDb([...proDb]);
+                    }
+                });
+                // setProDb(proDefaultDb);
+                setNucDb([]);
+            }
         }
+
     };
 
     function handleDbChange(id, name) {

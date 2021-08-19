@@ -122,14 +122,14 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
             .integer(t('valueMustBeInteger'))
             .required(t('required'))
             .typeError(t('notNumber'))
-            .min(3, t('minResiduesNotValid'))
-            .typeError(t('notNumber')),
+            .typeError(t('notNumber'))
+            .min(3, t('minResiduesNotValid')),
         maxResidues: yup
             .number()
             .integer(t('valueMustBeInteger'))
             .required(t('required'))
             .typeError(t('notNumber'))
-            .min(1, t('shouldBeGreaterThanZero')),
+            .min(3, t('minResiduesNotValid')),
         // querySequence: yup
         //     .string()
         //     .required(t('querySeqReq')),
@@ -141,7 +141,8 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
             .number()
             .integer(t('valueMustBeInteger'))
             .min(1, t('shouldBeGreaterThanZero'))
-            .typeError(t('notNumber')),
+            .typeError(t('notNumber'))
+            .required(t('required')),
     };
 
 
@@ -451,7 +452,7 @@ function MergeResultsValidate() {
     const validationSchema = yup.object({
         title: yup
             .string()
-            .required(t('requird'))
+            .required(t('required'))
     });
     return validationSchema;
 }

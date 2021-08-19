@@ -196,6 +196,7 @@ function MergeResults(props) {
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [errorMsg, setErrorMsg] = useState();
     const [errorHeading, setErrorHeading] = useState("");
+    const [isSubmitActive, setIsSubmitActive] = useState(false);
 
     const { show, selectData, close } = props;
 
@@ -254,6 +255,7 @@ function MergeResults(props) {
         setGroupBValue([]);
         setMergeType("COMPLETE");
         formik.setFieldValue("title", "");
+        setIsSubmitActive(false);
         if(type && type == "closeMergeModal" && !resultType) {
             close();
         } else if(type && type == "closeMergeModal" && resultType) {
@@ -299,6 +301,7 @@ function MergeResults(props) {
             if (groupBValue.includes(value)) {
                 setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
             }
+            setIsSubmitActive(true);
             // setGroupAValue(value);
         } else if (name && name == "groupB" && value) {
             // setGroupBValue(value);
@@ -313,6 +316,7 @@ function MergeResults(props) {
             if (groupAValue.includes(value)) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
             }
+            setIsSubmitActive(true);
         }
     }
 
@@ -423,7 +427,7 @@ function MergeResults(props) {
                                 variant="outlined"
                                 value={formik.values.title}
                                 onChange={formik.handleChange}
-                                className={classes.resultTextField}
+                                // className={classes.resultTextField}
                                 error={formik.touched.title && Boolean(formik.errors.title)}
                                 helperText={formik.touched.title && formik.errors.title}
                             />
@@ -463,7 +467,8 @@ function MergeResults(props) {
                             </Col>
                         </Row>
                         <div id="mergeButtonDiv">
-                            <Button type="submit" className={"submitButtonClass float-right ml-2"} id="mergeSubmit">Merge Results</Button>
+                            {!isSubmitActive && <Button type="submit" className={"disableButtonClass float-right ml-2"} id="mergeSubmit">Merge Results</Button>}
+                            {isSubmitActive && <Button type="submit" className={"submitButtonClass float-right ml-2"} id="mergeSubmit">Merge Results</Button>}
                             <Button className={"cancelButtonClass float-right"} onClick={() => clearForm("closeMergeModal")} id="mergeCancel">Cancel</Button>
                         </div>
                     </form>

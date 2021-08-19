@@ -229,6 +229,7 @@
     border: 2px solid #CCCCCC !important;
     color: #777777 !important;
     text-transform: capitalize !important;
+    cursor: default !important;
 }
 
 .loginSubmit {

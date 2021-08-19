@@ -740,7 +740,7 @@ function IpSequenceVariation() {
                 qdb_seq_type: sequenceTypeValue, // nucleotide or protein, query sequence type based on the above query seq.
                 qdb_id: "", // will have such value for virtual query database, not included in this release yet
                 searchtype: "FTO", // leave it as always "FTO"
-                title: values.searchDetails, // Workflow name
+                title: values.searchDetails.trim(), // Workflow name
                 email: sendMailAfterSearch ? userMail : '', // When "Send email when the search is done" is checked, retrieve the email from the user info
                 send_email: sendMailAfterSearch ? "on" : "",
                 // nucandprot: isBothDbSelected, // "on" when selecting both NUC and PRO databases
@@ -767,7 +767,7 @@ function IpSequenceVariation() {
                 // nucdbs: "[\"p:GQPAT_NUC\", \"p:GENA\"]", // string array of databases
                 protdb_type: "multiple", // always multiple
                 protdbs: proDb, // Similar like nucdbs
-                template_name: saveFormValue ? values.formName : '', // Set this value when selecting "Save this form for later use as"
+                template_name: saveFormValue ? values.formName.trim() : '', // Set this value when selecting "Save this form for later use as"
                 parent_id: parentId ? parentId : "", // When having the patent workflow, for the "redo" scenario
                 loadvmtables: "on",
                 ignore_warning: isWarningReturned ? "1" : "",
