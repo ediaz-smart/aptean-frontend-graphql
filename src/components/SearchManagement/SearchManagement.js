@@ -574,7 +574,7 @@ function SearchManagement(props) {
                 recentCountResult = await HomeService.getSearchCount(recentParentId);
             }
             if (result && result.response_content && result.response_content.length > 0 && recentParentId) {
-                setFolderResultCount( recentCountResult && recentCountResult.response_content && recentCountResult.response_content.numerics && recentCountResult.response_content.numerics[0].resultSets);
+                setFolderResultCount( recentCountResult && recentCountResult.response_content && recentCountResult.response_content.numerics && recentCountResult.response_content.numerics[0].subCount);
                 // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchmanagement');
                 tempArr = await getSearchDataArr(result, 'searchmanagement');
                 // tempArr = _.orderBy(tempArr, [(obj) => new Date(obj.date)], ['desc']);

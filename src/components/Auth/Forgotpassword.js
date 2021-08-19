@@ -58,6 +58,8 @@ function Forgotpassword() {
     const [errorMsg,setErrorMsg] = useState(0);
     // const [retryState, setRetryState] = useState(false);
     const [passwordForm, setPasswordForm] = useState(true);
+    const [locked, setLocked] = useState(false);
+
     const [verifycaptchaCode, setcaptchaCode] = useState(); 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -85,6 +87,12 @@ function Forgotpassword() {
                     // setErrorMsg(3);
                     setErrorMsg(0);
                     setPasswordForm(false);
+                    
+                    if(result.response_content.errors[0] == 'locked')
+                    {
+                        setLocked(true);
+                    }
+                    
                    
                 }
                 else{
@@ -180,13 +188,22 @@ function Forgotpassword() {
                        
                         </div>
                     </form>
-                    <div className={'p-4 ' +(passwordForm ? 'd-none' : 'd-block')}>
+                    <div className={'p-4 ' +(!locked && !passwordForm ? 'd-block' : 'd-none')}>
 
                         <h5>{t('pwdRecovery')}</h5>
                         <br />
                         <p>{t('thankYou')}</p>
                         <p>{t('loginInfoText')}</p>
                         <p>{t('pleaseContactText1')} <a href={"mailto:"+supportMail}>{supportMail}</a> {t('pleaseContactText2')}</p>
+                    </div>
+                    <div className={'p-4 ' +(locked && !passwordForm ? 'd-block' : 'd-none')}>
+
+                            <h5>Password Recovery</h5>
+                            <br />
+                            <br />
+                            <p>Too many unsuccessful attempts to access this account have been received. For your protection, the account has been locked.</p>
+                            <p>Please contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.
+                            </p>
                     </div>
                 </Col>
                 <Col sm="12" md="5" className="ml-3">
