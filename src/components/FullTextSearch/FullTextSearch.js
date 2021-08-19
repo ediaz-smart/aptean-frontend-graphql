@@ -872,6 +872,7 @@ function FullTextSearch() {
         //if the loop finds no nest objects return count.
         return count;
     };
+    
     const parseCustomObj = async(parseData,checkRightCount)=>{
         // await Promise.all(Object.keys(parseData).forEach(key => {
         //     console.log(key, parseData[key]);
