@@ -399,11 +399,15 @@ function IpSeqSearch() {
     useEffect(() => {
         (async () => {
             let resp;
-            console.log(tempname,"tempname tempname tempname tempname ")
+            console.log(decodeURI(tempname),"tempname tempname tempname tempname ")
             console.log(parentId,"parentId parentId parentId parentId ")
-            if(tempname)
+            
+            let tempparam = decodeURI(tempname);
+            tempparam = tempparam.toString().replace(/~~GQSF~~/g,'%');
+            console.log(tempparam,"tempparam")
+            if(tempparam)
             {
-               const dat = await SavedSearch.getParticularTemplate(tempname,'Sequence');
+               const dat = await SavedSearch.getParticularTemplate(tempparam,'Sequence');
               
                console.log(dat,"resp.response_content.map");
                if (dat && dat.response_content && dat.response_content.map) {
@@ -583,7 +587,7 @@ function IpSeqSearch() {
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
                 setNucGenBankData(nucGenBank);
-                if(!parentId && !tempname){
+                if(!parentId && !tempparam){
                 setNucDb(nucDefaultPatentDb);
                 setNucDefaultDb(nucDefaultPatentDb);
                 }

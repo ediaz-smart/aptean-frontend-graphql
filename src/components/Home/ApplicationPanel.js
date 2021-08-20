@@ -127,12 +127,14 @@ function ApplicationPanel() {
                             {searchFormsData && searchFormsData.length > 0 && searchFormsData.map((dbVal, index) => {
                                if(index <= 8)
                                { 
+                                let enCodeDBVal = dbVal.name.toString().replace(/%/g,'~~GQSF~~'); 
+                                enCodeDBVal = encodeURI(enCodeDBVal);
                                 return (
                                      <Fragment>
                                      {
                                         dbVal.type == 'GqWfIpSearch_launch'  ?  
                                         <Fragment>
-                                        <Link  to={"/ipseqsearch/template/" +dbVal.name} >
+                                        <Link  to={"/ipseqsearch/template/" +enCodeDBVal} >
                                         <span className={classes.anchorTag}> {dbVal.name}</span>
                                        
                                         </Link> 
