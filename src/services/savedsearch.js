@@ -42,11 +42,15 @@ function hideLoader() {
             if(type == 'Sequence')
             {
                  apiurl = 'do=gqtemplate.get&context=GqWfIpSearch_launch&template_name='+tempName+'&format=json';
-
             }
-            else{
+            else if(type == 'Variation'){
                 apiurl = 'do=gqtemplate.get&context=GqWfVMIpSearch_launch&template_name='+tempName+'&format=json';
-
+            }
+            else if(type == 'Antibody'){
+                apiurl = 'do=gqtemplate.get&context=GqWfABIpSearch_launch&template_name='+tempName+'&format=json';
+            }
+            else {
+                apiurl = 'do=gqtemplate.get&context=GqWfFTIpSearch_launch&template_name='+tempName+'&format=json';
             }
 
             return await get(apiurl)
@@ -85,7 +89,7 @@ function hideLoader() {
                     let dataMapping = [];
                     data.forEach(item =>{
                         console.log(item.type,"type content");
-                        const tempNameCheckVal = item.map.workflow_type && item.map.workflow_type == 'GqWfIpSearch' ? 'GqWfIpSearch_launch' : 'GqWfVMIpSearch_launch';
+                        //const tempNameCheckVal = item.map.workflow_type && item.map.workflow_type == 'GqWfIpSearch' ? 'GqWfIpSearch_launch' : 'GqWfVMIpSearch_launch';
                         const renamedUrl = 'template_name['+item.name+']='+item.type;
                         dataMapping.push(renamedUrl);
                       

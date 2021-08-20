@@ -118,6 +118,7 @@ function SearchResultAntibody() {
                         patientDBData[3].selected = true;
                     }
                 });
+                data.formData['formName'] = data.formData['template_name'];
                 setPatientDBData([...patientDBData]);
                 setFormData(data.formData);
                 // console.log(formdata, 'formdata');

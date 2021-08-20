@@ -310,7 +310,23 @@ function SearchResults() {
            {/* <a href="#" onClick={(e) => routeToTemplateForm(e, datas)} target="_blank">{datas.name}</a> */}
          </Fragment>
         }
-
+        else if(datas.type == 'GqWfABIpSearch_launch')
+        {
+            datas.typeContent = 'Antibody';
+            datas.nameContent =  <Fragment>
+                <Link to={"/searchresantibody/template/" +datas.name} >{datas.name}</Link>
+                {/* <a href="#" onClick={(e) => routeToTemplateForm(e, datas)} target="_blank">{datas.name}</a> */}
+            </Fragment>
+        }
+        else if(datas.type == 'GqWfFTIpSearch_launch')
+        {
+            datas.typeContent = 'Fulltext Search';
+            datas.nameContent =  <Fragment>
+                <Link to={"/ipseqsearch/template/" +datas.name} >{datas.name}</Link>
+                {/* <a href="#" onClick={(e) => routeToTemplateForm(e, datas)} target="_blank">{datas.name}</a> */}
+            </Fragment>
+        }
+        
        
         // console.log(datas,"constrainTemplateData")
 
