@@ -68,6 +68,7 @@ class Routes extends React.Component {
                     <Route exact path="/searchresseq/:workflowId" title="searchresseq" component={SearchResultSequence} />
                     <Route exact path="/searchresantibody" title="searchresantibody" component={SearchResultAntibody} />
                     <Route exact path="/searchresantibody/:workflowId" title="searchresantibody" component={SearchResultAntibody} />
+                    <Route exact path="/searchresantibody/template/:tempname" title="searchresantibody" component={SearchResultAntibody} />
                     <Route exact path="/searchResult" title="manageSearchRes"  component={SearchManagement} />
                     <Route exact path="/accountinfo" title="accountInfoMange" component={AccountInfo} />
                     <Route exact path="/merge" component={MergeResults} />

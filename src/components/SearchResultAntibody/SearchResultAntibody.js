@@ -20,6 +20,7 @@ import Validate from '../../helpers/validate';
 import SearchPrompt from '../../shared/Modal/SearchPromptModal'
 import searchResAntibody from '../../services/searchResAntibody';
 import UtilsService from '../../helpers/utils';
+import SavedSearch from '../../services/savedsearch';
 
 
 
@@ -59,7 +60,7 @@ function SearchResultAntibody() {
     const [saveFormValue, setSaveFormValue] = useState(false);
 
     const { workflowId } = useParams();
-
+    const { tempname } = useParams();
 
     useEffect(async () => {
         const getResponse = await searchResAntibody.getAuthInfoAB(workflowId);
@@ -93,21 +94,40 @@ function SearchResultAntibody() {
             }
             console.log(disableSearch, 'disableSearch');
         }
+        let tempparam = decodeURI(tempname);
+            tempparam = tempparam.toString().replace(/~~GQSF~~/g,'%');
+            console.log(tempparam,"tempparam")
+            if(tempparam)
+            {
+        let getResponse = await SavedSearch.getParticularTemplate(tempparam, 'Antibody');
+        console.log('getResponse', getResponse)
+        if (getResponse && getResponse.response_status == 0) {
+            let data = getResponse.response_content.map;
+            data.savedRedo = true;
+            let finalData = {}
+            finalData.formData = data;
+            finalData.savedRedo = true;
+        updateFormData(finalData);
+        }
+            }
         //dispatch(userActions.logout()); 
     }, []);
     function updateFormData(data) {
-        if (data.redo) {
+        console.log('data', data)
+        if (data.redo || data.savedRedo) {
             if (data.formData) {
                 data.formData['searchName'] = data.formData['title'];
+                let strategyName = data.savedRedo ? data.formData.strat_name : data.formData['strategy'];
                 let strategyData = _.find(Constant['strategies'], function (obj) {
-                    return obj.val == data.formData['strategy']
+                    return obj.val == strategyName;
                 });
                 data.formData['strategy'] = strategyData['value'];
                 patientDBData[0].selected = false;
                 patientDBData[1].selected = false;
                 patientDBData[2].selected = false;
                 patientDBData[3].selected = false;
-                data.formData.selectedDbs.forEach(function (value) {
+                let dbData = data.redo ? data.formData.selectedDbs : data.formData.protdbs;
+                dbData && dbData.length > 0 && dbData.forEach(function (value) {
                     if (value == 'p:GQPAT_PRT') {
                         patientDBData[0].selected = true;
                     } else if (value == 'p:GQPAT_PREMIUM_PRT') {
@@ -118,7 +138,10 @@ function SearchResultAntibody() {
                         patientDBData[3].selected = true;
                     }
                 });
-                data.formData['formName'] = data.formData['template_name'];
+                if(data.formData['template_name']) {
+                    setSaveFormValue(true);
+                    data.formData['formName'] = data.formData['template_name'];
+                }
                 setPatientDBData([...patientDBData]);
                 setFormData(data.formData);
                 // console.log(formdata, 'formdata');
@@ -146,8 +169,32 @@ function SearchResultAntibody() {
     {
       history.push('/home');
     }
-    const formik = useFormik({
-        initialValues: {
+    let initialData = {};
+    if(formdata && formdata.savedRedo) {
+        initialData = {
+            searchName: formdata && formdata.searchName ? formdata.searchName : '',
+            cdrhcseq1: formdata && formdata.hc_cdr1 ? formdata.hc_cdr1 : '',
+            cdrhcseq2: formdata && formdata.hc_cdr2 ? formdata.hc_cdr2 : '',
+            cdrhcseq3: formdata && formdata.hc_cdr3 ? formdata.hc_cdr3 : '',
+            cdrlcseq1: formdata && formdata.lc_cdr1 ? formdata.lc_cdr1 : '',
+            cdrlcseq2: formdata && formdata.lc_cdr2 ? formdata.lc_cdr2 : '',
+            cdrlcseq3: formdata && formdata.lc_cdr3 ? formdata.lc_cdr3 : '',
+            hcOption1: formdata && formdata.hc_cdr1_mismatches ? formdata.hc_cdr1_mismatches : 0,
+            hcOption2: formdata && formdata.hc_cdr2_mismatches ? formdata.hc_cdr2_mismatches : 0,
+            hcOption3: formdata && formdata.hc_cdr3_mismatches ? formdata.hc_cdr3_mismatches : 0,
+            lcOption1: formdata && formdata.lc_cdr1_mismatches ? formdata.lc_cdr1_mismatches : 0,
+            lcOption2: formdata && formdata.lc_cdr2_mismatches ? formdata.lc_cdr2_mismatches : 0,
+            lcOption3: formdata && formdata.lc_cdr3_mismatches ? formdata.lc_cdr3_mismatches : 0,
+            strategy: formdata && formdata.strat_name ? formdata.strat_name : 'genepast',
+            percId: formdata && formdata.strat_genepast_perc_id ? formdata.strat_genepast_perc_id : 80,
+            expectCutoff: formdata && formdata.strat_blast_eval_cutoff ? formdata.strat_blast_eval_cutoff : 10,
+            wordSize: formdata && formdata.strat_blast_word_size_pro ? formdata.strat_blast_word_size_pro : 3,
+            hcFullSeq: formdata && formdata.qdb_seq_hc ? formdata.qdb_seq_hc : '',
+            lcFullSeq: formdata && formdata.qdb_seq_lc ? formdata.qdb_seq_lc : '',
+            formName: formdata && formdata.formName ? formdata.formName : '',
+        }
+    } else {
+        initialData = {
             searchName: formdata && formdata.searchName ? formdata.searchName : '',
             cdrhcseq1: formdata && formdata.cdrhcseq1 ? formdata.cdrhcseq1 : '',
             cdrhcseq2: formdata && formdata.cdrhcseq2 ? formdata.cdrhcseq2 : '',
@@ -166,8 +213,14 @@ function SearchResultAntibody() {
             expectCutoff: formdata && formdata.expectCutoff ? formdata.expectCutoff : 10,
             wordSize: formdata && formdata.wordSize ? formdata.wordSize : 3,
             hcFullSeq: formdata && formdata.hcFullSeq ? formdata.hcFullSeq : '',
-            lcFullSeq: formdata && formdata.lcFullSeq ? formdata.lcFullSeq : ''
-        },
+            lcFullSeq: formdata && formdata.lcFullSeq ? formdata.lcFullSeq : '',
+            formName: formdata && formdata.formName ? formdata.formName : '',
+        }
+    }
+
+    console.log('initial', initialData)
+    const formik = useFormik({
+        initialValues: initialData,
         enableReinitialize: true,
         validationSchema: Validate.AntibodySearchValidation(saveFormValue),
         onSubmit: async (values) => {
@@ -235,6 +288,8 @@ function SearchResultAntibody() {
             // history.push('/home');
         },
     });
+
+    console.log('formik', formik)
 
 
     function setFormValue() {
@@ -514,7 +569,7 @@ function SearchResultAntibody() {
                                     />
                                 </Col>
                                 <Col lg="7" md="7" className={"p-0 content " + (formik.values.strategy == "genepast" ? 'd-block' : 'd-none')}>
-                                    <Typography className="ml-4 mr-1 mt-2 float-left">Require</Typography>
+                                    <Typography className="ml-5 mr-1 mt-2 float-left">Require</Typography>
                                     <TextInput
                                         fullWidth={false}
                                         id="percId"
@@ -539,7 +594,7 @@ function SearchResultAntibody() {
                                     <Typography className="mx-2 mt-2 float-left">% Identity over the Chain Sequence</Typography>
                                 </Col>
                                 <Col lg="9" md="9" className={"p-0 content " + (formik.values.strategy == "blast" ? 'd-block' : 'd-none')}>
-                                    <Typography className="ml-4 mr-1 mt-2 float-left">Expect Cutoff</Typography>
+                                    <Typography className="ml-5 mr-1 mt-2 float-left">Expect Cutoff</Typography>
                                     <TextInput
                                         fullWidth={false}
                                         id="expectCutoff"
@@ -686,7 +741,7 @@ function SearchResultAntibody() {
                                         name="saveForm"
                                         id="saveForm"
                                         onChange={setFormValue}
-                                        // checked={saveFormValue}
+                                        checked={saveFormValue}
                                     />
                                     <label className={"checkBoxContent" + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                                 </Col>
