@@ -352,6 +352,9 @@
     color: #777777;
     font-style: italic;
 }
+.andClass,.orClass{
+    text-transform: uppercase;
+}
 
 .dropdown-content {
     display: block;

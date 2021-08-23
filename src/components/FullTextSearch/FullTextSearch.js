@@ -124,8 +124,7 @@ function FullTextSearch() {
         setKeyCode(e.keyCode);
         setKeyCodeEvent(e);
         let getCurrentSel = window.getSelection();
-        console.log(e.keyCode,'e.keyCodee.keyCode');
-        console.log(getCurrentSel,'getCurrentSel');
+        console.log(getCurrentSel,'onmousedownsel');
         if(e.keyCode == 8)
         {
             if(getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode)
@@ -133,9 +132,6 @@ function FullTextSearch() {
                 if(getCurrentSel.focusNode.parentNode.className)
                 {
                     let getClass = getCurrentSel.focusNode.parentNode.className.split(' ');
-                    console.log(getClass,'getClass');
-                    console.log(getCurrentSel.focusNode.parentNode.className,'getCurrentSelclassName1');
-                    console.log(getClass[0],'getClass1');
                     if(removeClassArray.includes(getClass[0]))
                     {
                         e.preventDefault();
@@ -146,38 +142,17 @@ function FullTextSearch() {
     }
     const callParseQuery = (value,element)=>{
         setTimeout(() => {
-            console.log(keyCode,'checkkeyCode');
-            console.log(keyCodeEvent,'keyCodeEvent');
             let getCurrentSel = window.getSelection();
             console.log(getCurrentSel,'getCurrentSel1');
-            console.log(element,'element');
+            parseQuery(value,element)
             
-            if(keyCode == 8 && getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode)
-            {
-                if(getCurrentSel.focusNode.parentNode.className)
-                {
-                    let getClass = getCurrentSel.focusNode.parentNode.className.split(' ');
-                    console.log(getClass,'getClass');
-                    console.log(getCurrentSel.focusNode.parentNode.className,'getCurrentSelclassName2');
-                    console.log(getClass[0],'getClass2');
-                    if(removeClassArray.includes(getClass[0]))
-                    {
-                        keyCodeEvent.preventDefault();
-                        element.preventDefault();
-                    }else {
-                        parseQuery(value,element)
-                    }
-                }
-            }else {
-                parseQuery(value,element)
-            }
             
             
         }, 100);
     }
     const parseQuery = (value,element) =>{
         // let value = element.target.textContent;
-        console.log(element,'innerHTML');
+        // console.log(element,'innerHTML');
         
         console.log(keyCode,'keyCode');
         console.log(value,'value');
@@ -227,7 +202,6 @@ function FullTextSearch() {
     function replaceStringHtml(value,keyCode,checkLastChar){
         let getCurrentSel = window.getSelection();
         console.log(getCurrentSel,'getCurrentSel');
-        console.log(keyCodeEvent,'keyCodeEvent');
         let htmlElement = document.getElementById("textareaDiv");
         // console.log(htmlElement,'htmlElement');
         let lastValue = value.slice(-1);
@@ -236,6 +210,7 @@ function FullTextSearch() {
         console.log(lastValue,'lastValue');
         let lastChild = htmlElement.children[htmlElement.children.length - 1];
         let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
+        let placeCursor = true;
         
         // if(lastChild)
         // {
@@ -249,34 +224,17 @@ function FullTextSearch() {
             getChildClass = lastChild.attributes.class ? lastChild.attributes.class:'';
             getChildClassName = getChildClass ? getChildClass.value:'';
             getChildText = lastChild.textContent;
-            console.log('firstchild',getChildText);
-            console.log('lastChild',lastChild);
         }
         else if(lastPrevChild && lastPrevChild.attributes.length > 0)
         {
             getChildClass = lastPrevChild.attributes.class ? lastPrevChild.attributes.class:'';
             getChildClassName = getChildClass ? getChildClass.value:'';
             getChildText = lastPrevChild.textContent;
-            console.log('prevchild',getChildText);
-            console.log('lastPrevChild',lastPrevChild);
         }
-        let checkLastThreeVal = getChildText+lastValue;
-        // For Auto complete
-        let checkCharLen = checkLastThreeVal.length;
-        if(keyCode == 8)
-        {
-            checkCharLen = checkCharLen - 1;
-        }
-        if(checkCharLen > 2)
-        {
-            searchTerm(checkLastThreeVal);
-        }else if(checkCharLen < 3){
-            setSearchTermPopup(false);
-        }
+        let getSearchVal = getChildText;
+        
         // Removing Common CSS class for functionality
         getChildClassName = getChildClassName.split(" ")[0];
-        console.log(getChildClassName,'getChildClassName');
-        console.log(getChildText,'getChildText');
         let checkORValues = ['OR ','or ','or','OR','o','O'];
         let checkANDValues = ['AND ','and ','and','AND','a','A'];
         let checkNOTValues = ['NOT ','not ','not','NOT','n','N'];
@@ -422,7 +380,37 @@ function FullTextSearch() {
                 }
             }
             
-            
+            if(getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode)
+            {
+                if(getCurrentSel.focusNode.parentNode.className)
+                {
+                    let getClass = getCurrentSel.focusNode.parentNode.className.split(' ');
+                    // let getDataId = getCurrentSel.focusNode.parentNode.attributes.dataid;
+                    console.log(getCurrentSel.focusNode.parentNode.getAttribute('dataid'),'getCurrentSel.focusNode.parentNode.attributes2');
+
+                    if(removeClassArray.includes(getClass[0]))
+                    {
+                        Object.keys(htmlElement.children).forEach(function(key) {
+                            let getClass = htmlElement.children[key].attributes.class.value;
+                            let getClassId = htmlElement.children[key].getAttribute('dataid');
+                            console.log(getClassId,'getClassId');
+                            if(getClassId == getCurrentSel.focusNode.parentNode.getAttribute('dataid'))
+                            {
+                                if(getClass[0] == 'andClass')
+                                {
+                                    htmlElement.children[key].outerHTML = ANDString;
+                                }else if(getClass[0] == 'orClass')
+                                {
+                                    htmlElement.children[key].outerHTML = ORString;
+                                }else if(getClass[0] == 'notClass')
+                                {
+                                    htmlElement.children[key].outerHTML = NOTString;
+                                }
+                            }
+                        });
+                    }
+                }
+            }
             // // Replacing Last Empty Space in Inner Html to edit from the last character if we delete the characters
             // var currentIndex = htmlElement.innerHTML.lastIndexOf("&nbsp;");
             // htmlElement.innerHTML = htmlElement.innerHTML.slice(0, currentIndex) + htmlElement.innerHTML.slice(currentIndex).replace('&nbsp;','');
@@ -532,6 +520,8 @@ function FullTextSearch() {
                             {
                                 htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
                                 htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;
+                                getSearchVal = htmlElement.children[htmlElement.children.length - 1].textContent;
+                                placeCursor = true;
                             }
                             
                         }
@@ -612,8 +602,13 @@ function FullTextSearch() {
                         htmlElement.innerHTML = newSpan.outerHTML;
                         htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
                     }
-                htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
-                placeCaretAtEnd(htmlElement);
+                console.log(placeCursor,'placeCursor');
+                if(placeCursor)
+                {
+                    htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
+                    placeCaretAtEnd(htmlElement);
+                }
+                
             }
             
             // trimText = htmlElement.textContent.toString();
@@ -624,6 +619,18 @@ function FullTextSearch() {
             
             
             // updateHtmlElement(value);
+        }
+        // For Auto complete
+        let checkLastThreeVal = getChildText;
+        console.log(getSearchVal,'getSearchVal');
+        let checkCharLen = getSearchVal.length;
+        
+        console.log(checkCharLen,'checkCharLen');
+        if(checkCharLen > 2)
+        {
+            searchTerm(getSearchVal);
+        }else if(checkCharLen < 3){
+            setSearchTermPopup(false);
         }
         try {
             let queryTxt = '';
@@ -722,6 +729,7 @@ function FullTextSearch() {
         
     }
     const searchTerm = async (value)=>{
+        setSearchTermPopup(false);
         let userId=userInfo && userInfo.current_user.gq_user_id;
         let searchParam = `&json_query=${value}&rows=25&ontologies=${ontology}&user_id=${userId}`;
         const searchRes = await fullTextService.getFullTextSearchTerm(history,searchParam);
@@ -730,10 +738,10 @@ function FullTextSearch() {
             {
                 setSearchTermData(searchRes.response_content);
                 let getXYCoordinates = getCaretGlobalPosition();
-                let top = getXYCoordinates.top;
+                
                 if(getXYCoordinates)
                 {
-                    setTopPosition(top);
+                    setTopPosition(getXYCoordinates.top);
                     setLeftPosition(getXYCoordinates.left);
                 }
                 setSearchTermPopup(true);
@@ -872,7 +880,6 @@ function FullTextSearch() {
         //if the loop finds no nest objects return count.
         return count;
     };
-    
     const parseCustomObj = async(parseData,checkRightCount)=>{
         // await Promise.all(Object.keys(parseData).forEach(key => {
         //     console.log(key, parseData[key]);
