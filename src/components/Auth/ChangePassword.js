@@ -245,6 +245,9 @@ function ChangePassword() {
                                 label={'New Password'}
                                 variant="outlined"
                                 type="password"
+                                inputProps={{
+                                    maxlength: 20
+                                  }}
                                 value={formik.values.newPassword}
                                 onChange={formik.handleChange}
                                 error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
@@ -263,6 +266,9 @@ function ChangePassword() {
                                 label={'Re-enter New Password'}
                                 variant="outlined"
                                 type="password"
+                                inputProps={{
+                                    maxlength: 20
+                                  }}
                                 value={formik.values.confirmPassword}
                                 onChange={formik.handleChange}
                                 error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}

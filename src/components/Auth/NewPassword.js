@@ -165,8 +165,9 @@ function NewPassword() {
     }
     function validVar()
     {
-        formik.setFieldValue('newPassword','') && formik.setFieldValue('confirmPassword',''); 
-        formik.setFieldValue('default','')
+        history.push('/login');
+        // formik.setFieldValue('newPassword','') && formik.setFieldValue('confirmPassword',''); 
+        // formik.setFieldValue('default','')
     }
     const passwordVlaue = formik.values.newPassword;
     const passwordCnVlaue = formik.values.confirmPassword;
@@ -207,6 +208,9 @@ function NewPassword() {
                                 label={t('newpass')}
                                 variant="outlined"
                                 type="password"
+                                inputProps={{
+                                    maxlength: 20
+                                  }}
                                 value={formik.values.newPassword}
                                 onChange={formik.handleChange} 
                                 error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
@@ -221,6 +225,9 @@ function NewPassword() {
                                 name="confirmPassword"
                                 label={t('renpass')}
                                 variant="outlined"
+                                inputProps={{
+                                    maxlength: 20
+                                  }}
                                 type="password"
                                 value={formik.values.confirmPassword}
                                 onChange={formik.handleChange}
@@ -257,7 +264,7 @@ function NewPassword() {
                                
                             <br />
                             <br />
-                            <Button variant="contained" className='accountInfo' onClick={()=>loginPage()}>Login</Button> :
+                            <Button variant="contained" className='accountInfo' onClick={()=>loginPage()}>Login</Button> 
 
                             </div>
                             <div className={'p-4 ' +( !sucKey ? 'd-block' : 'd-none')}>
