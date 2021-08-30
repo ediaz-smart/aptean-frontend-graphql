@@ -293,5 +293,9 @@
     "fragmentProPerError": "Please specify a valid required % identity for your search. The number must be between 81 and 100.",
     "fragNucStretchError": "Please specify a valid number of required residues to match in your search. The number must be between 10 and 1000.",
     "fragProStretchError": "Please specify a valid number of required residues to match in your search. The number must be between 5 and 1000.",
-    "mergeResultErrorHeading": "An error was encountered when attempting to submit your search"
+    "mergeResultErrorHeading": "An error was encountered when attempting to submit your search",
+    "publicationData": "Publication Date: ",
+    "description": "Description: ",
+    "abstract": "Abstract: " ,
+    "claims": "Claims: "
 }

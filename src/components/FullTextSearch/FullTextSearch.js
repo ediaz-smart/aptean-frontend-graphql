@@ -14,6 +14,7 @@ import Popover from '@material-ui/core/Popover';
 import Constant from '../../helpers/constant';
 import lucenequeryparser from '../../assets/lib/lucene-query-parser';
 import fullTextService from '../../services/fulltextsearch';
+import FullTextResults from './FullTextResults';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -73,6 +74,9 @@ function FullTextSearch() {
     const [searchStopPage,setSearchStopPage] = React.useState(50);
     const [authoritySorting,setAuthoritySorting] = React.useState(false);
     const [authorities,setAuthorities] = React.useState('');
+
+    //set result
+    const [docSearchResult, setDocSearchResult] = useState({});
 
 
     const userInfo = useSelector(state => state.setUserInfo);
@@ -996,6 +1000,7 @@ function FullTextSearch() {
             searchParam += `&grouping=${grouping}`;
             console.log(searchParam,'searchParam');
             const searchQueryRes = await fullTextService.getFullTextSearchResult(history,searchParam);
+            searchQueryRes && searchQueryRes.response_status == 0 && searchQueryRes.response_content && setDocSearchResult(searchQueryRes.response_content);
             console.log(searchQueryRes,'searchQueryRes');
         }, 1000);
     }
@@ -1041,7 +1046,7 @@ function FullTextSearch() {
                     <div className="form-group">
                         <Button variant="contained" disableRipple={true} className={'loginSubmitButton float-right'} onClick={searchResult}>{t('submit')}</Button>
                         <Button variant="contained" disableRipple={true} className={'loginSubmitCancel float-right mx-2'} onClick={clearParser}>{t('clear')}</Button>
-                        <div>{ReactHtmlParser(testOutput)}</div>
+                        {/* <div>{ReactHtmlParser(testOutput)}</div> */}
                         <Popover
                             id={"simple-popover"}
                             open={open}
@@ -1143,6 +1148,8 @@ function FullTextSearch() {
                                 
                             </ul>
                         </Popover> */}
+        {docSearchResult && <FullTextResults data={docSearchResult}/>}
+
         </div>
         
     );
