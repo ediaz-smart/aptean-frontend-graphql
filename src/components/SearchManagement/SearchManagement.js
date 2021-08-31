@@ -59,18 +59,18 @@ const useStyles = makeStyles((theme) => ({
             color: '#008EC5'
         }
     },
-    loginSubmitCancel:{
+    loginSubmitCancel: {
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
-        border: '2px solid #1F4E79' ,
-        color:'white',
+        border: '2px solid #1F4E79',
+        color: 'white',
         margin: '4px',
         textTransform: 'capitalize',
         '&:hover': {
-          backgroundColor: '#0182C5',
-          boxShadow: 'none',
+            backgroundColor: '#0182C5',
+            boxShadow: 'none',
         },
-       },
+    },
     textHeading: {
         fontWeight: "700 !important",
         color: "#5A6868",
@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
         // marginBottom: "400px",
 
     },
-    modalClassConEF:{
+    modalClassConEF: {
         position: 'absolute',
         width: '96%',
         height: '55%',
@@ -88,10 +88,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: 'auto',
         transform: 'translate(-50%, -50%)'
     },
-    colorConDSIEF :{
+    colorConDSIEF: {
         backgroundColor: 'gainsboro',
         marginTop: '-32px',
-        padding:'28px',
+        padding: '28px',
         paddingTop: '28px',
         paddingBottom: '65px',
         marginLeft: '7px',
@@ -136,9 +136,9 @@ const useStyles = makeStyles((theme) => ({
     },
     modalHeader: {
         borderBottom: 'none !important',
-        paddingTop:'11px',
+        paddingTop: '11px',
         paddingRight: '4px',
-        marginTop:'-7px',
+        marginTop: '-7px',
     },
     footerDiv: {
         padding: '0 30px'
@@ -146,19 +146,19 @@ const useStyles = makeStyles((theme) => ({
     checkBox: {
         transform: "scale(0.9)",
     },
-    addNewLabel:{
+    addNewLabel: {
         marginTop: '-20px',
         marginLeft: '31px'
     },
-    addNewText:{
+    addNewText: {
         marginTop: '-6px',
         marginLeft: '30px',
         height: '65px'
     },
-    modalBoxContent :{
+    modalBoxContent: {
         maxHeight: '675px',
     },
-    modalClassConDSI:{
+    modalClassConDSI: {
         position: 'absolute',
         width: '96%',
         height: 'auto',
@@ -168,7 +168,7 @@ const useStyles = makeStyles((theme) => ({
         bottom: 'auto',
         transform: 'translate(-50%, -50%)'
     },
-    modalClassConDR:{
+    modalClassConDR: {
         position: 'absolute',
         width: '96%',
         height: '46%',
@@ -178,15 +178,15 @@ const useStyles = makeStyles((theme) => ({
         bottom: 'auto',
         transform: 'translate(-50%, -50%)'
     },
-    modaltext:{
-       float:'right',
-       marginLeft:'724px'
+    modaltext: {
+        float: 'right',
+        marginLeft: '724px'
     },
-    
-    colorConDSI :{
+
+    colorConDSI: {
         backgroundColor: 'gainsboro',
         marginTop: '-38px',
-        padding:'28px',
+        padding: '28px',
         paddingTop: '28px',
         paddingBottom: '65px',
         marginLeft: '7px',
@@ -196,10 +196,10 @@ const useStyles = makeStyles((theme) => ({
     },
     footerDivDSI: {
         marginTop: '-26px',
-        marginRight:' -30px',
+        marginRight: ' -30px',
     },
 
-    modalClassConMTF:{
+    modalClassConMTF: {
         position: 'absolute',
         width: '96%',
         height: 'auto',
@@ -209,10 +209,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: 'auto',
         transform: 'translate(-50%, -50%)'
     },
-    colorConMTF :{
+    colorConMTF: {
         backgroundColor: 'gainsboro',
         marginTop: '-31px',
-        padding:'26px',
+        padding: '26px',
         paddingTop: '28px',
         paddingBottom: '65px',
         marginLeft: '7px',
@@ -220,11 +220,11 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: '10px',
         borderRadius: '5px',
     },
-    footerDivMTF :{
+    footerDivMTF: {
         padding: '0 30px',
         marginTop: '-8px',
     },
-    modalClassContent:{
+    modalClassContent: {
         position: 'absolute',
         width: '96%',
         height: 'auto',
@@ -234,7 +234,7 @@ const useStyles = makeStyles((theme) => ({
         bottom: 'auto',
         transform: 'translate(-50%, -50%)'
     },
-    colorContainer:{
+    colorContainer: {
         backgroundColor: 'gainsboro',
         marginTop: '-38px',
         // marginLeft: 0px;
@@ -246,9 +246,9 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '5px',
 
     },
-	popupFolderIcon:{
-		width:'3% !important'
-	}
+    popupFolderIcon: {
+        width: '3% !important'
+    }
 }));
 
 const customStyles = {
@@ -409,12 +409,12 @@ function SearchManagement(props) {
     const [clearCheckedRow, setClearCheckedRow] = useState(false);
 
     // Get Parent Object for display in delete popup
-    const [parentTreeObj,setParentTreeObj] = useState([]);
+    const [parentTreeObj, setParentTreeObj] = useState([]);
 
     const [isSearchDone, setIsSearchDone] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [showMergeModal, setShowMergeModal] = useState(false);
-    
+
     //Pagination
 
     const escFunction = useCallback((event) => {
@@ -436,15 +436,14 @@ function SearchManagement(props) {
         state.selectedRows.map((value, index) => {
             if (value.type !== 'GqFolder') {
                 mergeData.push(value.id);
-                if(mergeType.length == 0)
-                {
+                if (mergeType.length == 0) {
                     mergeType.push(value.type);
-                }else {
-                    if(mergeType.includes(value.type)){
+                } else {
+                    if (mergeType.includes(value.type)) {
                         mergeType.push(value.type);
                     }
                 }
-                
+
             }
         });
         if (state.selectedCount > 0) {
@@ -550,7 +549,7 @@ function SearchManagement(props) {
     async function getDefaultSearchResult(type, id, start, stop) {
         let tempArr = [];
         let pageStart, pageStop;
-        if(start && stop) {
+        if (start && stop) {
             pageStart = start;
             pageStop = stop;
         } else {
@@ -562,19 +561,19 @@ function SearchManagement(props) {
         if (type == "defaultText") {
             let recentParentId = parentFolderId;
             let folderData;
-            if(!recentParentId) {
+            if (!recentParentId) {
                 folderData = await SearchManagementService.getProjectFolders(history);
                 if (folderData && folderData.response_content) {
-                recentParentId = folderData.response_content.id;
-            }
+                    recentParentId = folderData.response_content.id;
+                }
             }
             const result = await HomeService.getSearchResults(history, pageStart, pageStop);
             let recentCountResult;
-            if(recentParentId) {
+            if (recentParentId) {
                 recentCountResult = await HomeService.getSearchCount(recentParentId);
             }
             if (result && result.response_content && result.response_content.length > 0 && recentParentId) {
-                setFolderResultCount( recentCountResult && recentCountResult.response_content && recentCountResult.response_content.numerics && recentCountResult.response_content.numerics[0].subCount);
+                setFolderResultCount(recentCountResult && recentCountResult.response_content && recentCountResult.response_content.numerics && recentCountResult.response_content.numerics[0].subCount);
                 // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchmanagement');
                 tempArr = await getSearchDataArr(result, 'searchmanagement');
                 // tempArr = _.orderBy(tempArr, [(obj) => new Date(obj.date)], ['desc']);
@@ -592,7 +591,7 @@ function SearchManagement(props) {
                         console.log('inside folder', folderResultCount)
                     }
                 }
-            } else if(isSearchDone){
+            } else if (isSearchDone) {
                 const getSearchResp = await SearchManagementService.getSearchResultSet(searchResSet, history, pageStart, pageStop);
                 if (getSearchResp && getSearchResp.response_content) {
                     setFolderResultCount(getSearchResp.response_content.totalcount);
@@ -651,7 +650,7 @@ function SearchManagement(props) {
                     else if (datas.status == 'FAILED') {
                         tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor' : '')} onClick={(e) => e.preventDefault()}>Search Failed</a>;
                     }
-                    else if(datas.status == 'CANCELLED'){
+                    else if (datas.status == 'CANCELLED') {
                         tempObj['results'] = <span>Search cancelled</span>;
                     }
                     else {
@@ -660,11 +659,10 @@ function SearchManagement(props) {
                             typeUrl = process.env.REACT_APP_API_URL + url.browseSeqDB.replace('**', id);
                         }
                         // tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
-                        if(datas.results && datas.results > 0)
-                        {
-                            tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
-                        }else {
-                            tempObj['results'] = <span>{datas.results ? datas.results+' '+type: ''}</span>
+                        if (datas.results && datas.results > 0) {
+                            tempObj['results'] = <a href={typeUrl} target="_blank" rel="noreferrer">{datas.results} {type}</a>
+                        } else {
+                            tempObj['results'] = <span>{datas.results ? datas.results + ' ' + type : ''}</span>
                             // tempObj['results'] = <span></span>
                         }
                     }
@@ -685,20 +683,19 @@ function SearchManagement(props) {
             if (datas.status == 'FAILED') {
                 tempObj["report"] = '';
             } else {
-                if (datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status !='CANCELLED')) {
-                    if(datas.results.props.children && datas.results.props.children[0] > 0)
-					{
+                if (datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED')) {
+                    if (datas.results.props.children && datas.results.props.children[0] > 0) {
                         if (datas.type == "GqWfABIpSearch") {
                             let mostRecentReportUrl = url.mostRecentReportUrl
                             mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
                             let reportLink = process.env.REACT_APP_BASE_URL + mostRecentReportUrl
-                            tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
+                            tempObj["report"] = <Fragment><a href={reportLink} target="_blank" rel="noreferrer">Report</a>
                                 <span className="mx-2">|</span>
-                                <a href={classicLink} target="_blank">Classic</a>
+                                <a href={classicLink} target="_blank" rel="noreferrer">Classic</a>
                             </Fragment>
                         } else if (datas.type !== "GqFolder" && datas.type !== "DlPhysicalSeqdb" && datas.type !== "DlVirtualSeqdb") {
                             tempObj["report"] = <Fragment>
-                                <a href={classicLink} target="_blank">Classic</a>
+                                <a href={classicLink} target="_blank" rel="noreferrer">Classic</a>
                             </Fragment>
                         } else {
                             tempObj["report"] = '';
@@ -725,8 +722,9 @@ function SearchManagement(props) {
 
                     {/* {datas.type === "IP Sequence" && <Link  ><RedoIcon className="mr-2 appLink" /></Link>}
                     {datas.type === "Variation" && <Link ><RedoIcon className="mr-2 appLink" /></Link>} */}
+                    {datas.is_schedulable && datas.is_scheduled && <AccessAlarmIcon className="appLink" />}
 
-                    <a href="#" onClick={(e) => e.preventDefault()}><AccessAlarmIcon className="appLink" /></a>
+                    {/* <a href="#" onClick={(e) => e.preventDefault()}><AccessAlarmIcon className="appLink" /></a> */}
                 </Fragment>
             }
             tempArr.push(tempObj);
@@ -742,9 +740,9 @@ function SearchManagement(props) {
             tempObj['type'] = Constant['searchType'][datas.class] ? Constant['searchType'][datas.class] : datas.class;
             tempObj.name = datas.text_label;
             tempObj.icon = <Fragment>
-            {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, datas.text_label)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
-            {datas.type === "Folder" && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
-            {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>
+                {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, datas.text_label)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
+                {datas.type === "Folder" && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
+                {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>
             tempObj.description = datas.description;
             tempObj.owner = datas._owner_full_name;
             tempObj.location = datas._absolute_path;
@@ -773,29 +771,26 @@ function SearchManagement(props) {
                     // setInfoFolderIds([res.id]);
                     // Setting Level for Disable Add Folder Button
                     res.children.forEach(child1 => {
-                        if(child1.child_status == "yes")
-                        {
+                        if (child1.child_status == "yes") {
                             child1.level = 1;
                             child1.children.forEach(child2 => {
-                               if(child2.child_status == "yes")
-                                {
+                                if (child2.child_status == "yes") {
                                     child2.level = 2;
                                     child2.children.forEach(child3 => {
-                                        if(child3.child_status == "yes")
-                                        {
+                                        if (child3.child_status == "yes") {
                                             child3.level = 3;
                                             child3.children.forEach(child4 => {
                                                 child4.level = 4;
                                             });
-                                        }else {
+                                        } else {
                                             child3.level = 3;
                                         }
                                     });
-                                }else {
+                                } else {
                                     child2.level = 2;
                                 }
                             });
-                        }else {
+                        } else {
                             child1.level = 1;
                         }
                     });
@@ -859,20 +854,19 @@ function SearchManagement(props) {
         setParentFolderId(event.id);
         // Finding Parent Object to display in Popup While Delete
         findParentObj(event);
-        if(event.level == 3)
-        {
+        if (event.level == 3) {
             setAddFolderText(false);
             setShowNewFolder(false);
-        }else {
+        } else {
             setAddFolderText(true);
         }
         // setTimeout(() => {
         if (event.text_label != "Recent Search Results") {
             setInfoFolderIds([]);
         }
-            // let start = 1;
-            // let stop = pageCount;
-            getDefaultSearchResult('folder', event.id, null);
+        // let start = 1;
+        // let stop = pageCount;
+        getDefaultSearchResult('folder', event.id, null);
         // } else {
         //     getDefaultSearchResult('folder', event.id);
         // }
@@ -894,33 +888,33 @@ function SearchManagement(props) {
         setDisableMergeBtn(true);
         // }, 1000);
     };
-    
-    function mapIt (node) {
+
+    function mapIt(node) {
         lookup[node.id] = node;
         //recursive on all the children
         node.children && node.children.forEach(mapIt);
     }
-    async function findParentObj(obj){
-        console.log(folderDetail,  'folderDetail');
+    async function findParentObj(obj) {
+        console.log(folderDetail, 'folderDetail');
         let parentObj = await findAncestors(obj.id);
         parentObj.push(obj.id);
-        console.log(parentObj,  'findParentObj');
+        console.log(parentObj, 'findParentObj');
         setParentTreeObj(...[parentObj]);
         // setTimeout(() => {
         //     console.log(parentTreeObj,  'parentTreeObj');
         // }, 1000);
-        
+
     }
-    async function findAncestors (nodeId) {
+    async function findAncestors(nodeId) {
         var ancestors = [];
         // ancestors.unshift(nodeId);
-        console.log(lookup,'lookup');
+        console.log(lookup, 'lookup');
         var parentId = lookup[nodeId] && lookup[nodeId].parent_gq_folder_id;
         var desc = lookup[parentId] && lookup[parentId].description;
         var regex = new RegExp('home folder for', "i");
         var checkRootFolder = regex.test(desc);
-        console.log(checkRootFolder,'checkRootFolder');
-        while(parentId !== undefined && parentId != '2')  {
+        console.log(checkRootFolder, 'checkRootFolder');
+        while (parentId !== undefined && parentId != '2') {
             ancestors.unshift(parentId)
             parentId = lookup[parentId] && lookup[parentId].parent_gq_folder_id;
         }
@@ -938,10 +932,10 @@ function SearchManagement(props) {
             setClearCheckedRow(!clearCheckedRow);
             // if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
             if (defaultTitle === 'Recent Search Results') {
-                    getDefaultSearchResult('defaultText', '');
+                getDefaultSearchResult('defaultText', '');
             } else {
-                    getDefaultSearchResult('folder', defaultTitleId);
-                }
+                getDefaultSearchResult('folder', defaultTitleId);
+            }
             // getDefaultSearchResult('folder', defaultTitleId);
             getFolderResultData();
             toast.success('Folder Moved Successfully');
@@ -1061,7 +1055,7 @@ function SearchManagement(props) {
             stop = page * pageCount;
             setCurrentPage(page)
         }
-        if(defaultTitle == "Recent Search Results") {
+        if (defaultTitle == "Recent Search Results") {
             getDefaultSearchResult('defaultText', '', start, stop);
         } else {
             getDefaultSearchResult('folder', defaultTitleId, start, stop);
@@ -1071,7 +1065,7 @@ function SearchManagement(props) {
     function mergeModalFunction(type) {
         console.log('searchType', type)
         setShowMergeModal(!showMergeModal);
-        if(type && type == "success") {
+        if (type && type == "success") {
             updateDefaultValue('Recent Search Results');
         }
     }
@@ -1080,7 +1074,7 @@ function SearchManagement(props) {
         // const result = dispatch(getSearchResult());
         getFolderResultData();
         getDefaultSearchResult('defaultText', '');
-            
+
         document.addEventListener("keydown", escFunction, false);
         // var elements = document.getElementsByClassName("infoIcon");
         // for (var i = 0; i < elements.length; i++) {
@@ -1147,7 +1141,7 @@ function SearchManagement(props) {
                             </ListGroup.Item>
 
                             {/* })} */}
-                            <ListGroup.Item className={classes.projectListItem+" "+classes.addNewText+ ' ' + (defaultTitle !== 'Recent Search Results' && showNewFolder ? 'd-block' : 'd-none')} key="addNewFolder">
+                            <ListGroup.Item className={classes.projectListItem + " " + classes.addNewText + ' ' + (defaultTitle !== 'Recent Search Results' && showNewFolder ? 'd-block' : 'd-none')} key="addNewFolder">
                                 <img src={FolderIcon} className={classes.folderIcon + " float-left mt-2"} />
                                 <TextInput
                                     id="addFolder"
@@ -1158,7 +1152,7 @@ function SearchManagement(props) {
                                     onKeyDown={getFolderName}
                                 />
                             </ListGroup.Item>
-                            <ListGroup.Item className={classes.projectListItem+" "+classes.addNewLabel+ ' ' + (defaultTitle !== 'Recent Search Results' ? 'd-block' : 'd-none')} key="createNewFolder">
+                            <ListGroup.Item className={classes.projectListItem + " " + classes.addNewLabel + ' ' + (defaultTitle !== 'Recent Search Results' ? 'd-block' : 'd-none')} key="createNewFolder">
                                 <img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLink " + classes.projectTitle + (!addFolderText ? ' disabled' : '')}>{t('addFolder')}</a>
                             </ListGroup.Item>
 
@@ -1208,22 +1202,22 @@ function SearchManagement(props) {
                     />
                     {/* {defaultTitle && defaultTitle != "Recent Search Results" && searchResultData.length > 0 && <Row> */}
                     <Col className={'d-flex justify-content-center' + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="12">
-                        <CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton defaultPage={1} page={currentPage}/>
+                        <CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton defaultPage={1} page={currentPage} />
                     </Col>
                     {/* </Row> } */}
 
                     <Col className={"float-left px-0 " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
-                    
-                    <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
-                    <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')+((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('moveToFolder')}</Button>
-                    <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() =>{setShowMergeModal(!showMergeModal)}} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>        
+
+                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
+                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('moveToFolder')}</Button>
+                        <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>
                     </Col>
 
                     <Col className={"float-right " + classes.columnPadding + ((defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
                         <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
                         <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={"accountInfo mr-2 " + (defaultTitle == 'My Searches' ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
-                        
+
 
                     </Col>
                     {/* <Col className={classes.columnPadding} md="12"> */}
@@ -1241,45 +1235,45 @@ function SearchManagement(props) {
                 className={classes.modalBoxContent}
 
             >
-                       <Modal.Header  className={classes.modalHeader}>
-				<Link href="#" onClick={(e)=>e.preventDefault()} className={classes.modaltext}>
-				<CloseIcon onClick={closeModal} />
-				</Link>
-			</Modal.Header>
+                <Modal.Header className={classes.modalHeader}>
+                    <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
+                        <CloseIcon onClick={closeModal} />
+                    </Link>
+                </Modal.Header>
 
                 <Modal.Body className="appTextColor">
-                <div className={classes.colorConDSI}>
-                    <div className={(confirmContent ? 'd-block' : 'd-none')}>
-                        <p className="mb-3"><b>{t('deleteSelItems')}</b></p>
-                        <p className="mb-3">{t('deleteSelItemContent')}.<b>{t('deleteSelItemContent1')}</b>.</p>
-                        <div className="mb-5 h-100">
-                            <Checkbox
-                                color="primary"
-                                className={"float-left p-0 " + classes.checkBox}
-                                name="acceptTerms"
-                                id="acceptTerms"
-                                checked={termsDisable}
-                                onClick={() => setTermsDisable(!termsDisable)}
-                            />
-                            <p className={"float-left ml-1"}>{t('termsConditionText')}</p>
-                        </div>
-                        <div className={classes.footerDiv + " float-right"}>
-                             <Button onClick={closeModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
+                    <div className={classes.colorConDSI}>
+                        <div className={(confirmContent ? 'd-block' : 'd-none')}>
+                            <p className="mb-3"><b>{t('deleteSelItems')}</b></p>
+                            <p className="mb-3">{t('deleteSelItemContent')}.<b>{t('deleteSelItemContent1')}</b>.</p>
+                            <div className="mb-5 h-100">
+                                <Checkbox
+                                    color="primary"
+                                    className={"float-left p-0 " + classes.checkBox}
+                                    name="acceptTerms"
+                                    id="acceptTerms"
+                                    checked={termsDisable}
+                                    onClick={() => setTermsDisable(!termsDisable)}
+                                />
+                                <p className={"float-left ml-1"}>{t('termsConditionText')}</p>
+                            </div>
+                            <div className={classes.footerDiv + " float-right"}>
+                                <Button onClick={closeModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
 
-                            <Button onClick={() => deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelItems')}</Button>
+                                <Button onClick={() => deleteSearch('record')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelItems')}</Button>
+                            </div>
                         </div>
-                    </div>
-                    <div className={"text-center " + (delLoaderContent ? 'd-block' : 'd-none')}>
-                        <p className="mb-3">{t('deletingItems')}</p>
-                        <p className="mb-3">{t('takeTimeText')}</p>
-                    </div>
-                    <div className={(errorContent ? 'd-block' : 'd-none')}>
-                        <p className="mb-3">{t('errorDeletTitle')}</p>
-                        <p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
-                        <div className={classes.footerDivDSI + " float-right"}>
-                            <Button onClick={closeModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+                        <div className={"text-center " + (delLoaderContent ? 'd-block' : 'd-none')}>
+                            <p className="mb-3">{t('deletingItems')}</p>
+                            <p className="mb-3">{t('takeTimeText')}</p>
                         </div>
-                    </div>
+                        <div className={(errorContent ? 'd-block' : 'd-none')}>
+                            <p className="mb-3">{t('errorDeletTitle')}</p>
+                            <p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
+                            <div className={classes.footerDivDSI + " float-right"}>
+                                <Button onClick={closeModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+                            </div>
+                        </div>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -1292,59 +1286,58 @@ function SearchManagement(props) {
                 className={classes.modalBoxContent}
 
             >
-                        {/* <Modal.Header closeButton className={classes.modalHeader}>
+                {/* <Modal.Header closeButton className={classes.modalHeader}>
               </Modal.Header> */}
-              <Modal.Header  className={classes.modalHeader}>
-				<Link href="#" onClick={(e)=>e.preventDefault()} className={classes.modaltext}>
-				<CloseIcon onClick={closeFolderModal} />
-				</Link>
-			</Modal.Header>
+                <Modal.Header className={classes.modalHeader}>
+                    <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
+                        <CloseIcon onClick={closeFolderModal} />
+                    </Link>
+                </Modal.Header>
 
                 <Modal.Body className="appTextColor">
-                <div className={classes.colorConDSIEF}>
-                    <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
-                        <p className="mb-3"><b>{t('deleteSelFolder')}</b></p>
-                        <div className="ml-4">
-                        {parentTreeObj.length > 0 && parentTreeObj.map((value, index) => {
-                            let i=0;
-                            if(index > 0)
-                            {
-                                i = index + 2;
-                            }
-                            return (
-                                <p key={index} className={"mb-1 "+"ml-"+i}><img src={FolderIcon}  className={classes.popupFolderIcon} /><span className={"ml-1 "+(parentTreeObj.length == index+1 ? classes.projTitleActive:'')}>{lookup[value] && lookup[value].text_label}</span></p>
-                            )
-                        })}
-                        </div>
-                        <p className="mb-3">{t('deleteSelFolderContent')}.<b>{t('deleteSelItemContent1')}</b>.</p>
-                        <div className="mb-5 h-100">
-                            <Checkbox
-                                color="primary"
-                                className={"float-left p-0 " + classes.checkBox}
-                                name="acceptTerms"
-                                id="acceptTerms"
-                                checked={termsDisable}
-                                onClick={() => setTermsDisable(!termsDisable)}
-                            />
-                            <p className={"float-left ml-1"}>{t('termsConditionText')}</p>
-                        </div>
-                        <div className={classes.footerDiv + " float-right"}>
-                            <Button onClick={closeFolderModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
+                    <div className={classes.colorConDSIEF}>
+                        <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
+                            <p className="mb-3"><b>{t('deleteSelFolder')}</b></p>
+                            <div className="ml-4">
+                                {parentTreeObj.length > 0 && parentTreeObj.map((value, index) => {
+                                    let i = 0;
+                                    if (index > 0) {
+                                        i = index + 2;
+                                    }
+                                    return (
+                                        <p key={index} className={"mb-1 " + "ml-" + i}><img src={FolderIcon} className={classes.popupFolderIcon} /><span className={"ml-1 " + (parentTreeObj.length == index + 1 ? classes.projTitleActive : '')}>{lookup[value] && lookup[value].text_label}</span></p>
+                                    )
+                                })}
+                            </div>
+                            <p className="mb-3">{t('deleteSelFolderContent')}.<b>{t('deleteSelItemContent1')}</b>.</p>
+                            <div className="mb-5 h-100">
+                                <Checkbox
+                                    color="primary"
+                                    className={"float-left p-0 " + classes.checkBox}
+                                    name="acceptTerms"
+                                    id="acceptTerms"
+                                    checked={termsDisable}
+                                    onClick={() => setTermsDisable(!termsDisable)}
+                                />
+                                <p className={"float-left ml-1"}>{t('termsConditionText')}</p>
+                            </div>
+                            <div className={classes.footerDiv + " float-right"}>
+                                <Button onClick={closeFolderModal} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
 
-                            <Button onClick={() => deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelFolder')}</Button>
+                                <Button onClick={() => deleteSearch('folder')} color={(!termsDisable ? 'default' : 'secondary')} disabled={!termsDisable} className={"text-capitalize mr-2 " + ' ' + (!termsDisable ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('deleteSelFolder')}</Button>
+                            </div>
                         </div>
-                    </div>
-                    <div className={"text-center " + (delFolderLoaderContent ? 'd-block' : 'd-none')}>
-                        <p className="mb-3">{t('deletingFolder')}</p>
-                        <p className="mb-3">{t('takeTimeText')}</p>
-                    </div>
-                    <div className={(errorFolderContent ? 'd-block' : 'd-none')}>
-                        <p className="mb-3">{t('errorDeleteFolderTitle')}</p>
-                        <p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
-                        <div className={classes.footerDivDSI + " float-right"}>
-                            <Button onClick={closeFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+                        <div className={"text-center " + (delFolderLoaderContent ? 'd-block' : 'd-none')}>
+                            <p className="mb-3">{t('deletingFolder')}</p>
+                            <p className="mb-3">{t('takeTimeText')}</p>
                         </div>
-                    </div>
+                        <div className={(errorFolderContent ? 'd-block' : 'd-none')}>
+                            <p className="mb-3">{t('errorDeleteFolderTitle')}</p>
+                            <p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
+                            <div className={classes.footerDivDSI + " float-right"}>
+                                <Button onClick={closeFolderModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
+                            </div>
+                        </div>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -1357,30 +1350,30 @@ function SearchManagement(props) {
                 className={classes.modalBoxContent}
 
             >
-            <Modal.Header  className={classes.modalHeader}>
-				<Link href="#" onClick={(e)=>e.preventDefault()} className={classes.modaltext }>
-				<CloseIcon onClick={closeMoveFolderModal} />
-				</Link>
-			</Modal.Header>
+                <Modal.Header className={classes.modalHeader}>
+                    <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
+                        <CloseIcon onClick={closeMoveFolderModal} />
+                    </Link>
+                </Modal.Header>
 
                 <Modal.Body className="appTextColor">
-                <div className={classes.colorConMTF}>
-                    <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
-                    <p className="mb-3"><b>{t('moveToFolder')}</b></p>
+                    <div className={classes.colorConMTF}>
+                        <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
+                            <p className="mb-3"><b>{t('moveToFolder')}</b></p>
 
-                    <div className='scrollMoveItem'> 
-                    <p className="mb-3">{t('selFolderToMove')}</p>
-                        <div className="mb-5 h-100">
-                            <FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
+                            <div className='scrollMoveItem'>
+                                <p className="mb-3">{t('selFolderToMove')}</p>
+                                <div className="mb-5 h-100">
+                                    <FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
+                                </div>
+                            </div>
+
+                            <div className={classes.footerDivMTF + " float-right"}>
+                                <Button onClick={closeMoveFolderModal} className={classes.loginSubmitCancel}  >{t('cancel')}</Button>
+
+                                <Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true : false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('moveResult')}</Button>
+                            </div>
                         </div>
-                    </div>
-                       
-                        <div className={classes.footerDivMTF + " float-right"}>      
-                        <Button onClick={closeMoveFolderModal} className={classes.loginSubmitCancel}  >{t('cancel')}</Button>
-    
-                           <Button onClick={moveToFolder} color={(moveFolderId === '' ? 'default' : 'primary')} disabled={(moveFolderId === '' ? true : false)} className={"text-capitalize mr-2 " + ' ' + (moveFolderId === '' ? 'cancelButtonDisable' : 'accountInfo')} variant="contained">{t('moveResult')}</Button>
-                        </div>
-                    </div>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -1393,27 +1386,27 @@ function SearchManagement(props) {
                 className={classes.modalBoxContent}
 
             >
-              <Modal.Header  className={classes.modalHeader}>
-				<Link href="#" onClick={(e)=>e.preventDefault()} className={classes.modaltext }>
-				<CloseIcon onClick={closeFolderModal} />
-				</Link>
-			</Modal.Header>
+                <Modal.Header className={classes.modalHeader}>
+                    <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
+                        <CloseIcon onClick={closeFolderModal} />
+                    </Link>
+                </Modal.Header>
                 <Modal.Body className="appTextColor text-center">
-                <div className={classes.colorContainer}>
-                    <div>
-                        <p className="mb-3">{t('folderNameNotAllowed')}</p>
-                        <p className="mb-3">{t('plsTryAgain')}</p>
-                    </div>
-                    <div className={classes.footerDiv + " align-center"}>
-                        <Button onClick={() => setAddFolderModalShow(false)} className="mr-2 accountInfo" color="primary" variant="contained">{t('ok')}</Button>
-                    </div>
+                    <div className={classes.colorContainer}>
+                        <div>
+                            <p className="mb-3">{t('folderNameNotAllowed')}</p>
+                            <p className="mb-3">{t('plsTryAgain')}</p>
+                        </div>
+                        <div className={classes.footerDiv + " align-center"}>
+                            <Button onClick={() => setAddFolderModalShow(false)} className="mr-2 accountInfo" color="primary" variant="contained">{t('ok')}</Button>
+                        </div>
                     </div>
                 </Modal.Body>
             </Modal>
-            <MergeResults 
-            show={showMergeModal}
-            selectData={selectData}
-            close={(type)=> mergeModalFunction(type)}/>
+            <MergeResults
+                show={showMergeModal}
+                selectData={selectData}
+                close={(type) => mergeModalFunction(type)} />
         </div>
 
     );

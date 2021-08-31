@@ -352,10 +352,18 @@
     color: #777777;
     font-style: italic;
 }
-.opClass::after,.space::after,.query::after,.autoquery::after,.pastequery::after {
+
+.opClass::after,
+.space::after,
+.query::after,
+.autoquery::after,
+.pastequery::after {
     content: ' ';
 }
-.andClass,.orClass,.notClass{
+
+.andClass,
+.orClass,
+.notClass {
     text-transform: uppercase;
 }
 
@@ -467,53 +475,68 @@ label {
     }
 }
 
-
-.opClass{
+.opClass {
     font-style: italic;
     font-weight: bold;
     color: #bdb9b9;
 }
+
 .query {
     font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
     font-size: 14px;
     color: #777777;
     font-weight: 400;
 }
-.autoquery{
+
+.autoquery {
     color: #8a6d3b;
     background-color: #fcf8e3;
     border: 1px solid #faebcc;
 }
-#textareaDiv{
+
+#textareaDiv {
     font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
     font-size: 14px;
     color: #777777;
     font-weight: 400;
     white-space: inherit;
 }
-.loginSubmitCancel{
+
+.loginSubmitCancel {
     background-color: #0182C5 !important;
     border-color: #1F4E79 !important;
     border: 2px solid #1F4E79 !important;
-    color:white !important;
+    color: white !important;
     text-transform: capitalize !important;
 }
-.loginSubmitCancel:hover{
+
+.loginSubmitCancel:hover {
     background-color: #0182C5 !important;
     box-shadow: none !important;
 }
-.loginSubmitButton{
+
+.loginSubmitButton {
     background-color: #db862c !important;
     margin-left: -6px;
     border-color: #ca751b !important;
     border: 2px solid #ca751b !important;
-    color:white !important;
+    color: white !important;
     text-transform: capitalize !important;
 }
- .loginSubmitButton:hover{
+
+.loginSubmitButton:hover {
     background-color: #db862c !important;
     box-shadow: none !important;
 }
+
+
+/*Mui Radio */
+
+.MuiRadio-colorSecondary.Mui-checked {
+    color: #008EC5 !important;
+}
+
+
 /*Mui Checkbox */
 
 .MuiCheckbox-colorSecondary.Mui-checked {
@@ -532,24 +555,26 @@ label {
     border-bottom-width: 0px;
 }
 
+
 /* Autocomplete Popup style */
+
 .popup-box {
     position: fixed;
     background: #00000050;
     width: 50%;
     z-index: 999;
 }
-  
-  .box {
+
+.box {
     position: relative;
     background: #fff;
     border-radius: 4px;
     padding: 0px;
     border: 1px solid #999;
     overflow: auto;
-  }
-  
-  .close-icon {
+}
+
+.close-icon {
     content: 'x';
     cursor: pointer;
     position: fixed;
@@ -563,8 +588,8 @@ label {
     text-align: center;
     border: 1px solid #999;
     font-size: 20px;
-  }
-  
+}
+
 .checkBoxContent {
     font-size: 14px;
     text-align: initial;

@@ -9,44 +9,44 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'11px',
+		paddingTop: '11px',
 		paddingRight: '4px',
-		marginTop:'-7px',
+		marginTop: '-7px',
 	},
-	footerDiv:{
-		padding:'0 30px',
-		marginTop:'-24px',
-		marginRight: '6px',	
+	footerDiv: {
+		padding: '0 30px',
+		marginTop: '-24px',
+		marginRight: '6px',
 	},
-	buttonStyle:{
-		float:'right',
+	buttonStyle: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
-		color:'white',
-		backgroundColor:'#008EC5 !important',
-        border: '2px solid #1F4E79 !important',
-		borderColor:'#1F4E79',
+		margin: '4px',
+		color: 'white',
+		backgroundColor: '#008EC5 !important',
+		border: '2px solid #1F4E79 !important',
+		borderColor: '#1F4E79',
 
 	},
-	buttonStyleCancel:{
-		float:'right',
+	buttonStyleCancel: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
+		margin: '4px',
 	},
-	modalBoxContent :{
+	modalBoxContent: {
 		maxHeight: '675px',
 	},
-	modalClassContent:{
+	modalClassContent: {
 		position: 'absolute',
 		width: '96%',
-		height: '37%',
+		height: 'auto',
 		top: '30%',
 		left: '50%',
 		right: 'auto',
 		bottom: 'auto',
 		transform: 'translate(-50%, -50%)'
 	},
-	colorContainer:{
+	colorContainer: {
 		backgroundColor: '#EEEEEE',
 		marginTop: '-33px',
 		// marginLeft: 0px;
@@ -58,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '5px',
 
 	},
+	modalBody: {
+		textAlign: 'center',
+		marginBottom: '8px'
+	}
 
 
 }));
@@ -65,9 +69,9 @@ const useStyles = makeStyles((theme) => ({
 function ChangePassCheckModal(props) {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation('common');
-    let mailUrl = "mailto:" + supportMail+"?subject="+props.subjectText;
+	let mailUrl = "mailto:" + supportMail + "?subject=" + props.subjectText;
 
-    console.log(props,"props");
+	console.log(props, "props");
 	return (
 		<Modal
 			{...props}
@@ -83,13 +87,13 @@ function ChangePassCheckModal(props) {
            Logout
           </Modal.Title> */}
 			</Modal.Header>
-			<Modal.Body className={"text-center "}>
+			<Modal.Body className={classes.modalBody}>
 				{/* <h5>{props.onMessage}</h5> */}
 				<div className={classes.colorContainer}>
-				<h5>The two new passwords are not identical.</h5>
-                 <br></br>
-				<h5>Please try again.</h5>
-				{/* <p>
+					<h5>The two new passwords are not identical.</h5>
+					<br></br>
+					<h5>Please try again.</h5>
+					{/* <p>
                         <spoan>{t("tryAgainOrContact")}</spoan>
 						<br></br>
 						<br></br>
@@ -98,14 +102,14 @@ function ChangePassCheckModal(props) {
                         </span>
                         <span>{t("forAssistance")}</span>
               </p> */}
-				<br></br>
-				<div className={classes.footerDiv}>
-					<Button onClick={props.tryAgain} disableRipple={true} className='accountInfo' color="primary" variant="contained">Try Again</Button> 
-					<Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyle}  color="default" variant="contained">Cancel</Button>
+					<br></br>
+					<div className={classes.footerDiv}>
+						<Button onClick={props.tryAgain} disableRipple={true} className='accountInfo' color="primary" variant="contained">Try Again</Button>
+						<Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyle} color="default" variant="contained">Cancel</Button>
+					</div>
 				</div>
-				</div>
-				
-				
+
+
 			</Modal.Body>
 			{/* <Modal.Footer>
 				<Button onClick={props.onHide}>Close</Button>
