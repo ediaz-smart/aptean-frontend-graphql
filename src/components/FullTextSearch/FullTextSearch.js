@@ -43,7 +43,13 @@ let NOTString = '<span class="notClass opClass">NOT</span> ';
 let SpaceString = '<span class="space"> </span>';
 let queryString = '<span class="query"></span>';
 let classArray = ['andClass','orClass','notClass','autoquery']
-let removeClassArray = ['andClass','orClass','notClass']
+let removeClassArray = ['andClass','orClass','notClass'];
+var options = [
+    'John',
+    'Miles',
+    'Charles',
+    'Herbie',
+  ];
 function FullTextSearch() {
     const { t, i18n } = useTranslation("common");
     const classes = useStyles();
@@ -51,6 +57,7 @@ function FullTextSearch() {
     const [fulltext,setFullText] = useState();
     const [testOutput,setTestOutput] = useState();
     const [queryParser,setQueryParser] = useState({});
+    const [pasteContent, setPasteContent] = React.useState(null);
 
     // For Popup
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -58,7 +65,9 @@ function FullTextSearch() {
     const [topPosition,setTopPosition] = useState(220);
     const [leftPosition,setLeftPosition] = useState(65);
     const [keyCode, setKeyCode] = React.useState(null);
+    const [keyPressCode, setKeyPressCode] = React.useState(null);
     const [keyCodeEvent, setKeyCodeEvent] = React.useState(null);
+    const [detectPaste, setDetectPaste] = React.useState(true);
 
     // For Auto Complete Search
     const [searchTermPopup, setSearchTermPopup] = React.useState(false);
@@ -84,6 +93,9 @@ function FullTextSearch() {
     // To detect outside click for Autocomplete popup
 	const wrapperRef = useRef(null);
 
+    const [singleSelections, setSingleSelections] = useState([]);
+
+
     const openPopup = () => {
         // console.log(event.currentTarget,'event.currentTarget');
         // setAnchorEl(event.currentTarget);
@@ -105,7 +117,7 @@ function FullTextSearch() {
     useEffect(async () => {
         //dispatch(userActions.logout());
         document.addEventListener("mousedown", handleClickOutside);
-		return () => {
+        return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
     }, []);
@@ -125,34 +137,74 @@ function FullTextSearch() {
         }
 	};
     const getKeyCode = (e)=>{
-        setKeyCode(e.keyCode);
-        setKeyCodeEvent(e);
-        let getCurrentSel = window.getSelection();
-        console.log(getCurrentSel,'onmousedownsel');
-        if(e.keyCode == 8)
+        
+        if(e.type == "keypress")
         {
-            if(getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode)
+            setKeyPressCode(e.keyCode)
+        }else {
+            setKeyCode(e.keyCode);
+        }
+        // setKeyCodeEvent(e);
+        let getCurrentSel = window.getSelection();
+        setKeyCodeEvent(getCurrentSel);
+        console.log(getCurrentSel,'onmousedownsel');
+        console.log(e,'onmousedownsel');
+        console.log(e.metaKey,'metaKey');
+        console.log(pasteContent,'pasteContent');
+        let getClass = [];
+        let selElTxt = '';
+        
+
+        let checkPaste = false;
+        if(e.ctrlKey || e.metaKey)
+        {
+            checkPaste = true;
+        }
+        setDetectPaste(checkPaste);
+        if(getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode)
+        {
+            if(getCurrentSel.focusNode.parentNode.className)
             {
-                if(getCurrentSel.focusNode.parentNode.className)
-                {
-                    let getClass = getCurrentSel.focusNode.parentNode.className.split(' ');
-                    if(removeClassArray.includes(getClass[0]))
-                    {
-                        e.preventDefault();
-                    }
-                }
+                getClass = getCurrentSel.focusNode.parentNode.className.split(' ');
+            }
+            if(getCurrentSel.focusNode.parentNode.textContent)
+            {
+                selElTxt = getCurrentSel.focusNode.parentNode.textContent;
             }
         }
+       
+        // Right Arrow Cursor 
+        // if(e.keyCode == 39 && )
+        // {
+
+        // }
+        if(e.keyCode == 8)
+        {
+            if(removeClassArray.includes(getClass[0]))
+            {
+                e.preventDefault();
+            }
+        }else {
+            e.stopPropagation();
+        }
     }
+    const handlePaste = (e) => {
+        console.log(e,'detectpaste');
+        console.log(e.clipboardData.getData('Text'),'Text');
+        let getPasteTxt = e.clipboardData.getData('Text');
+        setPasteContent(getPasteTxt);
+        e.stopPropagation();
+    };
     const callParseQuery = (value,element)=>{
-        setTimeout(() => {
+        // setTimeout(() => {
+            // console.log(element,'onminput');
             let getCurrentSel = window.getSelection();
-            console.log(getCurrentSel,'getCurrentSel1');
+            // console.log(getCurrentSel,'getCurrentSel1');
             parseQuery(value,element)
             
             
             
-        }, 100);
+        // }, 50);
     }
     const parseQuery = (value,element) =>{
         // let value = element.target.textContent;
@@ -207,7 +259,9 @@ function FullTextSearch() {
         let getCurrentSel = window.getSelection();
         console.log(getCurrentSel,'getCurrentSel');
         let htmlElement = document.getElementById("textareaDiv");
-        // console.log(htmlElement,'htmlElement');
+        
+        console.log(pasteContent,'pasteContent1');
+        console.log(detectPaste,'detectPaste');
         let lastValue = value.slice(-1);
         let lastPrevValue = value.charAt(value.length-2);
         // console.log(lastChildEl,'lastChildEl1');
@@ -215,37 +269,43 @@ function FullTextSearch() {
         let lastChild = htmlElement.children[htmlElement.children.length - 1];
         let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
         let placeCursor = true;
+        let spanArr = '';
         
         // if(lastChild)
         // {
         //     console.log(lastChild,'lastChild');
         //     console.log(lastChild.attributes,'lastChildattributes');
         // }
-        let getChildClass='',getChildClassName='',getChildText='';
+        let getChildClass='',getChildClassName='',getChildText='',getChildEl='';
         // let getPrevChildClass='',getPrevChildClassName='',getPrevChildText='';
         if(lastChild && lastChild.attributes.length > 0)
         {
             getChildClass = lastChild.attributes.class ? lastChild.attributes.class:'';
             getChildClassName = getChildClass ? getChildClass.value:'';
             getChildText = lastChild.textContent;
+            getChildEl = lastChild;
         }
         else if(lastPrevChild && lastPrevChild.attributes.length > 0)
         {
             getChildClass = lastPrevChild.attributes.class ? lastPrevChild.attributes.class:'';
             getChildClassName = getChildClass ? getChildClass.value:'';
             getChildText = lastPrevChild.textContent;
+            getChildEl = lastPrevChild;
         }
         let getSearchVal = getChildText;
         
         // Removing Common CSS class for functionality
         getChildClassName = getChildClassName.split(" ")[0];
-        let checkORValues = ['OR ','or ','or','OR','o','O'];
-        let checkANDValues = ['AND ','and ','and','AND','a','A'];
-        let checkNOTValues = ['NOT ','not ','not','NOT','n','N'];
+        let checkORValues = ['OR ','or ','or','OR'];
+        let checkANDValues = ['AND ','and ','and','AND'];
+        let checkNOTValues = ['NOT ','not ','not','NOT'];
         // If Delete event for key 8
+        console.log(getChildClassName,'getChildClassName');
+        console.log(lastChild && lastChild.attributes,'lastChild.attributes');
         // If Space Enters
         if(keyCode == 32)
         {
+            setSearchTermPopup(false);
             console.log(lastPrevValue.trim().length,'isEmptyOrSpaces(lastPrevValue)')
            
                 if(lastPrevValue.trim().length > 0)
@@ -253,7 +313,7 @@ function FullTextSearch() {
                     
                     if(lastChild && lastChild.attributes.length > 0)
                     {
-                        if(getChildClassName == "autoquery")
+                        if(getChildClassName == "autoquery" || getChildClassName == "pastequery")
                         {
                             htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
                             var newSpan = document.createElement('span');
@@ -278,7 +338,9 @@ function FullTextSearch() {
                                 newSpan.setAttribute('class', 'space');
                                 newSpan.innerHTML = "";
                                 htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                                placeCursor = false;
                             }
+                            
                             
                         }else if(getChildClassName == "space"){
                             if(checkORValues.includes(getChildText)){
@@ -305,8 +367,15 @@ function FullTextSearch() {
                             
                         }
                     }else if(lastPrevChild && lastPrevChild.attributes.length > 0){
-                        
-                        if(getChildClassName == "space")
+                        if(getChildClassName == "autoquery" || getChildClassName == "pastequery")
+                        {
+                            htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                            var newSpan = document.createElement('span');
+                            newSpan.setAttribute('class', 'space');
+                            newSpan.innerHTML = "";
+                            htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                        }
+                        else if(getChildClassName == "space")
                         {
                             if(checkORValues.includes(getChildText)){
                                 htmlElement.children[htmlElement.children.length - 2].outerHTML = ORString
@@ -343,6 +412,7 @@ function FullTextSearch() {
                                 newSpan.setAttribute('class', 'space');
                                 newSpan.innerHTML = "";
                                 htmlElement.innerHTML = htmlElement.innerHTML+newSpan.outerHTML;
+                                placeCursor = false;
                             }
                         }
                     }
@@ -357,12 +427,16 @@ function FullTextSearch() {
                             htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
                         // }               
                     }
-                    
+                    console.log(htmlElement,'htmlElement..');
                     placeCaretAtEnd(htmlElement);
                 }else {
-                    htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
-                    htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
-                    placeCaretAtEnd(htmlElement);
+                    if(htmlElement.innerHTML.slice(-1) != ">")
+                    {
+                        htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                        // htmlElement.innerHTML = htmlElement.innerHTML.replace(/&nbsp;/g,"");
+                        htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                        placeCaretAtEnd(htmlElement);
+                    }
                 }
         
             
@@ -395,21 +469,25 @@ function FullTextSearch() {
                     if(removeClassArray.includes(getClass[0]))
                     {
                         Object.keys(htmlElement.children).forEach(function(key) {
-                            let getClass = htmlElement.children[key].attributes.class.value;
+                            let getClassVal = htmlElement.children[key].attributes.class.value.split(' ');
                             let getClassId = htmlElement.children[key].getAttribute('dataid');
                             console.log(getClassId,'getClassId');
                             if(getClassId == getCurrentSel.focusNode.parentNode.getAttribute('dataid'))
                             {
-                                if(getClass[0] == 'andClass')
+                                if(getClassVal[0] == 'andClass')
                                 {
                                     htmlElement.children[key].outerHTML = ANDString;
-                                }else if(getClass[0] == 'orClass')
+                                    placeCaretAtEnd(htmlElement.children[key]);
+                                }else if(getClassVal[0] == 'orClass')
                                 {
                                     htmlElement.children[key].outerHTML = ORString;
-                                }else if(getClass[0] == 'notClass')
+                                    placeCaretAtEnd(htmlElement.children[key]);
+                                }else if(getClassVal[0] == 'notClass')
                                 {
                                     htmlElement.children[key].outerHTML = NOTString;
+                                    placeCaretAtEnd(htmlElement.children[key]);
                                 }
+                                
                             }
                         });
                     }
@@ -423,30 +501,59 @@ function FullTextSearch() {
             // // htmlElement.innerHTML = htmlElement.innerHTML.substring(0, currentIndex) +strReplacedWith+ htmlElement.innerHTML.substring(currentIndex + 1, htmlElement.innerHTML.length);
             // htmlElement.innerHTML = htmlElement.innerHTML.trimRight();
 
-
-            
-            // element.focus();
-            // placeCaretAtEnd(htmlElement);
-            // const el = document.getElementById("editable");
-            // el.focus()
-            // let char = 1, sel; // character at which to place caret
-
-            // if (document.selection) {
-            //     sel = document.selection.createRange();
-            //     sel.moveStart('character', char);
-            //     sel.select();
-            // }
-            // else {
-            //     sel = window.getSelection();
-            //     sel.collapse(el.lastChild, char);
-            // }
         }    
         else {
             if(value != "")
             {
                 let checkOperatorText = ['and','AND','or','OR','not','NOT'];
+                if(detectPaste)
+                {
+                    let splitPasteTxt = pasteContent ? pasteContent.split(' ') : [];
+                    console.log(splitPasteTxt,'splitPasteTxt');
+                    if(splitPasteTxt && splitPasteTxt.length > 0)
+                    {
+                        
+                        let opFlag = 0;
+                        let getSplitLen = splitPasteTxt.length;
+                        console.log(getSplitLen,'getSplitLen');
+                        splitPasteTxt.map((data, i) =>{
+                            var newSpan = document.createElement('span');
+                            // add the class to the 'span'
+                            if(checkANDValues.includes(data))
+                            {
+                                newSpan.innerHTML = ANDString;
+                                opFlag = 1;
+                            }else if(checkORValues.includes(data))
+                            {
+                                newSpan.innerHTML = ORString;
+                                opFlag = 1;
+                            }else if(checkNOTValues.includes(data))
+                            {
+                                newSpan.innerHTML = NOTString;
+                                opFlag = 1;
+                            }else {
+                                newSpan.setAttribute('class', 'pastequery');
+                                newSpan.innerText = data;
+                                opFlag = 0;
+                            }
+                            if(opFlag == 1)
+                            {
+                                spanArr += newSpan.innerHTML;
+                            }else {
+                                spanArr += newSpan.outerHTML;
+                            }
+                        });
+                        console.log(spanArr,'spanArr');
+                    }
+                }
+                //"Kinase" AND inhibitor
+                    console.log(lastChild && lastChild.attributes.length,'lastChild.attributes');
+                    console.log(getChildClassName,'getChildClassName');
+                    console.log(htmlElement.children,'htmlel');
                     if(lastChild && lastChild.attributes.length > 0)
                     {
+                        
+                        
                         if(getChildClassName == "autoquery")
                         {
                             htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
@@ -463,9 +570,34 @@ function FullTextSearch() {
                             }
                             htmlElement.innerHTML = htmlElement.innerHTML+ANDString+' '+newSpan.outerHTML;
                         }
+                        else if(getChildClassName == "pastequery")
+                        {
+                            if(detectPaste)
+                            {
+                                let getLastIndex = htmlElement.innerHTML.lastIndexOf(pasteContent);
+                                let remPasteContent = htmlElement.innerHTML.substring(0,getLastIndex);
+                                htmlElement.innerHTML = remPasteContent;
+                                htmlElement.innerHTML = htmlElement.innerHTML+ANDString+spanArr;   
+                            }else {
+                                htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                                htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+                                var newSpan = document.createElement('span');
+                                newSpan.setAttribute('class', 'query');
+                                newSpan.innerHTML = lastValue;
+                                htmlElement.innerHTML = htmlElement.innerHTML+ANDString+newSpan.outerHTML;
+                            }
+                            
+                        }
                         else if(getChildClassName == "space")
                         {
-                            if((lastValue == "o" || lastValue == "O") || (lastValue == "a" || lastValue == "A") || (lastValue == "n" || lastValue == "N"))
+                            if(detectPaste)
+                            {
+                                let getLastIndex = htmlElement.innerHTML.lastIndexOf(pasteContent);
+                                let remPasteContent = htmlElement.innerHTML.substring(0,getLastIndex);
+                                htmlElement.innerHTML = remPasteContent;
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+spanArr;  
+                            }
+                            else if((lastValue == "o" || lastValue == "O") || (lastValue == "a" || lastValue == "A") || (lastValue == "n" || lastValue == "N"))
                             {
                                 if(htmlElement.children[htmlElement.children.length - 1].textContent.length == 0)
                                 {
@@ -520,14 +652,75 @@ function FullTextSearch() {
                         }
                         else if(getChildClassName == "query")
                         {
+                            
+                            let childElId = getChildEl.getAttribute('dataid');
+                            // console.log(lastElClass,'lastElClass');
+                            console.log(childElId,'childElId');
+                            console.log(getChildEl.getAttribute('dataid'),'checkdataid');
+                            let getSelectedNodeId = '';
+                            if(getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode)
+                            {
+                                if(getCurrentSel.focusNode.parentNode.className)
+                                {
+                                    getSelectedNodeId = getCurrentSel.focusNode.parentNode.getAttribute('dataid');
+                                }
+                            }
+                            console.log(getCurrentSel.focusNode.parentNode,'getCurrentSel.focusNode.parentNode');
+                            console.log(getSelectedNodeId,'getSelectedNodeId');
+                        // let getDataId = getCurrentSel.focusNode.parentNode.attributes.dataid;
+                            if(detectPaste)
+                            {
+                                // let getCurrentTextContent = getCurrentSel.focusNode.parentNode.textContent;
+                                // var checkLastStr  = getCurrentTextContent.substr(-(pasteContent.length));
+                                // // Getting Index Value to remove the last append text in span(copy paste)
+                                // let getLastIndex = getCurrentSel.focusNode.parentNode.textContent.lastIndexOf(pasteContent)
+                                // if(checkLastStr == pasteContent)
+                                // {
+
+                                // }
+                                var getRemLastStr  = getCurrentSel.focusNode.parentNode.textContent;
+                                // Getting Index Value to remove the last append text in span(copy paste)
+                                let getLastIndex = getRemLastStr.lastIndexOf(pasteContent);
+                                if(getLastIndex)
+                                {
+                                    getRemLastStr = getRemLastStr.substring(0,getLastIndex);
+                                }
+                                htmlElement.children[htmlElement.children.length - 1].textContent = getRemLastStr;
+                                getSearchVal = htmlElement.children[htmlElement.children.length - 1].textContent;
+                                console.log(getRemLastStr,'getRemLastStr');
+                            }else {
+
+                            }
+                            if(htmlElement.children.length == 1)
+                            {
+                                placeCursor = true;
+                            }else if(getSelectedNodeId != '' && (getSelectedNodeId != childElId)){
+                                placeCursor = false;
+                            }else {
+                                placeCursor = true;
+                            }
+                            console.log(htmlElement.children,'htmlElement.children');
                             if(htmlElement.innerHTML.slice(-1) != ">")
                             {
                                 htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
                                 htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;
                                 getSearchVal = htmlElement.children[htmlElement.children.length - 1].textContent;
-                                placeCursor = true;
                             }
+                            console.log(htmlElement.children,'htmlElement.children1');
                             
+                            
+                        }else if(getChildClassName == "" && detectPaste)
+                        {
+                            if(htmlElement.children.length == 1)
+                            {
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = spanArr; 
+                            }else {
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+spanArr; 
+                            }
+                            // let getLastIndex = htmlElement.innerHTML.lastIndexOf(pasteContent);
+                            // let remPasteContent = htmlElement.innerHTML.substring(0,getLastIndex);
+                            // htmlElement.innerHTML = remPasteContent;
+                            // htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+spanArr;  
                         }
                     }else if(lastPrevChild && lastPrevChild.attributes.length > 0){
                         if(getChildClassName == "autoquery")
@@ -545,9 +738,25 @@ function FullTextSearch() {
                                 newSpan.innerHTML = lastChild.innerText+lastValue;
                             }
                             htmlElement.innerHTML = htmlElement.innerHTML+ANDString+' '+newSpan.outerHTML;
-                        }else if(getChildClassName == "space")
+                        }
+                        else if(getChildClassName == "pastequery")
                         {
-                            if((lastValue == "o" || lastValue == "O") || (lastValue == "a" || lastValue == "A") || (lastValue == "n" || lastValue == "N"))
+                            htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                            var newSpan = document.createElement('span');
+                            newSpan.setAttribute('class', 'query');
+                            newSpan.innerHTML = lastValue;
+                            htmlElement.innerHTML = htmlElement.innerHTML+ANDString+newSpan.outerHTML;
+                        }
+                        else if(getChildClassName == "space")
+                        {
+                            if(detectPaste)
+                            {
+                                let getLastIndex = htmlElement.innerHTML.lastIndexOf(pasteContent);
+                                let remPasteContent = htmlElement.innerHTML.substring(0,getLastIndex);
+                                htmlElement.innerHTML = remPasteContent;
+                                htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+spanArr;  
+                            }
+                            else if((lastValue == "o" || lastValue == "O") || (lastValue == "a" || lastValue == "A") || (lastValue == "n" || lastValue == "N"))
                             {
                                 if(htmlElement.children[htmlElement.children.length - 2].textContent.length == 0)
                                 {
@@ -598,13 +807,56 @@ function FullTextSearch() {
                             htmlElement.innerHTML = htmlElement.innerHTML+' '+newSpan.outerHTML;
                         }
                     }else {
-                        //create the DOM object
-                        var newSpan = document.createElement('span');
-                        // add the class to the 'span'
-                        newSpan.setAttribute('class', 'query');
-                        newSpan.innerHTML = value;
-                        htmlElement.innerHTML = newSpan.outerHTML;
-                        htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                        if(detectPaste)
+                        {
+                            let splitPasteTxt = pasteContent ? pasteContent.split(' ') : [];
+                            console.log(splitPasteTxt,'splitPasteTxt1');
+                            
+                            if(splitPasteTxt && splitPasteTxt.length > 0)
+                            {
+                                let spanArr = '';
+                                let opFlag = 0;
+                                let getSplitLen = splitPasteTxt.length;
+                                console.log(getSplitLen,'getSplitLen');
+                                splitPasteTxt.map((data, i) =>{
+                                    var newSpan = document.createElement('span');
+                                    // add the class to the 'span'
+                                    if(checkANDValues.includes(data))
+                                    {
+                                        newSpan.innerHTML = ANDString;
+                                        opFlag = 1;
+                                    }else if(checkORValues.includes(data))
+                                    {
+                                        newSpan.innerHTML = ORString;
+                                        opFlag = 1;
+                                    }else if(checkNOTValues.includes(data))
+                                    {
+                                        newSpan.innerHTML = NOTString;
+                                        opFlag = 1;
+                                    }else {
+                                        newSpan.setAttribute('class', 'pastequery');
+                                        newSpan.innerText = data;
+                                        opFlag = 0;
+                                    }
+                                    if(opFlag == 1)
+                                    {
+                                        spanArr += newSpan.innerHTML;
+                                    }else {
+                                        spanArr += newSpan.outerHTML;
+                                    }
+                                });
+                                htmlElement.innerHTML = spanArr;
+                            }
+                        }else {
+                            //create the DOM object
+                            var newSpan = document.createElement('span');
+                            // add the class to the 'span'
+                            newSpan.setAttribute('class', 'query');
+                            newSpan.innerHTML = value;
+                            htmlElement.innerHTML = newSpan.outerHTML;
+                            htmlElement.innerHTML = htmlElement.innerHTML.replaceAll('<br>','');
+                        }
+                        
                     }
                 console.log(placeCursor,'placeCursor');
                 if(placeCursor)
@@ -630,7 +882,7 @@ function FullTextSearch() {
         let checkCharLen = getSearchVal.length;
         
         console.log(checkCharLen,'checkCharLen');
-        if(checkCharLen > 2)
+        if(checkCharLen > 2 && keyCode != 32)
         {
             searchTerm(getSearchVal);
         }else if(checkCharLen < 3){
@@ -638,20 +890,73 @@ function FullTextSearch() {
         }
         try {
             let queryTxt = '';
+            let prevClass = '';
+            let prevClassData = '';
+            let nextClass = '';
+            let nextClassData = '';
+            let getClass = '';
+            let splitClass = [];
+            let prevKey=0;
+            let nextKey=0;
+            let currKey=0;
             Object.keys(htmlElement.children).forEach(function(key) {
-                let getClass = htmlElement.children[key].attributes.class.value;
-                htmlElement.children[key].setAttribute('dataId',parseInt(key)+1);
-                if(htmlElement.children[key].textContent != '')
+                
+                if(htmlElement.children[key])
                 {
-                    if(getClass == 'autoquery')
+                    getClass = htmlElement.children[key] ? htmlElement.children[key].attributes.class.value:'';
+                    splitClass = getClass ? getClass.split(' '):[];
+                    if(key > 0)
                     {
-                        queryTxt += '"'+htmlElement.children[key].id+'-'+htmlElement.children[key].textContent.trim()+'"'+' ';
-                    }else {
-                        queryTxt += htmlElement.children[key].textContent.trim()+' ';
+                        prevKey = parseInt(key) - 1;
+                        nextKey = parseInt(key) + 1;
+                        prevClassData = htmlElement.children[prevKey] ? htmlElement.children[prevKey].attributes.class.value:'';
+                        prevClass = prevClassData ? prevClassData.split(' '):[];
+                        nextClassData = htmlElement.children[nextKey] ? htmlElement.children[nextKey].attributes.class.value:'';
+                        nextClass = nextClassData ? nextClassData.split(' '):[];
                     }
+                    
+                    
+                    
+                    if(htmlElement.children[key] && htmlElement.children[key].textContent != '')
+                    {
+                        
+                        if(getClass == 'autoquery')
+                        {
+                            queryTxt += '"'+htmlElement.children[key].id+'-'+htmlElement.children[key].textContent.trim()+'"'+' ';
+                        }else {
+                            queryTxt += htmlElement.children[key].textContent.trim()+' ';
+                        }
+                        htmlElement.children[currKey].setAttribute('dataId',parseInt(currKey)+1);
+                        currKey++;
+                    }else if((splitClass == "query" && (htmlElement.children[key] && htmlElement.children[key].textContent == '')))
+                    {
+                        // delete htmlElement.children[key];
+                        htmlElement.children[key].outerHTML = '';
+                        currKey=key;
+                        if(prevClass[0] == nextClass[0])
+                        {
+                            // delete htmlElement.children[prevKey];
+                            htmlElement.children[prevKey].outerHTML = '';
+                            currKey=prevKey;
+                        }
+                    }
+                    
                 }
+                
             });
+            // htmlElement.children = htmlElement.children.trim();
+            setTimeout(() => {
+                Object.keys(htmlElement.children).forEach(function(key) {
+                    htmlElement.children[key].setAttribute('dataId',parseInt(key)+1);
+                });
+            }, 100);
+            console.log(htmlElement.children,'htmlElement.children');
+            
+            
+            queryTxt.replace(/[()]/g,'');
             console.log(htmlElement,'htmlElement');
+            // queryTxt = queryTxt.replace('(', ' ').replace(')', '')
+            queryTxt = queryTxt.trim();
             console.log(queryTxt,'queryTxt');
             var results = lucenequeryparser.parse(queryTxt);
 
@@ -659,7 +964,7 @@ function FullTextSearch() {
             setQueryParser(JSON.stringify(results));
             results = JSON.stringify(results, undefined, 2);
             results = results.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
-            console.log(queryParser,'queryParser');
+            // console.log(queryParser,'queryParser');
             setTestOutput(results)
           
         } catch (err) {
@@ -748,7 +1053,12 @@ function FullTextSearch() {
                     setTopPosition(getXYCoordinates.top);
                     setLeftPosition(getXYCoordinates.left);
                 }
-                setSearchTermPopup(true);
+                console.log(keyCode,'searchkeycode');
+                if(keyCode != 32)
+                {
+                    setSearchTermPopup(true);
+                }
+                
                 // setTimeout(() => {
                     let htmlElement = document.getElementById("textareaDiv");
                     // htmlElement.focus();
@@ -835,7 +1145,8 @@ function FullTextSearch() {
                 }
             }
         });
-        
+        queryTxt.replace(/[()]/g,'');
+        console.log(queryTxt,'queryTxt1');
         // htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g,"");
         placeCaretAtEnd(htmlElement);
         setSearchTermPopup(false);
@@ -949,26 +1260,30 @@ function FullTextSearch() {
         console.log(key,'keyyy');
         console.log(pointer[key],'pointer');
         let splitTerm='';
-        if(pointer[key].hasOwnProperty('left') && (pointer[key]['left'].quoted_term && pointer[key]['left'].quoted_term != ''))
+        if(pointer[key])
         {
-            splitTerm = pointer[key]['left'].quoted_term.split('-');
-            // console.log(splitTerm,'splitTerm');
-            pointer[key]['left']['term'] = {
-                quoted_term:splitTerm[0]
+            if(pointer[key].hasOwnProperty('left') && (pointer[key]['left'].quoted_term && pointer[key]['left'].quoted_term != ''))
+            {
+                splitTerm = pointer[key]['left'].quoted_term.split('-');
+                // console.log(splitTerm,'splitTerm');
+                pointer[key]['left']['term'] = {
+                    quoted_term:splitTerm[0]
+                }
+                pointer[key]['left']['decoration'] = splitTerm[1];
+                delete pointer[key]['left'].quoted_term;
+            }else if((pointer[key].quoted_term && pointer[key].quoted_term != ''))
+            {
+                splitTerm = pointer[key].quoted_term.split('-');
+                // console.log(splitTerm,'splitTerm');
+                pointer[key]['term'] = {
+                    quoted_term:splitTerm[0]
+                }
+                pointer[key]['decoration'] = splitTerm[1];
+                delete pointer[key].quoted_term;
             }
-            pointer[key]['left']['decoration'] = splitTerm[1];
-            delete pointer[key]['left'].quoted_term;
-        }else if((pointer[key].quoted_term && pointer[key].quoted_term != ''))
-        {
-            splitTerm = pointer[key].quoted_term.split('-');
-            // console.log(splitTerm,'splitTerm');
-            pointer[key]['term'] = {
-                quoted_term:splitTerm[0]
-            }
-            pointer[key]['decoration'] = splitTerm[1];
-            delete pointer[key].quoted_term;
+            pointer[key] = pointer[key];
         }
-        pointer[key] = pointer[key];
+        
         return obj;
     }
  
@@ -1022,8 +1337,9 @@ function FullTextSearch() {
                             value={fulltext || ''}
                             // onChange={(e) => setNotes(e.target.value)}
                         /> */}
-                        <div id="textareaDiv" contentEditable='true' onKeyDown={getKeyCode} onInput={e => callParseQuery(e.target.textContent,e)}>
-                        
+                        {/* <div id="textareaDiv" contentEditable='true' onKeyDown={getKeyCode} onInput={e => callParseQuery(e.target.textContent,e)} tabIndex="0"> */}
+                        <div id="textareaDiv" contentEditable='true' onPaste={handlePaste} onKeyPress={getKeyCode} onKeyDown={getKeyCode} onInput={e => callParseQuery(e.target.textContent,e)} tabIndex="0">
+
                         </div>
                         <div className={"popup-box "+(searchTermPopup ? 'd-block':'d-none')} style={{top: topPosition, left: leftPosition}} ref={wrapperRef}>
                             <div className="box">

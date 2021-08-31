@@ -352,7 +352,10 @@
     color: #777777;
     font-style: italic;
 }
-.andClass,.orClass{
+.opClass::after,.space::after,.query::after,.autoquery::after,.pastequery::after {
+    content: ' ';
+}
+.andClass,.orClass,.notClass{
     text-transform: uppercase;
 }
 
@@ -486,6 +489,7 @@ label {
     font-size: 14px;
     color: #777777;
     font-weight: 400;
+    white-space: inherit;
 }
 .loginSubmitCancel{
     background-color: #0182C5 !important;
