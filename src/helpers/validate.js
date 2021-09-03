@@ -101,7 +101,7 @@ function ChangePasswordValidate() {
     return validationSchema;
 }
 
-function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
+function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm, isPatientDoc) {
     console.log('seqType', seqType, searchAlgorithm)
     const { t, i18n } = useTranslation('common');
     let validationShape = {
@@ -137,12 +137,6 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
             .string()
             // .required(t('querySeqReq'))
             .validateSeq(t('onlyAlphabetsAllowed')),
-        patientDocInp: yup
-            .number()
-            .integer(t('valueMustBeInteger'))
-            .min(1, t('shouldBeGreaterThanZero'))
-            .typeError(t('notNumber'))
-            .required(t('required')),
     };
 
 
@@ -219,6 +213,14 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm) {
                 .max(1000, t('fragProStretchError'))
             }
     } 
+    if(isPatientDoc) {
+        validationShape.patientDocInp = yup
+            .number()
+            .integer(t('valueMustBeInteger'))
+            .min(1, t('shouldBeGreaterThanZero'))
+            .typeError(t('notNumber'))
+            .required(t('required'))
+    }
 
     const validationSchema = yup.object().shape(validationShape);
 

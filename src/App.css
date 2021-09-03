@@ -598,4 +598,11 @@ label {
     margin-top: 8px
 }
 
+.highlight-from-solr {
+    padding: 4px;
+    background-color: #fff2a7;
+    font-weight: bold;
+    color: #444;
+}
+
 @media only screen and (min-width: 768px) {}

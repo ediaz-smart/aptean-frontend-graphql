@@ -37,10 +37,10 @@ async function getFullTextSearchTerm(history, searchParam) {
 async function getFullTextSearchResult(history, searchParam) {
     try {
         let apiurl = url.fullTextSearchResult+searchParam;
-        // showLoader();
+        showLoader();
         return await get(apiurl, history)
         .then((response) => {
-            // hideLoader();
+            hideLoader();
             return response;
         })
         .catch((error) => {
