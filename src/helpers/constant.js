@@ -9,7 +9,8 @@ const Constant = {
         "DlPhysicalSeqdb": "Sequence Database",
         "DlVirtualSeqdb": "Sequence Database",
         "DlWorkflow": "Sequence",
-        "DlFolder": "Folder"
+        "DlFolder": "Folder",
+        "GqWfMerge": "Merge Result"
         //"GqWfSeqSearch": "Blast Search"
     },
     folderRestrictNames:["Recent Search Results","My Data",'Reference Data','Data Shared With Me','Raw Uploaded Files','Search Folders'],

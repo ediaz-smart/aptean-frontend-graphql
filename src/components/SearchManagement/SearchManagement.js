@@ -430,11 +430,12 @@ function SearchManagement(props) {
     // unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
     const updateState = useCallback(state => setSelectData(state));
     function updateVal(state) {
-        // console.log(state, 'state');
+        console.log(state, 'state');
         let mergeData = [];
         let mergeType = [];
         state.selectedRows.map((value, index) => {
-            if (value.type !== 'GqFolder') {
+            if (value.type != 'Folder' && value.type != 'Antibody') {
+                console.log('type', value.type)
                 mergeData.push(value.id);
                 if (mergeType.length == 0) {
                     mergeType.push(value.type);
@@ -742,7 +743,7 @@ function SearchManagement(props) {
             tempObj.icon = <Fragment>
                 {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, datas.text_label)}><InfoIcon className={"appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
                 {datas.type === "Folder" && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
-                {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>
+                {datas.type !== "Folder" && datas.type !== "Merge Result" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}</Fragment>
             tempObj.description = datas.description;
             tempObj.owner = datas._owner_full_name;
             tempObj.location = datas._absolute_path;

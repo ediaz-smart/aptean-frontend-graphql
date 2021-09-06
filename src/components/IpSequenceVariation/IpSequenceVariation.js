@@ -454,10 +454,16 @@ function IpSequenceVariation() {
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
+                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                                setIsDocPubUnknownDates(true);
+                            }
                         } else if (item && item.P && item.P == "SEQUENCE_D2") {
                             redoInitialState.publishGQSel = item.O;
                             redoInitialState.publishGQDate = moment(item.V)._d;
                             setIsPublished(true);
+                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                                setIspublishGQUnknownDates(true);
+                            }
                         } else if (item && item.P && item.P == "SEQUENCE_P9") {
                             redoInitialState.patientDocSel = item.O;
                             redoInitialState.patientDocInp = item.V;
@@ -528,10 +534,16 @@ function IpSequenceVariation() {
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
+                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                                setIsDocPubUnknownDates(true);
+                            }
                         } else if (item && item.P && item.P == "SEQUENCE_D2") {
                             redoInitialState.publishGQSel = item.O;
                             redoInitialState.publishGQDate = moment(item.V)._d;
                             setIsPublished(true);
+                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                                setIspublishGQUnknownDates(true);
+                            }
                         } else if (item && item.P && item.P == "SEQUENCE_P9") {
                             redoInitialState.patientDocSel = item.O;
                             redoInitialState.patientDocInp = item.V;
@@ -682,7 +694,7 @@ function IpSequenceVariation() {
 
     const formik = useFormik({
         initialValues: redoInitialState,
-        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue, searchAlgorithmValue),
+        validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue, searchAlgorithmValue, isPatientDoc),
         onSubmit: async (values) => {
             console.log('formikValues', values)
             if ((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
@@ -1197,6 +1209,36 @@ function IpSequenceVariation() {
     console.log('scoring', scoringMatrixValue, wordSizeValue)
 
 
+        function changeIncludeGenUnknownDate() {
+        if(!isDocPubUnknownDates){
+        formik.values.docPublicSel == "BEF" ? formik.setFieldValue("docPublicSel", "BEF_IE") :formik.values.docPublicSel == "AFT" ? formik.setFieldValue("docPublicSel", "AFT_IE") : formik.setFieldValue("docPublicSel", formik.values.docPublicSel)
+    } else {
+        formik.setFieldValue("docPublicSel", "BEF");
+    }
+    setIsDocPubUnknownDates(!isDocPubUnknownDates);
+    }
+
+    function changeIncludeGQSpecificDate() {
+        if(!ispublishGQUnknownDates){
+        formik.values.publishGQSel == "BEF" ? formik.setFieldValue("publishGQSel", "BEF_IE") :formik.values.publishGQSel == "AFT" ? formik.setFieldValue("publishGQSel", "AFT_IE") : formik.setFieldValue("publishGQSel", formik.values.publishGQSel)
+    } else {
+        formik.setFieldValue("publishGQSel", "BEF");
+    }
+    setIspublishGQUnknownDates(!ispublishGQUnknownDates)
+    }
+
+    const beforeAfterSelection = (e) => {
+        const {name, value} = e.target;
+        console.log('e.target', e.target)
+        formik.setFieldValue(name, value);
+        if(name == "docPublicSel") {
+           (value == "AFT" || value == "BEF") ?  setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
+        } else if(name == "publishGQSel") {
+            (value == "AFT" || value == "BEF") ?  setIspublishGQUnknownDates(false) : setIspublishGQUnknownDates(true);
+        }
+    }
+
+
     let subjectText = "GenomeQuest: Error updating account information [Error code: " + errorMsg + "]";
 
     return (
@@ -1586,7 +1628,7 @@ function IpSequenceVariation() {
                                 <br clear="all"></br>
                                 <br clear="all"></br>
                                 <Col md="12">
-                                    <CheckBox
+                                <CheckBox
                                         color="primary"
                                         className={"float-left"}
                                         name="isDocumentPublic"
@@ -1601,7 +1643,7 @@ function IpSequenceVariation() {
                                         name="docPublicSel"
                                         id="docPublicSel"
                                         value={formik.values.docPublicSel}
-                                        onChange={formik.handleChange}
+                                        onChange={beforeAfterSelection}
                                         items={docPublicSel}
                                         className={"float-left"}
                                         disabled={isDocPubDate ? false : true}
@@ -1626,7 +1668,9 @@ function IpSequenceVariation() {
                                         className={"float-left ml-2"}
                                         name="includeGenUnknownDate"
                                         id="includeGenUnknownDate"
-                                        onChange={() => { setIsDocPubUnknownDates(!isDocPubUnknownDates) }}
+                                        onChange={changeIncludeGenUnknownDate}
+                                        disabled={!isDocPubDate}
+                                        checked={isDocPubUnknownDates}
                                     />
                                     <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGenUnknownDate">{t("includeUnknownDates")}</label>
                                 </Col>
@@ -1647,7 +1691,7 @@ function IpSequenceVariation() {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Col md="12">
-                                    <CheckBox
+                                <CheckBox
                                         color="primary"
                                         className={"float-left"}
                                         name="publishGenomeQuest"
@@ -1662,7 +1706,7 @@ function IpSequenceVariation() {
                                         name="publishGQSel"
                                         id="publishGQSel"
                                         value={formik.values.publishGQSel}
-                                        onChange={formik.handleChange}
+                                        onChange={beforeAfterSelection}
                                         items={docPublicSel}
                                         className={"float-left"}
                                         disabled={isPublished ? false : true}
@@ -1687,7 +1731,9 @@ function IpSequenceVariation() {
                                         className={"float-left ml-2"}
                                         name="includeGQSpecificDate"
                                         id="includeGQSpecificDate"
-                                        onChange={() => { setIspublishGQUnknownDates(!ispublishGQUnknownDates) }}
+                                        onChange={changeIncludeGQSpecificDate}
+                                        disabled={!isPublished}
+                                        checked={ispublishGQUnknownDates}
                                     />
                                     <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGQSpecificDate">{t("includeUnknownDates")}</label>
                                 </Col>
@@ -1723,7 +1769,7 @@ function IpSequenceVariation() {
                                         value={formik.values.patientDocInp}
                                         onChange={formik.handleChange}
                                         error={formik.touched.patientDocInp && Boolean(formik.errors.patientDocInp)}
-                                        helperText={formik.touched.patientDocInp && formik.errors.patientDocInp}
+                                        helperText={ isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
                                         className={"float-left mx-4 " + classes.mediumSizedTextBox}
                                         disabled={isPatientDoc ? false : true}
                                     />
