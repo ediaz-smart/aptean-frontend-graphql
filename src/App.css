@@ -346,8 +346,11 @@
     width: 100%;
     min-height: 100px;
     border-radius: 3px;
+    position: relative;
 }
-
+#searchDiv{
+    position: relative;
+}
 .operatorClass {
     color: #777777;
     font-style: italic;
@@ -366,7 +369,10 @@
 .notClass {
     text-transform: uppercase;
 }
-
+.pub{
+    color: lightslategray;
+    font-size: 14px;
+}
 .dropdown-content {
     display: block;
     background-color: #f1f1f1;
