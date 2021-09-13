@@ -369,7 +369,7 @@
 .notClass {
     text-transform: uppercase;
 }
-.pub{
+.pub,.publication{
     color: lightslategray;
     font-size: 14px;
 }

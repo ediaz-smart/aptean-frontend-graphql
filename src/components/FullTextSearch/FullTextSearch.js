@@ -39,8 +39,7 @@ let ORString = '<span class="orClass opClass">OR</span> ';
 let NOTString = '<span class="notClass opClass">NOT</span> ';
 let SpaceString = '<span class="space"> </span>';
 let pubString = '<span class="pubClass">pub</span>';
-let publicationString =
-  '<span class="publicationClass">publication_date</span>';
+let publicationString = '<span class="publicationClass">publication_Date:<input type="date" onclick="updateDate"></span>';
 let classArray = ["andClass", "orClass", "notClass", "autoquery"];
 let removeClassArray = ["andClass", "orClass", "notClass"];
 
@@ -180,7 +179,14 @@ function FullTextSearch() {
 		} else if (e.keyCode == 39) {
 			let htmlElement = document.getElementById("textareaDiv");
 			setRightArrowEvent(true);
-			callParseQuery(e.target.textContent, htmlElement, true);
+			// callParseQuery(e.target.textContent, htmlElement, true);
+			let postObj = {
+				value:e.target.textContent,
+				element:htmlElement,
+				isRightArrow:true,
+				pasteContent:null
+			}
+			parseQuery(postObj);
 		} else {
 			setRightArrowEvent(false);
 			e.stopPropagation();
@@ -191,21 +197,37 @@ function FullTextSearch() {
 		console.log(e.clipboardData.getData("Text"), "Text");
 		let getPasteTxt = e.clipboardData.getData("Text");
 		setPasteContent(getPasteTxt);
-		e.stopPropagation();
+		let htmlElement = document.getElementById("textareaDiv");
+		let postObj = {
+			value:htmlElement.textContent,
+			element:htmlElement,
+			isRightArrow:false,
+			pasteContent:getPasteTxt
+		}
+		parseQuery(postObj);
+		
+		
 	};
 	const callParseQuery = (value, element, isArrowRight) => {
 		// setTimeout(() => {
 		console.log(element, "onminput");
 		let getCurrentSel = window.getSelection();
 		// console.log(getCurrentSel,'getCurrentSel1');
-		parseQuery(value, element, isArrowRight);
+		// parseQuery(value, element, isArrowRight);
+		let postObj = {
+			value:value,
+			element,
+			isRightArrow:false,
+			pasteContent:''
+		}
+		parseQuery(postObj);
 
 		// }, 50);
 	};
-	const parseQuery = (value, element, isArrowRight) => {
+	const parseQuery = (data) => {
 		// let value = element.target.textContent;
 		// console.log(element,'innerHTML');
-
+		let {value,element,isRightArrow} = data;
 		console.log(keyCode, "keyCode");
 		console.log(value, "value");
 		// localStorage.setItem('searchData',value);
@@ -217,13 +239,13 @@ function FullTextSearch() {
 		// If Space Enters without any string
 		if (keyCode == 32) {
 			if (value.length > 1) {
-				replaceStringHtml(value, keyCode, isArrowRight);
+				replaceStringHtml(value, keyCode, isRightArrow);
 			} else {
 				value = "";
 				updateHtmlElement(value);
 			}
 		} else {
-			replaceStringHtml(value, keyCode, isArrowRight);
+			replaceStringHtml(value, keyCode, isRightArrow);
 			// replaceStringHtml(value,keyCode);
 		}
 
@@ -296,10 +318,10 @@ function FullTextSearch() {
 		console.log(lastChild && lastChild.attributes, "lastChild.attributes");
 		let getSelectedNodeId = "";
 		let getSelectedNodeText = "";
-		let searchPubTxt = "publication_Date";
 		let searchPubArr = ["pu", 'PU', 'Pu', 'pU','pu ','PU ','Pu '];
 		let searchPublicationTxt = "publication_Date";
 		const checkpubelements = document.getElementsByClassName("pub");
+		const checkpublicationelements = document.getElementsByClassName("publication");
 		var styleAttr = '';
 		if (
 			getCurrentSel &&
@@ -313,9 +335,14 @@ function FullTextSearch() {
 		}
 		let currOffsetTop = getCurrentSel.focusNode.parentNode.offsetTop - 2;
 		let currOffsetLeft = getCurrentSel.focusNode.parentNode.offsetLeft;
+		styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
 
 		// For Auto Suggest,If user clicks right arrow then the text will be selected
+		let convertLowerPublTxt = searchPublicationTxt.toLowerCase();
+		getChildText = getChildText.toLowerCase();
 		if (isArrowRight) {
+			
+			
 			if (lastChild && lastChild.attributes.length > 0) {
 				if (searchPubArr.includes(getChildText)) {
 					htmlElement.children[htmlElement.children.length - 1].outerHTML = pubString;
@@ -323,9 +350,24 @@ function FullTextSearch() {
 						htmlElement.children[htmlElement.children.length - 1]
 					); // To Place Cursor in Last
 					// Removing Auto Suggest Text from DOM
-					const elements = document.getElementsByClassName("pub");
-					if (elements.length > 0) {
-						elements[0].parentNode.removeChild(elements[0]);
+					if (checkpubelements.length > 0) {
+						checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+					}
+					if (checkpublicationelements.length > 0) {
+						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+					}
+				}else if(convertLowerPublTxt.startsWith(getChildText)){
+					htmlElement.children[htmlElement.children.length - 1].outerHTML = publicationString;
+					placeCaretAtEnd(
+						htmlElement.children[htmlElement.children.length - 1]
+					); // To Place Cursor in Last
+					// Removing Auto Suggest Text from DOM
+					const elements = document.getElementsByClassName("publication");
+					if (checkpubelements.length > 0) {
+						checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+					}
+					if (checkpublicationelements.length > 0) {
+						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 					}
 				}
 			} else if (lastPrevChild && lastPrevChild.attributes.length > 0) {
@@ -337,9 +379,23 @@ function FullTextSearch() {
 						htmlElement.children[htmlElement.children.length - 2]
 					);
 					// Removing Auto Suggest Text from DOM
-					const elements = document.getElementsByClassName("pub");
-					if (elements.length > 0) {
-						elements[0].parentNode.removeChild(elements[0]);
+					if (checkpubelements.length > 0) {
+						checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+					}
+					if (checkpublicationelements.length > 0) {
+						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+					}
+				}else if(convertLowerPublTxt.startsWith(getChildText)){
+					htmlElement.children[htmlElement.children.length - 2].outerHTML = publicationString;
+					placeCaretAtEnd(
+						htmlElement.children[htmlElement.children.length - 2]
+					); // To Place Cursor in Last
+					// Removing Auto Suggest Text from DOM
+					if (checkpubelements.length > 0) {
+						checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+					}
+					if (checkpublicationelements.length > 0) {
+						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 					}
 				}
 			}
@@ -356,7 +412,8 @@ function FullTextSearch() {
 					if (
 						getChildClassName == "autoquery" ||
 						getChildClassName == "pastequery" ||
-						getChildClassName == "pubClass"
+						getChildClassName == "pubClass" ||
+						getChildClassName == "publicationClass"
 					) {
 						htmlElement.innerHTML = htmlElement.innerHTML.replaceAll(
 							"<br>",
@@ -528,7 +585,7 @@ function FullTextSearch() {
 					// htmlElement.children[htmlElement.children.length - 1].outerHTML = pubString;
 					let trimText = htmlElement.children[htmlElement.children.length - 1].textContent.trim();
 					if (trimText.length == 2) {
-						styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
+						
 						// Checking If Already Auto Suggest Text updated in DOM
 						if (checkpubelements.length == 0) {
 							var newSpan = document.createElement("span");
@@ -544,15 +601,46 @@ function FullTextSearch() {
 						}
 					} else {
 						// Removing Auto Suggest Text from DOM
-
 						if (checkpubelements.length > 0) {
 							checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+						}
+						if (checkpublicationelements.length > 0) {
+							checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+						}
+					}
+				}else if (
+					htmlElement.children[htmlElement.children.length - 1].textContent &&
+					convertLowerPublTxt.startsWith(htmlElement.children[htmlElement.children.length - 1].textContent))
+				{
+					let trimText = htmlElement.children[htmlElement.children.length - 1].textContent.trim();
+					if (trimText.length > 3) {
+						// Checking If Already Auto Suggest Text updated in DOM
+						if (checkpublicationelements.length == 0) {
+							var newSpan = document.createElement("span");
+							newSpan.setAttribute("class", "publication");
+							newSpan.innerHTML = "publication_Date:";
+							newSpan.setAttribute("style", styleAttr);
+							var div = document.getElementById("textareaDiv");
+							insertAfter(div, newSpan);
+						} else {
+							// Updating Current Position
+							checkpublicationelements[0].style.cssText = styleAttr;
+						}
+					}else{
+						if (checkpubelements.length > 0) {
+							checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+						}
+						if (checkpublicationelements.length > 0) {
+							checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 						}
 					}
 				}
 				else {
 					if (checkpubelements.length > 0) {
 						checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+					}
+					if (checkpublicationelements.length > 0) {
+						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 					}
 				}
 			} else if (lastPrevChild && lastPrevChild.attributes.length > 0) {
@@ -571,8 +659,6 @@ function FullTextSearch() {
 					// htmlElement.children[htmlElement.children.length - 1].outerHTML = pubString;
 
 					if (htmlElement.children[htmlElement.children.length - 2].textContent.length == 2) {
-						styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
-						
 						// Checking If Already Auto Suggest Text updated in DOM
 						if (checkpubelements.length == 0) {
 							var newSpan = document.createElement("span");
@@ -592,6 +678,28 @@ function FullTextSearch() {
 						if (pubelements.length > 0) {
 							pubelements[0].parentNode.removeChild(pubelements[0]);
 						}
+					}
+				}else if (
+					htmlElement.children[htmlElement.children.length - 2].textContent &&
+					convertLowerPublTxt.startsWith(htmlElement.children[htmlElement.children.length - 2].textContent))
+				{
+					if (htmlElement.children[htmlElement.children.length - 2].textContent.length > 3) {
+						// Checking If Already Auto Suggest Text updated in DOM
+						if (checkpublicationelements.length == 0) {
+							var newSpan = document.createElement("span");
+							newSpan.setAttribute("class", "publication");
+							newSpan.innerHTML = "publication_Date";
+							newSpan.setAttribute("style", styleAttr);
+							var div = document.getElementById("textareaDiv");
+							insertAfter(div, newSpan);
+						} else {
+							// Updating Current Position
+							checkpublicationelements[0].style.cssText = styleAttr;
+						}
+					}
+				}else{
+					if (checkpublicationelements.length > 0) {
+						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 					}
 				}
 			}
@@ -687,15 +795,30 @@ function FullTextSearch() {
 						var newSpan = document.createElement("span");
 						newSpan.setAttribute("class", "query");
 						newSpan.innerHTML = lastValue;
-						if (lastChild.innerText.length == 0) {
+						if (htmlElement.innerHTML.slice(-1) != ">") {
 							htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-
-							newSpan.innerHTML = lastValue;
-						} else {
-							newSpan.innerHTML = lastChild.innerText + lastValue;
 						}
-						htmlElement.innerHTML =
+						if (
+							lastValue == "o" ||
+							lastValue == "O" ||
+							lastValue == "a" ||
+							lastValue == "A" ||
+							lastValue == "n" ||
+							lastValue == "N"
+						) {
+							htmlElement.innerHTML =
+							htmlElement.innerHTML + " " + newSpan.outerHTML;
+						}else{
+							htmlElement.innerHTML =
 							htmlElement.innerHTML + ANDString + " " + newSpan.outerHTML;
+						}
+						// if (lastChild.innerText.length == 0) {
+						// 	newSpan.innerHTML = lastValue;
+						// } 
+						// else {
+						// 	newSpan.innerHTML = lastChild.innerText + lastValue;
+						// }
+						
 					} else if (getChildClassName == "pastequery") {
 						if (detectPaste) {
 							let getLastIndex =
@@ -821,12 +944,13 @@ function FullTextSearch() {
 								htmlElement.children[htmlElement.children.length - 1]
 									.textContent;
 						}
+						styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
 						if (
 							getSelectedNodeText &&
 							searchPubArr.includes(getSelectedNodeText)
 						) {
 							if (getSelectedNodeText.length == 2) {
-								styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
+								
 								// Checking If Already Auto Suggest Text updated in DOM
 								if (checkpubelements.length == 0) {
 									var newSpan = document.createElement("span");
@@ -845,8 +969,49 @@ function FullTextSearch() {
 								if (checkpubelements.length > 0) {
 									checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
 								}
+								if (checkpublicationelements.length > 0) {
+									checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+								}
+							}
+						}else if (
+							getSelectedNodeText &&
+							convertLowerPublTxt.startsWith(getSelectedNodeText)
+						) {
+							// Checking If Already Auto Suggest Text updated in DOM
+							if (getSelectedNodeText.length > 3) {
+							// Checking If Already Auto Suggest Text updated in DOM
+								if (checkpublicationelements.length == 0) {
+									var newSpan = document.createElement("span");
+									newSpan.setAttribute("class", "publication");
+									newSpan.innerHTML = "publication_Date:";
+									newSpan.setAttribute("style", styleAttr);
+									console.log(newSpan, "newSpan11");
+									var div = document.getElementById("textareaDiv");
+									insertAfter(div, newSpan);
+								} else {
+									// Updating Current Position
+									checkpublicationelements[0].style.cssText = styleAttr;
+								}
+							}else{
+								// Removing Auto Suggest Text from DOM
+								if (checkpubelements.length > 0) {
+									checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+								}
+								if (checkpublicationelements.length > 0) {
+									checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+								}
 							}
 						}
+					}else if (getChildClassName == "publicationClass") {
+						var getCurrentSelectChild = getCurrentSel.focusNode.parentNode;
+						// if(getCurrentSelectChild && getCurrentSelectChild.children.length > 0)
+						// {
+							
+						// }
+						
+						// htmlElement.children[htmlElement.children.length - 1].outerHTML =
+						// 		ANDString + " " + spanArr;
+						
 					}else if (getChildClassName == "query") {
 						let childElId = getChildEl.getAttribute("dataid");
 						// console.log(lastElClass,'lastElClass');
@@ -896,6 +1061,7 @@ function FullTextSearch() {
 						} else {
 							currOffsetTop = htmlElement.children[htmlElement.children.length - 1].offsetTop - 2;
 							currOffsetLeft = htmlElement.children[htmlElement.children.length - 1].offsetLeft;
+							styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								htmlElement.children[
@@ -913,13 +1079,14 @@ function FullTextSearch() {
 							}
 						}
 						console.log(getSelectedNodeText, "getSelectedNodeText");
+						// Checking If Pub Text matching in the current selection node
 						if (
 							getSelectedNodeText &&
 							searchPubArr.includes(getSelectedNodeText)
 						) {
 
 							if (getSelectedNodeText.length == 2) {
-								styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
+								
 								// Checking If Already Auto Suggest Text updated in DOM
 								if (checkpubelements.length == 0) {
 									var newSpan = document.createElement("span");
@@ -938,8 +1105,37 @@ function FullTextSearch() {
 								if (checkpubelements.length > 0) {
 									checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
 								}
+								if (checkpublicationelements.length > 0) {
+									checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+								}
 							}
-						} else {
+						}else if (
+							getSelectedNodeText &&
+							convertLowerPublTxt.startsWith(getSelectedNodeText)
+						) {
+							// Checking If Already Auto Suggest Text updated in DOM
+							if (getSelectedNodeText.length > 3) {
+								if (checkpublicationelements.length == 0) {
+									var newSpan = document.createElement("span");
+									newSpan.setAttribute("class", "publication");
+									newSpan.innerHTML = "publication_Date:";
+									newSpan.setAttribute("style", styleAttr);
+									console.log(newSpan, "newSpan11");
+									var div = document.getElementById("textareaDiv");
+									insertAfter(div, newSpan);
+								} else {
+									// Updating Current Position
+									checkpublicationelements[0].style.cssText = styleAttr;
+								}
+							}else{
+								if (checkpubelements.length > 0) {
+									checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+								}
+								if (checkpublicationelements.length > 0) {
+									checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+								}
+							}
+						}else {
 							console.log(htmlElement.children, "htmlElement.children");
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
@@ -978,15 +1174,40 @@ function FullTextSearch() {
 						var newSpan = document.createElement("span");
 						newSpan.setAttribute("class", "query");
 						newSpan.innerHTML = lastValue;
-						if (lastChild.innerText.length == 0) {
+						if (htmlElement.innerHTML.slice(-1) != ">") {
 							htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-
-							newSpan.innerHTML = lastValue;
-						} else {
-							newSpan.innerHTML = lastChild.innerText + lastValue;
 						}
-						htmlElement.innerHTML =
-							htmlElement.innerHTML + ANDString + " " + newSpan.outerHTML;
+						if (
+							lastValue == "o" ||
+							lastValue == "O" ||
+							lastValue == "a" ||
+							lastValue == "A" ||
+							lastValue == "n" ||
+							lastValue == "N"
+						) {
+							if (
+								htmlElement.children[htmlElement.children.length - 2]
+									.textContent.length == 0
+							) {
+								
+								newSpan.innerHTML = lastValue;
+							} else {
+								newSpan.innerHTML = lastChild.innerText + lastValue;
+							}
+							htmlElement.innerHTML =
+								htmlElement.innerHTML + " " + newSpan.outerHTML;
+						}else{
+							if (lastChild.innerText.length == 0) {
+								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+	
+								newSpan.innerHTML = lastValue;
+							} else {
+								newSpan.innerHTML = lastChild.innerText + lastValue;
+							}
+							htmlElement.innerHTML =
+								htmlElement.innerHTML + ANDString + " " + newSpan.outerHTML;
+						}
+						
 					} else if (getChildClassName == "pastequery") {
 						htmlElement.innerHTML = htmlElement.innerHTML.replaceAll(
 							"<br>",
@@ -1044,8 +1265,10 @@ function FullTextSearch() {
 								htmlElement.children[htmlElement.children.length - 2]
 									.textContent + lastValue;
 						} else {
+							htmlElement.innerHTML = htmlElement.innerHTML.replace("<br>", "");
 							// Adding AND operator if space enters
-							htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+							
+							
 							//create the DOM object
 							var newSpan = document.createElement("span");
 							// add the class to the 'span'
@@ -1053,8 +1276,9 @@ function FullTextSearch() {
 							let checkOpText = lastPrevChild.innerText + lastValue;
 
 							if (lastPrevChild.innerText.length == 0) {
-								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-
+								if (htmlElement.innerHTML.slice(-1) != ">") {
+									htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+								}
 								newSpan.innerHTML = lastValue;
 							} else {
 								newSpan.innerHTML = lastPrevChild.innerText + lastValue;
@@ -1173,6 +1397,8 @@ function FullTextSearch() {
 						? htmlElement.children[key].attributes.class.value
 						: "";
 					splitClass = getClass ? getClass.split(" ") : [];
+
+					// To Remove, If Two operator exists between the words
 					if (key > 0) {
 						prevKey = parseInt(key) - 1;
 						nextKey = parseInt(key) + 1;
@@ -1401,10 +1627,10 @@ function FullTextSearch() {
 		newSpan.innerHTML = data.term + " ";
 		if (lastChild && lastChild.attributes.length > 0) {
 			htmlElement.children[htmlElement.children.length - 1].outerHTML =
-				newSpan.outerHTML + spaceSpan.outerHTML;
+				newSpan.outerHTML + '&nbsp;';
 		} else {
 			htmlElement.children[htmlElement.children.length - 2].outerHTML =
-				newSpan.outerHTML + spaceSpan.outerHTML;
+				newSpan.outerHTML + '&nbsp;';
 		}
 		let queryText = htmlElement.textContent;
 		let queryTxt = "";
