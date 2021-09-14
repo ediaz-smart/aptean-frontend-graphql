@@ -456,6 +456,14 @@ a:hover {
     font-size: 13px;
 }
 
+.ManualErrorBox { 
+    color: #f44336;
+    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-style: italic;
+    font-size: 13px;
+    border-color: #f44336;
+}
+
 .MuiFormControlLabel-label,
 .MuiTypography-body1 {
     font-family: Arial, Helvetica, sans-serif, "Helvetica Neue" !important;
@@ -609,6 +617,10 @@ label {
     background-color: #fff2a7;
     font-weight: bold;
     color: #444;
+}
+
+.bold {
+    font-weight: 600;
 }
 
 @media only screen and (min-width: 768px) {}

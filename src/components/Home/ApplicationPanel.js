@@ -184,7 +184,13 @@ function ApplicationPanel() {
                             <img src={docsearch} alt="docsearch" className="w-100" />
                         </Col>
                         <Col lg="10" md="9">
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p>
+                            {/* <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p> */}
+                            <p className={classes.pTagMargin}>
+                                <Fragment>
+                                    {userData && !userData.ftAccess && <span className={classes.pTagMargin + " bodyText"}>{t('patentFullText')}</span>}
+                                    {userData && userData.ftAccess && <Link to="/fulltextsearch" className={classes.anchorTag + ' appLink'}>{t('patentFullText')}</Link>}
+                                </Fragment>
+                            </p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={url.stagePatentNumLink} target="_blank" rel="noreferrer">{t('patentNumbers')}</a></p>
                         </Col>
                     </Row>

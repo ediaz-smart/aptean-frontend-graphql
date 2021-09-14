@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function TextInput(props) {
+    console.log('props',props)
     const classes = useStyles();
     return (
         <TextField 
@@ -53,7 +54,7 @@ export default function TextInput(props) {
         value={props.value}
         onChange={props.onChange}
         onKeyDown={props.onKeyDown}
-        className={classes.root+' '+props.className+' '+(!props.fullWidth  ? classes.smallText : "")} 
+        className={classes.root+' '+props.className+' '+(props.fullWidth  ? "" : classes.smallText)} 
         error={props.error}
         helperText={props.helperText}
         InputLabelProps={{
