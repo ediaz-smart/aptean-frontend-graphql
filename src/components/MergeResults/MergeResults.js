@@ -202,7 +202,6 @@ function MergeResults(props) {
 
     // reset login status
     useEffect(() => {
-        //dispatch(userActions.logout()); 
     }, []);
     let initialValues = { title: "" }
     const formik = useFormik({
@@ -210,24 +209,12 @@ function MergeResults(props) {
         validationSchema: Validate.MergeResultsValidate(),
         onSubmit: async (values, { resetForm }) => {
             console.log('values', values)
-            // let data = {
-            //     groupA: groupAValue,
-            //     groupB: groupBValue,
-            //     title: values.title,
-            //     merge_type: mergeType
-            // }
             let resp = await SearchManagementService.mergeResults(groupAValue, groupBValue, values.title, mergeType);
-            // console.log('JSON.parse(result)', JSON.parse(result))
-            // let resp =  result ? JSON.parse(result.) : "";
             if (resp && resp.response_status == 0) {
                 let result = resp.response_content ? JSON.parse(resp.response_content) : "";
                 console.log('result', result)
 
                 if (result.status && result.status == "success") {
-                    // setShowSuccessModal(true);
-                    // closeSuccessModal();
-                    // close();
-                    // resetForm(initialValues);
                     clearForm('closeMergeModal', 'success');
                 } else if (result.status && result.status == "error") {
                     setShowErrorModal(true);
@@ -280,38 +267,23 @@ function MergeResults(props) {
     };
 
     const setGroupClass = (name, value) => {
-        // console.log('target', e.target)
-        // const { name, value } = e.target;
-        // if (groupAValue.includes(value)) {
-        //     setGroupValue(groupValue.filter(checked_name => checked_name !== value));
-        // } else {
-        //     groupValue.push(value);
-        //     setGroupValue([...groupValue])
-        // }
-
         if (name && name == "groupA" && value) {
             if (groupAValue.includes(value)) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
             } else {
                 groupAValue.push(value);
                 setGroupAValue([...groupAValue]);
-                // groupValue.push(value);
-                // setGroupValue([...groupValue]);
             }
             if (groupBValue.includes(value)) {
                 setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
             }
             setIsSubmitActive(true);
-            // setGroupAValue(value);
         } else if (name && name == "groupB" && value) {
-            // setGroupBValue(value);
             if (groupBValue.includes(value)) {
                 setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
             } else {
                 groupBValue.push(value);
                 setGroupBValue([...groupBValue]);
-                // groupValue.push(value);
-                // setGroupValue([...groupValue]);
             }
             if (groupAValue.includes(value)) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
@@ -334,18 +306,6 @@ function MergeResults(props) {
                     <FormControlLabel value={row.id} control={<RadioButton />} className="bodyText" />
                 </RadioGroup>
             </FormControl>
-            // <input
-            // type="radio"
-            //     color="primary"
-            //     // className={"float-left p-0 " + classes.checkBox}
-            //     name={"groupValue_"+index}
-            //     id="groupValue"
-            //     value={row.id}
-            //     checked={groupAValue.includes(row.id)}
-            //     onChange={(e)=>setGroupClass('groupA', e.target.value)}
-            // />
-
-
         },
         {
             name: "Group B",
@@ -357,16 +317,6 @@ function MergeResults(props) {
                     <FormControlLabel value={row.id} control={<RadioButton />} className="bodyText" />
                 </RadioGroup>
             </FormControl>
-            // <input
-            // type="radio"
-            //     color="primary"
-            //     // className={"float-left p-0 " + classes.checkBox}
-            //     name={"groupValue_"+index}
-            //     id="groupValue"
-            //     value={row.id}
-            //     checked={groupBValue.includes(row.id)}
-            //     onChange={(e)=>setGroupClass('groupB', e.target.value)}
-            // />
         },
         {
             name: "Type",

@@ -23,6 +23,7 @@ import NewPassword from '../components/Auth/NewPassword';
 import ConvertSequence from '../components/ConvertSequence/ConvertSequence';
 import ParsedXml from '../components/ConvertSequence/ParsedXml';
 import PersonalDatabase from '../components/PersonalDatabase/PersonalDatabase';
+import ScrollToTop from "../components/Home/ScrollToTop";
 
 // import {isAdminLogin} from './helpers/authorizedInfo'
 // const AuthRoute = ({ component: Component, ...rest }) => {
@@ -45,6 +46,7 @@ class Routes extends React.Component {
         // const data = getItem()
         return (
             <HashRouter history={history}>
+                <ScrollToTop />
                 <Switch>
                     <Route exact path="/" title="login" component={Login} />
                     <Route exact path="/login" title="login" component={Login} />
