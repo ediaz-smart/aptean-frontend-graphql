@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@material-ui/core/Button";
@@ -13,6 +13,8 @@ import Constant from "../../helpers/constant";
 import lucenequeryparser from "../../assets/lib/lucene-query-parser";
 import fullTextService from "../../services/fulltextsearch";
 import FullTextResults from "./FullTextResults";
+import TextInput from "../../shared/Fields/TextInput";
+import CheckBox from '../../shared/Fields/CheckBox';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -79,7 +81,8 @@ function FullTextSearch() {
 	const [authorities, setAuthorities] = React.useState("");
 
 	//set result
-	const [docSearchResult, setDocSearchResult] = useState({});
+    const [docSearchResult, setDocSearchResult] = useState({});
+    const [saveFormError, setSaveFormError] = useState(false);
 
 	const userInfo = useSelector((state) => state.setUserInfo);
 
@@ -88,7 +91,13 @@ function FullTextSearch() {
 
 	const [singleSelections, setSingleSelections] = useState([]);
 
-	const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [saveFormValue, setSaveFormValue] = useState(false);
+    const [formName, setFormName] = useState("");
+    const [saveResultAs, setSaveResultAs] = useState("");
+    const [saveResultAsError, setSaveResultAsError] = useState(false);
+    const [isConfigureActive, setIsConfigureActive] = useState(false);
+  
 	const pageCount = useSelector((state) => state.setCommon["Paging size"]);
 
 	const openPopup = () => {
@@ -1795,7 +1804,11 @@ function FullTextSearch() {
 	const searchResult = async (groupingType, pageStart) => {
 		console.log("pagestart", pageStart);
 		console.log("searchGroup", groupingType);
-		console.log(queryParser, "queryParser");
+        console.log(queryParser, "queryParser");
+        if (saveFormValue && !formName) {
+            setSaveFormError(true);
+            return;
+          }      
 		let parseData = JSON.parse(queryParser);
 		let checkRightCount = await countKeys(parseData, "right");
 		// console.log(checkRightCount,'checkRightCount');
@@ -1822,7 +1835,12 @@ function FullTextSearch() {
 			groupingType
 				? (searchParam += `&grouping=${groupingType}`)
 				: (searchParam += `&grouping=${grouping}`);
-			console.log(searchParam, "searchParam");
+            console.log(searchParam, "searchParam");
+            if (formName) {
+                searchParam += `&template_name=${formName}`
+              }
+              console.log('searchParam', searchParam)
+        
 			const searchQueryRes = await fullTextService.getFullTextSearchResult(
 				history,
 				searchParam
@@ -1854,7 +1872,39 @@ function FullTextSearch() {
 		}
 	};
 	console.log("grouping", grouping);
-	console.log("docSearchResult", docSearchResult);
+    console.log("docSearchResult", docSearchResult);
+    
+    function setFormValue() {
+        setSaveFormValue(!saveFormValue);
+        setFormName("");
+      }
+    
+      const handleSaveLater = (e) => {
+        const { name, value } = e.target;
+        console.log("value", value)
+        setFormName(value);
+        // setSaveFormError(false);
+        value ? setSaveFormError(false) : setSaveFormError(true);
+      }
+    
+      console.log('formname', formName)
+    
+      const handleSaveResultAs = (e) => {
+        const { name, value } = e.target;
+        console.log("value", value)
+        setSaveResultAs(value);
+        // setSaveResultAsError(false);
+        value ? setSaveResultAsError(false) : setSaveResultAsError(true);
+      }
+    
+      const submitSaveResultAs = () => {
+        if (!saveResultAs) {
+          setSaveResultAsError(true);
+        } else {
+          //api
+        }
+      }
+    
 	return (
 		<div className={classes.grow}>
 			<Row>
@@ -1926,6 +1976,37 @@ function FullTextSearch() {
               </div>
             </div>
           </div>
+          <Row>
+            <Col md='4'>
+              <CheckBox
+                // defaultChecked
+                color="primary"
+                className={"float-left ml-2"}
+                name="saveForm"
+                id="saveForm"
+                onChange={setFormValue}
+                checked={saveFormValue}
+              />
+              <label className={"checkBoxContent bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
+            </Col>
+            <Col md='6'>
+              <TextInput
+                id="formName"
+                name="formName"
+                label='Name the form'
+                variant="outlined"
+                onChange={handleSaveLater}
+                fullWidth={true}
+                disabled={!saveFormValue}
+                value={formName ? formName : ""}
+                // manualError={saveFormError}
+                error={saveFormError}
+                helperText={saveFormError ? t('required') : ""}
+              />
+              {/* {saveFormError && <p className={"ManualError"}>{t('required')}</p>} */}
+            </Col>
+          </Row>
+
           <div className="form-group">
             <Button
               variant="contained"
@@ -2106,31 +2187,59 @@ function FullTextSearch() {
                                 
                             </ul>
                         </Popover> */}
-      {docSearchResult && Object.keys(docSearchResult).length > 0 && <p className="subHeading">
-        <span className="mr-2">Found</span>
-        {grouping && grouping == 'Family' && <span onClick={() => { changeGroup('Document') }} className="appLink">{docSearchResult && docSearchResult.documents} Documents</span>}
-        {
-          grouping && grouping == 'Document' && <span>
-            {docSearchResult && docSearchResult.documents} Documents
-                       </span>
-        }
-        <span className="m-1">/</span>
-        {grouping && grouping == 'Document' && <span onClick={() => { changeGroup('Family') }} className="appLink">{docSearchResult && docSearchResult.families} Families</span>}
-        {
-          grouping && grouping == 'Family' && <span>
-            {docSearchResult && docSearchResult.families} Families
-                       </span>
-        }
-      </p>}
+            {docSearchResult && Object.keys(docSearchResult).length > 0 && <div> <p className="subHeading">        <span className="mr-2">Found</span>
+                {grouping && grouping == 'Family' && <span onClick={() => { changeGroup('Document') }} className="appLink bold">{docSearchResult && docSearchResult.documents} Documents</span>}
+                {
+                    grouping && grouping == 'Document' && <span>
+                        {docSearchResult && docSearchResult.documents} Documents
+                        </span>
+                }
+                <span className="m-1">/</span>
+                {grouping && grouping == 'Document' && <span onClick={() => { changeGroup('Family') }} className="appLink bold">{docSearchResult && docSearchResult.families} Families</span>}
+                {
+                    grouping && grouping == 'Family' && <span>
+                        {docSearchResult && docSearchResult.families} Families
+                        </span>
+                }
+                <span className={"m-2"}>|</span>
+                <span className={'appLink'} onClick={() => { setIsConfigureActive(!isConfigureActive) }}>Configure</span>
+            </p>
+                <div className={'mb-5'}>
+                    <TextInput
+                        id="saveResultAs"
+                        name="saveResultAs"
+                        label={t('nameYourSearch')}
+                        variant="outlined"
+                        onChange={handleSaveResultAs}
+                        fullWidth={true}
+                        value={saveResultAs ? saveResultAs : ""}
+                        // manualError={saveFormError}
+                        error={saveResultAsError}
+                        helperText={saveResultAsError ? t('required') : ""}
+                        className={"w-50"}
+                    />
+                    <Button
+                        variant="contained"
+                        disableRipple={true}
+                        className={"loginSubmitButton ml-3"}
+                        onClick={submitSaveResultAs}
+                    >
+                        {grouping && grouping == 'Document' ? `Save ${docSearchResult && docSearchResult.documents} Documents` : `Save ${docSearchResult && docSearchResult.families} Families`}
+                    </Button>
+                </div>
 
-      {docSearchResult && (
-        <FullTextResults
-          data={docSearchResult}
-          fullTextCallBack={changePage}
-          currentPage={currentPage}
-          pageCount={pageCount}
-        />
-      )}
+
+            </div>
+            }
+
+            {docSearchResult && (
+                <FullTextResults
+                    data={docSearchResult}
+                    fullTextCallBack={changePage}
+                    currentPage={currentPage}
+                    pageCount={pageCount}
+                />
+            )}
     </div>
   );
 }
