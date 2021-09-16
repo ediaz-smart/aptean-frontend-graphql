@@ -233,7 +233,7 @@ function FullTextSearch() {
 
 		// }, 50);
 	};
-	const parseQuery = (data) => {
+	const parseQuery = async(data) => {
 		// let value = element.target.textContent;
 		// console.log(element,'innerHTML');
 		let {value,element,isRightArrow} = data;
@@ -245,6 +245,14 @@ function FullTextSearch() {
 		let checkLastChar = value.slice(-1);
 
 		// let htmlElement = document.getElementById("textareaDiv");
+		let htmlElement = document.getElementById("textareaDiv");
+		if(htmlElement.children.length > 0)
+		{
+			console.log(htmlElement.children.length,'htmlElement.children.length..');
+			// var htmlChildEl = htmlElement.children;
+			let htmlEl = await removePasteHtml(htmlElement);
+			console.log(htmlEl,'htmlEl.');
+		}
 		// If Space Enters without any string
 		if (keyCode == 32) {
 			if (value.length > 1) {
@@ -270,8 +278,42 @@ function FullTextSearch() {
 			openPopup(element);
 		}
 	};
-
-	function replaceStringHtml(value, keyCode, isArrowRight) {
+	async function removePasteHtml(htmlElement){
+		let parserClass = ["query","andClass", "orClass", "notClass", "autoquery","opClass","space","pubClass","publicationClass","pastequery"]
+		if(htmlElement.children.length > 0)
+		{
+			let htmlChildEl = htmlElement.children;
+			let childLen = htmlChildEl.length;
+			let checkClass = '';
+			let splitClass = [];
+			Object.keys(htmlElement.children).forEach(function (key) {
+				if(htmlElement.children[key] && htmlElement.children[key].attributes && htmlElement.children[key].attributes.class != undefined) {
+					checkClass = htmlElement.children[key] ? htmlElement.children[key].attributes.class.value : "";
+					splitClass = checkClass ? checkClass.split(" ") : [];
+					if(!parserClass.includes(splitClass[0]))
+					{
+						htmlElement.children[key].outerHTML = "";
+						removePasteHtml(htmlElement);
+					}
+				}
+				else {
+					if(htmlElement.children[key])
+					{
+						htmlElement.children[key].outerHTML = "";
+					}
+					removePasteHtml(htmlElement);
+				}
+				if(childLen == key + 1)
+				{
+					return htmlElement;
+				}
+				// console.log(htmlElement.children[key].attributes,'htmlElement.children[key].attributes');
+			});
+		}else{
+			return htmlElement;
+		}
+	}
+	async function replaceStringHtml(value, keyCode, isArrowRight) {
 		let getCurrentSel = window.getSelection();
 		console.log(getCurrentSel, "getCurrentSel");
 		console.log(isArrowRight, "isArrowRight");
@@ -289,11 +331,10 @@ function FullTextSearch() {
 		let placeCursor = true;
 		let spanArr = "";
 
-		// if(lastChild)
-		// {
-		//     console.log(lastChild,'lastChild');
-		//     console.log(lastChild.attributes,'lastChildattributes');
-		// }
+		var checkClass;
+		console.log(htmlElement.children,'htmlElement.children..');
+		
+		
 		let getChildClass = "",
 			getChildClassName = "",
 			getChildText = "",
@@ -314,6 +355,7 @@ function FullTextSearch() {
 			getChildText = lastPrevChild.textContent;
 			getChildEl = lastPrevChild;
 		}
+
 		// For Auto Complete send current typed text
 		let getSearchVal = getChildText;
 
@@ -408,7 +450,61 @@ function FullTextSearch() {
 					}
 				}
 			}
-		} else if (keyCode == 32) {
+		}else if (detectPaste) {
+					
+			let splitPasteTxt = pasteContent ? pasteContent.split(" ") : [];
+			console.log(splitPasteTxt, "splitPasteTxt");
+			if (splitPasteTxt && splitPasteTxt.length > 0) {
+				let opFlag = 0;
+				let getSplitLen = splitPasteTxt.length;
+				console.log(getSplitLen, "getSplitLen");
+				splitPasteTxt.map((data, i) => {
+					var newSpan = document.createElement("span");
+					// add the class to the 'span'
+					if (checkANDValues.includes(data)) {
+						newSpan.innerHTML = ANDString;
+						opFlag = 1;
+					} else if (checkORValues.includes(data)) {
+						newSpan.innerHTML = ORString;
+						opFlag = 1;
+					} else if (checkNOTValues.includes(data)) {
+						newSpan.innerHTML = NOTString;
+						opFlag = 1;
+					} else {
+						newSpan.setAttribute("class", "pastequery");
+						newSpan.innerText = data;
+						opFlag = 0;
+					}
+					if (opFlag == 1) {
+						spanArr += newSpan.innerHTML;
+					} else {
+						spanArr += newSpan.outerHTML;
+					}
+				});
+				let getLastIndex = htmlElement.innerHTML.lastIndexOf(pasteContent);
+				if(getLastIndex > -1)
+				{
+					let remPasteContent = htmlElement.innerHTML.substring(
+						0,
+						getLastIndex
+					);
+					htmlElement.innerHTML = remPasteContent;
+					htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
+				}else {
+					if(htmlElement.textContent.length == 0)
+					{
+						htmlElement.innerHTML = spanArr;
+					}else{
+						htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
+					}
+					
+				}
+				setDetectPaste(false); // After Paste, reset false by default
+				setPasteContent('');
+				placeCursor = true;
+				console.log(spanArr, "spanArr");
+			}
+		}else if (keyCode == 32) {
 			// If Space Enters
 			setSearchTermPopup(false);
 			console.log(
@@ -436,14 +532,17 @@ function FullTextSearch() {
 						if (checkANDValues.includes(getChildText)) {
 							htmlElement.children[htmlElement.children.length - 1].outerHTML =
 								ANDString;
+							placeCursor = true;
 						} else if (checkORValues.includes(getChildText)) {
 							htmlElement.children[htmlElement.children.length - 1].outerHTML =
 								ORString;
+							placeCursor = true;
 							// lastChildEl.innerHTML = ORString;
 							// console.log(lastChildEl1,'lastChildEl1');
 						} else if (checkNOTValues.includes(getChildText)) {
 							htmlElement.children[htmlElement.children.length - 1].outerHTML =
 								NOTString;
+							placeCursor = true;
 						} else {
 							htmlElement.innerHTML = htmlElement.innerHTML.replaceAll(
 								"<br>",
@@ -759,6 +858,7 @@ function FullTextSearch() {
 			if (value != "") {
 				let checkOperatorText = ["and", "AND", "or", "OR", "not", "NOT"];
 				if (detectPaste) {
+					
 					let splitPasteTxt = pasteContent ? pasteContent.split(" ") : [];
 					console.log(splitPasteTxt, "splitPasteTxt");
 					if (splitPasteTxt && splitPasteTxt.length > 0) {
@@ -1023,6 +1123,14 @@ function FullTextSearch() {
 						
 					}else if (getChildClassName == "query") {
 						let childElId = getChildEl.getAttribute("dataid");
+						var PrevElClass = [];
+						var PrevElSibling = getChildEl.previousElementSibling;
+						console.log(PrevElSibling, "PrevElSibling1");
+						// To Check Prev Element values has operator or not, if not we place operator dynamically
+						if(PrevElSibling && PrevElSibling.attributes.class != undefined)
+						{
+							PrevElClass = PrevElSibling.attributes.class.value.split(' ');
+						}
 						// console.log(lastElClass,'lastElClass');
 						console.log(childElId, "childElId");
 						console.log(getChildEl.getAttribute("dataid"), "checkdataid");
@@ -1145,21 +1253,89 @@ function FullTextSearch() {
 								}
 							}
 						}else {
-							console.log(htmlElement.children, "htmlElement.children");
+							// console.log(htmlElement.children, "htmlElement.children");
+							// console.log(htmlElement.innerHTML, "htmlElement.innerHTML");
+							// console.log(PrevElSibling, "getChildEl.previousElementSibling");
+							// console.log(PrevElClass, "PrevElClass");
+							// console.log(htmlElement.children[htmlElement.children.length - 1].textContent, "textcontent");
+							let currentTxt = htmlElement.children[htmlElement.children.length - 1].textContent;
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-								htmlElement.children[
-									htmlElement.children.length - 1
-								].textContent =
-									htmlElement.children[htmlElement.children.length - 1]
-										.textContent + lastValue;
+								if(PrevElSibling)
+								{
+									if(PrevElClass.length > 0 && removeClassArray.includes(PrevElClass[0]))
+									{
+										htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+												.textContent + lastValue;
+									}else{
+										htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
+									}
+								}else{
+									htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+												.textContent + lastValue;
+								}
+								
+								// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+								// 				.textContent + lastValue;
 								getSearchVal =
 									htmlElement.children[htmlElement.children.length - 1]
 										.textContent;
 							}else{
+								// console.log(PrevElSibling,'PrevElSibling');
+								if(PrevElSibling)
+								{
+									// console.log(removeClassArray,'removeClassArray');
+									// console.log(PrevElClass[0],'PrevElClass[0]');
+									if(PrevElClass.length > 0)
+									{
+										if(removeClassArray.includes(PrevElClass[0]))
+										{
+											htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+												.textContent;
+										}else{
+											if (checkANDValues.includes(currentTxt)) {
+												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+											}else if (checkORValues.includes(currentTxt)) {
+												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+											}else if (checkNOTValues.includes(currentTxt)) {
+												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+											}else{
+												if(currentTxt.length > 2)
+												{
+													htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
+												}else {
+													htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+												}
+											}
+											// htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
+										}
+										
+									}else{
+										if(currentTxt.length > 1)
+										{
+											if (checkANDValues.includes(currentTxt)) {
+												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+											}else if (checkORValues.includes(currentTxt)) {
+												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+											}else if (checkNOTValues.includes(currentTxt)) {
+												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+											}else{
+												if(currentTxt.length > 2)
+												{
+													htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
+												}else {
+													htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+												}
+											}
+
+										}else{
+											htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+										}
+									}
+								}
 								getSearchVal = htmlElement.children[htmlElement.children.length - 1].textContent;
 							}
-							console.log(htmlElement.children, "htmlElement.children1");
+							// console.log(htmlElement.children, "htmlElement.children1");
 						}
 					} else if (getChildClassName == "" && detectPaste) {
 						if (htmlElement.children.length == 1) {
@@ -1366,17 +1542,29 @@ function FullTextSearch() {
 						);
 					}
 				}
-				console.log(placeCursor, "placeCursor");
-				if (placeCursor) {
-					htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "");
-					placeCaretAtEnd(htmlElement);
-				}
+				
 			}
-
+			
 			// trimText = htmlElement.textContent.toString();
 			// console.log(trimText,'trimText');
 
 			// updateHtmlElement(value);
+		}
+		console.log(placeCursor, "placeCursor");
+		var hiddenElems = htmlElement.getElementsByTagName('*');
+
+		for(var i = 0; i < hiddenElems.length; i++)
+		{
+			if(hiddenElems[i].innerHTML)
+			{
+				hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.trim().replace(/&nbsp;/g, '');
+				hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.replace(/\>[\t ]+$/g, ">");
+			}
+		}
+		if (placeCursor) {
+			// htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "");
+			
+			placeCaretAtEnd(htmlElement);
 		}
 		// For Auto complete
 		let checkLastThreeVal = getChildText;
@@ -1406,7 +1594,7 @@ function FullTextSearch() {
 						? htmlElement.children[key].attributes.class.value
 						: "";
 					splitClass = getClass ? getClass.split(" ") : [];
-
+					console.log(splitClass,'splitClass');
 					// To Remove, If Two operator exists between the words
 					if (key > 0) {
 						prevKey = parseInt(key) - 1;
