@@ -20,7 +20,13 @@ const useStyles = makeStyles((theme) => ({
   },
   menu: {
     width: 100
-  }
+  },
+smallBox: {
+  width: '69px',
+  padding: '10px 0px',
+  margin: '-8px 0 0 -5px'
+},
+
 }));
 
 export default function SelectBox(props) {
@@ -34,18 +40,19 @@ export default function SelectBox(props) {
         name={props.name}
         select
         // label={gender=== "" ? "Gender": ""}
-        className={classes.textField+' '+props.className}
+        className={props.className+" "+ (props.smallSelectBox ? classes.smallBox : classes.textField)}
         value={props.value}
         InputLabelProps={{ shrink: false }}
         SelectProps={{
           MenuProps: {
-            className: classes.menu
+            className: (props.smallSelectBox ? "" : classes.menu)
           }
         }}
         margin={props.margin}
         variant={props.variant}
         onChange={props.onChange}
         disabled={props.disabled}
+        onBlur={props.onBlur}
       >
         {items && items.length > 0 && items.map((option) => (
           <MenuItem key={option.value} value={option.value}>

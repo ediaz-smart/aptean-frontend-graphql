@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@material-ui/core/Button";
 import { Row, Col } from "react-bootstrap";
@@ -8,6 +8,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import ReactHtmlParser from "react-html-parser";
 
 import Popover from "@material-ui/core/Popover";
+import Modal from 'react-bootstrap/Modal';
+import CloseIcon from '@material-ui/icons/Close';
 
 import Constant from "../../helpers/constant";
 import lucenequeryparser from "../../assets/lib/lucene-query-parser";
@@ -16,6 +18,9 @@ import FullTextResults from "./FullTextResults";
 import TextInput from "../../shared/Fields/TextInput";
 import CheckBox from '../../shared/Fields/CheckBox';
 import CaretPositioning from './EditCaretPositioning'
+import AuthoritiesData from '../../helpers/authorities';
+import SelecBox from '../../shared/Fields/SelectBox';
+
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -36,6 +41,24 @@ const useStyles = makeStyles((theme) => ({
   searchMenuList: {
     padding: "20px !important",
   },
+  modalHeader: {
+    borderBottom: 'none !important',
+    padding: '4px 4px 3px 0px',
+    display: "block !important"
+},
+footerDiv: {
+    padding: '0 30px',
+    marginTop: '-5px',
+    marginRight: '-10px',
+},
+modalBody: {
+    margin: "0 20px 20px 20px",
+    backgroundColor: "#EEEEEE",
+    padding: "38px"
+},
+titleFont: {
+    fontSize: "20px !important"
+}
 }));
 let ANDString = '<span class="andClass opClass">AND</span>';
 let ORString = '<span class="orClass opClass">OR</span> ';
@@ -79,8 +102,17 @@ function FullTextSearch() {
 	const [dateSortField, setDateSortField] = React.useState("pub_date");
 	const [searchStartPage, setSearchStartPage] = React.useState(0);
 	const [searchStopPage, setSearchStopPage] = React.useState(50);
-	const [authoritySorting, setAuthoritySorting] = React.useState(false);
-	const [authorities, setAuthorities] = React.useState("");
+	const [isAuthoritySorting, setIsAuthoritySorting] = React.useState(true);
+	const [authorities, setAuthorities] = React.useState({});
+	const [configure1, setConfigure1] = useState('US');
+	const [configure2, setConfigure2] = useState('EP');
+	const [configure3, setConfigure3] = useState('WO');
+	const [configure4, setConfigure4] = useState('');
+	const [configure5, setConfigure5] = useState('');
+	const [isDateSorting, setIsDateSorting] = useState(true);
+	const [dateSortingField, setDateSortingField] = useState('filing_date');
+	const [dateSortingDirection, setDateSortingDirection] = useState('desc');
+
 
 	//set result
     const [docSearchResult, setDocSearchResult] = useState({});
@@ -101,6 +133,7 @@ function FullTextSearch() {
     const [isConfigureActive, setIsConfigureActive] = useState(false);
   
 	const pageCount = useSelector((state) => state.setCommon["Paging size"]);
+	console.log('author', authorities)
 
 	const openPopup = () => {
 		// console.log(event.currentTarget,'event.currentTarget');
@@ -122,10 +155,15 @@ function FullTextSearch() {
 	// reset login status
 	useEffect(async () => {
 		//dispatch(userActions.logout());
+		let authorityData = AuthoritiesData();
+		if(authorityData) {
+			setAuthorities(authorityData);
+		}
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
+		
 	}, []);
 
 	const handleClickOutside = (event) => {
@@ -2083,10 +2121,13 @@ function FullTextSearch() {
 		return obj;
 	}
 
-	const searchResult = async (groupingType, pageStart) => {
+	const searchResult = async (groupingType, pageStart, closeModal) => {
 		console.log("pagestart", pageStart);
 		console.log("searchGroup", groupingType);
-        console.log(queryParser, "queryParser");
+		console.log(queryParser, "queryParser");
+		if(closeModal && closeModal == 'closeModal') {
+			setIsConfigureActive(false);
+		}
         if (saveFormValue && !formName) {
             setSaveFormError(true);
             return;
@@ -2100,27 +2141,36 @@ function FullTextSearch() {
 		setTimeout(async () => {
 			let parseJsonData = JSON.stringify(customParseObj);
 			console.log(parseJsonData, "parseJsonData");
-			let searchParam = `&json_query=${parseJsonData}&use_authority_sorting=${authoritySorting}`;
-			if (useDateSort) {
-				searchParam += `&date_sorting_field=${dateSortField}`;
-				searchParam += `&date_sorting_dir=${dateSorting}`;
-				searchParam += `&use_date_sorting=${useDateSort}`;
-			}
+			let searchParam = `&json_query=${parseJsonData}`;
+
 			pageStart >= 0
 				? (searchParam += `&start=${pageStart}`)
 				: (searchParam += `&start=${searchStartPage}`);
 			searchParam += `&rows=${pageCount}`;
-			if (authorities) {
-				searchParam += `&authorities=${authorities}`;
-			}
 
-			groupingType
+			groupingType && groupingType !=('Family' || 'Document')
 				? (searchParam += `&grouping=${groupingType}`)
 				: (searchParam += `&grouping=${grouping}`);
             console.log(searchParam, "searchParam");
             if (formName) {
                 searchParam += `&template_name=${formName}`
-              }
+			  }
+			  
+			  if(isAuthoritySorting){
+				  searchParam += `&Use_authority_sorting=true`;
+				  let authorityParam = [configure1, configure2, configure3, configure4, configure5].filter(Boolean).join(",");
+
+				console.log('authorityParam',authorityParam)
+				searchParam += `&Authorities=${authorityParam}`;
+			  } else {
+				searchParam += `&Use_authority_sorting=false`;
+			  }
+
+			  if(isDateSorting) {
+				searchParam += `&Use_date_sorting=true`;
+				searchParam += `&Date_sorting_field=${dateSortingField}`
+				searchParam += `&Date_sorting_dir=${dateSortingDirection}`
+			  }
               console.log('searchParam', searchParam)
         
 			const searchQueryRes = await fullTextService.getFullTextSearchResult(
@@ -2185,7 +2235,7 @@ function FullTextSearch() {
         } else {
           //api
         }
-      }
+	  }
     
 	return (
 		<div className={classes.grow}>
@@ -2294,7 +2344,7 @@ function FullTextSearch() {
               variant="contained"
               disableRipple={true}
               className={"loginSubmitButton float-right"}
-              onClick={searchResult}
+              onClick={()=>searchResult(null, null)}
             >
               {t("submit")}
             </Button>
@@ -2522,6 +2572,146 @@ function FullTextSearch() {
                     pageCount={pageCount}
                 />
             )}
+             <Modal
+                size="lg"
+				show={isConfigureActive}
+				// show={true}
+                onHide={!isConfigureActive}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header className={classes.modalHeader}>
+                    <Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={()=>setIsConfigureActive(!isConfigureActive)} /></Link>
+                </Modal.Header>
+                <Modal.Body className={classes.modalBody}>
+                    <form name="mergeResultsForm" >
+                        <h4 className={"subHeading mb-4 " + classes.titleFont}>{t('representativeDocument')}</h4>
+						<div className="mb-2">
+                        <CheckBox
+                            // defaultChecked
+                            color="primary"
+                            className={"float-left ml-2"}
+                            name="applyPreferredAuthority"
+                            id="applyPreferredAuthority"
+                            onChange={()=>setIsAuthoritySorting(!isAuthoritySorting)}
+							checked={isAuthoritySorting}
+                        />
+                        <label className={"checkBoxContent bodyText cursorPointer ml-0 mr-3"} for="applyPreferredAuthority">{t("applyPreferredAuthority")}</label>
+						</div> 
+						<div className="mb-4">
+						{/* {!showConfigure1 &&
+						 <TextInput 
+						name="configure1"
+						value={configure1}
+						onFocus={()=>setShowConfigure1(!showConfigure1)}
+						onBlur={()=>setShowConfigure1(!showConfigure1)}
+						/>
+						}  */}
+						{/* {showConfigure1 &&  */}
+						<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure1"
+                                id="configure1"
+                                value={configure1}
+                                items={authorities}
+                                onChange={(e)=>setConfigure1(e.target.value)}
+								className={"mr-2 ml-5"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+								// onBlur={()=>setShowConfigure1(!showConfigure1)}
+                            />
+							 {/* } */}
+							<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure2"
+                                id="configure2"
+                                value={configure2}
+                                items={authorities}
+                                onChange={(e)=>setConfigure2(e.target.value)}
+								className={"mr-2"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+                            />
+							<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure3"
+                                id="configure3"
+                                value={configure3}
+                                items={authorities}
+                                onChange={(e)=>setConfigure3(e.target.value)}
+								className={"mr-2"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+                            />
+							<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure4"
+                                id="configure4"
+                                value={configure4}
+                                items={authorities}
+                                onChange={(e)=>setConfigure4(e.target.value)}
+								className={"mr-2"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+                            />
+							<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure5"
+                                id="configure5"
+                                value={configure5}
+                                items={authorities}
+                                onChange={(e)=>setConfigure5(e.target.value)}
+								className={"mr-2"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+                            />
+						</div>
+						<div className="mb-4">
+                        <CheckBox
+                            // defaultChecked
+                            color="primary"
+                            className={"float-left ml-2 mb-5"}
+                            name="selectDocWith"
+                            id="selectDocWith"
+                            onChange={()=>setIsDateSorting(!isDateSorting)}
+							checked={isDateSorting}
+                        />
+                        <label className={"checkBoxContent bodyText cursorPointer ml-0 mr-3 float-left"} for="selectDocWith">{t("selectDocumentsWith")}</label>
+						<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="dateSortingDirection"
+                                id="dateSortingDirection"
+                                value={dateSortingDirection}
+                                items={Constant.dateSortingDirection}
+                                onChange={(e)=>setDateSortingDirection(e.target.value)}
+								className={"float-left mr-2 w-25"}
+								disabled={!isDateSorting}
+                            />
+						<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="dateSortingFeld"
+                                id="dateSortingFeld"
+                                value={dateSortingField}
+                                items={Constant.dateSortingField}
+                                onChange={(e)=>setDateSortingField(e.target.value)}
+								className={"float-left mr-2 w-25"}
+								disabled={!isDateSorting}
+                            />
+						</div> 
+                        <div className="clear">
+                            <Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit" onClick={()=>searchResult(null,null, 'closeModal')}>{t('apply')}</Button>
+                            <Button className={"cancelButtonClass float-right"} id="mergeCancel" onClick={()=>setIsConfigureActive(!isConfigureActive)}>{t('cancel')}</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
+            </Modal>
+            
     </div>
   );
 }

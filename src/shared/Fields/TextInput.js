@@ -68,6 +68,7 @@ export default function TextInput(props) {
         disabled={props.disabled}
         min={props.min}
         onBlur={props.onBlur}
+        onFocus={props.onFocus}
         />
     );
 }
