@@ -19,8 +19,7 @@ import TextInput from "../../shared/Fields/TextInput";
 import CheckBox from '../../shared/Fields/CheckBox';
 import CaretPositioning from './EditCaretPositioning'
 import AuthoritiesData from '../../helpers/authorities';
-import SelecBox from '../../shared/Fields/SelectBox';
-
+import SelectBox from "../../shared/Fields/SelectBox";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
