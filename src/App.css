@@ -312,8 +312,8 @@
 /* News and Update */
 
 .newsUpdateContent {
-    height: 195px;
-    overflow: hidden
+    max-height: 200px;
+    overflow: auto
 }
 
 .MuiFormHelperText-root.Mui-error {
