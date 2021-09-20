@@ -15,6 +15,7 @@ import fullTextService from "../../services/fulltextsearch";
 import FullTextResults from "./FullTextResults";
 import TextInput from "../../shared/Fields/TextInput";
 import CheckBox from '../../shared/Fields/CheckBox';
+import CaretPositioning from './EditCaretPositioning'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -53,6 +54,7 @@ function FullTextSearch() {
 	const [testOutput, setTestOutput] = useState();
 	const [queryParser, setQueryParser] = useState({});
 	const [pasteContent, setPasteContent] = React.useState(null);
+	const [caretPosition, setCaretPosition] = React.useState();
 
 	// For Popup
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -220,6 +222,9 @@ function FullTextSearch() {
 	const callParseQuery = (value, element, isArrowRight) => {
 		// setTimeout(() => {
 		console.log(element, "onminput");
+		let savedCaretPosition = CaretPositioning.saveSelection(element.currentTarget);
+		setCaretPosition(savedCaretPosition);
+		console.log(savedCaretPosition, "savedCaretPosition");
 		let getCurrentSel = window.getSelection();
 		// console.log(getCurrentSel,'getCurrentSel1');
 		// parseQuery(value, element, isArrowRight);
@@ -227,7 +232,8 @@ function FullTextSearch() {
 			value:value,
 			element,
 			isRightArrow:false,
-			pasteContent:''
+			pasteContent:'',
+			savedCaretPosition
 		}
 		parseQuery(postObj);
 
@@ -236,7 +242,7 @@ function FullTextSearch() {
 	const parseQuery = async(data) => {
 		// let value = element.target.textContent;
 		// console.log(element,'innerHTML');
-		let {value,element,isRightArrow} = data;
+		let {value,element,isRightArrow,savedCaretPosition} = data;
 		console.log(keyCode, "keyCode");
 		console.log(value, "value");
 		// localStorage.setItem('searchData',value);
@@ -256,13 +262,13 @@ function FullTextSearch() {
 		// If Space Enters without any string
 		if (keyCode == 32) {
 			if (value.length > 1) {
-				replaceStringHtml(value, keyCode, isRightArrow);
+				replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition);
 			} else {
 				value = "";
 				updateHtmlElement(value);
 			}
 		} else {
-			replaceStringHtml(value, keyCode, isRightArrow);
+			replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition);
 			// replaceStringHtml(value,keyCode);
 		}
 
@@ -313,10 +319,11 @@ function FullTextSearch() {
 			return htmlElement;
 		}
 	}
-	async function replaceStringHtml(value, keyCode, isArrowRight) {
+	async function replaceStringHtml(value, keyCode, isArrowRight,savedCaretPosition) {
 		let getCurrentSel = window.getSelection();
 		console.log(getCurrentSel, "getCurrentSel");
 		console.log(isArrowRight, "isArrowRight");
+		console.log(savedCaretPosition, "savedCaretPosition");
 		let htmlElement = document.getElementById("textareaDiv");
 
 		console.log(pasteContent, "pasteContent1");
@@ -330,7 +337,7 @@ function FullTextSearch() {
 		let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
 		let placeCursor = true;
 		let spanArr = "";
-
+		let getEndPosition=0;
 		var checkClass;
 		console.log(htmlElement.children,'htmlElement.children..');
 		
@@ -553,6 +560,11 @@ function FullTextSearch() {
 							newSpan.innerHTML = "";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
+							// getEndPosition = savedCaretPosition.end;
+							// setTimeout(() => {
+							// 	setCurrentCursorPosition(getEndPosition);
+							// }, 0);
+							
 						}
 					} else if (getChildClassName == "space") {
 						if (checkORValues.includes(getChildText)) {
@@ -651,6 +663,8 @@ function FullTextSearch() {
 							newSpan.innerHTML = "";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
+							getEndPosition = savedCaretPosition.end + 1;
+							setCurrentCursorPosition(getEndPosition);
 						}
 					}
 				} else {
@@ -750,6 +764,11 @@ function FullTextSearch() {
 					if (checkpublicationelements.length > 0) {
 						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 					}
+					placeCursor = false;
+					setTimeout(() => {
+						getEndPosition = savedCaretPosition.end;
+						setCurrentCursorPosition(getEndPosition);
+					}, 50);
 				}
 			} else if (lastPrevChild && lastPrevChild.attributes.length > 0) {
 				if (
@@ -814,12 +833,12 @@ function FullTextSearch() {
 
 			if (
 				getCurrentSel &&
-				getCurrentSel.focusNode &&
-				getCurrentSel.focusNode.parentNode
+				getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode
 			) {
 				if (getCurrentSel.focusNode.parentNode.className) {
 					let getClass =
 						getCurrentSel.focusNode.parentNode.className.split(" ");
+					let currDataId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
 					// let getDataId = getCurrentSel.focusNode.parentNode.attributes.dataid;
 					console.log(
 						getCurrentSel.focusNode.parentNode.getAttribute("dataid"),
@@ -832,7 +851,7 @@ function FullTextSearch() {
 								htmlElement.children[key].attributes.class.value.split(" ");
 							let getClassId = htmlElement.children[key].getAttribute("dataid");
 							console.log(getClassId, "getClassId");
-							if (getClassId == getCurrentSel.focusNode.parentNode.getAttribute("dataid")) {
+							if (getClassId == getCurrentSel.focusNode.getAttribute("dataid")) {
 								if (getClassVal[0] == "andClass") {
 									htmlElement.children[key].outerHTML = ANDString;
 									placeCaretAtEnd(htmlElement.children[key]);
@@ -845,6 +864,19 @@ function FullTextSearch() {
 								}
 							}
 						});
+					}else{
+						console.log(getCurrentSel.focusNode.parentNode.getAttribute("dataid"),'dataid');
+						
+						console.log(htmlElement.children,'htmlElement.children');
+						
+						let placeKey = currDataId - 1;
+						console.log(htmlElement.children[placeKey],'htmlElement.children[currDataId - 1]');
+						console.log(placeKey,'currDataId - 1');
+						// placeCaretAtEndTag(htmlElement.children[placeKey]);
+						console.log(savedCaretPosition,'savedCaretPosition');
+						// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
+						// setCurrentCursorPosition(savedCaretPosition.end);
+						placeCursor = false;
 					}
 				}
 			}
@@ -917,9 +949,11 @@ function FullTextSearch() {
 						) {
 							htmlElement.innerHTML =
 							htmlElement.innerHTML + " " + newSpan.outerHTML;
+							savedCaretPosition.end = savedCaretPosition.end + 1;
 						}else{
 							htmlElement.innerHTML =
 							htmlElement.innerHTML + ANDString + " " + newSpan.outerHTML;
+							savedCaretPosition.end = savedCaretPosition.end + 4;
 						}
 						// if (lastChild.innerText.length == 0) {
 						// 	newSpan.innerHTML = lastValue;
@@ -1179,6 +1213,7 @@ function FullTextSearch() {
 							currOffsetTop = htmlElement.children[htmlElement.children.length - 1].offsetTop - 2;
 							currOffsetLeft = htmlElement.children[htmlElement.children.length - 1].offsetLeft;
 							styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
+							htmlElement.innerHTML = htmlElement.innerHTML.trim().replace(/&nbsp;/g, '');
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								htmlElement.children[
@@ -1290,8 +1325,16 @@ function FullTextSearch() {
 									{
 										if(removeClassArray.includes(PrevElClass[0]))
 										{
-											htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
-												.textContent;
+											// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+											// 	.textContent;
+											console.log(savedCaretPosition,'savedCaretPosition');
+											let setPos = savedCaretPosition.end;
+											// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
+											setTimeout(() => {
+												placeCursor = false;
+												setCurrentCursorPosition(setPos);
+											}, 0);
+											
 										}else{
 											if (checkANDValues.includes(currentTxt)) {
 												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
@@ -1333,6 +1376,7 @@ function FullTextSearch() {
 										}
 									}
 								}
+								
 								getSearchVal = htmlElement.children[htmlElement.children.length - 1].textContent;
 							}
 							// console.log(htmlElement.children, "htmlElement.children1");
@@ -1561,11 +1605,17 @@ function FullTextSearch() {
 				hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.replace(/\>[\t ]+$/g, ">");
 			}
 		}
+		
 		if (placeCursor) {
 			// htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "");
 			
 			placeCaretAtEnd(htmlElement);
+			// setCurrentCursorPosition(savedCaretPosition.end);
 		}
+		// else{
+		// 	setCurrentCursorPosition(savedCaretPosition.end);
+		// }
+		// setCurrentCursorPosition(savedCaretPosition.end);
 		// For Auto complete
 		let checkLastThreeVal = getChildText;
 		console.log(getSearchVal, "getSearchVal");
@@ -1672,6 +1722,50 @@ function FullTextSearch() {
 		// Place Curstor at Last in Textarea
 		// placeCaretAtEnd(htmlElement);
 	}
+	function createRange(node, chars, range) {
+		if (!range) {
+			range = document.createRange()
+			range.selectNode(node);
+			range.setStart(node, 0);
+		}
+	
+		if (chars.count === 0) {
+			range.setEnd(node, chars.count);
+		} else if (node && chars.count >0) {
+			if (node.nodeType === Node.TEXT_NODE) {
+				if (node.textContent.length < chars.count) {
+					chars.count -= node.textContent.length;
+				} else {
+					 range.setEnd(node, chars.count);
+					 chars.count = 0;
+				}
+			} else {
+				for (var lp = 0; lp < node.childNodes.length; lp++) {
+					range = createRange(node.childNodes[lp], chars, range);
+	
+					if (chars.count === 0) {
+					   break;
+					}
+				}
+			}
+	   } 
+	
+	   return range;
+	};
+	
+	function setCurrentCursorPosition(chars) {
+		if (chars >= 0) {
+			var selection = window.getSelection();
+	
+			var range = createRange(document.getElementById("textareaDiv").parentNode, { count: chars });
+	
+			if (range) {
+				range.collapse(false);
+				selection.removeAllRanges();
+				selection.addRange(range);
+			}
+		}
+	};
 	function insertAfter(referenceNode, newNode) {
 		referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 	}
@@ -1769,7 +1863,7 @@ function FullTextSearch() {
 
 		console.log(searchRes, "searchRes");
 	};
-	function placeCaretAtEnd(el) {
+	function placeCaretAtEndTag(el) {
 		el.focus();
 		if (
 			typeof window.getSelection != "undefined" &&
