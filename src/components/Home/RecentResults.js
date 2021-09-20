@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect,Fragment } from "react";
-import { Link, useLocation,useHistory } from 'react-router-dom';
+import React, { useMemo, useState, useEffect, Fragment } from "react";
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
 import { makeStyles } from "@material-ui/core/styles";
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 	anchorTag: {
 		textDecoration: 'none',
 		color: "#008EC5",
-		fontWeight:'700'
+		fontWeight: '700'
 	},
 	p: {
 		color: "#74a4d8",
@@ -59,73 +59,77 @@ const useStyles = makeStyles((theme) => ({
 }));
 const customStyles = {
 	rows: {
-	  style: {
-		minHeight: '50px', // override the row height
-	  }
+		style: {
+			minHeight: '50px', // override the row height
+		}
 	},
 	headCells: {
-	  style: {
-		paddingLeft: '8px', // override the cell padding for head cells
-		paddingRight: '8px',
-		borderLeft:'1px solid #0606061f',
-		'&:first-child': {
-			borderLeft: '0',
+		style: {
+			paddingLeft: '8px', // override the cell padding for head cells
+			paddingRight: '8px',
+			borderLeft: '1px solid #0606061f',
+			'&:first-child': {
+				borderLeft: '0',
+			},
+			fontWeight: '700',
+			color: '#777777',
+			justifyContent: 'start !important'
 		},
-		fontWeight:'700',
-		color:'#777777'
-	  },
 	},
 	cells: {
-	  style: {
-		paddingLeft: '8px', // override the cell padding for data cells
-		paddingRight: '8px',
-		borderLeft:'1px solid #0606061f',
-		// borderBottom:'1px solid #0606061f',
-		'&:first-child': {
-			borderLeft: '0',
+		style: {
+			paddingLeft: '8px', // override the cell padding for data cells
+			paddingRight: '8px',
+			borderLeft: '1px solid #0606061f',
+			// borderBottom:'1px solid #0606061f',
+			'&:first-child': {
+				borderLeft: '0',
+			},
+			display: 'grid',
+			justifyContent: 'start !important'
 		},
-		display:'grid',
-		textAlign:"center !important"
-	  },
-	  
+
 	},
-  };
+};
 const columns = [
 	{
-	  name: "Type",
-	  selector: "type",
-	  sortable: false,
-	  center: true
+		name: "Type",
+		selector: "type",
+		sortable: false,
+		center: true
 	},
 	{
-	  name: "Date",
-	  selector: "date",
-	  sortable: false,
-	  center: true
+		name: "Date",
+		selector: "date",
+		sortable: false,
+		center: true
 	},
 	{
-	  name: "Description",
-	  selector: "description",
-	  sortable: false,
-	  center: true,
+		name: "Description",
+		selector: "description",
+		sortable: false,
+		center: true,
 		// cell: row => <div style={{ textAlign: 'left' }}>{row.description}</div>,
 	},
 	{
 		name: "",
 		selector: "results",
 		sortable: false
-	  },
-	  {
+	},
+	{
 		name: " ",
 		selector: "report",
 		sortable: false,
-		center: true
-	  }
-  ];
-   const isIndeterminate = indeterminate => indeterminate;
-  const selectableRowsComponentProps = { indeterminate: isIndeterminate };
+		center: true,
+		style: {
+			justifyContent: 'center !important'
+		}
+	}
+];
+const isIndeterminate = indeterminate => indeterminate;
+const selectableRowsComponentProps = { indeterminate: isIndeterminate };
 
-  
+
 function RecentResults() {
 
 	const [searchResultData, setSearchResultData] = useState([]);
@@ -138,35 +142,32 @@ function RecentResults() {
 			getDefaultSearchResult();
 		})();
 	}, []);
-	const getDefaultSearchResult = async()=>{
+	const getDefaultSearchResult = async () => {
 		const result = await HomeService.getSearchResults(history);
 		let tempArr = [];
-		if(result && result.response_content && result.response_content.length > 0)
-		{
+		if (result && result.response_content && result.response_content.length > 0) {
 			// tempArr = await UtilsService.mostRecentResCalculation(result,'home');
 			tempArr = await getSearchDataArr(result, 'home');
 		}
 
-		
+
 		// Getting only 9 array from the response as per the ppt documentation
 		tempArr = tempArr.slice(0, 9);
 		setSearchResultData(tempArr);
 	}
-	const getProgressStatus = async(isCompleted)=>{
-		console.log(isCompleted,'isCompleted')
-		if(isCompleted)
-		{
+	const getProgressStatus = async (isCompleted) => {
+		console.log(isCompleted, 'isCompleted')
+		if (isCompleted) {
 			getDefaultSearchResult();
 		}
 	}
-	async function getSearchDataArr(data,pagetype) {
+	async function getSearchDataArr(data, pagetype) {
 		try {
 			let tempArr = [];
 			let resultData;
-			if(pagetype == 'searchfolder')
-			{
+			if (pagetype == 'searchfolder') {
 				resultData = data.response_content.results;
-			}else {
+			} else {
 				resultData = data.response_content;
 			}
 			resultData.forEach(datas => {
@@ -174,95 +175,85 @@ function RecentResults() {
 				let id = datas.id;
 				tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
 				const regex = /Fulltext/i;
-				if(datas.type !== null && datas.type !== '')
-				{
+				if (datas.type !== null && datas.type !== '') {
 					const found = datas.type.match(regex);
-					if(found && found.length >0){
+					if (found && found.length > 0) {
 						type = 'Documents';
 					}
-				}else{
-					datas.type = ' ' 
+				} else {
+					datas.type = ' '
 				}
 				let type = 'Alignments';
-				
+
 				let mostRecentTypeUrl = url.mostRecentTypeUrl
 				mostRecentTypeUrl = mostRecentTypeUrl.replace('**', id);
-				let typeUrl = process.env.REACT_APP_BASE_URL+mostRecentTypeUrl;
-				if(datas.type != '')
-				{
-					if(datas.type !== 'GqFolder')
-					{
-						if(datas.status == 'STILL_RUNNING')
-						{
+				let typeUrl = process.env.REACT_APP_BASE_URL + mostRecentTypeUrl;
+				if (datas.type != '') {
+					if (datas.type !== 'GqFolder') {
+						if (datas.status == 'STILL_RUNNING') {
 							tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
 						}
-						else if(datas.status == 'FAILED'){
-							tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor':'')} onClick={(e)=>e.preventDefault()}>Search Failed</a>;
+						else if (datas.status == 'FAILED') {
+							tempObj['results'] = <a href="#" className={(datas.status == 'FAILED' ? 'failedIconColor' : '')} onClick={(e) => e.preventDefault()}>Search Failed</a>;
 						}
-						else if(datas.status == 'CANCELLED'){
+						else if (datas.status == 'CANCELLED') {
 							tempObj['results'] = <span>Search cancelled</span>;
 						}
 						else {
-							if(datas.results > 0)
-							{
-								tempObj['results'] = <a href={typeUrl} target="_blank">{datas.results} {type}</a>
-							}else {
-								tempObj['results'] = <span>{datas.results ? datas.results+' '+type: ''}</span>
+							if (datas.results > 0) {
+								tempObj['results'] = <a href={typeUrl} target="_blank" rel="noreferrer">{datas.results} {type}</a>
+							} else {
+								tempObj['results'] = <span>{datas.results ? datas.results + ' ' + type : ''}</span>
 								// tempObj['results'] = <span></span>
 							}
-							
+
 						}
-					}else{
-						tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
+					} else {
+						tempObj['results'] = <a href="#" onClick={(e) => e.preventDefault()}>Empty</a>;
 					}
-				}else {
-					tempObj['results'] = <a href="#" onClick={(e)=>e.preventDefault()}>Empty</a>;
+				} else {
+					tempObj['results'] = <a href="#" onClick={(e) => e.preventDefault()}>Empty</a>;
 				}
 				// console.log(parseInt(datas.results),'datas.results');
 				let mostRecentClassicUrl = url.mostRecentClassicUrl
 				mostRecentClassicUrl = mostRecentClassicUrl.replace('**', id);
-				let classicLink = process.env.REACT_APP_API_URL+mostRecentClassicUrl
-				if(datas.status == 'FAILED')
-				{
+				let classicLink = process.env.REACT_APP_API_URL + mostRecentClassicUrl
+				if (datas.status == 'FAILED') {
 					tempObj["report"] = '';
-				}else{
-					
-					if(datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status !='CANCELLED'))
-					{
+				} else {
+
+					if (datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED')) {
 						// console.log(datas.results.props,'datas.results');
-						if(datas.results.props.children && datas.results.props.children[0] > 0)
-						{
-							if(datas.type == "GqWfABIpSearch")
-							{
+						if (datas.results.props.children && datas.results.props.children[0] > 0) {
+							if (datas.type == "GqWfABIpSearch") {
 								let mostRecentReportUrl = url.mostRecentReportUrl
 								mostRecentReportUrl = mostRecentReportUrl.replace('**', id);
-								let reportLink = process.env.REACT_APP_BASE_URL+mostRecentReportUrl
-								tempObj["report"] = <Fragment><a href={reportLink} target="_blank">Report</a>
-													<span className="mx-2">|</span>
-													<a href={classicLink} target="_blank">Classic</a>
-													</Fragment>
-							}else if(datas.type !== "GqFolder"){
+								let reportLink = process.env.REACT_APP_BASE_URL + mostRecentReportUrl
+								tempObj["report"] = <Fragment><a href={reportLink} target="_blank" rel="noreferrer">Report</a>
+									<span className="mx-2">|</span>
+									<a href={classicLink} target="_blank" rel="noreferrer">Classic</a>
+								</Fragment>
+							} else if (datas.type !== "GqFolder") {
 								tempObj["report"] = <Fragment>
-													<a href={classicLink} target="_blank">Classic</a>
-													</Fragment>
-							}else {
+									<a href={classicLink} target="_blank" rel="noreferrer">Classic</a>
+								</Fragment>
+							} else {
 								tempObj["report"] = '';
 							}
-						}else {
+						} else {
 							tempObj["report"] = '';
 						}
-					}else {
+					} else {
 						tempObj["report"] = '';
 					}
 				}
-				tempObj['type'] = Constant['searchType'][datas.type] ? Constant['searchType'][datas.type]: datas.type;
-				if(pagetype === "searchmanagement" || pagetype === "searchfolder")
-				{
+				tempObj['type'] = Constant['searchType'][datas.type] ? Constant['searchType'][datas.type] : datas.type;
+				if (pagetype === "searchmanagement" || pagetype === "searchfolder") {
 					tempObj["info"] = <Fragment>
-										<a href="#" onClick={(e)=>e.preventDefault()}><InfoIcon className={"mr-2 appLink pe-none "+(datas.status == 'FAILED' ? 'failedIconColor':'')} /></a>
-										<a href="#" onClick={(e)=>e.preventDefault()}><RedoIcon className="mr-2 appLink" /></a>
-										<a href="#" onClick={(e)=>e.preventDefault()}><AccessAlarmIcon className="appLink" /></a>
-									</Fragment>
+						<a href="#" onClick={(e) => e.preventDefault()}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>
+						<a href="#" onClick={(e) => e.preventDefault()}><RedoIcon className="mr-2 appLink" /></a>
+						<a href="#" onClick={(e) => e.preventDefault()}><AccessAlarmIcon className="appLink" /></a>
+					</Fragment>
 				}
 				tempArr.push(tempObj);
 			})
@@ -270,38 +261,38 @@ function RecentResults() {
 		} catch (error) {
 			console.error(error);
 		}
-	   
+
 	}
 
 	return (
 
 		<div className={classes.grow}>
 			{/* <ProgressBar /> */}
-			        <Row >
-						<Col>
-						<span className={"subHeading"}>Most Recent Results</span><span className="pipeText appTextColor">|</span><span className={classes.pTagMargin + " bodyText"}>
-							{/* <a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>All Search Results</a> */}
-							<Link className="appLink" to='/searchResult'>All Search Results</Link>
-						</span>
-						</Col>
-					</Row>
-					<Row className="mt-4">
-						<Col>
-						{/* <Table className="w-100" columns={columns} data={data} /> */}
-						<DataTable
-								columns={columns}
-								data={searchResultData}
-								defaultSortField="date"
-								defaultSortAsc={false}
-								sortable={false}
-								sortServer={true}
-								noDataComponent="No Searches have been submitted."
-								sortIcon={<SortIcon />}
-								customStyles={customStyles}
-								noHeader={true}
-						/>
-						</Col>
-					</Row>
+			<Row >
+				<Col>
+					<span className={"subHeading"}>Most Recent Results</span><span className="pipeText appTextColor">|</span><span className={classes.pTagMargin + " bodyText"}>
+						{/* <a className={classes.anchorTag} href='#' onClick={e => e.preventDefault()}>All Search Results</a> */}
+						<Link className="appLink" to='/searchResult'>All Search Results</Link>
+					</span>
+				</Col>
+			</Row>
+			<Row className="mt-4">
+				<Col>
+					{/* <Table className="w-100" columns={columns} data={data} /> */}
+					<DataTable
+						columns={columns}
+						data={searchResultData}
+						defaultSortField="date"
+						defaultSortAsc={false}
+						sortable={false}
+						sortServer={true}
+						noDataComponent="No Searches have been submitted."
+						sortIcon={<SortIcon />}
+						customStyles={customStyles}
+						noHeader={true}
+					/>
+				</Col>
+			</Row>
 
 			{/* <ProgressBar animated now={75} /> */}
 

@@ -266,7 +266,8 @@ const customStyles = {
                 borderLeft: '0',
             },
             fontWeight: 'bold',
-            color: '#4a5050'
+            color: '#4a5050',
+            justifyContent: 'start !important'
         },
     },
     cells: {
@@ -279,7 +280,8 @@ const customStyles = {
                 borderLeft: '0',
             },
             display: 'grid',
-            textAlign: 'center'
+            // textAlign: 'center',
+            justifyContent: 'start !important'
         },
 
     },
@@ -316,7 +318,10 @@ const columns = [
     {
         name: " ",
         selector: "report",
-        center: true
+        center: true,
+        style: {
+            justifyContent: 'center !important'
+        }
     }
 ];
 
