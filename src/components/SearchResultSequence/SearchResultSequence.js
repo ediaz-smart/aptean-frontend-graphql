@@ -558,7 +558,7 @@ function SearchResultSequence(props) {
                             tempObj['results'] = <a href="#" className={"failedIconColor"} onClick={(e) => e.preventDefault()}>Search Failed</a>;
                         }
                         else {
-                            tempObj['results'] = <a href={typeUrl} target="_blank" rel="noreferrer">{values.total_nb_results} {type}</a>
+                            tempObj['results'] = values.total_nb_results > 0 ? (<a href={typeUrl} target="_blank" rel="noreferrer">{values.total_nb_results} {type}</a>) : (<span> {values.total_nb_results} {type}</span>)
                         }
                     } else {
                         tempObj['results'] = <a href="#" onClick={(e) => e.preventDefault()}>Empty</a>;
@@ -572,7 +572,7 @@ function SearchResultSequence(props) {
                 if (values.status == 'FAILED') {
                     tempObj["report"] = '';
                 } else {
-                    if (values.type != '') {
+                    if (values.type != '' && values.total_nb_results > 0) {
                         if (values.type == "GqWfABIpSearch") {
                             let mostRecentReportUrl = url.mostRecentReportUrl
                             mostRecentReportUrl = mostRecentReportUrl.replace('**', values.id);

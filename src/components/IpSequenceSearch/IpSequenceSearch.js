@@ -357,8 +357,6 @@ function IpSeqSearch() {
     const [warningMsg, setWarningMsg] = useState("");
     const [isWarningReturned, setIsWarningReturned] = useState(false);
     const [errorHeading, setErrorHeading] = useState("");
-    const [nucDefaultDb, setNucDefaultDb] = useState([]);
-    const [proDefaultDb, setProDefaultDb] = useState([]);
 
     let initialCreditValues = {
         ppu1SubTotal: 0,
@@ -376,7 +374,7 @@ function IpSeqSearch() {
     console.log('moment', moment()._d)
     // pubFormatted = moment(pubFormatted).format('MMMM-DD-YYYY')
     let redoInitialObj = {
-        searchDetails: '',
+        searchDetails: `IP ${moment().format('YYYY-MM-DD h:mm:ss')}`,
         querySequence: '',
         alignments: '5000',
         genePastPercentage: '80',
@@ -599,9 +597,9 @@ function IpSeqSearch() {
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
                 setNucGenBankData(nucGenBank);
-                if(!parentId && !tempparam){
+                console.log('nucDefaultPatentDb', nucDefaultPatentDb)
+                if(!parentId && !tempname){
                 setNucDb(nucDefaultPatentDb);
-                setNucDefaultDb(nucDefaultPatentDb);
                 }
             }
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
@@ -657,40 +655,43 @@ function IpSeqSearch() {
             //         setIsSubmitActive(true);
             //     }
             // }
-            if (userInfo && userInfo.current_user) {
-                let userPpu = userInfo.current_user.ppu_type;
-                let currentUser = userInfo.current_user;
-                console.log('userData', userInfo, 'userPpu', userPpu)
-                setPpuType(userPpu);
-
-
-                if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
-                    setIsSubmitActive(false);
-
+            // setTimeout(() => {
+                if (userInfo && userInfo.current_user) {
+                    let userPpu = userInfo.current_user.ppu_type;
+                    let currentUser = userInfo.current_user;
+                    console.log('userData', userInfo, 'userPpu', userPpu)
+                    setPpuType(userPpu);
+    
+    
+                    if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
+                        setIsSubmitActive(false);
+    
+                    }
+                    if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
+                        setShowCreditCalc(true);
+                    }
+    
+                    // if (userPpu == "0") {
+                    //     setIsSubmitActive(true);
+                    // } else {
+                    //     setIsSubmitActive(false);
+                    // }
+    
+                    if (userInfo.current_user.user_class_name) {
+                        setUserClassName(userInfo.current_user.user_class_name)
+                    }
+                    if (userInfo.current_user.accounting_group_name) {
+                        setAccGroupName(userInfo.current_user.accounting_group_name)
+                    }
+                    setIsUserData(true);
+                        if (parentId) {
+                            calTextCredits(null, isBothDbSelected, 'redo')
+                        }                
                 }
-                if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
-                    setShowCreditCalc(true);
-                }
+            // }, 1000);
 
-                // if (userPpu == "0") {
-                //     setIsSubmitActive(true);
-                // } else {
-                //     setIsSubmitActive(false);
-                // }
-
-                if (userInfo.current_user.user_class_name) {
-                    setUserClassName(userInfo.current_user.user_class_name)
-                }
-                if (userInfo.current_user.accounting_group_name) {
-                    setAccGroupName(userInfo.current_user.accounting_group_name)
-                }
-                setIsUserData(true);
-                    if (parentId) {
-                        calTextCredits(null, isBothDbSelected, 'redo')
-                    }                
-            }
         })()
-    }, [userInfo, ppuType]);
+    }, [ppuType]);
 
 
     console.log('system', systemControlSubmit, 'setsubmit', isSubmitActive, 'showcredirt', showCreditCalC)
@@ -916,7 +917,6 @@ function IpSeqSearch() {
                         setNucDb([...nucDb]);
                     }
                 });
-                // setNucDb(nucDefaultDb);
                 setProDb([]);
             } else {
                 setScoringMatrix('BLOSUM62');
@@ -989,7 +989,6 @@ function IpSeqSearch() {
             setIsBothDbSelected(true);
             calTextCredits(null, true, type);
 
-            // sequenceTypeValue == "nucleotide" ? setProDb(proDefaultDb) : setNucDb(nucDefaultDb);
             if(sequenceTypeValue == "nucleotide") {
                 
                 proPatentData.filter(i=>{
@@ -1010,7 +1009,6 @@ function IpSeqSearch() {
 
         console.log('bothdb2', isBothDbSelected)
     }
-console.log('default', nucDefaultDb, 'pro', proDefaultDb)
     function calTextCredits(e, bothDb, type) {
         console.log('texte', e)
         //     if(type && type =="isCompare"){
