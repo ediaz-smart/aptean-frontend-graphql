@@ -189,6 +189,7 @@ function FullTextSearch() {
 		console.log(pasteContent, "pasteContent");
 		console.log(e.keyCode, "e.type");
 		console.log(e, "e...");
+		console.log(e.target.textContent.trim().length, "e.length...");
 		let getClass = [];
 		let selElTxt = "";
 
@@ -222,6 +223,10 @@ function FullTextSearch() {
 		if (e.keyCode == 8) {
 			if (removeClassArray.includes(getClass[0])) {
 				e.preventDefault();
+			}
+			if(e.target.textContent.trim().length == 0)
+			{
+				clearParser();
 			}
 			setRightArrowEvent(false);
 		} else if (e.keyCode == 39) {
@@ -376,6 +381,8 @@ function FullTextSearch() {
 		let spanArr = "";
 		let getEndPosition=0;
 		var checkClass;
+		var placeCursorPos = false;
+		var removedText = '';
 		console.log(htmlElement.children,'htmlElement.children..');
 		
 		
@@ -597,7 +604,7 @@ function FullTextSearch() {
 							newSpan.innerHTML = "";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
-							// getEndPosition = savedCaretPosition.end;
+							// getEndPosition = savedCaretPosition.end + 1;
 							// setTimeout(() => {
 							// 	setCurrentCursorPosition(getEndPosition);
 							// }, 0);
@@ -700,8 +707,9 @@ function FullTextSearch() {
 							newSpan.innerHTML = "";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
+							placeCursorPos = true;
 							getEndPosition = savedCaretPosition.end + 1;
-							setCurrentCursorPosition(getEndPosition);
+							// setCurrentCursorPosition(getEndPosition);
 						}
 					}
 				} else {
@@ -735,6 +743,15 @@ function FullTextSearch() {
 					classArray.includes(getChildClassName)
 				) {
 					// Removing the child span tag if empty text in span
+					console.log('checklength',htmlElement.children[htmlElement.children.length - 1].textContent.length);
+					removedText = htmlElement.children[htmlElement.children.length - 1].textContent;
+					// if(htmlElement.children[htmlElement.children.length - 1].textContent.length > 0)
+					// {
+					// 	let getLength = htmlElement.children[htmlElement.children.length - 1].textContent.length;
+					// 	placeCursor = false;
+					// 	getEndPosition = savedCaretPosition.end - 4;
+					// 	console.log(getEndPosition,'getEndPosition');
+					// }
 					htmlElement.children[htmlElement.children.length - 1].outerHTML = "";
 					setSearchTermPopup(false);
 				} else if (
@@ -802,10 +819,12 @@ function FullTextSearch() {
 						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 					}
 					placeCursor = false;
-					setTimeout(() => {
-						getEndPosition = savedCaretPosition.end;
-						setCurrentCursorPosition(getEndPosition);
-					}, 50);
+					placeCursorPos = true;
+					getEndPosition = savedCaretPosition.end;
+					// setTimeout(() => {
+					// 	getEndPosition = savedCaretPosition.end;
+					// 	setCurrentCursorPosition(getEndPosition);
+					// }, 50);
 				}
 			} else if (lastPrevChild && lastPrevChild.attributes.length > 0) {
 				if (
@@ -908,14 +927,32 @@ function FullTextSearch() {
 						
 						let placeKey = currDataId - 1;
 						console.log(htmlElement.children[placeKey],'htmlElement.children[currDataId - 1]');
-						console.log(placeKey,'currDataId - 1');
+						console.log(removedText,'removedText');
 						// placeCaretAtEndTag(htmlElement.children[placeKey]);
 						console.log(savedCaretPosition,'savedCaretPosition');
 						// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
 						// setCurrentCursorPosition(savedCaretPosition.end);
+						console.log(removedText.length,'removedText.length');
+						let spaceRem = removedText.length;
+						console.log(spaceRem,'spaceRem');
+						if(removedText && removedText.length > 0)
+						{
+							getEndPosition = savedCaretPosition.end - spaceRem;
+							
+						}else{
+							getEndPosition = savedCaretPosition.end;
+						}
+						console.log(getEndPosition,'getdelEndPosition');
 						placeCursor = false;
+						placeCursorPos = true;
 					}
 				}
+			}
+			// If Html Content is Empty, will clear the div content
+			if(htmlElement.textContent.length == 0)
+			{
+				console.log(htmlElement.textContent,'htmlElement.textContent');
+				clearParser();
 			}
 			// // Replacing Last Empty Space in Inner Html to edit from the last character if we delete the characters
 			// var currentIndex = htmlElement.innerHTML.lastIndexOf("&nbsp;");
@@ -1365,13 +1402,14 @@ function FullTextSearch() {
 											// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
 											// 	.textContent;
 											console.log(savedCaretPosition,'savedCaretPosition');
-											let setPos = savedCaretPosition.end;
+											getEndPosition = savedCaretPosition.end;
 											// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
-											setTimeout(() => {
-												placeCursor = false;
-												setCurrentCursorPosition(setPos);
-											}, 0);
-											
+											placeCursor = false;
+											// setTimeout(() => {
+												
+											// 	setCurrentCursorPosition(setPos);
+											// }, 0);
+											placeCursorPos = true;
 										}else{
 											if (checkANDValues.includes(currentTxt)) {
 												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
@@ -1649,6 +1687,7 @@ function FullTextSearch() {
 			placeCaretAtEnd(htmlElement);
 			// setCurrentCursorPosition(savedCaretPosition.end);
 		}
+		
 		// else{
 		// 	setCurrentCursorPosition(savedCaretPosition.end);
 		// }
@@ -1660,7 +1699,12 @@ function FullTextSearch() {
 
 		console.log(checkCharLen, "checkCharLen");
 		if (checkCharLen > 2 && keyCode != 32) {
-			searchTerm(getSearchVal);
+			// Search value not in operator
+			if(!checkORValues.includes(getSearchVal) && !checkANDValues.includes(getSearchVal) && !checkNOTValues.includes(getSearchVal))
+			{
+				searchTerm(getSearchVal);
+			}
+			
 		} else if (checkCharLen < 3) {
 			setSearchTermPopup(false);
 		}
@@ -1675,68 +1719,87 @@ function FullTextSearch() {
 			let prevKey = 0;
 			let nextKey = 0;
 			let currKey = 0;
-			Object.keys(htmlElement.children).forEach(function (key) {
-				if (htmlElement.children[key]) {
-					getClass = htmlElement.children[key]
-						? htmlElement.children[key].attributes.class.value
-						: "";
-					splitClass = getClass ? getClass.split(" ") : [];
-					console.log(splitClass,'splitClass');
-					// To Remove, If Two operator exists between the words
-					if (key > 0) {
-						prevKey = parseInt(key) - 1;
-						nextKey = parseInt(key) + 1;
-						prevClassData = htmlElement.children[prevKey]
-							? htmlElement.children[prevKey].attributes.class.value
+			if(htmlElement.children && htmlElement.children.length > 0)
+			{
+				Object.keys(htmlElement.children).forEach(function (key) {
+					if (htmlElement.children[key]) {
+						getClass = htmlElement.children[key]
+							? htmlElement.children[key].attributes.class.value
 							: "";
-						prevClass = prevClassData ? prevClassData.split(" ") : [];
-						nextClassData = htmlElement.children[nextKey]
-							? htmlElement.children[nextKey].attributes.class.value
-							: "";
-						nextClass = nextClassData ? nextClassData.split(" ") : [];
-					}
+						splitClass = getClass ? getClass.split(" ") : [];
+						console.log(splitClass,'splitClass');
+						// To Remove, If Two operator exists between the words
+						if (key > 0) {
+							prevKey = parseInt(key) - 1;
+							nextKey = parseInt(key) + 1;
+							prevClassData = htmlElement.children[prevKey]
+								? htmlElement.children[prevKey].attributes.class.value
+								: "";
+							prevClass = prevClassData ? prevClassData.split(" ") : [];
+							nextClassData = htmlElement.children[nextKey]
+								? htmlElement.children[nextKey].attributes.class.value
+								: "";
+							nextClass = nextClassData ? nextClassData.split(" ") : [];
+						}
 
-					if (
-						htmlElement.children[key] &&
-						htmlElement.children[key].textContent != ""
-					) {
-						if (getClass == "autoquery") {
-							queryTxt +=
-								'"' +
-								htmlElement.children[key].id +
-								"-" +
-								htmlElement.children[key].textContent.trim() +
-								'"' +
-								" ";
-						} else {
-							queryTxt += htmlElement.children[key].textContent.trim() + " ";
-						}
-						htmlElement.children[currKey].setAttribute(
-							"dataId",
-							parseInt(currKey) + 1
-						);
-						currKey++;
-					} else if (
-						splitClass == "query" &&
-						htmlElement.children[key] &&
-						htmlElement.children[key].textContent == ""
-					) {
-						// delete htmlElement.children[key];
-						htmlElement.children[key].outerHTML = "";
-						currKey = key;
-						if (prevClass[0] == nextClass[0]) {
-							// delete htmlElement.children[prevKey];
-							htmlElement.children[prevKey].outerHTML = "";
-							currKey = prevKey;
+						if (
+							htmlElement.children[key] &&
+							htmlElement.children[key].textContent != ""
+						) {
+							if (getClass == "autoquery") {
+								queryTxt +=
+									'"' +
+									htmlElement.children[key].id +
+									"-" +
+									htmlElement.children[key].textContent.trim() +
+									'"' +
+									" ";
+							} else {
+								queryTxt += htmlElement.children[key].textContent.trim() + " ";
+							}
+							htmlElement.children[currKey].setAttribute(
+								"dataId",
+								parseInt(currKey) + 1
+							);
+							currKey++;
+						} else if (
+							splitClass == "query" &&
+							htmlElement.children[key] &&
+							htmlElement.children[key].textContent == ""
+						) {
+							// delete htmlElement.children[key];
+							htmlElement.children[key].outerHTML = "";
+							currKey = key;
+							if (prevClass[0] == nextClass[0]) {
+								// delete htmlElement.children[prevKey];
+								htmlElement.children[prevKey].outerHTML = "";
+								currKey = prevKey;
+							}
 						}
 					}
-				}
-			});
+				});
+			}	
+			// Placing Cursor at selected position
+			if(placeCursorPos)
+			{
+				console.log(getEndPosition,'getEndPosition');
+					// setTimeout(() => {
+				setCurrentCursorPosition(getEndPosition);
+					// }, 0);
+			}
+			if(htmlElement.textContent.length == 0)
+			{
+				clearParser();
+			}
+				
 			// htmlElement.children = htmlElement.children.trim();
 			setTimeout(() => {
-				Object.keys(htmlElement.children).forEach(function (key) {
-					htmlElement.children[key].setAttribute("dataId", parseInt(key) + 1);
-				});
+				if(htmlElement.children && htmlElement.children.length > 0)
+				{
+					Object.keys(htmlElement.children).forEach(function (key) {
+						htmlElement.children[key].setAttribute("dataId", parseInt(key) + 1);
+					});
+				}	
 			}, 100);
 			console.log(htmlElement.children, "htmlElement.children");
 
