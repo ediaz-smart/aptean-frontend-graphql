@@ -27,12 +27,13 @@ import SaveContentModal from '../../shared/Modal/SaveContentModal'
 import searchResSequence from '../../services/searchResSequence';
 import Typography from '@material-ui/core/Typography';
 import resultshareImg from '../../assets/image/resultshare.png';
-import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
+import ShareDataModal from '../../shared/Modal/ShareDataModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
 import { useSelector } from 'react-redux';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import SortIcon from "@material-ui/icons/ArrowDownward";
 import RenameFolderContainer from './RenameFolderContainer'
+import { getFolderResultData, updateFolderName, getFolderSharedList, getFolderSharableUserList, addFolderSharing } from '../../services/resultReportFolder'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -180,6 +181,10 @@ const useStyles = makeStyles((theme) => ({
   renameFolderText: {
     fontSize: '14px',
     color: '#7e7e7e'
+  },
+  shared_info: {
+    display: 'flex',
+    alignItems: 'center'
   }
 }));
 const customStyles = {
@@ -333,26 +338,29 @@ function ResultReportFolder() {
 
   useEffect(
     async () => {
-      const data = {};
-      const result = await searchResSequence.getFolderResultData(data, folderId)
+
+      const result = await getFolderResultData(folderId)
       if (result && result.response_content && result.response_content.numerics) {
         setFolderData(result.response_content.numerics);
-
+        folderNameRef.current = result.response_content.numerics[0].text_label;
       }
-      console.log("HAI");
       getUserResp();
+      const response = await getFolderSharedList(folderId, history)
+      if (response && response.response_content) {
+        if (response.response_content === 'none') {
+          // getResultShareResp()
+          // getUserResp()
+        }
+      }
+
 
       document.addEventListener("keydown", escFunction, false);
-      // console.log(userInfo, 'userInfo');
       let tempAlertArr = [];
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
-      };
-      return () => {
         document.removeEventListener("keydown", escFunction, false);
       };
-
     }, []);
   const escFunction = useCallback((event) => {
     if (event.keyCode === 27) {
@@ -390,7 +398,6 @@ function ResultReportFolder() {
           }
           :last-child {
             padding-left: 20px;
-
           }
         }
       }
@@ -413,38 +420,43 @@ function ResultReportFolder() {
   const { workflowId } = useParams();
   const shareResultsForm = async (ids) => {
     setModalResultShow(false);
-    let id = ids.join(',');
-    let postData = {
-      workflowId,
-      userId: id
+    // let id = ids.join(',');
+    // let postData = {
+    //   id: workflowId,
+    //   userId: id,
+
+    // }
+    let getAddShareResponse = true;
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i]
+      getAddShareResponse = await addFolderSharing(folderId, id, 'read');
+      console.log(getAddShareResponse)
     }
-    const getaddShareResponse = await searchResSequence.addResultSharing(postData);
-    if (getaddShareResponse && getaddShareResponse.response_status == 0) {
+
+    if (getAddShareResponse && getAddShareResponse.response_status == 0) {
       getResultShareResp(userList);
     } else {
       toast.error('Adding in Error.');
     }
-    // console.log(getaddShareResponse,'getaddShareResponse');
   }
   const [sharedIds, setSharedIds] = useState([]);
   const getResultShareResp = async (userData) => {
-    const getResultShareResponse = await searchResSequence.getSequenceResultShare(workflowId);
+    const getFolderShareResponse = await getFolderSharedList(folderId, history);
     let sharedNames = [];
     let sharedObj = [];
     let sharedData = {};
     let shareDatas;
-    if (getResultShareResponse && getResultShareResponse.response_status == 0) {
-
-      if (getResultShareResponse.response_content && getResultShareResponse.response_content.userIds) {
-
+    if (getFolderShareResponse && getFolderShareResponse.response_status == 0) {
+      console.log(getFolderShareResponse.response_content)
+      if (getFolderShareResponse.response_content && getFolderShareResponse.response_content.userIds) {
         sharedData['sharedNames'] = '';
-        getResultShareResponse.response_content.userIds.map(function (value, key) {
+        getFolderShareResponse.response_content.userIds.map(function (value, key) {
           if (userData && userData[value]) {
             sharedNames.push(userData[value].full_name);
             sharedObj.push(userData[value]);
           }
         });
-        let sharedIDArr = getResultShareResponse.response_content.userIds;
+        let sharedIDArr = getFolderShareResponse.response_content.userIds;
         if (gqUserId) {
           sharedIDArr.push(gqUserId);
         }
@@ -484,7 +496,7 @@ function ResultReportFolder() {
   const [readShareId, setReadShareId] = useState();
   const [writeShareId, setWriteShareId] = useState();
   const [renameFolder, setRenameFolder] = useState(false);
-  const folderNameRef = useRef('User Project Folder');
+  const folderNameRef = useRef('');
 
 
   const getShareResp = async () => {
@@ -506,7 +518,6 @@ function ResultReportFolder() {
         let userIds = [write_sharee_id, read_sharee_id];
         let sharedNames = [];
         let sharedObj = [];
-        // console.log(getShareResponse,'getShareResponse');
         userIds.map(function (value, key) {
           if (user_candidates && user_candidates[value]) {
             sharedNames.push(user_candidates[value].full_name);
@@ -536,7 +547,6 @@ function ResultReportFolder() {
         if (write_sharee_id == read_sharee_id) {
           sharedObj = _.uniqBy(sharedObj, 'id');
           sharedNames = _.uniq(sharedNames);
-          // console.log(sharedNames,'sharedNames');
           shareDatas = sharedNames.join(', ');
           sharedData['sharedNames'] = shareDatas;
         }
@@ -549,9 +559,6 @@ function ResultReportFolder() {
         }
 
         setSeqShare(sharedData);
-        // setTimeout(() => {
-        //     console.log(seqShare,'seqShare');
-        // }, 3000);
       }
 
     }
@@ -568,7 +575,6 @@ function ResultReportFolder() {
     } else {
       toast.error('Removing in Error.');
     }
-    // console.log(getremoveResponse,'getremoveResponse');
   }
   const removeSharing = async (data) => {
     setModalResultRemoveShow(false);
@@ -587,23 +593,20 @@ function ResultReportFolder() {
     }
   }
   const getUserResp = async () => {
-    const getUserResponse = await searchResSequence.getUserList(workflowId);
+    const getUserResponse = await getFolderSharableUserList(folderId, history);
     if (getUserResponse && getUserResponse.response_status == 0) {
-      if (getUserResponse.response_content.user_candidates) {
-        setUserList(getUserResponse.response_content.user_candidates);
-        getResultShareResp(getUserResponse.response_content.user_candidates);
-
-
+      if (getUserResponse.response_content) {
+        setUserList(getUserResponse.response_content);
+        getResultShareResp(getUserResponse.response_content);
       }
     }
-    console.log(getUserResponse, 'getUserResponse');
   }
   const handleRenameClick = () => {
     setRenameFolder(!renameFolder)
   }
 
   const applyNewNameToFolder = (name) => {
-    console.log(name)
+    const response = updateFolderName(name, folderId)
     // Todo: Update the folder name on the server.
     folderNameRef.current = name
   }
@@ -667,19 +670,19 @@ function ResultReportFolder() {
             <Col lg="1" md="1" sm="12" className="pr-0">
               <img src={resultshareImg} alt={t('resSharing')} />
             </Col>
-            <Col lg="8" md="9" sm="12" className="p-0 content">
+            <Col lg="8" md="9" sm="12" className={classes.shared_info}>
               <Row>
                 {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
                 <Typography className={"mb-2 " + (seqShare && seqShare.sharedNameObj.length > 0 ? 'd-block' : 'd-none')}>
-                  {t('resultAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
+                  {t('folderAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
                 <Typography className={"mb-2 " + (seqShare && seqShare.sharedNameObj.length == 0 ? 'd-block' : 'd-none')}>
-                  {t('resultNotAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
+                  {t('folderNotAccess')}. <Link className={"appLink cursorPointer "} onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
 
-                <ShareResultsModal
+                <ShareDataModal
                   show={modalResultShow}
                   data={userList}
+                  type={'Folder'}
                   onHide={() => setModalResultShow(false)}
-                  // getSelectUser={getSelectUser}
                   shareResult={shareResultsForm}
                   sharedUserId={sharedIds}
                 // onMessage={errorMessage}

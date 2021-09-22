@@ -29,7 +29,7 @@ import SearchManagementService from '../../services/searchmanagement'
 import Constant from '../../helpers/constant';
 import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
-import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
+import ShareDataModal from '../../shared/Modal/ShareDataModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
 
 
@@ -367,15 +367,15 @@ function SearchResultSequence(props) {
 
     const getUserResp = async () => {
         const getUserResponse = await searchResSequence.getUserList(workflowId);
+        console.log(getUserResponse.response_content)
         if (getUserResponse && getUserResponse.response_status == 0) {
+
             if (getUserResponse.response_content.user_candidates) {
                 setUserList(getUserResponse.response_content.user_candidates);
                 getResultShareResp(getUserResponse.response_content.user_candidates);
 
-
             }
         }
-        console.log(getUserResponse, 'getUserResponse');
     }
     const getSummaryResp = async () => {
         const getSummaryResponse = await searchResSequence.getSequenceSummary(workflowId);
@@ -408,15 +408,16 @@ function SearchResultSequence(props) {
         }
     }
     const getResultShareResp = async (userData) => {
+        console.log(userData)
         const getResultShareResponse = await searchResSequence.getSequenceResultShare(workflowId);
         let sharedNames = [];
         let sharedObj = [];
         let sharedData = {};
         let shareDatas;
+        console.log(getResultShareResponse)
         if (getResultShareResponse && getResultShareResponse.response_status == 0) {
 
             if (getResultShareResponse.response_content && getResultShareResponse.response_content.userIds) {
-
                 sharedData['sharedNames'] = '';
                 getResultShareResponse.response_content.userIds.map(function (value, key) {
                     if (userData && userData[value]) {
@@ -445,6 +446,7 @@ function SearchResultSequence(props) {
                 }
                 setSeqShare(sharedData);
             } else {
+                console.log()
                 sharedData['sharedNameObj'] = [];
                 sharedData['sharedNames'] = '';
                 if (gqUserId) {
@@ -1067,9 +1069,10 @@ function SearchResultSequence(props) {
                                 <Typography className={"mb-2 " + (seqShare && seqShare.sharedNameObj.length == 0 ? 'd-block' : 'd-none')}>
                                     {t('resultNotAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
 
-                                <ShareResultsModal
+                                <ShareDataModal
                                     show={modalResultShow}
                                     data={userList}
+                                    type={'Results'}
                                     onHide={() => setModalResultShow(false)}
                                     // getSelectUser={getSelectUser}
                                     shareResult={shareResultsForm}

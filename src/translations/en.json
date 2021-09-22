@@ -272,6 +272,8 @@
     "emailGoingTo": "with an email going to",
     "resultAccess": "The following people have access to this result",
     "resultNotAccess": "This result set has not been shared.",
+    "folderAccess": "The following people have access to this folder",
+    "folderNotAccess": "This folder has not been shared.",
     "addMore": "Add more",
     "shareMore": "Share more",
     "alertNotScheduled": "No alerts are scheduled for this result set",
@@ -296,6 +298,6 @@
     "mergeResultErrorHeading": "An error was encountered when attempting to submit your search",
     "publicationData": "Publication Date: ",
     "description": "Description: ",
-    "abstract": "Abstract: " ,
+    "abstract": "Abstract: ",
     "claims": "Claims: "
 }
