@@ -92,7 +92,7 @@ function ApplicationPanel() {
         if (userInfo && userInfo.current_user) {
             setUserData(userInfo);
         }
-    }, []);
+    }, [userInfo]);
     function showString(str) {
         let getLength = str.length;
         if (getLength > 23) {

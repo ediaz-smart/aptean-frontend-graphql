@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@material-ui/core/Button";
 import { Row, Col } from "react-bootstrap";
@@ -8,6 +8,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import ReactHtmlParser from "react-html-parser";
 
 import Popover from "@material-ui/core/Popover";
+import Modal from 'react-bootstrap/Modal';
+import CloseIcon from '@material-ui/icons/Close';
 
 import Constant from "../../helpers/constant";
 import lucenequeryparser from "../../assets/lib/lucene-query-parser";
@@ -15,6 +17,9 @@ import fullTextService from "../../services/fulltextsearch";
 import FullTextResults from "./FullTextResults";
 import TextInput from "../../shared/Fields/TextInput";
 import CheckBox from '../../shared/Fields/CheckBox';
+import CaretPositioning from './EditCaretPositioning'
+import AuthoritiesData from '../../helpers/authorities';
+import SelectBox from "../../shared/Fields/SelectBox";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -35,6 +40,24 @@ const useStyles = makeStyles((theme) => ({
   searchMenuList: {
     padding: "20px !important",
   },
+  modalHeader: {
+    borderBottom: 'none !important',
+    padding: '4px 4px 3px 0px',
+    display: "block !important"
+},
+footerDiv: {
+    padding: '0 30px',
+    marginTop: '-5px',
+    marginRight: '-10px',
+},
+modalBody: {
+    margin: "0 20px 20px 20px",
+    backgroundColor: "#EEEEEE",
+    padding: "38px"
+},
+titleFont: {
+    fontSize: "20px !important"
+}
 }));
 let ANDString = '<span class="andClass opClass">AND</span>';
 let ORString = '<span class="orClass opClass">OR</span> ';
@@ -53,6 +76,7 @@ function FullTextSearch() {
 	const [testOutput, setTestOutput] = useState();
 	const [queryParser, setQueryParser] = useState({});
 	const [pasteContent, setPasteContent] = React.useState(null);
+	const [caretPosition, setCaretPosition] = React.useState();
 
 	// For Popup
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -77,8 +101,17 @@ function FullTextSearch() {
 	const [dateSortField, setDateSortField] = React.useState("pub_date");
 	const [searchStartPage, setSearchStartPage] = React.useState(0);
 	const [searchStopPage, setSearchStopPage] = React.useState(50);
-	const [authoritySorting, setAuthoritySorting] = React.useState(false);
-	const [authorities, setAuthorities] = React.useState("");
+	const [isAuthoritySorting, setIsAuthoritySorting] = React.useState(true);
+	const [authorities, setAuthorities] = React.useState({});
+	const [configure1, setConfigure1] = useState('US');
+	const [configure2, setConfigure2] = useState('EP');
+	const [configure3, setConfigure3] = useState('WO');
+	const [configure4, setConfigure4] = useState('');
+	const [configure5, setConfigure5] = useState('');
+	const [isDateSorting, setIsDateSorting] = useState(true);
+	const [dateSortingField, setDateSortingField] = useState('filing_date');
+	const [dateSortingDirection, setDateSortingDirection] = useState('desc');
+
 
 	//set result
     const [docSearchResult, setDocSearchResult] = useState({});
@@ -99,6 +132,7 @@ function FullTextSearch() {
     const [isConfigureActive, setIsConfigureActive] = useState(false);
   
 	const pageCount = useSelector((state) => state.setCommon["Paging size"]);
+	console.log('author', authorities)
 
 	const openPopup = () => {
 		// console.log(event.currentTarget,'event.currentTarget');
@@ -120,10 +154,15 @@ function FullTextSearch() {
 	// reset login status
 	useEffect(async () => {
 		//dispatch(userActions.logout());
+		let authorityData = AuthoritiesData();
+		if(authorityData) {
+			setAuthorities(authorityData);
+		}
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
+		
 	}, []);
 
 	const handleClickOutside = (event) => {
@@ -150,6 +189,7 @@ function FullTextSearch() {
 		console.log(pasteContent, "pasteContent");
 		console.log(e.keyCode, "e.type");
 		console.log(e, "e...");
+		console.log(e.target.textContent.trim().length, "e.length...");
 		let getClass = [];
 		let selElTxt = "";
 
@@ -183,6 +223,10 @@ function FullTextSearch() {
 		if (e.keyCode == 8) {
 			if (removeClassArray.includes(getClass[0])) {
 				e.preventDefault();
+			}
+			if(e.target.textContent.trim().length == 0)
+			{
+				clearParser();
 			}
 			setRightArrowEvent(false);
 		} else if (e.keyCode == 39) {
@@ -220,6 +264,9 @@ function FullTextSearch() {
 	const callParseQuery = (value, element, isArrowRight) => {
 		// setTimeout(() => {
 		console.log(element, "onminput");
+		let savedCaretPosition = CaretPositioning.saveSelection(element.currentTarget);
+		setCaretPosition(savedCaretPosition);
+		console.log(savedCaretPosition, "savedCaretPosition");
 		let getCurrentSel = window.getSelection();
 		// console.log(getCurrentSel,'getCurrentSel1');
 		// parseQuery(value, element, isArrowRight);
@@ -227,7 +274,8 @@ function FullTextSearch() {
 			value:value,
 			element,
 			isRightArrow:false,
-			pasteContent:''
+			pasteContent:'',
+			savedCaretPosition
 		}
 		parseQuery(postObj);
 
@@ -236,7 +284,7 @@ function FullTextSearch() {
 	const parseQuery = async(data) => {
 		// let value = element.target.textContent;
 		// console.log(element,'innerHTML');
-		let {value,element,isRightArrow} = data;
+		let {value,element,isRightArrow,savedCaretPosition} = data;
 		console.log(keyCode, "keyCode");
 		console.log(value, "value");
 		// localStorage.setItem('searchData',value);
@@ -256,13 +304,13 @@ function FullTextSearch() {
 		// If Space Enters without any string
 		if (keyCode == 32) {
 			if (value.length > 1) {
-				replaceStringHtml(value, keyCode, isRightArrow);
+				replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition);
 			} else {
 				value = "";
 				updateHtmlElement(value);
 			}
 		} else {
-			replaceStringHtml(value, keyCode, isRightArrow);
+			replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition);
 			// replaceStringHtml(value,keyCode);
 		}
 
@@ -313,10 +361,11 @@ function FullTextSearch() {
 			return htmlElement;
 		}
 	}
-	async function replaceStringHtml(value, keyCode, isArrowRight) {
+	async function replaceStringHtml(value, keyCode, isArrowRight,savedCaretPosition) {
 		let getCurrentSel = window.getSelection();
 		console.log(getCurrentSel, "getCurrentSel");
 		console.log(isArrowRight, "isArrowRight");
+		console.log(savedCaretPosition, "savedCaretPosition");
 		let htmlElement = document.getElementById("textareaDiv");
 
 		console.log(pasteContent, "pasteContent1");
@@ -330,8 +379,10 @@ function FullTextSearch() {
 		let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
 		let placeCursor = true;
 		let spanArr = "";
-
+		let getEndPosition=0;
 		var checkClass;
+		var placeCursorPos = false;
+		var removedText = '';
 		console.log(htmlElement.children,'htmlElement.children..');
 		
 		
@@ -553,6 +604,11 @@ function FullTextSearch() {
 							newSpan.innerHTML = "";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
+							// getEndPosition = savedCaretPosition.end + 1;
+							// setTimeout(() => {
+							// 	setCurrentCursorPosition(getEndPosition);
+							// }, 0);
+							
 						}
 					} else if (getChildClassName == "space") {
 						if (checkORValues.includes(getChildText)) {
@@ -651,6 +707,9 @@ function FullTextSearch() {
 							newSpan.innerHTML = "";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
+							placeCursorPos = true;
+							getEndPosition = savedCaretPosition.end + 1;
+							// setCurrentCursorPosition(getEndPosition);
 						}
 					}
 				} else {
@@ -684,6 +743,15 @@ function FullTextSearch() {
 					classArray.includes(getChildClassName)
 				) {
 					// Removing the child span tag if empty text in span
+					console.log('checklength',htmlElement.children[htmlElement.children.length - 1].textContent.length);
+					removedText = htmlElement.children[htmlElement.children.length - 1].textContent;
+					// if(htmlElement.children[htmlElement.children.length - 1].textContent.length > 0)
+					// {
+					// 	let getLength = htmlElement.children[htmlElement.children.length - 1].textContent.length;
+					// 	placeCursor = false;
+					// 	getEndPosition = savedCaretPosition.end - 4;
+					// 	console.log(getEndPosition,'getEndPosition');
+					// }
 					htmlElement.children[htmlElement.children.length - 1].outerHTML = "";
 					setSearchTermPopup(false);
 				} else if (
@@ -750,6 +818,13 @@ function FullTextSearch() {
 					if (checkpublicationelements.length > 0) {
 						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 					}
+					placeCursor = false;
+					placeCursorPos = true;
+					getEndPosition = savedCaretPosition.end;
+					// setTimeout(() => {
+					// 	getEndPosition = savedCaretPosition.end;
+					// 	setCurrentCursorPosition(getEndPosition);
+					// }, 50);
 				}
 			} else if (lastPrevChild && lastPrevChild.attributes.length > 0) {
 				if (
@@ -814,12 +889,12 @@ function FullTextSearch() {
 
 			if (
 				getCurrentSel &&
-				getCurrentSel.focusNode &&
-				getCurrentSel.focusNode.parentNode
+				getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode
 			) {
 				if (getCurrentSel.focusNode.parentNode.className) {
 					let getClass =
 						getCurrentSel.focusNode.parentNode.className.split(" ");
+					let currDataId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
 					// let getDataId = getCurrentSel.focusNode.parentNode.attributes.dataid;
 					console.log(
 						getCurrentSel.focusNode.parentNode.getAttribute("dataid"),
@@ -832,7 +907,7 @@ function FullTextSearch() {
 								htmlElement.children[key].attributes.class.value.split(" ");
 							let getClassId = htmlElement.children[key].getAttribute("dataid");
 							console.log(getClassId, "getClassId");
-							if (getClassId == getCurrentSel.focusNode.parentNode.getAttribute("dataid")) {
+							if (getClassId == getCurrentSel.focusNode.getAttribute("dataid")) {
 								if (getClassVal[0] == "andClass") {
 									htmlElement.children[key].outerHTML = ANDString;
 									placeCaretAtEnd(htmlElement.children[key]);
@@ -845,8 +920,39 @@ function FullTextSearch() {
 								}
 							}
 						});
+					}else{
+						console.log(getCurrentSel.focusNode.parentNode.getAttribute("dataid"),'dataid');
+						
+						console.log(htmlElement.children,'htmlElement.children');
+						
+						let placeKey = currDataId - 1;
+						console.log(htmlElement.children[placeKey],'htmlElement.children[currDataId - 1]');
+						console.log(removedText,'removedText');
+						// placeCaretAtEndTag(htmlElement.children[placeKey]);
+						console.log(savedCaretPosition,'savedCaretPosition');
+						// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
+						// setCurrentCursorPosition(savedCaretPosition.end);
+						console.log(removedText.length,'removedText.length');
+						let spaceRem = removedText.length;
+						console.log(spaceRem,'spaceRem');
+						if(removedText && removedText.length > 0)
+						{
+							getEndPosition = savedCaretPosition.end - spaceRem;
+							
+						}else{
+							getEndPosition = savedCaretPosition.end;
+						}
+						console.log(getEndPosition,'getdelEndPosition');
+						placeCursor = false;
+						placeCursorPos = true;
 					}
 				}
+			}
+			// If Html Content is Empty, will clear the div content
+			if(htmlElement.textContent.length == 0)
+			{
+				console.log(htmlElement.textContent,'htmlElement.textContent');
+				clearParser();
 			}
 			// // Replacing Last Empty Space in Inner Html to edit from the last character if we delete the characters
 			// var currentIndex = htmlElement.innerHTML.lastIndexOf("&nbsp;");
@@ -917,9 +1023,11 @@ function FullTextSearch() {
 						) {
 							htmlElement.innerHTML =
 							htmlElement.innerHTML + " " + newSpan.outerHTML;
+							savedCaretPosition.end = savedCaretPosition.end + 1;
 						}else{
 							htmlElement.innerHTML =
 							htmlElement.innerHTML + ANDString + " " + newSpan.outerHTML;
+							savedCaretPosition.end = savedCaretPosition.end + 4;
 						}
 						// if (lastChild.innerText.length == 0) {
 						// 	newSpan.innerHTML = lastValue;
@@ -1179,6 +1287,7 @@ function FullTextSearch() {
 							currOffsetTop = htmlElement.children[htmlElement.children.length - 1].offsetTop - 2;
 							currOffsetLeft = htmlElement.children[htmlElement.children.length - 1].offsetLeft;
 							styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
+							htmlElement.innerHTML = htmlElement.innerHTML.trim().replace(/&nbsp;/g, '');
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								htmlElement.children[
@@ -1290,8 +1399,17 @@ function FullTextSearch() {
 									{
 										if(removeClassArray.includes(PrevElClass[0]))
 										{
-											htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
-												.textContent;
+											// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+											// 	.textContent;
+											console.log(savedCaretPosition,'savedCaretPosition');
+											getEndPosition = savedCaretPosition.end;
+											// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
+											placeCursor = false;
+											// setTimeout(() => {
+												
+											// 	setCurrentCursorPosition(setPos);
+											// }, 0);
+											placeCursorPos = true;
 										}else{
 											if (checkANDValues.includes(currentTxt)) {
 												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
@@ -1333,6 +1451,7 @@ function FullTextSearch() {
 										}
 									}
 								}
+								
 								getSearchVal = htmlElement.children[htmlElement.children.length - 1].textContent;
 							}
 							// console.log(htmlElement.children, "htmlElement.children1");
@@ -1561,11 +1680,18 @@ function FullTextSearch() {
 				hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.replace(/\>[\t ]+$/g, ">");
 			}
 		}
+		
 		if (placeCursor) {
 			// htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "");
 			
 			placeCaretAtEnd(htmlElement);
+			// setCurrentCursorPosition(savedCaretPosition.end);
 		}
+		
+		// else{
+		// 	setCurrentCursorPosition(savedCaretPosition.end);
+		// }
+		// setCurrentCursorPosition(savedCaretPosition.end);
 		// For Auto complete
 		let checkLastThreeVal = getChildText;
 		console.log(getSearchVal, "getSearchVal");
@@ -1573,7 +1699,12 @@ function FullTextSearch() {
 
 		console.log(checkCharLen, "checkCharLen");
 		if (checkCharLen > 2 && keyCode != 32) {
-			searchTerm(getSearchVal);
+			// Search value not in operator
+			if(!checkORValues.includes(getSearchVal) && !checkANDValues.includes(getSearchVal) && !checkNOTValues.includes(getSearchVal))
+			{
+				searchTerm(getSearchVal);
+			}
+			
 		} else if (checkCharLen < 3) {
 			setSearchTermPopup(false);
 		}
@@ -1588,68 +1719,87 @@ function FullTextSearch() {
 			let prevKey = 0;
 			let nextKey = 0;
 			let currKey = 0;
-			Object.keys(htmlElement.children).forEach(function (key) {
-				if (htmlElement.children[key]) {
-					getClass = htmlElement.children[key]
-						? htmlElement.children[key].attributes.class.value
-						: "";
-					splitClass = getClass ? getClass.split(" ") : [];
-					console.log(splitClass,'splitClass');
-					// To Remove, If Two operator exists between the words
-					if (key > 0) {
-						prevKey = parseInt(key) - 1;
-						nextKey = parseInt(key) + 1;
-						prevClassData = htmlElement.children[prevKey]
-							? htmlElement.children[prevKey].attributes.class.value
+			if(htmlElement.children && htmlElement.children.length > 0)
+			{
+				Object.keys(htmlElement.children).forEach(function (key) {
+					if (htmlElement.children[key]) {
+						getClass = htmlElement.children[key]
+							? htmlElement.children[key].attributes.class.value
 							: "";
-						prevClass = prevClassData ? prevClassData.split(" ") : [];
-						nextClassData = htmlElement.children[nextKey]
-							? htmlElement.children[nextKey].attributes.class.value
-							: "";
-						nextClass = nextClassData ? nextClassData.split(" ") : [];
-					}
+						splitClass = getClass ? getClass.split(" ") : [];
+						console.log(splitClass,'splitClass');
+						// To Remove, If Two operator exists between the words
+						if (key > 0) {
+							prevKey = parseInt(key) - 1;
+							nextKey = parseInt(key) + 1;
+							prevClassData = htmlElement.children[prevKey]
+								? htmlElement.children[prevKey].attributes.class.value
+								: "";
+							prevClass = prevClassData ? prevClassData.split(" ") : [];
+							nextClassData = htmlElement.children[nextKey]
+								? htmlElement.children[nextKey].attributes.class.value
+								: "";
+							nextClass = nextClassData ? nextClassData.split(" ") : [];
+						}
 
-					if (
-						htmlElement.children[key] &&
-						htmlElement.children[key].textContent != ""
-					) {
-						if (getClass == "autoquery") {
-							queryTxt +=
-								'"' +
-								htmlElement.children[key].id +
-								"-" +
-								htmlElement.children[key].textContent.trim() +
-								'"' +
-								" ";
-						} else {
-							queryTxt += htmlElement.children[key].textContent.trim() + " ";
-						}
-						htmlElement.children[currKey].setAttribute(
-							"dataId",
-							parseInt(currKey) + 1
-						);
-						currKey++;
-					} else if (
-						splitClass == "query" &&
-						htmlElement.children[key] &&
-						htmlElement.children[key].textContent == ""
-					) {
-						// delete htmlElement.children[key];
-						htmlElement.children[key].outerHTML = "";
-						currKey = key;
-						if (prevClass[0] == nextClass[0]) {
-							// delete htmlElement.children[prevKey];
-							htmlElement.children[prevKey].outerHTML = "";
-							currKey = prevKey;
+						if (
+							htmlElement.children[key] &&
+							htmlElement.children[key].textContent != ""
+						) {
+							if (getClass == "autoquery") {
+								queryTxt +=
+									'"' +
+									htmlElement.children[key].id +
+									"-" +
+									htmlElement.children[key].textContent.trim() +
+									'"' +
+									" ";
+							} else {
+								queryTxt += htmlElement.children[key].textContent.trim() + " ";
+							}
+							htmlElement.children[currKey].setAttribute(
+								"dataId",
+								parseInt(currKey) + 1
+							);
+							currKey++;
+						} else if (
+							splitClass == "query" &&
+							htmlElement.children[key] &&
+							htmlElement.children[key].textContent == ""
+						) {
+							// delete htmlElement.children[key];
+							htmlElement.children[key].outerHTML = "";
+							currKey = key;
+							if (prevClass[0] == nextClass[0]) {
+								// delete htmlElement.children[prevKey];
+								htmlElement.children[prevKey].outerHTML = "";
+								currKey = prevKey;
+							}
 						}
 					}
-				}
-			});
+				});
+			}	
+			// Placing Cursor at selected position
+			if(placeCursorPos)
+			{
+				console.log(getEndPosition,'getEndPosition');
+					// setTimeout(() => {
+				setCurrentCursorPosition(getEndPosition);
+					// }, 0);
+			}
+			if(htmlElement.textContent.length == 0)
+			{
+				clearParser();
+			}
+				
 			// htmlElement.children = htmlElement.children.trim();
 			setTimeout(() => {
-				Object.keys(htmlElement.children).forEach(function (key) {
-					htmlElement.children[key].setAttribute("dataId", parseInt(key) + 1);
-				});
+				if(htmlElement.children && htmlElement.children.length > 0)
+				{
+					Object.keys(htmlElement.children).forEach(function (key) {
+						htmlElement.children[key].setAttribute("dataId", parseInt(key) + 1);
+					});
+				}	
 			}, 100);
 			console.log(htmlElement.children, "htmlElement.children");
 
@@ -1672,6 +1822,50 @@ function FullTextSearch() {
 		// Place Curstor at Last in Textarea
 		// placeCaretAtEnd(htmlElement);
 	}
+	function createRange(node, chars, range) {
+		if (!range) {
+			range = document.createRange()
+			range.selectNode(node);
+			range.setStart(node, 0);
+		}
+	
+		if (chars.count === 0) {
+			range.setEnd(node, chars.count);
+		} else if (node && chars.count >0) {
+			if (node.nodeType === Node.TEXT_NODE) {
+				if (node.textContent.length < chars.count) {
+					chars.count -= node.textContent.length;
+				} else {
+					 range.setEnd(node, chars.count);
+					 chars.count = 0;
+				}
+			} else {
+				for (var lp = 0; lp < node.childNodes.length; lp++) {
+					range = createRange(node.childNodes[lp], chars, range);
+	
+					if (chars.count === 0) {
+					   break;
+					}
+				}
+			}
+	   } 
+	
+	   return range;
+	};
+	
+	function setCurrentCursorPosition(chars) {
+		if (chars >= 0) {
+			var selection = window.getSelection();
+	
+			var range = createRange(document.getElementById("textareaDiv").parentNode, { count: chars });
+	
+			if (range) {
+				range.collapse(false);
+				selection.removeAllRanges();
+				selection.addRange(range);
+			}
+		}
+	};
 	function insertAfter(referenceNode, newNode) {
 		referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 	}
@@ -1769,7 +1963,7 @@ function FullTextSearch() {
 
 		console.log(searchRes, "searchRes");
 	};
-	function placeCaretAtEnd(el) {
+	function placeCaretAtEndTag(el) {
 		el.focus();
 		if (
 			typeof window.getSelection != "undefined" &&
@@ -1989,10 +2183,13 @@ function FullTextSearch() {
 		return obj;
 	}
 
-	const searchResult = async (groupingType, pageStart) => {
+	const searchResult = async (groupingType, pageStart, closeModal) => {
 		console.log("pagestart", pageStart);
 		console.log("searchGroup", groupingType);
-        console.log(queryParser, "queryParser");
+		console.log(queryParser, "queryParser");
+		if(closeModal && closeModal == 'closeModal') {
+			setIsConfigureActive(false);
+		}
         if (saveFormValue && !formName) {
             setSaveFormError(true);
             return;
@@ -2006,27 +2203,36 @@ function FullTextSearch() {
 		setTimeout(async () => {
 			let parseJsonData = JSON.stringify(customParseObj);
 			console.log(parseJsonData, "parseJsonData");
-			let searchParam = `&json_query=${parseJsonData}&use_authority_sorting=${authoritySorting}`;
-			if (useDateSort) {
-				searchParam += `&date_sorting_field=${dateSortField}`;
-				searchParam += `&date_sorting_dir=${dateSorting}`;
-				searchParam += `&use_date_sorting=${useDateSort}`;
-			}
+			let searchParam = `&json_query=${parseJsonData}`;
+
 			pageStart >= 0
 				? (searchParam += `&start=${pageStart}`)
 				: (searchParam += `&start=${searchStartPage}`);
 			searchParam += `&rows=${pageCount}`;
-			if (authorities) {
-				searchParam += `&authorities=${authorities}`;
-			}
 
-			groupingType
+			groupingType && groupingType !=('Family' || 'Document')
 				? (searchParam += `&grouping=${groupingType}`)
 				: (searchParam += `&grouping=${grouping}`);
             console.log(searchParam, "searchParam");
             if (formName) {
                 searchParam += `&template_name=${formName}`
-              }
+			  }
+			  
+			  if(isAuthoritySorting){
+				  searchParam += `&Use_authority_sorting=true`;
+				  let authorityParam = [configure1, configure2, configure3, configure4, configure5].filter(Boolean).join(",");
+
+				console.log('authorityParam',authorityParam)
+				searchParam += `&Authorities=${authorityParam}`;
+			  } else {
+				searchParam += `&Use_authority_sorting=false`;
+			  }
+
+			  if(isDateSorting) {
+				searchParam += `&Use_date_sorting=true`;
+				searchParam += `&Date_sorting_field=${dateSortingField}`
+				searchParam += `&Date_sorting_dir=${dateSortingDirection}`
+			  }
               console.log('searchParam', searchParam)
         
 			const searchQueryRes = await fullTextService.getFullTextSearchResult(
@@ -2091,7 +2297,7 @@ function FullTextSearch() {
         } else {
           //api
         }
-      }
+	  }
     
 	return (
 		<div className={classes.grow}>
@@ -2200,7 +2406,7 @@ function FullTextSearch() {
               variant="contained"
               disableRipple={true}
               className={"loginSubmitButton float-right"}
-              onClick={searchResult}
+              onClick={()=>searchResult(null, null)}
             >
               {t("submit")}
             </Button>
@@ -2428,6 +2634,146 @@ function FullTextSearch() {
                     pageCount={pageCount}
                 />
             )}
+             <Modal
+                size="lg"
+				show={isConfigureActive}
+				// show={true}
+                onHide={!isConfigureActive}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header className={classes.modalHeader}>
+                    <Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={()=>setIsConfigureActive(!isConfigureActive)} /></Link>
+                </Modal.Header>
+                <Modal.Body className={classes.modalBody}>
+                    <form name="mergeResultsForm" >
+                        <h4 className={"subHeading mb-4 " + classes.titleFont}>{t('representativeDocument')}</h4>
+						<div className="mb-2">
+                        <CheckBox
+                            // defaultChecked
+                            color="primary"
+                            className={"float-left ml-2"}
+                            name="applyPreferredAuthority"
+                            id="applyPreferredAuthority"
+                            onChange={()=>setIsAuthoritySorting(!isAuthoritySorting)}
+							checked={isAuthoritySorting}
+                        />
+                        <label className={"checkBoxContent bodyText cursorPointer ml-0 mr-3"} for="applyPreferredAuthority">{t("applyPreferredAuthority")}</label>
+						</div> 
+						<div className="mb-4">
+						{/* {!showConfigure1 &&
+						 <TextInput 
+						name="configure1"
+						value={configure1}
+						onFocus={()=>setShowConfigure1(!showConfigure1)}
+						onBlur={()=>setShowConfigure1(!showConfigure1)}
+						/>
+						}  */}
+						{/* {showConfigure1 &&  */}
+						<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure1"
+                                id="configure1"
+                                value={configure1}
+                                items={authorities}
+                                onChange={(e)=>setConfigure1(e.target.value)}
+								className={"mr-2 ml-5"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+								// onBlur={()=>setShowConfigure1(!showConfigure1)}
+                            />
+							 {/* } */}
+							<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure2"
+                                id="configure2"
+                                value={configure2}
+                                items={authorities}
+                                onChange={(e)=>setConfigure2(e.target.value)}
+								className={"mr-2"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+                            />
+							<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure3"
+                                id="configure3"
+                                value={configure3}
+                                items={authorities}
+                                onChange={(e)=>setConfigure3(e.target.value)}
+								className={"mr-2"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+                            />
+							<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure4"
+                                id="configure4"
+                                value={configure4}
+                                items={authorities}
+                                onChange={(e)=>setConfigure4(e.target.value)}
+								className={"mr-2"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+                            />
+							<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="configure5"
+                                id="configure5"
+                                value={configure5}
+                                items={authorities}
+                                onChange={(e)=>setConfigure5(e.target.value)}
+								className={"mr-2"}
+								disabled={!isAuthoritySorting}
+								smallSelectBox={true}
+                            />
+						</div>
+						<div className="mb-4">
+                        <CheckBox
+                            // defaultChecked
+                            color="primary"
+                            className={"float-left ml-2 mb-5"}
+                            name="selectDocWith"
+                            id="selectDocWith"
+                            onChange={()=>setIsDateSorting(!isDateSorting)}
+							checked={isDateSorting}
+                        />
+                        <label className={"checkBoxContent bodyText cursorPointer ml-0 mr-3 float-left"} for="selectDocWith">{t("selectDocumentsWith")}</label>
+						<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="dateSortingDirection"
+                                id="dateSortingDirection"
+                                value={dateSortingDirection}
+                                items={Constant.dateSortingDirection}
+                                onChange={(e)=>setDateSortingDirection(e.target.value)}
+								className={"float-left mr-2 w-25"}
+								disabled={!isDateSorting}
+                            />
+						<SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="dateSortingFeld"
+                                id="dateSortingFeld"
+                                value={dateSortingField}
+                                items={Constant.dateSortingField}
+                                onChange={(e)=>setDateSortingField(e.target.value)}
+								className={"float-left mr-2 w-25"}
+								disabled={!isDateSorting}
+                            />
+						</div> 
+                        <div className="clear">
+                            <Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit" onClick={()=>searchResult(null,null, 'closeModal')}>{t('apply')}</Button>
+                            <Button className={"cancelButtonClass float-right"} id="mergeCancel" onClick={()=>setIsConfigureActive(!isConfigureActive)}>{t('cancel')}</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
+            </Modal>
+            
     </div>
   );
 }

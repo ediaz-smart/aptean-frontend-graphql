@@ -299,5 +299,9 @@
     "publicationData": "Publication Date: ",
     "description": "Description: ",
     "abstract": "Abstract: ",
-    "claims": "Claims: "
+    "claims": "Claims: ",
+    "representativeDocument": "Representative Document in Patent Families",
+    "apply": "Apply",
+    "applyPreferredAuthority": "Apply this preferred authority order",
+    "selectDocumentsWith": "Select Documents with"
 }

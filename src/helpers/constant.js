@@ -56,6 +56,26 @@ const Constant = {
         "blast":"BLAST",
         "fragment": "Fragment",
         "motif":"MOTIF"
-    }
+    },
+    dateSortingField:[
+        {
+            value: "pub_date",
+            label: "Publication Date"
+        },
+        {
+            value: "filing_date",
+            label: "Filing Date"
+        },
+    ],
+    dateSortingDirection: [
+        {
+            value: "desc",
+            label: "Latest"
+        },
+        {
+            value: "asc",
+            label: "Earliest"
+        }
+    ]
 }
 export default Constant;

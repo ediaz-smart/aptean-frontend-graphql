@@ -363,7 +363,7 @@ function IpSequenceVariation() {
     const [creditValues, setCreditValues] = useState(initialCreditValues);
 
     let redoInitialObj = {
-        searchDetails: '',
+        searchDetails: `IP ${moment().format('YYYY-MM-DD h:mm:ss')}`,
         querySequence: '',
         alignments: '5000',
         genePastPercentage: '80',
@@ -653,41 +653,43 @@ function IpSequenceVariation() {
             //         setIsSubmitActive(true);
             //     }
             // }
+            // setTimeout(() => {
+                if (userInfo && userInfo.current_user) {
+                    let userPpu = userInfo.current_user.ppu_type;
+                    let currentUser = userInfo.current_user;
+                    console.log('userData', userInfo)
+                    setPpuType(userPpu);
+    
+    
+                    if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
+                        setIsSubmitActive(false);
+    
+                    }
+                    if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
+                        setShowCreditCalc(true);
+                    }
+    
+                    // if (userPpu == "0") {
+                    //     setIsSubmitActive(true);
+                    // } else {
+                    //     setIsSubmitActive(false);
+                    // }
+    
+                    if (userInfo.current_user.user_class_name) {
+                        setUserClassName(userInfo.current_user.user_class_name)
+                    }
+                    if (userInfo.current_user.accounting_group_name) {
+                        setAccGroupName(userInfo.current_user.accounting_group_name)
+                    }
+                    if (parentId) {
+                        console.log('pare', parentId)
+                        calTextCredits(null, false, 'redo')
+                    }
+                } 
+            // }, 1000);
 
-            if (userInfo && userInfo.current_user) {
-                let userPpu = userInfo.current_user.ppu_type;
-                let currentUser = userInfo.current_user;
-                console.log('userData', userInfo)
-                setPpuType(userPpu);
-
-
-                if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
-                    setIsSubmitActive(false);
-
-                }
-                if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
-                    setShowCreditCalc(true);
-                }
-
-                // if (userPpu == "0") {
-                //     setIsSubmitActive(true);
-                // } else {
-                //     setIsSubmitActive(false);
-                // }
-
-                if (userInfo.current_user.user_class_name) {
-                    setUserClassName(userInfo.current_user.user_class_name)
-                }
-                if (userInfo.current_user.accounting_group_name) {
-                    setAccGroupName(userInfo.current_user.accounting_group_name)
-                }
-                if (parentId) {
-                    console.log('pare', parentId)
-                    calTextCredits(null, false, 'redo')
-                }
-            }
         })()
-    }, [userInfo, ppuType]);
+    }, [ppuType]);
 
     console.log('system', systemControlSubmit, 'setsubmit', isSubmitActive, 'showcredirt', showCreditCalC)
 
