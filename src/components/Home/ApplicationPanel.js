@@ -118,7 +118,7 @@ function ApplicationPanel() {
         <div className={classes.grow}>
             {/* <Container className="p-0 m-5"> */}
             <Row>
-                <Col md="3" sm="12" className="mb-3">
+                <Col md="3" sm="3" xs='3' className="mb-3">
                     <div className={classes.savedForm}>
                         <p className={'subHeading ' + classes.textHeading}>{t('savedSearchForms')}</p>
                         {searchFormsData && searchFormsData.length > 0 && searchFormsData.map((dbVal, index) => {
@@ -153,14 +153,14 @@ function ApplicationPanel() {
                     </div>
 
                 </Col>
-                <Col md="4" sm="12" className={classes.columnPadding}>
+                <Col md="4" sm="4" xs='4' className={classes.columnPadding}>
                     <p className={'subHeading ' + classes.textHeading}>{t('sequenceSearch')}</p>
                     <Row className={classes.applicationPanelRow}>
-                        <Col lg="2" md="3" sm="12" className="pr-0">
+                        <Col lg="2" md="2" sm="2" xs='2' className="pr-0">
                             {/* <AccessAlarm className={classes.appIcon} /> */}
                             <img src={seqSearch} alt="seqSearch" className="w-100" />
                         </Col>
-                        <Col lg="10" md="9" sm="12">
+                        <Col lg="10" md="10" sm="10" xs='10'>
                             <p className={classes.pTagMargin}>
                                 <Link to="/ipseqsearch" className={classes.anchorTag + ' appLink'}>{t('ipSequence')}</Link>
                             </p>
@@ -180,10 +180,10 @@ function ApplicationPanel() {
                     </Row>
                     <p className={'subHeading ' + classes.textHeading}>{t('documentSearch')}</p>
                     <Row className={classes.applicationPanelRow}>
-                        <Col lg="2" md="3" className="pr-0">
+                        <Col lg="2" md="2" sm="2" xs='2' className="pr-0">
                             <img src={docsearch} alt="docsearch" className="w-100" />
                         </Col>
-                        <Col lg="10" md="9">
+                        <Col lg="10" md="10" sm="10" xs='10'>
                             {/* <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a></p> */}
                             <p className={classes.pTagMargin}>
                                 <Fragment>
@@ -196,10 +196,10 @@ function ApplicationPanel() {
                     </Row>
                     <p className={'subHeading ' + classes.textHeading}>{t('sequenceDatabases')}</p>
                     <Row className={classes.applicationPanelRow}>
-                        <Col lg="2" md="3" className="pr-0">
+                        <Col lg="2" md="2" sm="2" xs='2' className="pr-0">
                             <img src={seqDb} alt="seqDb" className="w-100" />
                         </Col>
-                        <Col lg="10" md="9">
+                        <Col lg="10" md="10" sm="10" xs='10'>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={url.stageBrowserDBLink} target="_blank" rel="noreferrer">{t('browseDatabases')}</a></p>
                             <p className={classes.pTagMargin}>
                                 <Link className={classes.anchorTag + ' appLink'} to='/personaldb'>{t('personalDatabases')}</Link>
@@ -207,13 +207,13 @@ function ApplicationPanel() {
                         </Col>
                     </Row>
                 </Col>
-                <Col md="4" sm="12" className={classes.columnPadding}>
+                <Col md="4" sm="4" xs='4' className={classes.columnPadding}>
                     <p className={'subHeading ' + classes.textHeading}>{t('searchResults')}</p>
                     <Row className={classes.applicationPanelRow}>
-                        <Col lg="2" md="3" className="pr-0">
+                        <Col lg="2" md="2" sm="2" xs='2' className="pr-0">
                             <img src={searchResultImg} alt="searchResult" className="w-100" />
                         </Col>
-                        <Col lg="10" md="9">
+                        <Col lg="10" md="10" sm="10" xs='10'>
                             <p className={classes.pTagMargin}>
                                 <Link className={classes.anchorTag + ' appLink'} to='/searchResult'>{t('allSearchResults')}</Link>
 
@@ -224,10 +224,10 @@ function ApplicationPanel() {
                     </Row>
                     <p className={'subHeading ' + classes.textHeading}>{t('sequenceTools')}</p>
                     <Row className={classes.applicationPanelRow}>
-                        <Col lg="2" md="3" className="pr-0">
+                        <Col lg="2" md="2" sm="2" xs='2' className="pr-0">
                             <img src={seqTool} alt="seqTool" className="w-100" />
                         </Col>
-                        <Col lg="10" md="9">
+                        <Col lg="10" md="10" sm="10" xs='10'>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={url.stageAlignSequencesDirectly} target="_blank" rel="noreferrer">{t('alignSequencesDirectly')}</a></p>
                             {/* <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p> */}
                             <p className={classes.pTagMargin}>
@@ -237,10 +237,10 @@ function ApplicationPanel() {
                     </Row>
                     <p className={'subHeading ' + classes.textHeading}>{t('myAccount')}</p>
                     <Row className={classes.applicationPanelRow}>
-                        <Col lg="2" md="3" className="pr-0">
+                        <Col lg="2" md="2" sm="2" xs='2' className="pr-0">
                             <img src={account} alt="account" className="w-100" />
                         </Col>
-                        <Col lg="10" md="9" >
+                        <Col lg="10" md="10" sm="10" xs='10'>
                             <p className={classes.pTagMargin}><a onClick={accountInfoForm}>{t('accountInformation')}</a></p>
                             <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} onClick={changePasswordForm}>{t('changePassword')}</a></p>
                         </Col>

@@ -1,4 +1,4 @@
-import React,{ useState, useEffect }  from 'react';
+import React, { useState, useEffect } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -22,12 +22,12 @@ const useStyles = makeStyles((theme) => ({
     },
     menuButton: {
         // marginRight: theme.spacing(2),
-        '& img':{
-            height:'50px'
+        '& img': {
+            height: '50px'
         },
-        '&:hover':{
+        '&:hover': {
             backgroundColor: 'transparent',
-             
+
         },
         // color: 'white',
     },
@@ -35,19 +35,19 @@ const useStyles = makeStyles((theme) => ({
         color: 'inherit',
     },
     sectionDesktop: {
-        display: 'none',
-        [theme.breakpoints.up('md')]: {
-            display: 'flex',
-        },
+        display: 'flex',
+        // [theme.breakpoints.up('md')]: {
+        //     display: 'flex',
+        // },
         span: {
             'font-weight': '400'
         }
     },
     sectionMobile: {
-        display: 'flex',
-        [theme.breakpoints.up('md')]: {
-            display: 'none',
-        },
+        display: 'none',
+        // [theme.breakpoints.up('md')]: {
+        //     display: 'none',
+        // },
     },
     profileText: {
         color: '#5A6868'
@@ -63,10 +63,10 @@ const useStyles = makeStyles((theme) => ({
         width: '96% !important',
         zIndex: 999,
         borderBottom: '1px solid #cec7c7',
-        position:'unset'
+        position: 'unset'
 
     },
-    headerLink:{
+    headerLink: {
         // alignItems: 'left',
         pointerEvents: 'none',
         backgroundColor: 'transparent'
@@ -74,14 +74,14 @@ const useStyles = makeStyles((theme) => ({
 
     },
     headerPipe: {
-        display: 'none',
+        display: 'block',
         margin: '5px 0'
     },
-    '@media (min-width: 780px)': {
-        headerPipe: {
-            display: 'block'
-        }
-    }
+    // '@media (min-width: 780px)': {
+    //     headerPipe: {
+    //         display: 'block'
+    //     }
+    // }
 }));
 
 export default function Header(props) {
@@ -90,53 +90,51 @@ export default function Header(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const { t, i18n } = useTranslation('common');
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+    // const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const [modalShow, setModalShow] = React.useState(false);
     const [accountInfo, setAccountInfo] = useState([]);
     const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    // const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const [userName, setUserName] = React.useState(null);;
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null);
-    };
+    // const handleMobileMenuClose = () => {
+    //     setMobileMoreAnchorEl(null);
+    // };
 
     const handleMenuClose = () => {
         setAnchorEl(null);
-        handleMobileMenuClose();
+        // handleMobileMenuClose();
     };
     const logout = () => {
-        localStorage.clear(); 
+        localStorage.clear();
         LogoutService.logout();
         history.push('/login')
     };
 
-    const handleMobileMenuOpen = (event) => {
-        setMobileMoreAnchorEl(event.currentTarget);
-    };
+    // const handleMobileMenuOpen = (event) => {
+    //     setMobileMoreAnchorEl(event.currentTarget);
+    // };
 
-  
-    const routeToDocLink = () => {
-        console.log("SDAASDADSADSDAS");
-        window.location.assign('http://github.com');
-    };
-    
+
+    // const routeToDocLink = () => {
+    //     console.log("SDAASDADSADSDAS");
+    //     window.location.assign('http://github.com');
+    // };
+
     useEffect(() => {
-		(async () => {
-			//dispatch(userActions.logout()); 
+        (async () => {
             const isUserLogin = localStorage.getItem('isLoggedIn');
             const result = await AccountService.getAccountInfo(history);
-            result && result.response_content ?  setAccountInfo(result.response_content)   : setAccountInfo({});
-            if(isUserLogin)
-            {
+            result && result.response_content ? setAccountInfo(result.response_content) : setAccountInfo({});
+            if (isUserLogin) {
                 setUserName(localStorage.getItem('userName'));
             }
-		})();
-	}, []);
+        })();
+    }, []);
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -156,41 +154,41 @@ export default function Header(props) {
     );
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
-    const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem>
-                <Button
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    //   onClick={handleProfileMenuOpen}
-                    color="inherit"
-                >
-                    <AccountCircle />
-                    <span className={'text-capitalize appTextFont ' + classes.profileText} >{userName}</span>
-                </Button>
-            </MenuItem>
-            <MenuItem onClick={() => setModalShow(true)}>
-                <Button color="inherit"><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button>
-            </MenuItem>
-            <MenuItem >
-            
-            {/* <a href='https://docs.genomequestlive.com/' className="appLink text-capitalize appTextFont"> {t('documentation')}</a> */}
-                <Button color="inherit">
-                <a href="https://docs.genomequestlive.com/"  className="appLink text-capitalize appTextFont" target="_blank" >{t('documentation')}</a>
-                </Button>
-            </MenuItem>
-        </Menu>
-    );
+    // const renderMobileMenu = (
+    //     <Menu
+    //         anchorEl={mobileMoreAnchorEl}
+    //         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    //         id={mobileMenuId}
+    //         keepMounted
+    //         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+    //         open={isMobileMenuOpen}
+    //         onClose={handleMobileMenuClose}
+    //     >
+    //         <MenuItem>
+    //             <Button
+    //                 edge="end"
+    //                 aria-label="account of current user"
+    //                 aria-controls={menuId}
+    //                 aria-haspopup="true"
+    //                 //   onClick={handleProfileMenuOpen}
+    //                 color="inherit"
+    //             >
+    //                 <AccountCircle />
+    //                 <span className={'text-capitalize appTextFont ' + classes.profileText} >{userName}</span>
+    //             </Button>
+    //         </MenuItem>
+    //         <MenuItem onClick={() => setModalShow(true)}>
+    //             <Button color="inherit"><span className="appLink text-initial appTextFont" >{t('logout')}</span></Button>
+    //         </MenuItem>
+    //         <MenuItem >
+
+    //             {/* <a href='https://docs.genomequestlive.com/' className="appLink text-capitalize appTextFont"> {t('documentation')}</a> */}
+    //             <Button color="inherit">
+    //                 <a href="https://docs.genomequestlive.com/" className="appLink text-capitalize appTextFont" target="_blank" rel="noreferrer" >{t('documentation')}</a>
+    //             </Button>
+    //         </MenuItem>
+    //     </Menu>
+    // );
     // https://docs.genomequestlive.com/
     return (
 
@@ -202,11 +200,11 @@ export default function Header(props) {
                         className={classes.menuButton}
                         color="inherit"
                         aria-label="open drawer"
-                        // disableRipple ='true'
+                    // disableRipple ='true'
                     >
-                                         
-                            <Link to="/home" ><img src={GQLogo}  alt="GQLogo" className="w-75" /></Link>
-                       
+
+                        <Link to="/home" ><img src={GQLogo} alt="GQLogo" className="w-75" /></Link>
+
 
                     </IconButton>
                     <div className={classes.grow} />
@@ -231,21 +229,21 @@ export default function Header(props) {
                             hideModal={() => setModalShow(false)}
                             modalCallback={logout}
                         /> */}
-                         <LogoutModal
+                        <LogoutModal
                             show={modalShow}
                             onHide={() => setModalShow(false)}
-                            tryAgain={()=> logout()}
-                            // onMessage={errorMessage}
+                            tryAgain={() => logout()}
+                        // onMessage={errorMessage}
                         />
                         <span className={classes.headerPipe}>|</span>
                         <Button color="inherit">
-                        <a href="https://docs.genomequestlive.com/" target="_blank" className="appLink text-capitalize appTextFont" >{t('documentation')}</a>
+                            <a href="https://docs.genomequestlive.com/" target="_blank" className="appLink text-capitalize appTextFont" rel="noreferrer" >{t('documentation')}</a>
 
-                        {/* <span className="appLink text-capitalize appTextFont" >{t('documentation')}</span> */}
+                            {/* <span className="appLink text-capitalize appTextFont" >{t('documentation')}</span> */}
                         </Button>
 
                     </div>
-                    <div className={classes.sectionMobile}>
+                    {/* <div className={classes.sectionMobile}>
                         <IconButton
                             aria-label="show more"
                             aria-controls={mobileMenuId}
@@ -255,13 +253,13 @@ export default function Header(props) {
                         >
                             <MoreIcon />
                         </IconButton>
-                    </div>
+                    </div> */}
                 </Toolbar>
                 <br />
-                <h5 className={"text-right pageTitle "+(props.title != '' ? 'p-0':'p-2') }><b>{t(props.title)}</b></h5>
+                <h5 className={"text-right pageTitle " + (props.title != '' ? 'p-0' : 'p-2')}><b>{t(props.title)}</b></h5>
             </AppBar>
 
-            {renderMobileMenu}
+            {/* {renderMobileMenu} */}
             {renderMenu}
         </div>
     );
