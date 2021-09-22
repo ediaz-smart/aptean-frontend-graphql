@@ -21,7 +21,7 @@ import TextInput from '../../shared/Fields/TextInput';
 import CheckBox from '../../shared/Fields/CheckBox';
 import SelectBox from '../../shared/Fields/SelectBox';
 import DatePicker from '../../shared/Fields/DatePicker';
-import RadioButton from '../../shared/Fields/RadioButton'; 
+import RadioButton from '../../shared/Fields/RadioButton';
 import { getSeqSearchInit, submitSeqSearch } from '../../services/seqSearchService';
 import SavedSearch from '../../services/savedsearch';
 
@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
+        maxWidth: '1000px',
         margin: '0 auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',
@@ -84,51 +85,29 @@ const useStyles = makeStyles((theme) => ({
         // textAlign: "center",
         fontStyle: "italic"
     },
-    loginSubmitCancel:{
+    loginSubmitCancel: {
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
-        border: '2px solid #1F4E79' ,
-        color:'white',
-        margin:"4px",
-        float:'right',
+        border: '2px solid #1F4E79',
+        color: 'white',
+        margin: "4px",
+        float: 'right',
         textTransform: 'capitalize',
         '&:hover': {
-          backgroundColor: '#0182C5',
-          boxShadow: 'none',
+            backgroundColor: '#0182C5',
+            boxShadow: 'none',
         },
     },
     mediumSizedTextBox: {
         width: "20%"
     },
-    '@media (min-width: 768px)': {
-        desktopHelpLink: {
-            display: 'block'
-        },
-        mobileHelpLink: {
-            display: 'none'
-        }
-    },
     '@media (max-width: 760px)': {
-        desktopHelpLink: {
-            display: 'none'
-        },
-        mobileHelpLink: {
-            display: 'block'
-        },
         arrowIcon: {
             fontSize: '2.5rem',
             marginTop: '-2px'
         },
         arrowIconTitle: {
             marginLeft: '-8px'
-        }
-    },
-    '@media (min-width: 768px)': {
-        desktopHelpLink: {
-            display: 'block'
-        },
-        mobileHelpLink: {
-            display: 'none'
         }
     },
     '@media (min-width: 900px)': {
@@ -397,90 +376,89 @@ function IpSeqSearch() {
     useEffect(() => {
         (async () => {
             let resp;
-            console.log(decodeURI(tempname),"tempname tempname tempname tempname ")
-            console.log(parentId,"parentId parentId parentId parentId ")
-            
+            console.log(decodeURI(tempname), "tempname tempname tempname tempname ")
+            console.log(parentId, "parentId parentId parentId parentId ")
+
             let tempparam = decodeURI(tempname);
-            tempparam = tempparam.toString().replace(/~~GQSF~~/g,'%');
-            console.log(tempparam,"tempparam")
-            if(tempparam)
-            {
-               const dat = await SavedSearch.getParticularTemplate(tempparam,'Sequence');
-              
-               console.log(dat,"resp.response_content.map");
-               if (dat && dat.response_content && dat.response_content.map) {
-                const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = dat.response_content.map;
-                console.log('qdb_seq_type', qdb_seq_type)
-                qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
-                qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
+            tempparam = tempparam.toString().replace(/~~GQSF~~/g, '%');
+            console.log(tempparam, "tempparam")
+            if (tempparam) {
+                const dat = await SavedSearch.getParticularTemplate(tempparam, 'Sequence');
 
-                nucdbs && nucdbs.length > 0 ? setNucDb(nucdbs) : setNucDb([]);
-                protdbs && protdbs.length > 0 ? setProDb(protdbs) : setProDb([]);
-                redoInitialState.searchDetails = title ? title : "";
-                redoInitialState.querySequence = qdb_seq ? qdb_seq : "";
-                strat_name ? setSearchAlgorithm(strat_name) : setSearchAlgorithm("kerr");
-                redoInitialState.alignments = best_hit_keep_max ? redoInitialState.alignments = best_hit_keep_max : "";
-                nucandprot && nucandprot == "on" ? setIsBothDbSelected(true) : setIsBothDbSelected(false);
-                redoInitialState.formName = template_name ? redoInitialState.formName = template_name : "";
-                template_name ? setSaveFormValue(true) : setSaveFormValue(false);
-                email ? setSendMailAfterSearch(true) : setSendMailAfterSearch(false);
-                redoInitialState.minResidues = seqlenrange_low ? seqlenrange_low : 6;
-                redoInitialState.maxResidues = seqlenrange_high ? seqlenrange_high : 100000;
+                console.log(dat, "resp.response_content.map");
+                if (dat && dat.response_content && dat.response_content.map) {
+                    const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = dat.response_content.map;
+                    console.log('qdb_seq_type', qdb_seq_type)
+                    qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
+                    qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
 
-                // setRedoInitialState({...redoInitialState});
+                    nucdbs && nucdbs.length > 0 ? setNucDb(nucdbs) : setNucDb([]);
+                    protdbs && protdbs.length > 0 ? setProDb(protdbs) : setProDb([]);
+                    redoInitialState.searchDetails = title ? title : "";
+                    redoInitialState.querySequence = qdb_seq ? qdb_seq : "";
+                    strat_name ? setSearchAlgorithm(strat_name) : setSearchAlgorithm("kerr");
+                    redoInitialState.alignments = best_hit_keep_max ? redoInitialState.alignments = best_hit_keep_max : "";
+                    nucandprot && nucandprot == "on" ? setIsBothDbSelected(true) : setIsBothDbSelected(false);
+                    redoInitialState.formName = template_name ? redoInitialState.formName = template_name : "";
+                    template_name ? setSaveFormValue(true) : setSaveFormValue(false);
+                    email ? setSendMailAfterSearch(true) : setSendMailAfterSearch(false);
+                    redoInitialState.minResidues = seqlenrange_low ? seqlenrange_low : 6;
+                    redoInitialState.maxResidues = seqlenrange_high ? seqlenrange_high : 100000;
 
-                if (strat_name && strat_name == "kerr" && strat_genepast_perc_id && strat_genepast_perc_id_over) {
-                    redoInitialState.genePastPercentage = strat_genepast_perc_id;
-                    redoInitialState.genepastPercentageOver = strat_genepast_perc_id_over;
                     // setRedoInitialState({...redoInitialState});
-                } else if (strat_name == "blast") {
-                    if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_blast_word_size_nuc && strat_blast_scoring_matrix_nuc) {
-                        setWordSize(strat_blast_word_size_nuc);
-                        setScoringMatrix(strat_blast_scoring_matrix_nuc);
-                    } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro && strat_blast_scoring_matrix_pro) {
-                        setWordSize(strat_blast_word_size_pro);
-                        setScoringMatrix(strat_blast_scoring_matrix_pro);
+
+                    if (strat_name && strat_name == "kerr" && strat_genepast_perc_id && strat_genepast_perc_id_over) {
+                        redoInitialState.genePastPercentage = strat_genepast_perc_id;
+                        redoInitialState.genepastPercentageOver = strat_genepast_perc_id_over;
+                        // setRedoInitialState({...redoInitialState});
+                    } else if (strat_name == "blast") {
+                        if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_blast_word_size_nuc && strat_blast_scoring_matrix_nuc) {
+                            setWordSize(strat_blast_word_size_nuc);
+                            setScoringMatrix(strat_blast_scoring_matrix_nuc);
+                        } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro && strat_blast_scoring_matrix_pro) {
+                            setWordSize(strat_blast_word_size_pro);
+                            setScoringMatrix(strat_blast_scoring_matrix_pro);
+                        }
+                        redoInitialState.expectCutoff = strat_blast_eval_cutoff ? strat_blast_eval_cutoff : 10;
+                        // setRedoInitialState({...redoInitialState});
+                        strat_blast_hsp && strat_blast_hsp == "on" ? setProcessHsp(true) : setProcessHsp(false);
+                    } else if (strat_name == "fragment") {
+                        if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_fragment_window_length_nuc && strat_fragment_perc_id_nuc) {
+                            redoInitialState.fragmentStretch = strat_fragment_window_length_nuc;
+                            redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_nuc;
+                        } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_fragment_window_length_pro && strat_fragment_perc_id_pro) {
+                            redoInitialState.fragmentStretch = strat_fragment_window_length_pro;
+                            redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_pro;
+                        }
                     }
-                    redoInitialState.expectCutoff = strat_blast_eval_cutoff ? strat_blast_eval_cutoff : 10;
-                    // setRedoInitialState({...redoInitialState});
-                    strat_blast_hsp && strat_blast_hsp == "on" ? setProcessHsp(true) : setProcessHsp(false);
-                } else if (strat_name == "fragment") {
-                    if (qdb_seq_type && qdb_seq_type == "nucleotide" && strat_fragment_window_length_nuc && strat_fragment_perc_id_nuc) {
-                        redoInitialState.fragmentStretch = strat_fragment_window_length_nuc;
-                        redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_nuc;
-                    } else if (qdb_seq_type && qdb_seq_type == "protein" && strat_fragment_window_length_pro && strat_fragment_perc_id_pro) {
-                        redoInitialState.fragmentStretch = strat_fragment_window_length_pro;
-                        redoInitialState.fragmentAminoAcid = strat_fragment_perc_id_pro;
-                    }
+                    let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
+                    redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
+                        if (item && item.P && item.P == "SEQUENCE_D1") {
+                            console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
+                            redoInitialState.docPublicSel = item.O;
+                            redoInitialState.docPublicDate = moment(item.V)._d;
+                            setIsDocPubDate(true);
+                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
+                                setIsDocPubUnknownDates(true);
+                            }
+                        } else if (item && item.P && item.P == "SEQUENCE_D2") {
+                            redoInitialState.publishGQSel = item.O;
+                            redoInitialState.publishGQDate = moment(item.V)._d;
+                            setIsPublished(true);
+                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
+                                setIspublishGQUnknownDates(true);
+                            }
+                        } else if (item && item.P && item.P == "SEQUENCE_P9") {
+                            redoInitialState.patientDocSel = item.O;
+                            redoInitialState.patientDocInp = item.V;
+                            setIsPatientDoc(true);
+                        }
+                        // setRedoInitialState({...redoInitialState});
+                    });
+                    setRedoInitialState({ ...redoInitialState });
                 }
-                let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
-                redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
-                    if (item && item.P && item.P == "SEQUENCE_D1") {
-                        console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
-                        redoInitialState.docPublicSel = item.O;
-                        redoInitialState.docPublicDate = moment(item.V)._d;
-                        setIsDocPubDate(true);
-                        if(item.O == "AFT_IE" || item.O == "BEF_IE") {
-                            setIsDocPubUnknownDates(true);
-                        }
-                    } else if (item && item.P && item.P == "SEQUENCE_D2") {
-                        redoInitialState.publishGQSel = item.O;
-                        redoInitialState.publishGQDate = moment(item.V)._d;
-                        setIsPublished(true);
-                        if(item.O == "AFT_IE" || item.O == "BEF_IE") {
-                            setIspublishGQUnknownDates(true);
-                        }
-                    } else if (item && item.P && item.P == "SEQUENCE_P9") {
-                        redoInitialState.patientDocSel = item.O;
-                        redoInitialState.patientDocInp = item.V;
-                        setIsPatientDoc(true);
-                    }
-                    // setRedoInitialState({...redoInitialState});
-                });
-                setRedoInitialState({ ...redoInitialState });
-            }
 
-                
+
             }
             if (parentId) {
                 resp = await getSeqSearchInit(history, parentId);
@@ -537,14 +515,14 @@ function IpSeqSearch() {
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
-                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIsDocPubUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_D2") {
                             redoInitialState.publishGQSel = item.O;
                             redoInitialState.publishGQDate = moment(item.V)._d;
                             setIsPublished(true);
-                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIspublishGQUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_P9") {
@@ -557,7 +535,7 @@ function IpSeqSearch() {
                     setRedoInitialState({ ...redoInitialState });
                 }
             } else {
-                console.log(resp,"parentId parentId parentId parentId");
+                console.log(resp, "parentId parentId parentId parentId");
                 resp = await getSeqSearchInit(history, null);
             }
             // const resp = await getSeqSearchResults(history);
@@ -573,8 +551,8 @@ function IpSeqSearch() {
                 getNucChild && getNucChild.length > 0 && getNucChild.map((item, index) => {
                     if (item && item.id == ':Patents') {
                         nucleotidePatent = item.children;
-                        item.children.filter(i=>{
-                            if(i.label.includes("Patent sequences")) {
+                        item.children.filter(i => {
+                            if (i.label.includes("Patent sequences")) {
                                 nucDefaultPatentDb.push(i.id);
                             }
                         });
@@ -598,8 +576,8 @@ function IpSeqSearch() {
                 setNucPersonalData(nucDataShardWithMe);
                 setNucGenBankData(nucGenBank);
                 console.log('nucDefaultPatentDb', nucDefaultPatentDb)
-                if(!parentId && !tempname){
-                setNucDb(nucDefaultPatentDb);
+                if (!parentId && !tempname) {
+                    setNucDb(nucDefaultPatentDb);
                 }
             }
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
@@ -614,8 +592,8 @@ function IpSeqSearch() {
                 getProChild && getProChild.length > 0 && getProChild.map((item, index) => {
                     if (item && item.id == ':Patents') {
                         proteinPatent = item.children;
-                        item.children.filter(i=>{
-                            if(i.label.includes("Patent sequences")) {
+                        item.children.filter(i => {
+                            if (i.label.includes("Patent sequences")) {
                                 proDefaultPatentDb.push(i.id);
                             }
                         });
@@ -656,38 +634,38 @@ function IpSeqSearch() {
             //     }
             // }
             // setTimeout(() => {
-                if (userInfo && userInfo.current_user) {
-                    let userPpu = userInfo.current_user.ppu_type;
-                    let currentUser = userInfo.current_user;
-                    console.log('userData', userInfo, 'userPpu', userPpu)
-                    setPpuType(userPpu);
-    
-    
-                    if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
-                        setIsSubmitActive(false);
-    
-                    }
-                    if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
-                        setShowCreditCalc(true);
-                    }
-    
-                    // if (userPpu == "0") {
-                    //     setIsSubmitActive(true);
-                    // } else {
-                    //     setIsSubmitActive(false);
-                    // }
-    
-                    if (userInfo.current_user.user_class_name) {
-                        setUserClassName(userInfo.current_user.user_class_name)
-                    }
-                    if (userInfo.current_user.accounting_group_name) {
-                        setAccGroupName(userInfo.current_user.accounting_group_name)
-                    }
-                    setIsUserData(true);
-                        if (parentId) {
-                            calTextCredits(null, isBothDbSelected, 'redo')
-                        }                
+            if (userInfo && userInfo.current_user) {
+                let userPpu = userInfo.current_user.ppu_type;
+                let currentUser = userInfo.current_user;
+                console.log('userData', userInfo, 'userPpu', userPpu)
+                setPpuType(userPpu);
+
+
+                if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
+                    setIsSubmitActive(false);
+
                 }
+                if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
+                    setShowCreditCalc(true);
+                }
+
+                // if (userPpu == "0") {
+                //     setIsSubmitActive(true);
+                // } else {
+                //     setIsSubmitActive(false);
+                // }
+
+                if (userInfo.current_user.user_class_name) {
+                    setUserClassName(userInfo.current_user.user_class_name)
+                }
+                if (userInfo.current_user.accounting_group_name) {
+                    setAccGroupName(userInfo.current_user.accounting_group_name)
+                }
+                setIsUserData(true);
+                if (parentId) {
+                    calTextCredits(null, isBothDbSelected, 'redo')
+                }
+            }
             // }, 1000);
 
         })()
@@ -702,7 +680,7 @@ function IpSeqSearch() {
         validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue, searchAlgorithmValue, isPatientDoc),
         onSubmit: async (values) => {
             console.log('formikValues', values)
-            if((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
+            if ((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
                 // setNoDbSelected(true);
             } else {
                 setNoDbSelected(true);
@@ -814,14 +792,14 @@ function IpSeqSearch() {
             if (resp && resp.response_status == 0) {
                 setShowSuccessModal(true);
                 closeSuccessModal();
-            } else if(resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
+            } else if (resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
                 // setWarningMsg("Warning: "+resp.response_content.qdb.msg);
                 setIsWarningReturned(true);
                 setShowErrorModal(true);
-                setErrorMsg("Warning: "+resp.response_content.qdb.msg);
+                setErrorMsg("Warning: " + resp.response_content.qdb.msg);
                 setErrorHeading('Please notice the warnings below and either fix it or submit as is.')
                 // window.scrollTo(0,0);
-            } else if(resp.response_status == 1 && resp.response_content.qdb && resp.response_content.qdb.msg) {
+            } else if (resp.response_status == 1 && resp.response_content.qdb && resp.response_content.qdb.msg) {
                 // setWarningMsg("Warning: "+resp.response_content.qdb.msg);
                 setShowErrorModal(true);
                 setErrorMsg(resp.response_content.qdb.msg);
@@ -886,7 +864,7 @@ function IpSeqSearch() {
             setScoringMatrix('BLOSUM62');
             setWordSize('3');
         }
-        if(event.target.value == "motif") {
+        if (event.target.value == "motif") {
             setIsBothDbSelected(false);
         }
 
@@ -905,14 +883,14 @@ function IpSeqSearch() {
         creditValues.ppu2TotalCredit = 0;
         creditValues.ppu2RemainingCredits = 0;
         setCreditValues({ ...creditValues });
-        if(!isBothDbSelected) {
+        if (!isBothDbSelected) {
             if (event.target.value == "nucleotide") {
                 setScoringMatrix('NUC.3.1');
                 setWordSize('11');
                 formik.setFieldValue("fragmentStretch", '50');
                 formik.setFieldValue("fragmentAminoAcid", '96');
-                nucPatentData.filter(i=>{
-                    if(i.label.includes("Patent sequences")) {
+                nucPatentData.filter(i => {
+                    if (i.label.includes("Patent sequences")) {
                         nucDb.push(i.id);
                         setNucDb([...nucDb]);
                     }
@@ -923,8 +901,8 @@ function IpSeqSearch() {
                 setWordSize('3');
                 formik.setFieldValue("fragmentStretch", '20');
                 formik.setFieldValue("fragmentAminoAcid", '95');
-                proPatentData.filter(i=>{
-                    if(i.label.includes("Patent sequences")) {
+                proPatentData.filter(i => {
+                    if (i.label.includes("Patent sequences")) {
                         proDb.push(i.id);
                         setProDb([...proDb]);
                     }
@@ -937,15 +915,15 @@ function IpSeqSearch() {
     };
 
     function handleDbChange(id, name) {
-        if(name && name == "nuc") {
+        if (name && name == "nuc") {
             if (nucDb.includes(id)) {
-                if(nucDb.length == 1 && proDb.length > 0) {
+                if (nucDb.length == 1 && proDb.length > 0) {
                     setIsBothDbSelected(false);
                     calTextCredits(null, false, "isCompare");
                 }
                 setNucDb(nucDb.filter(dbName => dbName !== id));
             } else {
-                if(nucDb.length == 0 && proDb.length > 0) {
+                if (nucDb.length == 0 && proDb.length > 0) {
                     setIsBothDbSelected(true);
                     calTextCredits(null, true, "isCompare");
                 }
@@ -954,14 +932,14 @@ function IpSeqSearch() {
             }
         } else if (name && name == "pro") {
             if (proDb.includes(id)) {
-                if(proDb.length == 1 && nucDb.length > 0) {
+                if (proDb.length == 1 && nucDb.length > 0) {
                     console.log('inside pro', proDb.length)
                     setIsBothDbSelected(false);
                     calTextCredits(null, false, "isCompare");
                 }
                 setProDb(proDb.filter(dbName => dbName !== id));
             } else {
-                if(proDb.length == 0 && nucDb.length > 0) {
+                if (proDb.length == 0 && nucDb.length > 0) {
                     console.log('inside pro', proDb.length)
                     setIsBothDbSelected(true);
                     calTextCredits(null, true, "isCompare");
@@ -989,17 +967,17 @@ function IpSeqSearch() {
             setIsBothDbSelected(true);
             calTextCredits(null, true, type);
 
-            if(sequenceTypeValue == "nucleotide") {
-                
-                proPatentData.filter(i=>{
-                    if(i.label.includes("Patent sequences")) {
+            if (sequenceTypeValue == "nucleotide") {
+
+                proPatentData.filter(i => {
+                    if (i.label.includes("Patent sequences")) {
                         proDb.push(i.id);
                         setProDb([...proDb]);
                     }
                 });
-            } else if(sequenceTypeValue == "protein") {
-                nucPatentData.filter(i=>{
-                    if(i.label.includes("Patent sequences")) {
+            } else if (sequenceTypeValue == "protein") {
+                nucPatentData.filter(i => {
+                    if (i.label.includes("Patent sequences")) {
                         nucDb.push(i.id);
                         setNucDb([...nucDb]);
                     }
@@ -1263,31 +1241,31 @@ function IpSeqSearch() {
     console.log('formik', formik)
 
     function changeIncludeGenUnknownDate() {
-        if(!isDocPubUnknownDates){
-        formik.values.docPublicSel == "BEF" ? formik.setFieldValue("docPublicSel", "BEF_IE") :formik.values.docPublicSel == "AFT" ? formik.setFieldValue("docPublicSel", "AFT_IE") : formik.setFieldValue("docPublicSel", formik.values.docPublicSel)
-    } else {
-        formik.setFieldValue("docPublicSel", "BEF");
-    }
-    setIsDocPubUnknownDates(!isDocPubUnknownDates);
+        if (!isDocPubUnknownDates) {
+            formik.values.docPublicSel == "BEF" ? formik.setFieldValue("docPublicSel", "BEF_IE") : formik.values.docPublicSel == "AFT" ? formik.setFieldValue("docPublicSel", "AFT_IE") : formik.setFieldValue("docPublicSel", formik.values.docPublicSel)
+        } else {
+            formik.setFieldValue("docPublicSel", "BEF");
+        }
+        setIsDocPubUnknownDates(!isDocPubUnknownDates);
     }
 
     function changeIncludeGQSpecificDate() {
-        if(!ispublishGQUnknownDates){
-        formik.values.publishGQSel == "BEF" ? formik.setFieldValue("publishGQSel", "BEF_IE") :formik.values.publishGQSel == "AFT" ? formik.setFieldValue("publishGQSel", "AFT_IE") : formik.setFieldValue("publishGQSel", formik.values.publishGQSel)
-    } else {
-        formik.setFieldValue("publishGQSel", "BEF");
-    }
-    setIspublishGQUnknownDates(!ispublishGQUnknownDates)
+        if (!ispublishGQUnknownDates) {
+            formik.values.publishGQSel == "BEF" ? formik.setFieldValue("publishGQSel", "BEF_IE") : formik.values.publishGQSel == "AFT" ? formik.setFieldValue("publishGQSel", "AFT_IE") : formik.setFieldValue("publishGQSel", formik.values.publishGQSel)
+        } else {
+            formik.setFieldValue("publishGQSel", "BEF");
+        }
+        setIspublishGQUnknownDates(!ispublishGQUnknownDates)
     }
 
     const beforeAfterSelection = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         console.log('e.target', e.target)
         formik.setFieldValue(name, value);
-        if(name == "docPublicSel") {
-           (value == "AFT" || value == "BEF") ?  setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
-        } else if(name == "publishGQSel") {
-            (value == "AFT" || value == "BEF") ?  setIspublishGQUnknownDates(false) : setIspublishGQUnknownDates(true);
+        if (name == "docPublicSel") {
+            (value == "AFT" || value == "BEF") ? setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
+        } else if (name == "publishGQSel") {
+            (value == "AFT" || value == "BEF") ? setIspublishGQUnknownDates(false) : setIspublishGQUnknownDates(true);
         }
     }
 
@@ -1312,8 +1290,8 @@ function IpSeqSearch() {
             <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
                 <Row>
                     <Col lg="12" md="12" className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
-                    <Typography className="text-danger">
-                        {t('ABsearchDisableText')}
+                        <Typography className="text-danger">
+                            {t('ABsearchDisableText')}
                             {systemControlSubmitText}
                             {t('patienceThanksText')}
                         </Typography>
@@ -1332,10 +1310,10 @@ function IpSeqSearch() {
                 {parentId &&
                     <Fragment>
                         <Row>
-                        <Col sm="12" md="12">
-                            <p className="subHeading w-75 mb-10 float-left">{t('queryPreloaded')}</p>
-                        </Col>
-                    </Row>
+                            <Col sm="12" md="12">
+                                <p className="subHeading w-75 mb-10 float-left">{t('queryPreloaded')}</p>
+                            </Col>
+                        </Row>
                         <p className="bodyText">
                             {t('redoAlertText')}
                         </p>
@@ -1346,11 +1324,11 @@ function IpSeqSearch() {
                         <Row>
                             <Col sm="12" md="12">
                                 <p className="subHeading w-75 mb-10 float-left">{t('searchDetails')}</p>
-                                <a className={"appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank">{t('help')}</a>
+                                <a className={"appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank" rel="noreferrer">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
-                            <Col md="6">
+                            <Col md="6" xs="6">
                                 {/* <p className="subHeading">{t('searchDetails')}</p> */}
                                 <div className="form-group">
                                     <TextInput
@@ -1371,11 +1349,11 @@ function IpSeqSearch() {
                         <Row>
                             <Col sm="12" md="12">
                                 <p className="subHeading w-75 mb-10 float-left">{t('querySequences')}</p>
-                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank">{t('help')}</a>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank" rel="noreferrer">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
-                            <Col sm="12" md="10">
+                            <Col sm="10" md="10" xs="10">
                                 <div className="form-group">
                                     <TextInput
                                         rowsMax="8"
@@ -1395,14 +1373,14 @@ function IpSeqSearch() {
                                     />
                                 </div>
                             </Col>
-                            <Col md="2"></Col>
+                            <Col sm="2" md="2" xs="2"></Col>
                         </Row>
                         <Row>
                             <Col md="9">
                                 <FormControl component="fieldset">
                                     <RadioGroup row aria-label="These are" name="customized-radios" value={sequenceTypeValue} onChange={handleSequenceType}>
                                         <span className={classes.theseAreText + " bodyText"}>{t("theseAre")}</span>
-                                        <FormControlLabel value="nucleotide" control={<RadioButton />} label="Nucleotide Sequences" className="bodyText"/>
+                                        <FormControlLabel value="nucleotide" control={<RadioButton />} label="Nucleotide Sequences" className="bodyText" />
                                         <FormControlLabel value="protein" control={<RadioButton />} label="Protein Sequences" />
                                     </RadioGroup>
                                 </FormControl>
@@ -1414,7 +1392,7 @@ function IpSeqSearch() {
                 <Row>
                     <Col sm="12" md="12">
                         <p className="subHeading w-75 mb-10 float-left">{t('searchAlgorithmAndSetting')}</p>
-                        <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank">{t('help')}</a>
+                        <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank" rel="noreferrer">{t('help')}</a>
                     </Col>
                 </Row>
                 <Row>
@@ -1473,7 +1451,7 @@ function IpSeqSearch() {
                                     value={scoringMatrixValue}
                                     items={nucleotideMatrixItems}
                                     className={"float-left"}
-                                    onChange={e=>setScoringMatrix(e.target.value)}
+                                    onChange={e => setScoringMatrix(e.target.value)}
                                 />
                                 }
                                 {sequenceTypeValue == 'protein' && <SelectBox
@@ -1484,7 +1462,7 @@ function IpSeqSearch() {
                                     value={scoringMatrixValue}
                                     items={proteinMatrixItems}
                                     className={"float-left"}
-                                    onChange={e=>setScoringMatrix(e.target.value)}
+                                    onChange={e => setScoringMatrix(e.target.value)}
                                 />
                                 }
                                 <Typography className={"float-left " + classes.seqText}>
@@ -1498,7 +1476,7 @@ function IpSeqSearch() {
                                     value={wordSizeValue}
                                     items={nucleotidewordSizeItems}
                                     className={"float-left " + classes.smallTextBox}
-                                    onChange={e=>setWordSize(e.target.value)}
+                                    onChange={e => setWordSize(e.target.value)}
                                 />
                                 }
                                 {sequenceTypeValue == 'protein' && <SelectBox
@@ -1509,7 +1487,7 @@ function IpSeqSearch() {
                                     value={wordSizeValue}
                                     items={proteinwordSizeItems}
                                     className={"float-left " + classes.smallTextBox}
-                                    onChange={e=>setWordSize(e.target.value)}
+                                    onChange={e => setWordSize(e.target.value)}
                                 />
                                 }
                                 <div className={classes.blastMargin}>
@@ -1584,13 +1562,13 @@ function IpSeqSearch() {
                             {searchAlgorithmValue && searchAlgorithmValue == 'motif' && <Fragment>
                                 <Link className={"float-left " + classes.seqText}>
                                     {t("examplesOfValidMotif")}&nbsp;&nbsp;&nbsp;
-                            </Link>
+                                </Link>
                             </Fragment>
                             }
                         </Col>
                     </AccordionDetails>
-                    </Row>
-                    <Row>
+                </Row>
+                <Row>
                     <AccordionDetails className="appTextColor">
                         <Col md="12">
                             <Typography className={"float-left " + classes.seqText}>
@@ -1627,13 +1605,18 @@ function IpSeqSearch() {
                                 checked={isBothDbSelected}
                             // onChange={() => calTextCredits("isCompare")}
                             />
-                            <label className={classes.checkBoxContent + " bodyText ml-0" + (searchAlgorithmValue !== 'motif' ? " cursorPointer": "")} for="compareboth">{t("compareBothNucPro")}</label>
+                            <label className={classes.checkBoxContent + " bodyText ml-0" + (searchAlgorithmValue !== 'motif' ? " cursorPointer" : "")} for="compareboth">{t("compareBothNucPro")}</label>
                         </Col>
                     </AccordionDetails>
                 </Row>
                 <hr />
                 <Row>
-                    <Col md="11">
+                    <Col md="12">
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2" rel="noreferrer">{t("help")}</a>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md="12">
                         <Accordion square expanded={seqDBFilter} onChange={() => setSeqDBFilter(prevState => !prevState)}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
                                 <p className="subHeading m-0">
@@ -1657,7 +1640,7 @@ function IpSeqSearch() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        className={"float-left "+ classes.mediumSizedTextBox}
+                                        className={"float-left " + classes.mediumSizedTextBox}
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;{t("and")}&nbsp;&nbsp;
@@ -1729,9 +1712,6 @@ function IpSeqSearch() {
                             </AccordionDetails>
                         </Accordion>
                     </Col>
-                    <Col md="1" className={classes.desktopHelpLink}>
-                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
-                    </Col>
                     <Col md="12">
                         <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
@@ -1800,7 +1780,7 @@ function IpSeqSearch() {
                                         onChange={() => setIsPatientDoc(!isPatientDoc)}
                                         checked={isPatientDoc}
                                     />
-                                <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1821,8 +1801,8 @@ function IpSeqSearch() {
                                         value={formik.values.patientDocInp}
                                         onChange={formik.handleChange}
                                         error={formik.touched.patientDocInp && Boolean(formik.errors.patientDocInp)}
-                                        helperText={ isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
-                                        className={"float-left mx-4 "+ classes.mediumSizedTextBox}
+                                        helperText={isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
+                                        className={"float-left mx-4 " + classes.mediumSizedTextBox}
                                         disabled={isPatientDoc ? false : true}
                                     />
                                     <Typography className={"float-left mt-2"}>
@@ -1832,21 +1812,21 @@ function IpSeqSearch() {
                             </AccordionDetails>
                         </Accordion>
                     </Col>
-                    <Col md="12" className={classes.mobileHelpLink}>
+                    {/* <Col md="12" className={classes.mobileHelpLink}>
                         <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
-                    </Col>
+                    </Col> */}
                 </Row>
                 {/* <ColoredLine color="black" /> */}
                 <hr />
                 <div>
                     <Row>
                         <Col sm="12" md="12">
-                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
+                            <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2" rel="noreferrer">{t("help")}</a>
                         </Col>
                     </Row>
                     {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
                     <Row>
-                        <Col md="6">
+                        <Col md="6" xs="6">
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="subHeading p-0">
@@ -1865,7 +1845,7 @@ function IpSeqSearch() {
                                                 name="nuc"
                                                 id={test.id}
                                                 checked={nucDb.includes(test.id)}
-                                                onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                 className={"absolutePosition " + classes.checkBox}
                                                 color="primary"
                                             />
@@ -1896,7 +1876,7 @@ function IpSeqSearch() {
                                                     name="nuc"
                                                     id={test.id}
                                                     checked={nucDb.includes(test.id)}
-                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                    onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
@@ -1926,7 +1906,7 @@ function IpSeqSearch() {
                                                     name="nuc"
                                                     id={test.id}
                                                     checked={nucDb.includes(test.id)}
-                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                    onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
@@ -1948,14 +1928,14 @@ function IpSeqSearch() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq"/>
+                                        <FolderTreeStructure treeData={nucPersonalData} parentCallBack={handleDbChange} dbName="nuc" dataArray={nucDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq" />
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
                             }
                         </Col>
-                        <Col md="6">
-                            {proPatentData && _.size(proPatentData) > 0 &&<div>
+                        <Col md="6" xs="6">
+                            {proPatentData && _.size(proPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="subHeading m-0">
@@ -1973,7 +1953,7 @@ function IpSeqSearch() {
                                                     name="pro"
                                                     id={test.id}
                                                     checked={proDb.includes(test.id)}
-                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                    onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
@@ -2003,7 +1983,7 @@ function IpSeqSearch() {
                                                     name="pro"
                                                     id={test.id}
                                                     checked={proDb.includes(test.id)}
-                                                    onChange={e=>handleDbChange(e.target.id, e.target.name)}
+                                                    onChange={e => handleDbChange(e.target.id, e.target.name)}
                                                     className={"absolutePosition " + classes.checkBox}
                                                     color="primary"
                                                 />
@@ -2025,7 +2005,7 @@ function IpSeqSearch() {
                                         </p>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq"/>
+                                        <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dbName="pro" dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq" />
                                     </AccordionDetails>
                                 </Accordion>
                             </div>
@@ -2037,7 +2017,7 @@ function IpSeqSearch() {
                     <Fragment>
                         <ColoredLine color="#f3f2f2" />
                         <Row>
-                            <Col md="11">
+                            <Col md="11" xs="11">
                                 <p className="subHeading">Search Fee</p>
                                 {ppuType == "1" && <p>{t('executingSearchCharges')}</p>}
                                 {ppuType == "2" && <p>{t('executingSearchCredits')}</p>}
@@ -2103,12 +2083,12 @@ function IpSeqSearch() {
                                     }
                                 </table>
                             </Col>
-                            {/* <Col md="1" className={classes.desktopHelpLink}>
+                            <Col md="1" xs="1">
                                 <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
-                            </Col> */}
+                            </Col>
                         </Row>
                         {ppuType != "0" && <Row>
-                            <Col md="12">
+                            <Col md="12" xs="12">
                                 <CheckBox
                                     // defaultChecked
                                     color="primary"
@@ -2126,7 +2106,7 @@ function IpSeqSearch() {
                 }
                 <ColoredLine color="#f3f2f2" />
                 <Row>
-                    <Col md="12">
+                    <Col md="12" xs="12">
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2140,7 +2120,7 @@ function IpSeqSearch() {
                     </Col>
                 </Row>
                 <Row>
-                    <Col md='4'>
+                    <Col md='4' xs="4">
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2152,7 +2132,7 @@ function IpSeqSearch() {
                         />
                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
-                    <Col md='6'>
+                    <Col md='6' xs="6">
                         <TextInput
                             id="formName"
                             name="formName"
@@ -2168,15 +2148,15 @@ function IpSeqSearch() {
                     </Col>
                 </Row>
                 <br></br>
-                
+
                 <Row >
-                <div>
-                </div>
+                    <div>
+                    </div>
                     <Col  >
-                        {isSubmitActive && <Button  className="accountInfo" type="submit">
+                        {isSubmitActive && <Button className="accountInfo" type="submit">
                             {t("submit")}
                         </Button>}
-                        {!isSubmitActive && <Button  className="cancelButtonDisable" disabled>
+                        {!isSubmitActive && <Button className="cancelButtonDisable" disabled>
                             {t("submit")}
                         </Button>}
                         <Button className={classes.loginSubmitCancel} onClick={homeRedirect}>
@@ -2185,7 +2165,7 @@ function IpSeqSearch() {
                     </Col>
                 </Row>
             </form>
-        </div>
+        </div >
     );
 }
 
