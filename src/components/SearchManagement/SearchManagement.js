@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
+        maxWidth: '1000px',
         margin: '0 auto',
         minHeight: '260px',
         padding: '23px 0 5px'
@@ -313,7 +314,10 @@ const columns = [
     },
     {
         name: "",
-        selector: "results"
+        selector: "results",
+        style: {
+            justifyContent: 'unset !important'
+        }
     },
     {
         name: " ",
@@ -1107,8 +1111,8 @@ function SearchManagement(props) {
     return (
         <div className={classes.grow}>
             <Row>
-                <Col md="3">
-                    <Col md="12">
+                <Col md="3" sm="3" xs="3">
+                    <Col md="12" sm="12" xs="12">
                         <div className="form-group">
                             <TextInput
                                 fullWidth
@@ -1182,7 +1186,7 @@ function SearchManagement(props) {
 
                     </Col>
                 </Col>
-                <Col md="9">
+                <Col md="9" sm="9" xs="9">
                     <h6 className="appTextColor mb-4"><b><img src={FolderIcon} /> <span className={classes.projectTitle}>{defaultTitleId ? defaultTitle : 'Recent Search Results'}</span></b></h6>
                     <DataTable
                         columns={isSearchDone ? searchColumns : columns}
@@ -1212,14 +1216,14 @@ function SearchManagement(props) {
                     </Col>
                     {/* </Row> } */}
 
-                    <Col className={"float-left px-0 " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6">
+                    <Col className={"float-left px-0 " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
 
                         <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
                         <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('moveToFolder')}</Button>
                         <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>
                     </Col>
 
-                    <Col className={"float-right " + classes.columnPadding + ((defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6">
+                    <Col className={"float-right " + classes.columnPadding + ((defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
                         <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
                         <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={"accountInfo mr-2 " + (defaultTitle == 'My Searches' ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
@@ -1230,7 +1234,6 @@ function SearchManagement(props) {
 
                     {/* </Col> */}
                 </Col>
-
             </Row>
             <Modal
                 show={modalShow}

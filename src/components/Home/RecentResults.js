@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 const customStyles = {
 	rows: {
 		style: {
-			minHeight: '50px', // override the row height
+			minHeight: '35px', // override the row height
 		}
 	},
 	headCells: {
@@ -114,7 +114,10 @@ const columns = [
 	{
 		name: "",
 		selector: "results",
-		sortable: false
+		sortable: false,
+		style: {
+			justifyContent: 'unset !important'
+		}
 	},
 	{
 		name: " ",

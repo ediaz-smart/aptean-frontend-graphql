@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
         width: '96%',
         margin: '0 auto 28px',
         minHeight: '260px',
+        maxWidth: '1000px',
         // borderBottom: '1px solid #cec7c7',
         padding: '23px 16px 14px',
         border: '1px solid #cec7c7',
@@ -186,7 +187,11 @@ const columns = [
     },
     {
         name: "",
-        selector: "results"
+        selector: "results",
+        style: {
+            textAlign: 'center',
+            justifyContent: 'unset !important'
+        }
     },
     {
         name: "",

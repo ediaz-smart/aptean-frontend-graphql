@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, Fragment } from 'react';
-import { useHistory,useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTranslation } from "react-i18next";
@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
         width: '96%',
         margin: '0 auto 28px',
         minHeight: '260px',
+        maxWidth: '1000px',
         // borderBottom: '1px solid #cec7c7',
         padding: '23px 16px 14px',
     },
@@ -95,21 +96,20 @@ function SearchResultAntibody() {
             console.log(disableSearch, 'disableSearch');
         }
         let tempparam = decodeURI(tempname);
-            tempparam = tempparam.toString().replace(/~~GQSF~~/g,'%');
-            console.log(tempparam,"tempparam")
-            if(tempparam)
-            {
-        let getResponse = await SavedSearch.getParticularTemplate(tempparam, 'Antibody');
-        console.log('getResponse', getResponse)
-        if (getResponse && getResponse.response_status == 0) {
-            let data = getResponse.response_content.map;
-            data.savedRedo = true;
-            let finalData = {}
-            finalData.formData = data;
-            finalData.savedRedo = true;
-        updateFormData(finalData);
-        }
+        tempparam = tempparam.toString().replace(/~~GQSF~~/g, '%');
+        console.log(tempparam, "tempparam")
+        if (tempparam) {
+            let getResponse = await SavedSearch.getParticularTemplate(tempparam, 'Antibody');
+            console.log('getResponse', getResponse)
+            if (getResponse && getResponse.response_status == 0) {
+                let data = getResponse.response_content.map;
+                data.savedRedo = true;
+                let finalData = {}
+                finalData.formData = data;
+                finalData.savedRedo = true;
+                updateFormData(finalData);
             }
+        }
         //dispatch(userActions.logout()); 
     }, []);
     function updateFormData(data) {
@@ -138,7 +138,7 @@ function SearchResultAntibody() {
                         patientDBData[3].selected = true;
                     }
                 });
-                if(data.formData['template_name']) {
+                if (data.formData['template_name']) {
                     setSaveFormValue(true);
                     data.formData['formName'] = data.formData['template_name'];
                 }
@@ -165,12 +165,11 @@ function SearchResultAntibody() {
         // patientDBData[i]['ticked'] = event.target.checked;
         setPatientDBData([...patientDBData]);
     }
-    function homePage()
-    {
-      history.push('/home');
+    function homePage() {
+        history.push('/home');
     }
     let initialData = {};
-    if(formdata && formdata.savedRedo) {
+    if (formdata && formdata.savedRedo) {
         initialData = {
             searchName: formdata && formdata.searchName ? formdata.searchName : '',
             cdrhcseq1: formdata && formdata.hc_cdr1 ? formdata.hc_cdr1 : '',
@@ -362,7 +361,7 @@ function SearchResultAntibody() {
                                     onChange={formik.handleChange}
                                     error={formik.touched.hcOption1 && Boolean(formik.errors.hcOption1)}
                                     helperText={formik.errors.hcOption1}
-                                   
+
                                 />
                                 <Typography className="mx-2 mt-2 float-left">{t('missmatchAllow')}</Typography>
                             </Col>
@@ -555,7 +554,7 @@ function SearchResultAntibody() {
                         <h6 className={"appTextColor loginTitle"}>{t('heavyLightChain')}</h6>
                         <Row className="mb-2">
                             <Col lg="12" md="12" className="p-0 content">
-                                <Col lg="2" md="2" className="p-0 float-left">
+                                <Col lg="3" md="3" sm="3" xs="3" className="p-0 float-left">
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -568,7 +567,7 @@ function SearchResultAntibody() {
                                         disabled={authInfo && authInfo.redo}
                                     />
                                 </Col>
-                                <Col lg="7" md="7" className={"p-0 content " + (formik.values.strategy == "genepast" ? 'd-block' : 'd-none')}>
+                                <Col lg="9" md="9" sm="9" xs="9" className={"p-0 content " + (formik.values.strategy == "genepast" ? 'd-block' : 'd-none')}>
                                     <Typography className="ml-5 mr-1 mt-2 float-left">Require</Typography>
                                     <TextInput
                                         fullWidth={false}
@@ -728,44 +727,44 @@ function SearchResultAntibody() {
                                 </Typography>
                             </Col>
                         </Row>
-                        
+
                         <hr />
                     </Col>
                     <Col lg="12" md="12" className="p-0">
-                            <Row>
-                                <Col md='4' className="">
-                                    <CheckBox
-                                        // defaultChecked
-                                        color="primary"
-                                        className={"float-left ml-2"}
-                                        name="saveForm"
-                                        id="saveForm"
-                                        onChange={setFormValue}
-                                        checked={saveFormValue}
-                                    />
-                                    <label className={"checkBoxContent" + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
-                                </Col>
-                                <Col md='6'>
-                                    <TextInput
-                                        id="formName"
-                                        name="formName"
-                                        label='Name the form'
-                                        variant="outlined"
-                                        onChange={formik.handleChange}
-                                        fullWidth={true}
-                                        disabled={!saveFormValue}
-                                        value={formik.values.formName ? formik.values.formName : ""}
-                                        error={saveFormValue && Boolean(formik.errors.formName)}
-                                        helperText={saveFormValue && formik.errors.formName}
-                                    />
-                                </Col>
-                            </Row>
-                    <hr />
+                        <Row>
+                            <Col md='4' sm="4" xs="4" className="">
+                                <CheckBox
+                                    // defaultChecked
+                                    color="primary"
+                                    className={"float-left ml-2"}
+                                    name="saveForm"
+                                    id="saveForm"
+                                    onChange={setFormValue}
+                                    checked={saveFormValue}
+                                />
+                                <label className={"checkBoxContent" + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
+                            </Col>
+                            <Col md='6' sm="6" xs="6" >
+                                <TextInput
+                                    id="formName"
+                                    name="formName"
+                                    label='Name the form'
+                                    variant="outlined"
+                                    onChange={formik.handleChange}
+                                    fullWidth={true}
+                                    disabled={!saveFormValue}
+                                    value={formik.values.formName ? formik.values.formName : ""}
+                                    error={saveFormValue && Boolean(formik.errors.formName)}
+                                    helperText={saveFormValue && formik.errors.formName}
+                                />
+                            </Col>
+                        </Row>
+                        <hr />
                     </Col>
-                    
+
                     <Col lg="12" md="12" className="float-right mb-3">
                         <Button color={!disableSearch ? 'default' : 'primary'} variant="contained" className={" text-capitalize mr-2 float-right " + (!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} type="submit" disabled={!disableSearch}>{t('search')}</Button>&nbsp;&nbsp;&nbsp;
-                    <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={homePage} type="submit">{t('cancel')}</Button>
+                        <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={homePage} type="submit">{t('cancel')}</Button>
                     </Col>
                 </Row>
 
