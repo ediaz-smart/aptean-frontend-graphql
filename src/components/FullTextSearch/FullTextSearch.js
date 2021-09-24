@@ -177,12 +177,13 @@ function FullTextSearch() {
 		}
 	};
 	const getKeyCode = (e) => {
-		if (e.type == "keypress") {
-			// For Auto Suggest detect right arrow function
-			setKeyPressCode(e.keyCode);
-		} else {
-			setKeyCode(e.keyCode);
-		}
+		// if (e.type == "keypress") {
+		// 	// For Auto Suggest detect right arrow function
+		// 	setKeyPressCode(e.keyCode);
+		// } else {
+		// 	setKeyCode(e.keyCode);
+		// }
+		setKeyCode(e.keyCode);
 		// setKeyCodeEvent(e);
 		let getCurrentSel = window.getSelection();
 		setKeyCodeEvent(getCurrentSel);
@@ -192,6 +193,7 @@ function FullTextSearch() {
 		console.log(e.target.textContent.trim().length, "e.length...");
 		let getClass = [];
 		let selElTxt = "";
+		let postObj = {};
 
 		let checkPaste = false;
 		if (e.ctrlKey || e.metaKey) {
@@ -219,7 +221,7 @@ function FullTextSearch() {
 		// if (e.code != "ArrowRight") {
 		//   setRightArrowEvent(false);
 		// }
-
+		let htmlElement = document.getElementById("textareaDiv");
 		if (e.keyCode == 8) {
 			if (removeClassArray.includes(getClass[0])) {
 				e.preventDefault();
@@ -230,10 +232,10 @@ function FullTextSearch() {
 			}
 			setRightArrowEvent(false);
 		} else if (e.keyCode == 39) {
-			let htmlElement = document.getElementById("textareaDiv");
+			
 			setRightArrowEvent(true);
 			// callParseQuery(e.target.textContent, htmlElement, true);
-			let postObj = {
+			postObj = {
 				value:e.target.textContent,
 				element:htmlElement,
 				isRightArrow:true,
@@ -242,7 +244,14 @@ function FullTextSearch() {
 			parseQuery(postObj);
 		} else {
 			setRightArrowEvent(false);
-			e.stopPropagation();
+			// postObj = {
+			// 	value:e.target.textContent,
+			// 	element:htmlElement,
+			// 	isRightArrow:false,
+			// 	pasteContent:null
+			// }
+			// parseQuery(postObj);
+			// e.stopPropagation();
 		}
 	};
 	const handlePaste = (e) => {
@@ -309,6 +318,7 @@ function FullTextSearch() {
 				value = "";
 				updateHtmlElement(value);
 			}
+			setSearchTermPopup(false);
 		} else {
 			replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition);
 			// replaceStringHtml(value,keyCode);
@@ -604,7 +614,9 @@ function FullTextSearch() {
 							newSpan.innerHTML = "";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
-							// getEndPosition = savedCaretPosition.end + 1;
+							// placeCursorPos = true;
+
+							// getEndPosition = savedCaretPosition.end;
 							// setTimeout(() => {
 							// 	setCurrentCursorPosition(getEndPosition);
 							// }, 0);
@@ -736,7 +748,7 @@ function FullTextSearch() {
 		} else if (keyCode == 8) {
 
 			if (lastChild && lastChild.attributes.length > 0) {
-
+				let trimText = htmlElement.children[htmlElement.children.length - 1].textContent.trim();
 				if (
 					htmlElement.children[htmlElement.children.length - 1].textContent
 						.length == 0 ||
@@ -752,6 +764,7 @@ function FullTextSearch() {
 					// 	getEndPosition = savedCaretPosition.end - 4;
 					// 	console.log(getEndPosition,'getEndPosition');
 					// }
+					placeCursor = false;
 					htmlElement.children[htmlElement.children.length - 1].outerHTML = "";
 					setSearchTermPopup(false);
 				} else if (
@@ -759,7 +772,6 @@ function FullTextSearch() {
 					searchPubArr.includes(htmlElement.children[htmlElement.children.length - 1].textContent)
 				) {
 					// htmlElement.children[htmlElement.children.length - 1].outerHTML = pubString;
-					let trimText = htmlElement.children[htmlElement.children.length - 1].textContent.trim();
 					if (trimText.length == 2) {
 						
 						// Checking If Already Auto Suggest Text updated in DOM
@@ -788,7 +800,6 @@ function FullTextSearch() {
 					htmlElement.children[htmlElement.children.length - 1].textContent &&
 					convertLowerPublTxt.startsWith(htmlElement.children[htmlElement.children.length - 1].textContent))
 				{
-					let trimText = htmlElement.children[htmlElement.children.length - 1].textContent.trim();
 					if (trimText.length > 3) {
 						// Checking If Already Auto Suggest Text updated in DOM
 						if (checkpublicationelements.length == 0) {
@@ -818,9 +829,13 @@ function FullTextSearch() {
 					if (checkpublicationelements.length > 0) {
 						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 					}
+					if(trimText.length != savedCaretPosition.end)
+					{
+						getEndPosition = savedCaretPosition.end - 1;
+					}
 					placeCursor = false;
 					placeCursorPos = true;
-					getEndPosition = savedCaretPosition.end;
+					// getEndPosition = savedCaretPosition.end;
 					// setTimeout(() => {
 					// 	getEndPosition = savedCaretPosition.end;
 					// 	setCurrentCursorPosition(getEndPosition);
@@ -949,11 +964,11 @@ function FullTextSearch() {
 				}
 			}
 			// If Html Content is Empty, will clear the div content
-			if(htmlElement.textContent.length == 0)
-			{
-				console.log(htmlElement.textContent,'htmlElement.textContent');
-				clearParser();
-			}
+			// if(htmlElement.textContent.trim().length == 0)
+			// {
+			// 	console.log(htmlElement.textContent,'htmlElement.textContent');
+			// 	clearParser();
+			// }
 			// // Replacing Last Empty Space in Inner Html to edit from the last character if we delete the characters
 			// var currentIndex = htmlElement.innerHTML.lastIndexOf("&nbsp;");
 			// htmlElement.innerHTML = htmlElement.innerHTML.slice(0, currentIndex) + htmlElement.innerHTML.slice(currentIndex).replace('&nbsp;','');
@@ -1698,16 +1713,22 @@ function FullTextSearch() {
 		let checkCharLen = getSearchVal.length;
 
 		console.log(checkCharLen, "checkCharLen");
+		console.log(keyCode, "checkkeyCode");
+		if(keyCode == 32)
+		{
+			searchTerm(null,keyCode);
+		}
 		if (checkCharLen > 2 && keyCode != 32) {
 			// Search value not in operator
 			if(!checkORValues.includes(getSearchVal) && !checkANDValues.includes(getSearchVal) && !checkNOTValues.includes(getSearchVal))
 			{
-				searchTerm(getSearchVal);
+				searchTerm(getSearchVal,keyCode);
 			}
 			
 		} else if (checkCharLen < 3) {
 			setSearchTermPopup(false);
 		}
+		
 		try {
 			let queryTxt = "";
 			let prevClass = "";
@@ -1784,10 +1805,12 @@ function FullTextSearch() {
 			{
 				console.log(getEndPosition,'getEndPosition');
 					// setTimeout(() => {
-				setCurrentCursorPosition(getEndPosition);
-					// }, 0);
+				if(getEndPosition > 0)
+				{
+					setCurrentCursorPosition(getEndPosition);
+				}
 			}
-			if(htmlElement.textContent.length == 0)
+			if(htmlElement.textContent.trim().length == 0)
 			{
 				clearParser();
 			}
@@ -1926,7 +1949,11 @@ function FullTextSearch() {
 		}
 		placeCaretAtEnd(htmlElement);
 	};
-	const searchTerm = async (value) => {
+	const searchTerm = async (value,keyEvt) => {
+		// setTimeout(() => {
+		// 	console.log(keyCode, "keyCodess");
+		// }, 500);
+		console.log(keyEvt, "keyEvt");
 		setSearchTermPopup(false);
 		let userId = userInfo && userInfo.current_user.gq_user_id;
 		let searchParam = `&json_query=${value}&rows=25&ontologies=${ontology}&user_id=${userId}`;
@@ -2322,7 +2349,7 @@ function FullTextSearch() {
               id="textareaDiv"
               contentEditable="true"
               onPaste={handlePaste}
-              onKeyPress={getKeyCode}
+            //   onKeyPress={getKeyCode}
               onKeyDown={getKeyCode}
               onInput={(e) => callParseQuery(e.target.textContent, e,false)}
               tabIndex="0"
