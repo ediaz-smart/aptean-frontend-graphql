@@ -312,13 +312,27 @@
 /* News and Update */
 
 .newsUpdateContent {
-    max-height: 200px;
+    padding-right: 15px;
+    max-height: 250px;
     overflow: auto;
     scrollbar-width: none;
 }
 
+.newsUpdateContent:hover {
+    padding-right: 15px;
+    scrollbar-width: unset;
+}
+
+.newsUpdateContent::-webkit-scrollbar-track {
+    visibility: none;
+}
+
+.newsUpdateContent:hover::-webkit-scrollbar {
+    visibility: visible
+}
+
 .newsUpdateContent::-webkit-scrollbar {
-    display: none
+    visibility: none;
 }
 
 .MuiFormHelperText-root.Mui-error {
@@ -636,4 +650,20 @@ label {
     clear: both
 }
 
-@media only screen and (min-width: 768px) {}
+@media only screen and (max-width: 1300px) {
+    .newsUpdateContent {
+        padding-right: 25px;
+    }
+    .newsUpdateContent:hover {
+        padding-right: 10px;
+    }
+}
+
+@media only screen and (min-width: 1301px) {
+    .newsUpdateContent {
+        padding-right: 15px;
+    }
+    .newsUpdateContent:hover {
+        padding-right: 15px;
+    }
+}
