@@ -7,7 +7,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Newsupdate from '../../shared/newspdate';
+import NewsUpdate from '../../shared/NewsUpdate';
 import { url } from '../../reducers/url';
 
 
@@ -82,7 +82,7 @@ function MostUsedPanel() {
             {/* <Container className="p-0 m-5"> */}
             <Row>
                 <Col md="9" sm="9" xs='9'>
-                    <Newsupdate isMostUsedPanel={true} />
+                    <NewsUpdate isMostUsedPanel={true} />
                 </Col>
                 <Col md="3" sm="3" xs='3' className={classes.columnPadding + ' mb-3'}>
                     <div className={classes.savedSearchForm}>
