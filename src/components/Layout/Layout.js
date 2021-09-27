@@ -4,6 +4,9 @@ import Footer from '../../shared/footer';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import { useParams } from 'react-router-dom';
+
+
 
 const useStyles = makeStyles((theme) => ({
     mainContent: {
@@ -15,12 +18,14 @@ const useStyles = makeStyles((theme) => ({
 
 function Layout(props) {
     const classes = useStyles();
+    const { patentId } = useParams();
+    console.log('patendId', patentId)
     return (
 
         <div className={classes.mainContent}>
-            <Header title={props.title} />
+            <Header title={props.title == "Full Document View" ? patentId : props.title}/>
             {props.children}
-            <Footer />
+            {props.title == "Full Document View" ? <div></div> : <Footer />}
         </div>
     );
 }

@@ -24,6 +24,7 @@ import ConvertSequence from '../components/ConvertSequence/ConvertSequence';
 import ParsedXml from '../components/ConvertSequence/ParsedXml';
 import PersonalDatabase from '../components/PersonalDatabase/PersonalDatabase';
 import ScrollToTop from "../components/Home/ScrollToTop";
+import fullDocView from "../components/FullTextSearch/FullDocumentView";
 
 // import {isAdminLogin} from './helpers/authorizedInfo'
 // const AuthRoute = ({ component: Component, ...rest }) => {
@@ -80,7 +81,7 @@ class Routes extends React.Component {
                         <Route exact path="/convertsequence" title="Sequence format Conversion" component={ConvertSequence} />
                         <Route exact path="/parsedxml" title="Sequence format Conversion" component={ParsedXml} />
                         <Route exact path="/personaldb" title="Personal Databases" component={PersonalDatabase} />
-
+                        <Route exact path="/fulldocview/:patentId" title="Full Document View" component={fullDocView} />
                     </React.Fragment>
                     {/* :  */}
                     <Redirect to='/login' />

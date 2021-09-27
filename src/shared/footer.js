@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     }
 });
 
-export default function Footer() {
+export default function Footer(props) {
     const classes = useStyles();
     const {t, i18n} = useTranslation('common');
     const [copyRightData,setCopyRightData] = useState();
@@ -50,7 +50,7 @@ export default function Footer() {
             <AppBar position="static" color="primary" className={classes.footerNav}>
                 <Container>
                     <Toolbar>
-                        <p className={"w-100 text-center appTextColor " + classes.footerMargin}>{ReactHtmlParser(copyRightData)}</p>
+                        <p className={"w-100 text-center appTextColor " + (props.hideMarginTop ? "" : classes.footerMargin)}>{ReactHtmlParser(copyRightData)}</p>
                     </Toolbar>
                 </Container>
             </AppBar>

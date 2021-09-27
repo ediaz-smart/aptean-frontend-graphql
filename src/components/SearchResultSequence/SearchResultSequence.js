@@ -632,7 +632,7 @@ function SearchResultSequence(props) {
         setSelectData(state)
     }
     const handleScroll = (e, id) => {
-        document.getElementById(id).scrollIntoView();
+        document.getElementById(id).scrollIntoView({behavior: "smooth", inline: "nearest"});
         // const item = ReactDOM.findDOMNode(id);
         // var element = document.querySelector("#"+id);
         // element.scrollIntoView();
