@@ -313,7 +313,12 @@
 
 .newsUpdateContent {
     max-height: 200px;
-    overflow: auto
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.newsUpdateContent::-webkit-scrollbar {
+    display: none
 }
 
 .MuiFormHelperText-root.Mui-error {

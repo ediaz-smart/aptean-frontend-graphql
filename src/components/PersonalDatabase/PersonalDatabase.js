@@ -18,6 +18,13 @@ import styled from "styled-components";
 import Radio from '@material-ui/core/Radio';
 
 const useStyles = makeStyles((theme) => ({
+    container: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    contentContainer: {
+        minWidth: '1000px'
+    },
     loginDiv: {
         border: '2px solid #bfb4b4',
         borderRadius: '6px',
@@ -191,9 +198,9 @@ const columns = [
 
 const isIndeterminate = indeterminate => indeterminate;
 const selectableRowsComponentProps = { indeterminate: isIndeterminate };
-function homePage() {
+// function homePage() {
 
-}
+// }
 function PersonalDatabase() {
     const classes = useStyles();
     const [thing, setThing] = useState([]);
@@ -375,59 +382,59 @@ function PersonalDatabase() {
     console.log(searchPersonalData, "searchPersonalData searchPersonalData searchPersonalData");
 
     return (
-        <div >
-            <Row className={classes.columnPad} >
-                <Col>
-                    <DataTable
-                        className='search-table'
-                        columns={columns}
-                        data={searchPersonalData}
-                        defaultSortField="title"
-                        sortIcon={<SortIcon />}
-                        onSelectedRowsChange={updateVal}
-                        customStyles={customStyles}
-                        noHeader={true}
-                        noDataComponent='No items were found.'
-                        //   pagination
-                        // conditionalRowStyles={conditionalRowStyles}
-                        selectableRows
-                        selectableRowsComponent={Radio}
-                        selectableRowsComponentProps={selectableRowsComponentProps}
-                    />
-                </Col>
-            </Row>
-            <Row className="float-right">
-                {/* <Col  className={classes.columnPadding}>
-    <Button variant="contained" className={classes.buttonStyleCancel} onClick={homePage}>Cancel</Button>
-     &nbsp;&nbsp;&nbsp;
-    <Button color="primary" className='accountinfo' variant="contained" onClick={()=>deleteTemplate()} className="float-right loginSubmit text-capitalize" type="submit">Delete Selected Saved Search Forms</Button>   
+        <div className={classes.container}>
+            <div className={classes.contentContainer}>
+                <Row className={classes.columnPad} >
+                    <Col>
+                        <DataTable
+                            className='search-table'
+                            columns={columns}
+                            data={searchPersonalData}
+                            defaultSortField="title"
+                            sortIcon={<SortIcon />}
+                            onSelectedRowsChange={updateVal}
+                            customStyles={customStyles}
+                            noHeader={true}
+                            noDataComponent='No items were found.'
+                            //   pagination
+                            // conditionalRowStyles={conditionalRowStyles}
+                            selectableRows
+                            selectableRowsComponent={Radio}
+                            selectableRowsComponentProps={selectableRowsComponentProps}
+                        />
+                    </Col>
+                </Row>
+                <Row className="float-right">
+                    {/* <Col  className={classes.columnPadding}>
+                <Button variant="contained" className={classes.buttonStyleCancel} onClick={homePage}>Cancel</Button>
+                 &nbsp;&nbsp;&nbsp;
+                <Button color="primary" className='accountinfo' variant="contained" onClick={()=>deleteTemplate()} className="float-right loginSubmit text-capitalize" type="submit">Delete Selected Saved Search Forms</Button>   
   
-      </Col> */}
-                <div className={classes.footerDiv}>
-                    {searchPersonalData && searchPersonalData.length != 0 ?
-                        <Fragment>
-                            {checkValue && thing.selectedCount >= 1 ?
-                                <Button className='accountInfo' color="default" disableRipple={true} onClick={() => deleteTemplate()} variant="contained">Delete Selected Database</Button>
-                                : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">Delete Selected Database</Button>
+                </Col> */}
+                    <div className={classes.footerDiv}>
+                        {searchPersonalData && searchPersonalData.length != 0 ?
+                            <Fragment>
+                                {checkValue && thing.selectedCount >= 1 ?
+                                    <Button className='accountInfo' color="default" disableRipple={true} onClick={() => deleteTemplate()} variant="contained">Delete Selected Database</Button>
+                                    : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">Delete Selected Database</Button>
 
-                            }
-                            <Button className={classes.buttonStyleS} disableRipple={true} onClick={() => console.log("")} >Upload New Database</Button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <Button className={classes.buttonStyleCancel} onClick={() => cancelForm()} disableRipple={true} color="default" variant="contained">Cancel</Button>
-                            <PersonalDBModal
-                                show={modalShow}
-                                onHide={() => cancelForms()}
-                                tryAgain={() => deleteForm()}
-                            // onMessage={errorMessage}
-                            />
-                        </Fragment>
-                        : <p></p>
-                    }
-                </div>
-            </Row>
-
+                                }
+                                <Button className={classes.buttonStyleS} disableRipple={true} onClick={() => console.log("")} >Upload New Database</Button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <Button className={classes.buttonStyleCancel} onClick={() => cancelForm()} disableRipple={true} color="default" variant="contained">Cancel</Button>
+                                <PersonalDBModal
+                                    show={modalShow}
+                                    onHide={() => cancelForms()}
+                                    tryAgain={() => deleteForm()}
+                                // onMessage={errorMessage}
+                                />
+                            </Fragment>
+                            : <p></p>
+                        }
+                    </div>
+                </Row>
+            </div>
         </div>
-
     );
 }
 
