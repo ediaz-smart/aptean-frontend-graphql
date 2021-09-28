@@ -271,7 +271,7 @@ function NewPassword() {
 
                         <h5>Password Recovery</h5>
                         <br />
-                        <p>Your password recovery token has expired. <br/> Please return to the passord reset option and try again.</p>
+                        <p>Your password recovery token has expired. <br/> Please return to the password reset option and try again.</p>
                         <p>Please contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.</p>
                         <Button variant="contained" className='accountInfo' onClick={()=>forgotPage()}>Password reset</Button> 
                     </div>
