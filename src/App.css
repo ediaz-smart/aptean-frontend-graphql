@@ -315,24 +315,14 @@
     padding-right: 15px;
     max-height: 250px;
     overflow: auto;
+    -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
 .newsUpdateContent:hover {
     padding-right: 15px;
-    scrollbar-width: unset;
-}
-
-.newsUpdateContent::-webkit-scrollbar-track {
-    visibility: none;
-}
-
-.newsUpdateContent:hover::-webkit-scrollbar {
-    visibility: visible
-}
-
-.newsUpdateContent::-webkit-scrollbar {
-    visibility: none;
+    -ms-overflow-style: auto;
+    scrollbar-width: auto;
 }
 
 .MuiFormHelperText-root.Mui-error {
