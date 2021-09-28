@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 		marginRight: "300px",
 	},
 	projTitleActive: {
-		backgroundColor: '#008EC5',
+		backgroundColor: '#337ab7',
 		color: '#fff',
 		padding: '3px',
 		borderRadius: '3px'
