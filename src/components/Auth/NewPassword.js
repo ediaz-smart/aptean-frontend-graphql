@@ -20,6 +20,7 @@ import { supportMail } from '../../config';
 import Footer from '../../shared/footer';
 import AccountService from '../../services/accountInfo';
 import ChangePassCheckModal from '../../shared/Modal/ChangePassCheckModal'
+import ForgotPassword from '../../services/forgotpassword';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -171,6 +172,12 @@ function NewPassword() {
     function loginPage() {
         history.push('/login');
     }
+
+    function forgotPage()
+    {
+        history.push('/forgot');
+    }
+
     return (
         <Container className="mt-100">
 
@@ -264,8 +271,9 @@ function NewPassword() {
 
                         <h5>Password Recovery</h5>
                         <br />
-                        <br />
-                        <p>The password recovery link is invalid. It might be expired, please try <a href="query?do=gquser.recover_password">Password Recovery</a> again to get a new link.</p>
+                        <p>Your password recovery token has expired. <br/> Please return to the passord reset option and try again.</p>
+                        <p>Please contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.</p>
+                        <Button variant="contained" className='accountInfo' onClick={()=>forgotPage()}>Password reset</Button> 
                     </div>
 
 
