@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
         // },
     },
     profileText: {
+        marginLeft: '5px',
         color: '#5A6868'
     },
     headerNav: {
