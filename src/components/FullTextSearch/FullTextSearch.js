@@ -377,6 +377,10 @@ function FullTextSearch() {
 		console.log(isArrowRight, "isArrowRight");
 		console.log(savedCaretPosition, "savedCaretPosition");
 		let htmlElement = document.getElementById("textareaDiv");
+		htmlElement.innerHTML = htmlElement.innerHTML.replace(
+			/<br>/g,
+			""
+		);
 
 		console.log(pasteContent, "pasteContent1");
 		console.log(detectPaste, "detectPaste");
@@ -605,10 +609,12 @@ function FullTextSearch() {
 								NOTString;
 							placeCursor = true;
 						} else {
-							htmlElement.innerHTML = htmlElement.innerHTML.replaceAll(
-								"<br>",
-								""
-							);
+							// htmlElement.innerHTML = htmlElement.innerHTML.replace(
+							// 	/<br>/g,
+							// 	""
+							// );
+							console.log(htmlElement.innerHTML,'htmlElement.innerHTML..');
+							console.log(htmlElement.textContent,'htmlElement.textContent..');
 							var newSpan = document.createElement("span");
 							newSpan.setAttribute("class", "space");
 							newSpan.innerHTML = "";
@@ -1123,14 +1129,18 @@ function FullTextSearch() {
 									.textContent + lastValue;
 						} else {
 							// // Adding AND operator if space enters
-							htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+							if (htmlElement.innerHTML.slice(-1) != ">") {
+								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+							}
 							//create the DOM object
 							var newSpan = document.createElement("span");
 							// add the class to the 'span'
 							newSpan.setAttribute("class", "query");
 							// let checkOpText = lastPrevChild.innerText+lastValue;
 							if (lastChild.innerText.length == 0) {
-								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+								// if (htmlElement.innerHTML.slice(-1) != ">") {
+								// 	htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+								// }
 
 								newSpan.innerHTML = lastValue;
 							} else {
@@ -1824,6 +1834,7 @@ function FullTextSearch() {
 					});
 				}	
 			}, 100);
+			
 			console.log(htmlElement.children, "htmlElement.children");
 
 			queryTxt.replace(/[()]/g, "");

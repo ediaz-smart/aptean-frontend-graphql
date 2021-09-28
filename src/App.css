@@ -365,6 +365,9 @@
     color: #777777;
     font-style: italic;
 }
+.space{
+    visibility: hidden;
+}
 
 .opClass::after,
 .space::after,
