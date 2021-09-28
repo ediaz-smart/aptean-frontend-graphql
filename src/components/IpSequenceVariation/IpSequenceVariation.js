@@ -341,7 +341,7 @@ function IpSequenceVariation() {
     const [creditValues, setCreditValues] = useState(initialCreditValues);
 
     let redoInitialObj = {
-        searchDetails: `IP ${moment().format('YYYY-MM-DD h:mm:ss')}`,
+        searchDetails: `IP ${moment().format('YYYY-MM-DD H:mm:ss')}`,
         querySequence: '',
         alignments: '5000',
         genePastPercentage: '80',

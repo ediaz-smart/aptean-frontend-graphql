@@ -352,7 +352,7 @@ function IpSeqSearch() {
     console.log('moment', moment()._d)
     // pubFormatted = moment(pubFormatted).format('MMMM-DD-YYYY')
     let redoInitialObj = {
-        searchDetails: `IP ${moment().format('YYYY-MM-DD h:mm:ss')}`,
+        searchDetails: `IP ${moment().format('YYYY-MM-DD H:mm:ss')}`,
         querySequence: '',
         alignments: '5000',
         genePastPercentage: '80',
@@ -1269,6 +1269,10 @@ function IpSeqSearch() {
     }
 
     let subjectText = "GenomeQuest: Error updating account information [Error code: " + errorMsg + "]";
+
+    // if(formik.errors && Object.keys(formik.errors).length > 0) {
+    //     document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({behavior: "smooth", inline: "nearest"});
+    // }
 
     return (
         <div className={classes.grow}>
