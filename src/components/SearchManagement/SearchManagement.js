@@ -37,13 +37,12 @@ import ProgressBar from '../../shared/ProgressBar/Progress';
 import { url } from '../../reducers/url';
 import CustomPagination from '../../shared/CustomPagination';
 import MergeResults from '../MergeResults/MergeResults';
-
+import { containerWidth } from '../../shared/constants'
 
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        width: '96%',
-        maxWidth: '1000px',
+        width: containerWidth,
         margin: '0 auto',
         minHeight: '260px',
         padding: '23px 0 5px'
@@ -127,7 +126,7 @@ const useStyles = makeStyles((theme) => ({
         border: 'none !important'
     },
     projTitleActive: {
-        backgroundColor: '#008EC5',
+        backgroundColor: '#337ab7',
         color: '#fff',
         padding: '3px',
         borderRadius: '3px'

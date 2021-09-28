@@ -14,12 +14,11 @@ import AccountService from '../../services/accountInfo';
 import ChangePasswordModal from '../../shared/Modal/ChangePasswordModal'
 import ContentErrorModal from '../../shared/Modal/ContentErrorModal'
 import ChangePassCheckModal from '../../shared/Modal/ChangePassCheckModal'
-
+import { containerWidth } from '../../shared/constants'
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
-    width: '96%',
-    maxWidth: '1000px',
+    width: containerWidth,
     margin: '30px auto',
     minHeight: '240px',
     marginTop: '65px',

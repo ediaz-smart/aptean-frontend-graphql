@@ -28,7 +28,7 @@ import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStru
 import SeqVIModal from '../../shared/Modal/SeqVIModal';
 import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModal';
 import SavedSearch from '../../services/savedsearch';
-
+import { containerWidth } from '../../shared/constants'
 //validation
 import Validate from '../../helpers/validate';
 
@@ -38,8 +38,7 @@ import AccountInfo from '../../services/accountInfo';
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        width: '96%',
-        maxWidth: '1000px',
+        width: containerWidth,
         margin: '0 auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',

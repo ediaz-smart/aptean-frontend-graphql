@@ -32,15 +32,14 @@ import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModa
 
 //validation
 import Validate from '../../helpers/validate';
-
+import { containerWidth } from '../../shared/constants'
 //service
 import AccountInfo from '../../services/accountInfo';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        width: '96%',
-        maxWidth: '1000px',
+        width: containerWidth,
         margin: '0 auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',

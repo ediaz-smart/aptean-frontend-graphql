@@ -14,16 +14,17 @@ import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
 import Footer from '../../shared/footer';
 import { supportMail } from '../../config';
+import { containerWidth } from '../../shared/constants'
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        minWidth: '1000px',
+        minWidth: containerWidth,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
     },
     contentContainer: {
-        maxWidth: '1000px',
+        width: containerWidth,
         padding: '0 0 0 20px',
         marginLeft: '20px'
     },

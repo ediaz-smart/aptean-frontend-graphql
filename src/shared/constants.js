@@ -1,0 +1,1 @@
+export const containerWidth = '1000px';

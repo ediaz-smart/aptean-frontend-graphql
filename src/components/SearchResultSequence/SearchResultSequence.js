@@ -31,7 +31,7 @@ import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
 import ShareDataModal from '../../shared/Modal/ShareDataModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
-
+import { containerWidth } from '../../shared/constants'
 
 
 
@@ -40,10 +40,10 @@ import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal'
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        width: '96%',
+        // width: '96%',
         margin: '0 auto 28px',
         minHeight: '260px',
-        maxWidth: '1000px',
+        width: containerWidth,
         // borderBottom: '1px solid #cec7c7',
         padding: '23px 16px 14px',
         border: '1px solid #cec7c7',
@@ -632,7 +632,7 @@ function SearchResultSequence(props) {
         setSelectData(state)
     }
     const handleScroll = (e, id) => {
-        document.getElementById(id).scrollIntoView({behavior: "smooth", inline: "nearest"});
+        document.getElementById(id).scrollIntoView();
         // const item = ReactDOM.findDOMNode(id);
         // var element = document.querySelector("#"+id);
         // element.scrollIntoView();

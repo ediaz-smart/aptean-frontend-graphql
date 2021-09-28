@@ -2,9 +2,10 @@ import MostUsedPanel from './MostUsedPanel';
 import ApplicationPanel from "./ApplicationPanel";
 import RecentResults from "./RecentResults";
 import { Fragment } from 'react';
+import { containerWidth } from '../../shared/constants'
 
 const homeContentStyle = {
-    maxWidth: '1000px'
+    width: containerWidth
 }
 const homeContainer = {
     display: 'flex',

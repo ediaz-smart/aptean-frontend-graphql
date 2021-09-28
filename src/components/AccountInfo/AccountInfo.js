@@ -16,13 +16,12 @@ import { toast } from 'react-toastify';
 import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
 import SaveContentModal from '../../shared/Modal/SaveContentModal'
 import moment from 'moment';
-
+import { containerWidth } from '../../shared/constants'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
-    width: '96%',
-    maxWidth: '1000px',
+    width: containerWidth,
     margin: '30px auto',
     minHeight: '260px',
     marginTop: '70px',
