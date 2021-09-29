@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
     antibodyNumInput: {
         width: '8%'
     }
+
 }));
 
 function SearchResultAntibody() {
