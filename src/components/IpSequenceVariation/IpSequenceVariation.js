@@ -142,6 +142,7 @@ const AccordionSummary = withStyles({
         },
     },
     content: {
+        margin: '0',
         '&$expanded': {
             margin: '0',
         },
@@ -341,7 +342,7 @@ function IpSequenceVariation() {
     const [creditValues, setCreditValues] = useState(initialCreditValues);
 
     let redoInitialObj = {
-        searchDetails: `IP ${moment().format('YYYY-MM-DD H:mm:ss')}`,
+        searchDetails: `IP ${moment().format('YYYY-MM-DD h:mm:ss')}`,
         querySequence: '',
         alignments: '5000',
         genePastPercentage: '80',
