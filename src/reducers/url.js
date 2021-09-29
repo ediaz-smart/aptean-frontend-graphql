@@ -51,5 +51,6 @@ export const url = {
     fullTextSearchTerm:"do=gqft.suggest_term&format=json",
     fullTextSearchResult:"do=gqft.search_by_text&format=json",
     getSearchCount:"do=gqfolder.get_folder_info&format=json",
-    mergeResults: "do=gqworkflow.merge_results&format=json"
+    mergeResults: "do=gqworkflow.merge_results&format=json",
+    fullDocView: "do=gqft.get_patent_doc&format=json"
 }

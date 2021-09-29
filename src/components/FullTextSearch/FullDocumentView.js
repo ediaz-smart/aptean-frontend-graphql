@@ -7,8 +7,11 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { useParams } from 'react-router-dom';
 
 import Footer from '../../shared/footer';
+import fulltextsearch from '../../services/fulltextsearch';
+import fullTextService from '../../services/fulltextsearch';
 
 const Accordion = withStyles({
     root: {
@@ -108,6 +111,7 @@ const useStyles = makeStyles((theme) => ({
 function FullDocumentView() {
     const { t, i18n } = useTranslation('common');
     const classes = useStyles();
+    const { patentId } = useParams();
     //state
     const [isAbstractOpen, setIsAbstractOpen] = useState(true);
     const [isClaimsOpen, setIsClaimsOpen] = useState(true);
@@ -116,6 +120,20 @@ function FullDocumentView() {
     const [isLegalEventsOpen, setIsLegalEventsOpen] = useState(true);
     const [isUsPairOpen, setUsPairOpen] = useState(true);
     const [isCitationsOpen, setIsCitationsOpen] = useState(true);
+    const [docContent, setDocContent] = useState({});
+
+    useEffect(async()=>{
+        let getResponse;
+        if(patentId){
+        getResponse = await fullTextService.fullDocViewService(null, patentId);
+        }
+        if(getResponse && getResponse.response_status && getResponse.response_status == 0) {
+            setDocContent(getResponse.response_content);
+        }
+        console.log('getResponse', getResponse)
+    });
+
+    console.log('stateres', docContent)
 
     const handleScroll = (e, id) => {
         document.getElementById(id).scrollIntoView({ behavior: "smooth", inline: "nearest" });
