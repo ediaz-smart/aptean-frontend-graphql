@@ -38,7 +38,8 @@ import AccountInfo from '../../services/accountInfo';
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        width: containerWidth,
+        width: '96%',
+        maxWidth: containerWidth,
         margin: '0 auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',

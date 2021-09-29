@@ -42,7 +42,8 @@ import { containerWidth } from '../../shared/constants'
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        width: containerWidth,
+        width: '96%',
+        maxWidth: containerWidth,
         margin: '0 auto',
         minHeight: '260px',
         padding: '23px 0 5px'
@@ -275,7 +276,7 @@ const customStyles = {
             paddingLeft: '8px', // override the cell padding for data cells
             paddingRight: '8px',
             borderLeft: '1px solid #0606061f',
-            borderBottom: '1px solid #0606061f',
+            // borderBottom: '1px solid #0606061f',
             '&:first-child': {
                 borderLeft: '0',
             },
