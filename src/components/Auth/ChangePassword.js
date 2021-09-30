@@ -18,7 +18,8 @@ import { containerWidth } from '../../shared/constants'
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
-    width: containerWidth,
+    width: '96%',
+    maxWidth: containerWidth,
     margin: '30px auto',
     minHeight: '240px',
     marginTop: '65px',
@@ -174,12 +175,10 @@ function ChangePassword() {
   const passwordVlaue = formik.values.currentPassword;
   const passwordCnVlaue = formik.values.newPassword;
   const passwordCn1Vlaue = formik.values.confirmPassword;
-  console.log(passwordVlaue, "vlauess vlauess vlauess vlauess vlauess");
   const passValCheck = passwordVlaue.length;
   const passValCheck1 = passwordCnVlaue.length;
   const passValCheck2 = passwordCn1Vlaue.length;
 
-  console.log(passValCheck, "passValCheck passValCheck passValCheck passValCheck passValCheck");
   function tryAgainForm() {
     formik.setFieldValue('currentPassword', '');
     setModalShow(false)

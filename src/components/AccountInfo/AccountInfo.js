@@ -143,15 +143,8 @@ function AccountInfo() {
       data.dspace_workflow ? setuserAnalyses(bytesToSize(data.dspace_workflow)) : setuserAnalyses(0);
       data.dspace_seqdb ? setuserSeqDatabase(bytesToSize(data.dspace_seqdb)) : setuserSeqDatabase(0);
       data.dspace_uploaded ? setuserUploads(bytesToSize(data.dspace_uploaded)) : setuserUploads(0);
-      console.log(userFirstName, "userFirstName");
-      console.log(userLastName, "userLastName");
-      console.log(accountInfoData, "accountInfoData accountInfoData");
       data.first_name ? setuserfirstName(data.first_name) : accountInfoData && accountInfoData.first_name ? setuserfirstName(accountInfoData.first_name) : setuserfirstName('');
       data.last_name ? setuserlastName(data.last_name) : accountInfoData && accountInfoData.last_name ? setuserlastName(accountInfoData.last_name) : setuserlastName('');
-      console.log(userFirstName, "userFirstName");
-      console.log(userLastName, "userLastName");
-
-
     }
 
   }
@@ -223,11 +216,8 @@ function AccountInfo() {
     formik.setFieldValue('confirmPassword', '');
     setModalShow(false)
   }
-  // console.log(formik,"vlauess vlauess vlauess vlauess vlauess");
   const passwordVlaue = formik.values.confirmPassword;
-  console.log(passwordVlaue, "vlauess vlauess vlauess vlauess vlauess");
   const passValCheck = passwordVlaue.length;
-  console.log(passValCheck, "passValCheck passValCheck passValCheck passValCheck passValCheck");
 
   function cancelForm() {
     setModalShow(false);

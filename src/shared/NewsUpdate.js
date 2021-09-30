@@ -11,28 +11,25 @@ const useStyles = makeStyles((theme) => ({
     newsContent: {
         textAlign: 'justify',
         lineHeight: '22px',
+        marginLeft: '1.5rem',
+        paddingLeft: '24px',
+        borderLeft: '1px solid #d8d4d4',
+        height: '315px',
+        overflowX: 'scroll',
         '& p': {
             fontSize: '14px'
         }
     },
-    '@media (min-width: 780px)': {
-        newsContent: {
-            marginLeft: '1.5rem',
-            paddingLeft: '36px',
-            borderLeft: '1px solid #d8d4d4',
-            height: '315px',
-            overflowX: 'scroll'
-        },
-        forgotNewsContent: {
-            height: '380px'
-        },
-        newsMostUsedContent: {
-            marginLeft: '0',
-            paddingLeft: '0',
-            borderLeft: 'none',
-            height: '250px',
-            overflowX: 'unset'
-        }
+    newsMostUsedContent: {
+        marginLeft: '0',
+        paddingLeft: '0',
+        borderLeft: 'none',
+        height: '250px',
+        overflowX: 'unset'
+    },
+    forgotNewsContent: {
+        height: '380px',
+        overflow: 'auto'
     }
 }));
 function NewsUpdate(props) {
@@ -52,7 +49,7 @@ function NewsUpdate(props) {
         if (myElement) {
             const height = myElement.clientHeight;
             if (height > 195) {
-                document.getElementById("newsUpdateDiv").className = props.isMostUsedPanel ? "newsUpdateContent" : "p-3";
+                document.getElementById("newsUpdateDiv").className = props.isForgotPanel ? "p-3" : props.isMostUsedPanel ? "newsUpdateContent" : "p-3";
             }
         }
 
@@ -60,7 +57,7 @@ function NewsUpdate(props) {
 
     return (
         <div>
-            <div className={classes.newsContent + ' ' + (props.isMostUsedPanel ? classes.newsMostUsedContent : '') + (props.isForgotPanel ? classes.forgotNewsContent : '')}>
+            <div className={classes.newsContent + ' ' + (props.isMostUsedPanel ? classes.newsMostUsedContent : '') + ' ' + (props.isForgotPanel ? classes.forgotNewsContent : '')}>
                 <div id="newsUpdateDiv" className="p-3">
                     <h5 className="subHeading" style={{ marginBottom: '6px' }}><b>{t('newsandupdates')}</b></h5>
                     {ReactHtmlParser(newsData)}

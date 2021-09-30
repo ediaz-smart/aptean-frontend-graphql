@@ -73,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 //import { userActions } from '../_actions';
-//console.log(GQLogo,'logoss');
 function Login(props) {
 
     const history = useHistory();
@@ -92,7 +91,6 @@ function Login(props) {
         validationSchema: Validate.LoginValidate(),
         onSubmit: async (values) => {
             let resp = await dispatch(submitLogin({ GQUSERID: values.userName, GQPASSWORD: values.password }, history, t));
-            console.log(resp, 'resp');
             if (resp && resp.response_status > 0) {
                 if (resp.response_content.triesLeft > 3) {
                     setErrorMsgText(t('loginFailure1'));

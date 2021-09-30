@@ -28,10 +28,10 @@ import { containerWidth } from '../../shared/constants'
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        // width: '96%',
+        width: '96%',
         margin: '0 auto 28px',
         minHeight: '260px',
-        width: containerWidth,
+        maxWidth: containerWidth,
         // borderBottom: '1px solid #cec7c7',
         padding: '23px 16px 14px',
     },
@@ -94,14 +94,11 @@ function SearchResultAntibody() {
                     setDisableSearch(false);
                 }
             }
-            console.log(disableSearch, 'disableSearch');
         }
         let tempparam = decodeURI(tempname);
         tempparam = tempparam.toString().replace(/~~GQSF~~/g, '%');
-        console.log(tempparam, "tempparam")
         if (tempparam) {
             let getResponse = await SavedSearch.getParticularTemplate(tempparam, 'Antibody');
-            console.log('getResponse', getResponse)
             if (getResponse && getResponse.response_status == 0) {
                 let data = getResponse.response_content.map;
                 data.savedRedo = true;
@@ -114,7 +111,6 @@ function SearchResultAntibody() {
         //dispatch(userActions.logout()); 
     }, []);
     function updateFormData(data) {
-        console.log('data', data)
         if (data.redo || data.savedRedo) {
             if (data.formData) {
                 data.formData['searchName'] = data.formData['title'];
@@ -145,7 +141,6 @@ function SearchResultAntibody() {
                 }
                 setPatientDBData([...patientDBData]);
                 setFormData(data.formData);
-                // console.log(formdata, 'formdata');
             }
         }
         var expiredTime = data.expiredTime;
@@ -155,13 +150,9 @@ function SearchResultAntibody() {
             expiredTimeInSecs = expiredTimeInSecs - Math.round(new Date().getTime() / 1000) - 90;
             // Idle.setIdle(expiredTimeInSecs < 0 ? (30 * 59) : expiredTimeInSecs);
             //Idle.watch();
-            //console.log(Idle.getIdle());
-
-            console.log("NRB expired at: " + expiredTime.date);
         }
     }
     const handleCheckbox = (event, i) => {
-        // console.log(event, value); 
         patientDBData[i]['selected'] = event.target.checked;
         // patientDBData[i]['ticked'] = event.target.checked;
         setPatientDBData([...patientDBData]);
@@ -218,13 +209,11 @@ function SearchResultAntibody() {
         }
     }
 
-    console.log('initial', initialData)
     const formik = useFormik({
         initialValues: initialData,
         enableReinitialize: true,
         validationSchema: Validate.AntibodySearchValidation(saveFormValue),
         onSubmit: async (values) => {
-            console.log(values, 'values');
             let { searchName, cdrhcseq1, cdrhcseq2, cdrhcseq3, cdrlcseq1, cdrlcseq2, cdrlcseq3, hcOption1, hcOption2, hcOption3, lcOption1, lcOption2, lcOption3, strategy, percId, expectCutoff, wordSize, hcFullSeq, lcFullSeq, formName } = values;
             if (cdrhcseq1 == '' && cdrhcseq2 == '' && cdrhcseq3 == '' && cdrlcseq1 == '' && cdrlcseq2 == '' && cdrlcseq3 == '') {
                 toast.error(t('CDRSeqValidation'));
@@ -242,7 +231,6 @@ function SearchResultAntibody() {
             let strategyItem = _.find(Constant['strategies'], function (obj) {
                 return obj.value == strategy;
             });
-            // console.log(strategyItem,'strategyItem');
             setSearchModal(true);
             let parentId = '';
             let postData = {
@@ -275,7 +263,6 @@ function SearchResultAntibody() {
                 template_name: saveFormValue ? formName : '', // Set this value when selecting "Save this form for later use as"
 
             }
-            console.log(postData, 'postData');
             const getResponse = await searchResAntibody.submitAnitbodySearch(postData, history, t);
             setSearchModal(false);
             if (getResponse && getResponse.response_status == 0) {
@@ -283,14 +270,9 @@ function SearchResultAntibody() {
             } else {
                 toast.error('Error in Search');
             }
-
-            // console.log(getResponse, 'getResponse');
             // history.push('/home');
         },
     });
-
-    console.log('formik', formik)
-
 
     function setFormValue() {
         setSaveFormValue(!saveFormValue);
