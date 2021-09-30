@@ -133,7 +133,7 @@
 
 .cancelButtonDisable {
     background-color: #EEEEEE !important;
-    border: 2px solid #a2a2a3 !important;
+    border: 1px solid #a2a2a3 !important;
     float: right;
     text-transform: none;
     margin: 4px;
@@ -365,7 +365,8 @@
     color: #777777;
     font-style: italic;
 }
-.space{
+
+.space {
     visibility: hidden;
 }
 

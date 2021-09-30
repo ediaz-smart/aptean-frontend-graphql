@@ -66,8 +66,8 @@ const useStyles = makeStyles((theme) => ({
         // width: "100%",
         textAlign: "initial",
         marginLeft: "10px",
-        marginBottom: "10px !important",
-        marginTop: "8px"
+        marginBottom: "5px !important",
+        marginTop: "4px"
     },
     checkBox: {
         margin: "auto",
@@ -82,6 +82,16 @@ const useStyles = makeStyles((theme) => ({
     },
     mediumSizedTextBox: {
         width: "20%"
+    },
+
+    rowElementsContainer: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    row1: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '10px'
     },
     loginSubmitCancel: {
         backgroundColor: '#0182C5',
@@ -159,7 +169,7 @@ const AccordionSummary = withStyles({
 const AccordionDetails = withStyles((theme) => ({
     root: {
         padding: '0 20px',
-        margin: '12px 0',
+        margin: '0 0 12px',
         display: 'block'
     },
 }))(MuiAccordionDetails);
@@ -1279,7 +1289,7 @@ function IpSequenceVariation() {
                             </Col>
                         </Row>
                         <Row>
-                            <Col md="6" xs="6">
+                            <Col md="6" xs="6" sm='6'>
                                 {/* <p className="subHeading">{t('searchDetails')}</p> */}
                                 <div className="form-group">
                                     <TextInput
@@ -1327,7 +1337,7 @@ function IpSequenceVariation() {
                             <Col md="2" sm="2" xs="2"></Col>
                         </Row>
                         <Row>
-                            <Col md="9" xs="9">
+                            <Col md="9" xs="9" sm='9'>
                                 <FormControl component="fieldset">
                                     <RadioGroup row aria-label="These are" name="customized-radios" value={sequenceTypeValue} onChange={handleSequenceType}>
                                         <span className={classes.theseAreText + " bodyText"}>{t("theseAre")}</span>
@@ -1348,7 +1358,7 @@ function IpSequenceVariation() {
                 </Row>
                 <Row>
                     <AccordionDetails>
-                        <Col md="12" xs="12">
+                        <Col md="12" xs="12" sm='12'>
                             <SelectBox
                                 margin="normal"
                                 variant="outlined"
@@ -1521,7 +1531,7 @@ function IpSequenceVariation() {
                 </Row>
                 <Row>
                     <AccordionDetails className="appTextColor">
-                        <Col md="12" xs="12">
+                        <Col md="12" xs="12" sm='12'>
                             <Typography className={"float-left " + classes.seqText}>
                                 {t("Report")}&nbsp;&nbsp;&nbsp;
                             </Typography>
@@ -1562,12 +1572,12 @@ function IpSequenceVariation() {
                 </Row> */}
                 <hr />
                 <Row>
-                    <Col md="12" xs="12">
+                    <Col md="12" xs="12" sm='12'>
                         <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2" rel="noreferrer">{t("help")}</a>
                     </Col>
                 </Row>
                 <Row>
-                    <Col md="12" xs="12">
+                    <Col md="12" xs="12" sm='12'>
                         <Accordion square expanded={seqDBFilter} onChange={() => setSeqDBFilter(prevState => !prevState)}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
                                 <p className="subHeading m-0">
@@ -1577,7 +1587,7 @@ function IpSequenceVariation() {
                                 </p>
                             </AccordionSummary>
                             <AccordionDetails className="appTextColor">
-                                <Col md="12" xs="12">
+                                <Col md="12" xs="12" sm='12' className={classes.row1}>
                                     <Typography className={"float-left " + classes.seqText}>
                                         {t("searchOnlySeqBetween")}&nbsp;&nbsp;&nbsp;
                                     </Typography>
@@ -1612,9 +1622,9 @@ function IpSequenceVariation() {
                                         &nbsp;&nbsp;&nbsp;{t("residuesInLength")}
                                     </Typography>
                                 </Col>
-                                <br clear="all"></br>
-                                <br clear="all"></br>
-                                <Col md="12" xs="12">
+                                {/* <br clear="all"></br> */}
+                                {/* <br clear="all"></br> */}
+                                <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
                                     <CheckBox
                                         color="primary"
                                         className={"float-left"}
@@ -1664,7 +1674,7 @@ function IpSequenceVariation() {
                             </AccordionDetails>
                         </Accordion>
                     </Col>
-                    <Col md="12" xs="12">
+                    <Col md="12" xs="12" sm='12'>
                         <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
                                 <p className="subHeading m-0">
@@ -1674,7 +1684,7 @@ function IpSequenceVariation() {
                                 </p>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <Col md="12" xs="12">
+                                <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
                                     <CheckBox
                                         color="primary"
                                         className={"float-left"}
@@ -1721,9 +1731,9 @@ function IpSequenceVariation() {
                                     />
                                     <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGQSpecificDate">{t("includeUnknownDates")}</label>
                                 </Col>
-                                <br clear="all"></br>
-                                <br clear="all"></br>
-                                <Col md="12" xs="12">
+                                {/* <br clear="all"></br> */}
+                                {/* <br clear="all"></br> */}
+                                <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
                                     <CheckBox
                                         color="primary"
                                         className={"float-left"}
@@ -1775,7 +1785,7 @@ function IpSequenceVariation() {
                     </Row>
                     {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
                     <Row>
-                        <Col md="6" xs="6">
+                        <Col md="6" xs="6" sm='6'>
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="subHeading p-0">
@@ -1886,7 +1896,7 @@ function IpSequenceVariation() {
                             </div>
                             }
                         </Col>
-                        <Col md="6" xs="6">
+                        <Col md="6" xs="6" sm='6'>
                             {proPatentData && _.size(proPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
@@ -1973,7 +1983,7 @@ function IpSequenceVariation() {
                     <Fragment>
                         <ColoredLine color="#f3f2f2" />
                         <Row>
-                            <Col md="11" xs="11">
+                            <Col md="11" xs="11" sm='11'>
                                 <p className="subHeading">Search Fee</p>
                                 {ppuType == "1" && <p>{t('executingSearchCharges')}</p>}
                                 {ppuType == "2" && <p>{t('executingSearchCredits')}</p>}
@@ -2044,7 +2054,7 @@ function IpSequenceVariation() {
                             </Col>
                         </Row>
                         {ppuType != "0" && <Row>
-                            <Col md="12" xs="12">
+                            <Col md="12" xs="12" sm='12'>
                                 <CheckBox
                                     // defaultChecked
                                     color="primary"
@@ -2062,7 +2072,7 @@ function IpSequenceVariation() {
                 }
                 <ColoredLine color="#f3f2f2" />
                 <Row>
-                    <Col md="12" xs="12">
+                    <Col md="12" xs="12" sm='12'>
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2072,11 +2082,11 @@ function IpSequenceVariation() {
                             onChange={() => { setSendMailAfterSearch(!sendMailAfterSearch) }}
                             checked={sendMailAfterSearch}
                         />
-                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="check">{t("sendMailAfterSearch")}</label>
+                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left  mx-2 ml-0 mr-3"} for="check">{t("sendMailAfterSearch")}</label>
                     </Col>
                 </Row>
                 <Row>
-                    <Col md='4' xs="4">
+                    <Col md='4' xs="4" sm='4'>
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2086,9 +2096,9 @@ function IpSequenceVariation() {
                             onChange={setFormValue}
                             checked={saveFormValue}
                         />
-                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
+                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left mx-2 ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
-                    <Col md='6' xs="6">
+                    <Col md='6' xs="6" sm='6'>
                         <TextInput
                             id="formName"
                             name="formName"

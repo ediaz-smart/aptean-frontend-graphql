@@ -284,13 +284,13 @@ function SearchResultAntibody() {
             <form name="antibodySearchForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
 
                 <Row>
-                    <Col lg="12" md="12" className={"mb-2 " + (authInfo && !authInfo.syscontrol_search_submit ? 'd-block' : 'd-none')}>
+                    <Col lg="12" md="12" sm='12' xs='12' className={"mb-2 " + (authInfo && !authInfo.syscontrol_search_submit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
                             {t('ABsearchDisableText')}
                             {authInfo && authInfo.syscontrol_search_submit_txt}
                             {t('patienceThanksText')}</Typography>
                     </Col>
-                    <Col lg="12" md="12">
+                    <Col lg="12" md="12" sm='12' xs='12'>
                         <h6 className={"appTextColor loginTitle"}>{t('searchDetails')}​</h6>
                         <Row>
                             {/* <Col lg="1" md="1"  className="pr-0">
@@ -315,7 +315,7 @@ function SearchResultAntibody() {
                         </Row>
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" className="mb-2">
+                    <Col lg="12" md="12" sm='12' xs='12' className="mb-2">
                         <h6 className={"appTextColor loginTitle"}>{t('cdrhHeavyChain')}</h6>
                         <Row className="mb-2">
                             <Col lg="12" md="12" className="p-0 content">
@@ -350,7 +350,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" className="p-0 content">
+                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
                                 <TextInput
                                     id="cdrhcseq2"
                                     name="cdrhcseq2"
@@ -386,7 +386,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" className="p-0 content">
+                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
                                 <TextInput
                                     id="cdrhcseq3"
                                     name="cdrhcseq3"
@@ -423,7 +423,7 @@ function SearchResultAntibody() {
                         </Row>
                         <h6 className={"appTextColor loginTitle"}>{t('cdrhLightChain')}</h6>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" className="p-0 content">
+                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
                                 <TextInput
                                     id="cdrlcseq1"
                                     name="cdrlcseq1"
@@ -459,7 +459,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" className="p-0 content">
+                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
                                 <TextInput
                                     id="cdrlcseq2"
                                     name="cdrlcseq2"
@@ -495,7 +495,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <Row className="mb-4">
-                            <Col lg="12" md="12" className="p-0 content">
+                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
                                 <TextInput
                                     id="cdrlcseq3"
                                     name="cdrlcseq3"
@@ -533,10 +533,10 @@ function SearchResultAntibody() {
 
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" className="mb-2">
+                    <Col lg="12" md="12" sm='12' xs='12' className="mb-2">
                         <h6 className={"appTextColor loginTitle"}>{t('heavyLightChain')}</h6>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" className="p-0 content">
+                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
                                 <Col lg="3" md="3" sm="3" xs="3" className="p-0 float-left">
                                     <SelectBox
                                         margin="normal"
@@ -575,7 +575,7 @@ function SearchResultAntibody() {
                                     />
                                     <Typography className="mx-2 mt-2 float-left">% Identity over the Chain Sequence</Typography>
                                 </Col>
-                                <Col lg="9" md="9" className={"p-0 content " + (formik.values.strategy == "blast" ? 'd-block' : 'd-none')}>
+                                <Col lg="9" md="9" sm='9' xs='9' className={"p-0 content " + (formik.values.strategy == "blast" ? 'd-block' : 'd-none')}>
                                     <Typography className="ml-5 mr-1 mt-2 float-left">Expect Cutoff</Typography>
                                     <TextInput
                                         fullWidth={false}
@@ -618,7 +618,7 @@ function SearchResultAntibody() {
                                         disabled={authInfo && authInfo.redo}
                                     />
                                 </Col>
-                                <Col lg="12" md="12" className="p-0 content float-left">
+                                <Col lg="12" md="12" sm='12' xs='12' className="p-0 content float-left">
                                     <div className="form-group px-3 ">
                                         <TextInput
                                             rowsMax="4"
@@ -658,10 +658,10 @@ function SearchResultAntibody() {
                         </Row>
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" className="mb-2">
-                        <h6 className={"appTextColor loginTitle"}>{t('patientDBSearch')}</h6>
+                    <Col lg="12" md="12" sm='12' xs='12' className="mb-2">
+                        <h6 className={"appTextColor loginTitle mb-2 "}>{t('patientDBSearch')}</h6>
                         <Row className="mb-2">
-                            <Col lg="4" md="4" className="p-0 content">
+                            <Col lg="4" md="4" sm='4' xs='4' className="p-0 content">
                                 {patientDBData.map((values, i) => {
                                     // Return the element. Also pass key     
                                     return (<div className="float-left w-100 content" key={"id-" + values.value}>
@@ -677,7 +677,7 @@ function SearchResultAntibody() {
                                             onChange={(e) => handleCheckbox(e, i)}
                                         // onChange={() => { setIspublishGQUnknownDates(!ispublishGQUnknownDates) }}
                                         />
-                                        <Typography className={"float-left mt-2 w-75 " + (values.ticked ? 'd-block' : 'd-none')}>
+                                        <Typography className={"float-left mt-1 w-75 " + (values.ticked ? 'd-block' : 'd-none')}>
                                             {values.label}
                                         </Typography>
                                     </div>)
@@ -686,7 +686,7 @@ function SearchResultAntibody() {
                         </Row>
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" className={"mb-2 " + (authInfo && (authInfo.ppuType == 1 || (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block' : 'd-none'))}>
+                    <Col lg="12" md="12" xs="12" sm='12' className={"mb-2 " + (authInfo && (authInfo.ppuType == 1 || (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block' : 'd-none'))}>
                         <div className={(authInfo && (authInfo.ppuType == 1) ? 'd-block' : 'd-none')}>
                             <h6 className={"appTextColor loginTitle"}>{t('ppuuserSearchTitle')}</h6>
                             <h6 className={"appTextColor loginTitle ml-4 "}>{t('ppuuserCreditPrice')}</h6>
@@ -696,7 +696,7 @@ function SearchResultAntibody() {
                             <h6 className={"appTextColor loginTitle ml-4 "}>{t('ppubundleCreditPrice')}</h6>
                         </div>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" className="p-0">
+                            <Col lg="12" md="12" sm='12' xs='12' className="p-0">
                                 <CheckBox
                                     // checked={values.selected}
                                     color="primary"
@@ -705,7 +705,7 @@ function SearchResultAntibody() {
                                     id="ackSearch"
                                     onChange={() => { setDisableSearch(!disableSearch) }}
                                 />
-                                <Typography className={"float-left mt-2 w-75"}>
+                                <Typography className={"float-left mt-1 w-75"}>
                                     {t('ackAntibodySearch')}
                                 </Typography>
                             </Col>
@@ -725,7 +725,7 @@ function SearchResultAntibody() {
                                     onChange={setFormValue}
                                     checked={saveFormValue}
                                 />
-                                <label className={"checkBoxContent" + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
+                                <label className={"checkBoxContent" + " bodyText cursorPointer float-left mt-1 mx-2 ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                             </Col>
                             <Col md='6' sm="6" xs="6" >
                                 <TextInput

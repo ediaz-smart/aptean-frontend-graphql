@@ -67,8 +67,8 @@ const useStyles = makeStyles((theme) => ({
         // width: "100%",
         textAlign: "initial",
         marginLeft: "10px",
-        marginBottom: "10px !important",
-        marginTop: "8px"
+        marginBottom: "5px !important",
+        marginTop: "4px"
     },
     checkBox: {
         margin: "auto",
@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     loginSubmitCancel: {
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
-        border: '2px solid #1F4E79',
+        border: '1px solid #1F4E79',
         color: 'white',
         margin: "4px",
         float: 'right',
@@ -100,6 +100,15 @@ const useStyles = makeStyles((theme) => ({
     },
     mediumSizedTextBox: {
         width: "20%"
+    },
+    rowElementsContainer: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    row1: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '10px'
     },
     '@media (max-width: 760px)': {
         arrowIcon: {
@@ -164,7 +173,7 @@ const AccordionSummary = withStyles({
 const AccordionDetails = withStyles((theme) => ({
     root: {
         padding: '0 20px',
-        margin: '12px 0',
+        margin: '0',
         display: 'block'
     },
 }))(MuiAccordionDetails);
@@ -1290,7 +1299,7 @@ function IpSeqSearch() {
             />
             <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
                 <Row>
-                    <Col lg="12" md="12" className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
+                    <Col lg="12" md="12" sm='12' className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
                             {t('ABsearchDisableText')}
                             {systemControlSubmitText}
@@ -1311,7 +1320,7 @@ function IpSeqSearch() {
                 {parentId &&
                     <Fragment>
                         <Row>
-                            <Col sm="12" md="12">
+                            <Col sm="12" md="12" sm='12'>
                                 <p className="subHeading w-75 mb-10 float-left">{t('queryPreloaded')}</p>
                             </Col>
                         </Row>
@@ -1323,13 +1332,13 @@ function IpSeqSearch() {
                 {!parentId &&
                     <Fragment>
                         <Row>
-                            <Col sm="12" md="12">
+                            <Col sm="12" md="12" xs='12'>
                                 <p className="subHeading w-75 mb-10 float-left">{t('searchDetails')}</p>
                                 <a className={"appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank" rel="noreferrer">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
-                            <Col md="6" xs="6">
+                            <Col md="6" xs="6" sm='6'>
                                 {/* <p className="subHeading">{t('searchDetails')}</p> */}
                                 <div className="form-group">
                                     <TextInput
@@ -1348,7 +1357,7 @@ function IpSeqSearch() {
                         </Row>
                         <hr />
                         <Row>
-                            <Col sm="12" md="12">
+                            <Col sm="12" md="12" xs='12'>
                                 <p className="subHeading w-75 mb-10 float-left">{t('querySequences')}</p>
                                 <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank" rel="noreferrer">{t('help')}</a>
                             </Col>
@@ -1627,7 +1636,7 @@ function IpSeqSearch() {
                                 </p>
                             </AccordionSummary>
                             <AccordionDetails className="appTextColor">
-                                <Col md="12">
+                                <Col md="12" sm='12' xs='12' className={classes.row1}>
                                     <Typography className={"float-left " + classes.seqText}>
                                         {t("searchOnlySeqBetween")}&nbsp;&nbsp;&nbsp;
                                     </Typography>
@@ -1662,9 +1671,9 @@ function IpSeqSearch() {
                                         &nbsp;&nbsp;&nbsp;{t("residuesInLength")}
                                     </Typography>
                                 </Col>
-                                <br clear="all"></br>
-                                <br clear="all"></br>
-                                <Col md="12">
+                                {/* <br clear="all"></br> */}
+                                {/* <br clear="all"></br> */}
+                                <Col md="12" sm='12' xs='12' className={classes.rowElementsContainer} >
                                     <CheckBox
                                         color="primary"
                                         className={"float-left"}
@@ -1723,7 +1732,7 @@ function IpSeqSearch() {
                                 </p>
                             </AccordionSummary>
                             <AccordionDetails >
-                                <Col md="12">
+                                <Col md="12" sm='12' xs='12' className={classes.rowElementsContainer}>
                                     <CheckBox
                                         color="primary"
                                         className={"float-left"}
@@ -1770,9 +1779,9 @@ function IpSeqSearch() {
                                     />
                                     <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGQSpecificDate">{t("includeUnknownDates")}</label>
                                 </Col>
-                                <br clear="all"></br>
-                                <br clear="all"></br>
-                                <Col md="12">
+                                {/* <br clear="all"></br> */}
+                                {/* <br clear="all"></br> */}
+                                <Col md="12" sm='12' xs='12' className={classes.rowElementsContainer}>
                                     <CheckBox
                                         color="primary"
                                         className={"float-left"}
@@ -1821,13 +1830,13 @@ function IpSeqSearch() {
                 <hr />
                 <div>
                     <Row>
-                        <Col sm="12" md="12">
+                        <Col sm="12" md="12" xs='12'>
                             <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2" rel="noreferrer">{t("help")}</a>
                         </Col>
                     </Row>
                     {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
                     <Row>
-                        <Col md="6" xs="6">
+                        <Col md="6" xs="6" sm='6'>
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="subHeading p-0">
@@ -1935,7 +1944,7 @@ function IpSeqSearch() {
                             </div>
                             }
                         </Col>
-                        <Col md="6" xs="6">
+                        <Col md="6" xs="6" sm='6'>
                             {proPatentData && _.size(proPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
@@ -2018,7 +2027,7 @@ function IpSeqSearch() {
                     <Fragment>
                         <ColoredLine color="#f3f2f2" />
                         <Row>
-                            <Col md="11" xs="11">
+                            <Col md="11" xs="11" sm='11'>
                                 <p className="subHeading">Search Fee</p>
                                 {ppuType == "1" && <p>{t('executingSearchCharges')}</p>}
                                 {ppuType == "2" && <p>{t('executingSearchCredits')}</p>}
@@ -2084,12 +2093,12 @@ function IpSeqSearch() {
                                     }
                                 </table>
                             </Col>
-                            <Col md="1" xs="1">
+                            <Col md="1" xs="1" sm='1'>
                                 <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
                             </Col>
                         </Row>
                         {ppuType != "0" && <Row>
-                            <Col md="12" xs="12">
+                            <Col md="12" xs="12" sm='12'>
                                 <CheckBox
                                     // defaultChecked
                                     color="primary"
@@ -2107,7 +2116,7 @@ function IpSeqSearch() {
                 }
                 <ColoredLine color="#f3f2f2" />
                 <Row>
-                    <Col md="12" xs="12">
+                    <Col md="12" xs="12" sm='12'>
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2117,11 +2126,11 @@ function IpSeqSearch() {
                             onChange={() => { setSendMailAfterSearch(!sendMailAfterSearch) }}
                             checked={sendMailAfterSearch}
                         />
-                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="check">{t("sendMailAfterSearch")}</label>
+                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-2 mr-3"} for="check">{t("sendMailAfterSearch")}</label>
                     </Col>
                 </Row>
                 <Row>
-                    <Col md='4' xs="4">
+                    <Col md='4' xs="4" sm='4'>
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2131,9 +2140,9 @@ function IpSeqSearch() {
                             onChange={setFormValue}
                             checked={saveFormValue}
                         />
-                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
+                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-2 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
-                    <Col md='6' xs="6">
+                    <Col md='6' xs="6" sm='6'   >
                         <TextInput
                             id="formName"
                             name="formName"
