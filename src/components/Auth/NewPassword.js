@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import GQLogo from '../../assets/image/GenomeQuest.svg';
-import TextField from '@material-ui/core/TextField';
+// import GQLogo from '../../assets/image/GenomeQuest.svg';
+// import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import NewsUpdate from '../../shared/NewsUpdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
-import ClientCaptcha from "react-client-captcha"
+// import ClientCaptcha from "react-client-captcha"
 import "react-client-captcha/dist/index.css"
 import { Link, useHistory, useParams } from 'react-router-dom';
-import PasswordService from '../../services/forgotpassword'
+// import PasswordService from '../../services/forgotpassword'
 import { supportMail } from '../../config';
 import Footer from '../../shared/footer';
 import AccountService from '../../services/accountInfo';
 import ChangePassCheckModal from '../../shared/Modal/ChangePassCheckModal'
-import ForgotPassword from '../../services/forgotpassword';
+// import ForgotPassword from '../../services/forgotpassword';
+import GQLogoComponent from '../../shared/components/GQLogoComponent';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -173,8 +174,7 @@ function NewPassword() {
         history.push('/login');
     }
 
-    function forgotPage()
-    {
+    function forgotPage() {
         history.push('/forgot');
     }
 
@@ -182,7 +182,10 @@ function NewPassword() {
         <Container className="mt-100">
 
             <Row className={classes.loginLogoDiv}>
-                <Col sm="12" md="3" className="p-0 ml-4"><Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link></Col>
+                <Col sm="12" md="3" className="p-0 ml-4">
+                    {/* <Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link> */}
+                    <GQLogoComponent toLink='#/login' />
+                </Col>
 
             </Row>
             <Row className="justify-content-md-center">
@@ -271,9 +274,9 @@ function NewPassword() {
 
                         <h5>Password Recovery</h5>
                         <br />
-                        <p>Your password recovery token has expired. <br/> Please return to the password reset option and try again.</p>
-                        <p>Please contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.</p>
-                        <Button variant="contained" className='accountInfo' onClick={()=>forgotPage()}>Password reset</Button> 
+                        <p>Your password recovery token has expired. <br /> Please return to the password reset option and try again.</p>
+                        <p>Please contact <a href={"mailto:" + supportMail}>{supportMail}</a> for assistance.</p>
+                        <Button variant="contained" className='accountInfo' onClick={() => forgotPage()}>Password reset</Button>
                     </div>
 
 

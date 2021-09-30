@@ -1,8 +1,8 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import GQLogo from '../../assets/image/GenomeQuest.svg';
-import TextField from '@material-ui/core/TextField';
+// import GQLogo from '../../assets/image/GenomeQuest.svg';
+// import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
@@ -12,7 +12,7 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import Validate from '../../helpers/validate';
 import Modal from 'react-bootstrap/Modal'
-import Table from 'react-bootstrap/Table';
+// import Table from 'react-bootstrap/Table';
 import DataTable from 'react-data-table-component';
 import RadioButton from '../../shared/Fields/RadioButton';
 import CloseIcon from '@material-ui/icons/Close';

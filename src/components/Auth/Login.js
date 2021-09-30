@@ -3,9 +3,9 @@ import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 
-import GQLogo from '../../assets/image/GenomeQuest.svg';
+import GQLogoComponent from '../../shared/components/GQLogoComponent';
 import Button from '@material-ui/core/Button';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { useTranslation, } from "react-i18next";
 import NewsUpdate from '../../shared/NewsUpdate';
 import { makeStyles } from '@material-ui/core/styles';
@@ -135,7 +135,8 @@ function Login(props) {
                 <div className={"mt-100 " + classes.contentContainer}>
                     <Row className={classes.loginLogoDiv}>
                         <Col md="6" sm="6" xs='6' className="p-0 ml-4">
-                            <Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-50" /></Link>
+                            {/* <Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-50" /></Link> */}
+                            <GQLogoComponent toLink='#/login' />
                         </Col>
                     </Row>
                     <Row className="mt-4">

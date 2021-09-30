@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import GQLogo from '../../assets/image/GenomeQuest.svg';
-import TextField from '@material-ui/core/TextField';
+// import GQLogo from '../../assets/image/GenomeQuest.svg';
+// import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
 import NewsUpdate from '../../shared/NewsUpdate';
@@ -14,11 +14,12 @@ import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
 import ClientCaptcha from "react-client-captcha"
 import "react-client-captcha/dist/index.css"
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import PasswordService from '../../services/forgotpassword'
 import { supportMail } from '../../config';
 import Footer from '../../shared/footer';
 import { containerWidth } from '../../shared/constants';
+import GQLogoComponent from '../../shared/components/GQLogoComponent';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -128,7 +129,10 @@ function Forgotpassword() {
 
                 <Row className={classes.loginLogoDiv}>
                     <Col sm="1" md="1" xs='1'></Col>
-                    <Col sm="3" md="3" xs='3' className="p-0"><Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link></Col>
+                    <Col sm="3" md="3" xs='3' className="p-0">
+                        {/* <Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link> */}
+                        <GQLogoComponent toLink='#/login' />
+                    </Col>
                 </Row>
                 <Row className="justify-content-md-center">
                     {/* <Col sm="12" md="6" className="loginDiv"> */}

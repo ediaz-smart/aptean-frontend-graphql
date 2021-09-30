@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MoreIcon from '@material-ui/icons/MoreVert';
+// import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
 import { Link, useHistory } from 'react-router-dom';
-
-import GQLogo from '../assets/image/GenomeQuest.svg';
+import GQLogoComponent from '../shared/components/GQLogoComponent'
 import LogoutModal from './Modal/LogoutModal';
 import LogoutService from '../services/logout';
 import AccountService from '../services/accountInfo';
@@ -196,18 +195,16 @@ export default function Header(props) {
         <div className={classes.grow}>
             <AppBar className={classes.headerNav}>
                 <Toolbar>
-                    <IconButton
+                    <GQLogoComponent />
+                    {/* <IconButton
                         edge="start"
                         className={classes.menuButton}
                         color="inherit"
                         aria-label="open drawer"
                     // disableRipple ='true'
-                    >
-
-                        <Link to="/home" ><img src={GQLogo} alt="GQLogo" className="w-75" /></Link>
-
-
-                    </IconButton>
+                    > 
+                     <Link to="/home" ><img src={GQLogo} alt="GQLogo" className="w-75" /></Link> 
+                     </IconButton>  */}
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         <Button

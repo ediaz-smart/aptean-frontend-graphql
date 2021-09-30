@@ -191,7 +191,7 @@ function ApplicationPanel() {
                                     {userData && userData.ftAccess && <Link to="/fulltextsearch" className={classes.anchorTag + ' appLink'}>{t('patentFullText')}</Link>}
                                 </Fragment>
                             </p>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={url.stagePatentNumLink} target="_blank" rel="noreferrer">{t('patentNumbers')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={'query?' + url.patentNumLink} >{t('patentNumbers')}</a></p>
                         </Col>
                     </Row>
                     <p className={'subHeading ' + classes.textHeading}>{t('sequenceDatabases')}</p>
@@ -200,7 +200,7 @@ function ApplicationPanel() {
                             <img src={seqDb} alt="seqDb" className="w-100" />
                         </Col>
                         <Col lg="10" md="10" sm="10" xs='10'>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={url.stageBrowserDBLink} target="_blank" rel="noreferrer">{t('browseDatabases')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={'query?' + url.browserDBLink} >{t('browseDatabases')}</a></p>
                             <p className={classes.pTagMargin}>
                                 <Link className={classes.anchorTag + ' appLink'} to='/personaldb'>{t('personalDatabases')}</Link>
                             </p>
@@ -228,7 +228,7 @@ function ApplicationPanel() {
                             <img src={seqTool} alt="seqTool" className="w-100" />
                         </Col>
                         <Col lg="10" md="10" sm="10" xs='10'>
-                            <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={url.stageAlignSequencesDirectly} target="_blank" rel="noreferrer">{t('alignSequencesDirectly')}</a></p>
+                            <p className={classes.pTagMargin}><a className={classes.anchorTag + ' appLink'} href={'query?' + url.alignSequencesDirectly} rel="noreferrer">{t('alignSequencesDirectly')}</a></p>
                             {/* <p className={classes.pTagMargin}><a className={classes.anchorTag+' appLink'} href='#' onClick={e => e.preventDefault()}>{t('convertSequenceFormats')}</a></p> */}
                             <p className={classes.pTagMargin}>
                                 <Link className={classes.anchorTag} to='convertsequence'>{t('convertSequenceFormats')}</Link>
