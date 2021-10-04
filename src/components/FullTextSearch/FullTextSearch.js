@@ -617,7 +617,7 @@ function FullTextSearch() {
 							console.log(htmlElement.textContent,'htmlElement.textContent..');
 							var newSpan = document.createElement("span");
 							newSpan.setAttribute("class", "space");
-							newSpan.innerHTML = "";
+							newSpan.innerHTML = ".";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
 							// placeCursorPos = true;
@@ -1109,12 +1109,16 @@ function FullTextSearch() {
 									htmlElement.children.length - 1
 								].textContent = lastValue;
 							} else {
+								
+								let replaceDot = htmlElement.children[htmlElement.children.length - 1]
+								.textContent.replace('.','');
+								htmlElement.children[
+                                    htmlElement.children.length - 1
+                                ].style = 'visibility:visible';
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								htmlElement.children[
 									htmlElement.children.length - 1
-								].textContent =
-									htmlElement.children[htmlElement.children.length - 1]
-										.textContent + lastValue;
+								].textContent = replaceDot + lastValue;
 							}
 						} else if (
 							checkORValues.includes(getChildText) ||
@@ -1137,6 +1141,7 @@ function FullTextSearch() {
 							// add the class to the 'span'
 							newSpan.setAttribute("class", "query");
 							// let checkOpText = lastPrevChild.innerText+lastValue;
+							lastChild.innerText = lastChild.innerText.replace(".", "");
 							if (lastChild.innerText.length == 0) {
 								// if (htmlElement.innerHTML.slice(-1) != ">") {
 								// 	htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
