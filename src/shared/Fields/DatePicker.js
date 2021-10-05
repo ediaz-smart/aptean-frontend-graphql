@@ -20,14 +20,14 @@ const useStyles = makeStyles((theme) => ({
   gridRoot: {
     width: '205px'
   },
-  '@media (max-width: 780px)': {
-    gridRoot: {
-      width: '193px',
-    },
-    root: {
-      margin: '0 !important'
-    }
-  }
+  // '@media (max-width: 780px)': {
+  //   gridRoot: {
+  //     width: '193px',
+  //   },
+  //   root: {
+  //     margin: '0 !important'
+  //   }
+  // }
 }));
 export default function DatePicker(props) {
   // The first commit of Material-UI

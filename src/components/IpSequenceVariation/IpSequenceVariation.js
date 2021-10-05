@@ -47,13 +47,14 @@ const useStyles = makeStyles((theme) => ({
     },
     arrowIcon: {
         fontSize: '2.5rem',
-        marginTop: '-2px'
+        marginTop: '-2px',
+        marginLeft: '-10px'
     },
     arrowIconTitle: {
         marginLeft: '-8px'
     },
     seqText: {
-        margin: '10px'
+        margin: '10px 0'
     },
     smallTextBox: {
         width: "60px"
@@ -80,9 +81,9 @@ const useStyles = makeStyles((theme) => ({
     submitCss: {
         backgroundColor: "#DB862D !important"
     },
-    mediumSizedTextBox: {
-        width: "20%"
-    },
+    // mediumSizedTextBox: {
+    //     width: "19%"
+    // },
 
     rowElementsContainer: {
         display: 'flex',
@@ -109,7 +110,8 @@ const useStyles = makeStyles((theme) => ({
     '@media (max-width: 760px)': {
         arrowIcon: {
             fontSize: '2.5rem',
-            marginTop: '-2px'
+            marginTop: '-2px',
+            marginLeft: '-10px'
         },
         arrowIconTitle: {
             marginLeft: '-8px'
@@ -159,16 +161,16 @@ const AccordionSummary = withStyles({
         },
     },
     expanded: {},
-    '@media (max-width: 780px)': {
-        root: {
-            width: '100%',
-        }
-    }
+    // '@media (max-width: 780px)': {
+    //     root: {
+    //         width: '100%',
+    //     }
+    // }
 })(MuiAccordionSummary);
 
 const AccordionDetails = withStyles((theme) => ({
     root: {
-        padding: '0 20px',
+        padding: '0 0 0 5px',
         margin: '0 0 12px',
         display: 'block'
     },
@@ -1522,7 +1524,7 @@ function IpSequenceVariation() {
                             }
                             {searchAlgorithmValue && searchAlgorithmValue == 'motif' && <Fragment>
                                 <Link className={"float-left " + classes.seqText}>
-                                    {t("examplesOfValidMotif")}&nbsp;&nbsp;&nbsp;
+                                    {t("examplesOfValidMotif")}
                                 </Link>
                             </Fragment>
                             }
@@ -1530,7 +1532,7 @@ function IpSequenceVariation() {
                     </AccordionDetails>
                 </Row>
                 <Row>
-                    <AccordionDetails className="appTextColor">
+                    <AccordionDetails className="appTextColor" style={{ marginLeft: '-5px' }}>
                         <Col md="12" xs="12" sm='12'>
                             <Typography className={"float-left " + classes.seqText}>
                                 {t("Report")}&nbsp;&nbsp;&nbsp;
@@ -1545,7 +1547,7 @@ function IpSequenceVariation() {
                                 onChange={formik.handleChange}
                                 error={formik.touched.alignments && Boolean(formik.errors.alignments)}
                                 helperText={formik.touched.alignments && formik.errors.alignments}
-                                className={"float-left " + classes.mediumSizedTextBox}
+                                className={"float-left "}
                             />
                             <Typography className={"float-left " + classes.seqText}>
                                 &nbsp;&nbsp;{t("bestAlignmentsPerQuerySeq")}&nbsp;&nbsp;
@@ -1555,7 +1557,7 @@ function IpSequenceVariation() {
                 </Row>
                 {/* <Row>
                     <AccordionDetails className="appTextColor">
-                        <Col md="12">
+                        <Col md="12"  style={{ paddingLeft: '5px', marginTop: '10px' }}>
                             <CheckBox
                                 color="primary"
                                 className={"float-left"}
@@ -1573,7 +1575,7 @@ function IpSequenceVariation() {
                 <hr />
                 <Row>
                     <Col md="12" xs="12" sm='12'>
-                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2" rel="noreferrer">{t("help")}</a>
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right" rel="noreferrer">{t("help")}</a>
                     </Col>
                 </Row>
                 <Row>
@@ -1588,7 +1590,7 @@ function IpSequenceVariation() {
                             </AccordionSummary>
                             <AccordionDetails className="appTextColor">
                                 <Col md="12" xs="12" sm='12' className={classes.row1}>
-                                    <Typography className={"float-left " + classes.seqText}>
+                                    <Typography className={"float-left " + classes.seqText} style={{ width: '225px' }}>
                                         {t("searchOnlySeqBetween")}&nbsp;&nbsp;&nbsp;
                                     </Typography>
                                     <TextInput
@@ -1601,9 +1603,9 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        className={"float-left " + classes.mediumSizedTextBox}
+                                        className={"float-left "}
                                     />
-                                    <Typography className={"float-left " + classes.seqText}>
+                                    <Typography className={"float-left " + classes.seqText} style={{ margin: '10px 15px' }}>
                                         &nbsp;&nbsp;{t("and")}&nbsp;&nbsp;
                                     </Typography>
                                     <TextInput
@@ -1616,24 +1618,26 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.maxResidues && Boolean(formik.errors.maxResidues)}
                                         helperText={formik.touched.maxResidues && formik.errors.maxResidues}
-                                        className={"float-left " + classes.mediumSizedTextBox}
+                                        className={"float-left "}
                                     />
-                                    <Typography className={"float-left " + classes.seqText}>
+                                    <Typography className={"float-left " + classes.seqText} style={{ marginLeft: '15px' }}>
                                         &nbsp;&nbsp;&nbsp;{t("residuesInLength")}
                                     </Typography>
                                 </Col>
                                 {/* <br clear="all"></br> */}
                                 {/* <br clear="all"></br> */}
                                 <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
-                                    <CheckBox
-                                        color="primary"
-                                        className={"float-left"}
-                                        name="isDocumentPublic"
-                                        id="isDocumentPublic"
-                                        onChange={() => setIsDocPubDate(!isDocPubDate)}
-                                        checked={isDocPubDate}
-                                    />
-                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
+                                    <div style={{ width: '230px', display: 'flex' }}>
+                                        <CheckBox
+                                            color="primary"
+                                            className={"float-left"}
+                                            name="isDocumentPublic"
+                                            id="isDocumentPublic"
+                                            onChange={() => setIsDocPubDate(!isDocPubDate)}
+                                            checked={isDocPubDate}
+                                        />
+                                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
+                                    </div>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1685,15 +1689,17 @@ function IpSequenceVariation() {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
-                                    <CheckBox
-                                        color="primary"
-                                        className={"float-left"}
-                                        name="publishGenomeQuest"
-                                        id="publishGenomeQuest"
-                                        onChange={() => setIsPublished(!isPublished)}
-                                        checked={isPublished}
-                                    />
-                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="publishGenomeQuest">{t("publishedInGenomeQuest")}</label>
+                                    <div style={{ width: '230px', display: 'flex' }}>
+                                        <CheckBox
+                                            color="primary"
+                                            className={"float-left"}
+                                            name="publishGenomeQuest"
+                                            id="publishGenomeQuest"
+                                            onChange={() => setIsPublished(!isPublished)}
+                                            checked={isPublished}
+                                        />
+                                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="publishGenomeQuest">{t("publishedInGenomeQuest")}</label>
+                                    </div>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1734,15 +1740,17 @@ function IpSequenceVariation() {
                                 {/* <br clear="all"></br> */}
                                 {/* <br clear="all"></br> */}
                                 <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
-                                    <CheckBox
-                                        color="primary"
-                                        className={"float-left"}
-                                        name="isPatientDoc"
-                                        id="isPatientDoc"
-                                        onChange={() => setIsPatientDoc(!isPatientDoc)}
-                                        checked={isPatientDoc}
-                                    />
-                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
+                                    <div style={{ width: '230px', display: 'flex' }}>
+                                        <CheckBox
+                                            color="primary"
+                                            className={"float-left"}
+                                            name="isPatientDoc"
+                                            id="isPatientDoc"
+                                            onChange={() => setIsPatientDoc(!isPatientDoc)}
+                                            checked={isPatientDoc}
+                                        />
+                                        <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
+                                    </div>
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1764,7 +1772,7 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.patientDocInp && Boolean(formik.errors.patientDocInp)}
                                         helperText={isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
-                                        className={"float-left mx-4 " + classes.mediumSizedTextBox}
+                                        className={"float-left mx-4 "}
                                         disabled={isPatientDoc ? false : true}
                                     />
                                     <Typography className={"float-left mt-2"}>
@@ -1780,7 +1788,7 @@ function IpSequenceVariation() {
                 <div>
                     <Row>
                         <Col sm="12" md="12" xs="12">
-                            <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2" rel="noreferrer">{t("help")}</a>
+                            <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right" rel="noreferrer">{t("help")}</a>
                         </Col>
                     </Row>
                     {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
@@ -2042,7 +2050,7 @@ function IpSequenceVariation() {
                                                 <p>{creditValues.ppu2RemainingCredits}</p>
                                             </td>
                                             <td>
-                                                <p className="ml-3">{t('creditsReamining')}</p>
+                                                <p className="ml-3">{t('creditsRemaining')}</p>
                                             </td>
                                         </tr>
                                     </Fragment>
@@ -2050,15 +2058,15 @@ function IpSequenceVariation() {
                                 </table>
                             </Col>
                             <Col md="1" xs="1">
-                                <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
+                                <Link className="appTextFont appLink float-right">{t("help")}</Link>
                             </Col>
                         </Row>
                         {ppuType != "0" && <Row>
-                            <Col md="12" xs="12" sm='12'>
+                            <Col md="12" xs="12" sm='12' style={{ paddingLeft: '10px' }}>
                                 <CheckBox
                                     // defaultChecked
                                     color="primary"
-                                    className={"float-left mx-2"}
+                                    className={"float-left"}
                                     name="checkTerms"
                                     id="checkTerms"
                                     onChange={() => { setIsSubmitActive(!isSubmitActive) }}
@@ -2072,11 +2080,11 @@ function IpSequenceVariation() {
                 }
                 <ColoredLine color="#f3f2f2" />
                 <Row>
-                    <Col md="12" xs="12" sm='12'>
+                    <Col md="12" xs="12" sm='12' style={{ paddingLeft: '10px' }}>
                         <CheckBox
                             // defaultChecked
                             color="primary"
-                            className={"float-left ml-2"}
+                            className={"float-left"}
                             name="check"
                             id="check"
                             onChange={() => { setSendMailAfterSearch(!sendMailAfterSearch) }}
@@ -2086,11 +2094,11 @@ function IpSequenceVariation() {
                     </Col>
                 </Row>
                 <Row>
-                    <Col md='4' xs="4" sm='4'>
+                    <Col md='4' xs="4" sm='4' style={{ paddingLeft: '10px' }}>
                         <CheckBox
                             // defaultChecked
                             color="primary"
-                            className={"float-left ml-2"}
+                            className={"float-left"}
                             name="saveForm"
                             id="saveForm"
                             onChange={setFormValue}
@@ -2098,7 +2106,7 @@ function IpSequenceVariation() {
                         />
                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left mx-2 ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
-                    <Col md='6' xs="6" sm='6'>
+                    <Col md='6' xs="6" sm='6' style={{ marginLeft: '-80px' }}>
                         <TextInput
                             id="formName"
                             name="formName"
