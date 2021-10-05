@@ -644,6 +644,10 @@ label {
     clear: both
 }
 
+.MuiCheckbox-colorPrimary.Mui-checked {
+    color: #337ab7 !important;
+}
+
 @media only screen and (max-width: 1300px) {
     .newsUpdateContent {
         padding-right: 25px;
