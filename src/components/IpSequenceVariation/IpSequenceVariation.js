@@ -94,6 +94,9 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         marginBottom: '10px'
     },
+    numberInput: {
+        width: '80px'
+    },
     loginSubmitCancel: {
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
@@ -1603,9 +1606,9 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         helperText={formik.touched.minResidues && formik.errors.minResidues}
-                                        className={"float-left "}
+                                        className={"float-left " + classes.numberInput}
                                     />
-                                    <Typography className={"float-left " + classes.seqText} style={{ margin: '10px 15px' }}>
+                                    <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;{t("and")}&nbsp;&nbsp;
                                     </Typography>
                                     <TextInput
@@ -1618,7 +1621,7 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.maxResidues && Boolean(formik.errors.maxResidues)}
                                         helperText={formik.touched.maxResidues && formik.errors.maxResidues}
-                                        className={"float-left "}
+                                        className={"float-left " + classes.numberInput}
                                     />
                                     <Typography className={"float-left " + classes.seqText} style={{ marginLeft: '15px' }}>
                                         &nbsp;&nbsp;&nbsp;{t("residuesInLength")}
@@ -1772,7 +1775,7 @@ function IpSequenceVariation() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.patientDocInp && Boolean(formik.errors.patientDocInp)}
                                         helperText={isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
-                                        className={"float-left mx-4 "}
+                                        className={"float-left mx-4 " + classes.numberInput}
                                         disabled={isPatientDoc ? false : true}
                                     />
                                     <Typography className={"float-left mt-2"}>
