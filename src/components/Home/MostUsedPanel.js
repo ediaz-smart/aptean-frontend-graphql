@@ -109,7 +109,7 @@ function MostUsedPanel() {
                                 {userData && userData.abAccess && <Link to="/searchresantibody" className="appLink">{t('antibodySequence')}</Link>}
                             </Fragment>
                         </p>
-                        <p className={classes.pTagMargin}><a className="appLink" href={url.patentNumberLookup} target="_blank" rel="noreferrer" >{t('patentnumlookup')}</a></p>
+                        <p className={classes.pTagMargin}><a className="appLink" href={url.patentNumLink} target="_blank" rel="noreferrer" >{t('patentNumbers')}</a></p>
                     </div>
                 </Col>
             </Row>
