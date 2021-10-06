@@ -21,6 +21,7 @@ import SearchPrompt from '../../shared/Modal/SearchPromptModal'
 import searchResAntibody from '../../services/searchResAntibody';
 import UtilsService from '../../helpers/utils';
 import SavedSearch from '../../services/savedsearch';
+import SeqVIModal from '../../shared/Modal/SeqVIModal';
 import { containerWidth } from '../../shared/constants'
 
 
@@ -53,6 +54,7 @@ function SearchResultAntibody() {
     const history = useHistory();
     const [selectData, setSelectData] = useState();
     const [searchModal, setSearchModal] = useState(false);
+    const [showDBRequiredError, setShowDBRequiredError] = useState(false);
     // const [strategy, setStrategy] = useState('genepast');
     const [authInfo, setAuthInfo] = useState();
     // const [workflowId, setWorkflowId] = useState();
@@ -96,6 +98,7 @@ function SearchResultAntibody() {
             }
         }
         let tempparam = decodeURI(tempname);
+        console.log(tempparam)
         tempparam = tempparam.toString().replace(/~~GQSF~~/g, '%');
         if (tempparam) {
             let getResponse = await SavedSearch.getParticularTemplate(tempparam, 'Antibody');
@@ -156,9 +159,16 @@ function SearchResultAntibody() {
         patientDBData[i]['selected'] = event.target.checked;
         // patientDBData[i]['ticked'] = event.target.checked;
         setPatientDBData([...patientDBData]);
+        if (event.target.checked) {
+            if (showDBRequiredError) setShowDBRequiredError(false)
+        }
     }
     function homePage() {
         history.push('/home');
+    }
+    function closeSaveModal() {
+        setSearchModal(false);
+        homePage();
     }
     let initialData = {};
     if (formdata && formdata.savedRedo) {
@@ -225,7 +235,8 @@ function SearchResultAntibody() {
             let selectDB = [];
             selectDB = _.filter(patientDBData, { selected: true }).map(v => "p:" + v.value);
             if (selectDB.length == 0) {
-                toast.error(t('dbMandatoryErr'));
+                setShowDBRequiredError(true)
+                // toast.error(t('dbMandatoryErr'));
                 return false;
             }
             let strategyItem = _.find(Constant['strategies'], function (obj) {
@@ -659,6 +670,9 @@ function SearchResultAntibody() {
                         <hr />
                     </Col>
                     <Col lg="12" md="12" sm='12' xs='12' className="mb-2">
+                        <span className={showDBRequiredError ? 'd-block' : 'd-none'} style={{ color: '#f44336', fontSize: '13px', fontStyle: 'italic', marginBottom: '5px' }}>
+                            {t('dbMandatoryErr')}
+                        </span>
                         <h6 className={"appTextColor loginTitle mb-2 "}>{t('patientDBSearch')}</h6>
                         <Row className="mb-2">
                             <Col lg="4" md="4" sm='4' xs='4' className="p-0 content">
@@ -752,7 +766,13 @@ function SearchResultAntibody() {
                 </Row>
 
             </form>
-            <SearchPrompt searchModal={searchModal} />
+            {/* <SearchPrompt searchModal={searchModal} /> */}
+            <SeqVIModal
+                show={searchModal}
+                onMessage={t('searchSubmitted')}
+                type="seqSearch"
+                saveCallBack={closeSaveModal}
+            />
         </div>
 
     )
