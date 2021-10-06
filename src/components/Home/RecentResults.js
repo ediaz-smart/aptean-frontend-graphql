@@ -70,6 +70,13 @@ const customStyles = {
 			borderLeft: '1px solid #0606061f',
 			'&:first-child': {
 				borderLeft: '0',
+				maxWidth: '160px'
+			},
+			'&:nth-child(2)': {
+				maxWidth: '110px'
+			},
+			'&:nth-child(5), &:nth-child(4)': {
+				maxWidth: '200px'
 			},
 			fontWeight: '700',
 			color: '#777777',
@@ -83,7 +90,7 @@ const customStyles = {
 			borderLeft: '1px solid #0606061f',
 			// borderBottom:'1px solid #0606061f',
 			'&:first-child': {
-				borderLeft: '0',
+				borderLeft: '0'
 			},
 			display: 'grid',
 			justifyContent: 'start !important'
@@ -96,13 +103,19 @@ const columns = [
 		name: "Type",
 		selector: "type",
 		sortable: false,
-		center: true
+		center: true,
+		style: {
+			maxWidth: '160px'
+		}
 	},
 	{
 		name: "Date",
 		selector: "date",
 		sortable: false,
-		center: true
+		center: true,
+		style: {
+			maxWidth: '110px'
+		}
 	},
 	{
 		name: "Description",
@@ -116,7 +129,8 @@ const columns = [
 		selector: "results",
 		sortable: false,
 		style: {
-			justifyContent: 'unset !important'
+			justifyContent: 'unset !important',
+			maxWidth: '200px'
 		}
 	},
 	{
@@ -125,7 +139,8 @@ const columns = [
 		sortable: false,
 		center: true,
 		style: {
-			justifyContent: 'center !important'
+			justifyContent: 'center !important',
+			maxWidth: '200px'
 		}
 	}
 ];
