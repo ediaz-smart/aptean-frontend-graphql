@@ -385,6 +385,7 @@ function FullTextSearch() {
 		console.log(pasteContent, "pasteContent1");
 		console.log(detectPaste, "detectPaste");
 		console.log(keyPressCode, "keyPressCode");
+		value = value.replace(".", "");
 		let lastValue = value.slice(-1);
 		let lastPrevValue = value.charAt(value.length - 2);
 		// console.log(lastChildEl,'lastChildEl1');
@@ -397,6 +398,7 @@ function FullTextSearch() {
 		var checkClass;
 		var placeCursorPos = false;
 		var removedText = '';
+		var spaceOpacity = true;
 		console.log(htmlElement.children,'htmlElement.children..');
 		
 		
@@ -619,27 +621,32 @@ function FullTextSearch() {
 							newSpan.setAttribute("class", "space");
 							newSpan.innerHTML = ".";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
-							placeCursor = false;
-							// placeCursorPos = true;
+							// placeCursor = false;
+							placeCursorPos = true;
 
-							// getEndPosition = savedCaretPosition.end;
+							getEndPosition = savedCaretPosition.end;
 							// setTimeout(() => {
 							// 	setCurrentCursorPosition(getEndPosition);
 							// }, 0);
 							
 						}
 					} else if (getChildClassName == "space") {
+						getChildText = getChildText.trim();
+						var newSpan = document.createElement("span");
+						newSpan.setAttribute("class", "space");
+						newSpan.innerHTML = ".";
+						htmlElement.innerHTML = htmlElement.innerHTML.trim();
 						if (checkORValues.includes(getChildText)) {
 							htmlElement.children[htmlElement.children.length - 1].outerHTML =
-								ORString;
+								ORString+newSpan.outerHTML;
 							// lastChildEl.innerHTML = ORString;
 							// console.log(lastChildEl1,'lastChildEl1');
 						} else if (checkANDValues.includes(getChildText)) {
 							htmlElement.children[htmlElement.children.length - 1].outerHTML =
-								ANDString;
+								ANDString+newSpan.outerHTML;
 						} else if (checkNOTValues.includes(getChildText)) {
 							htmlElement.children[htmlElement.children.length - 1].outerHTML =
-								NOTString;
+								NOTString+newSpan.outerHTML;
 						} else {
 							// // Adding AND operator if space enters
 							// htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
@@ -660,6 +667,11 @@ function FullTextSearch() {
 							);
 							htmlElement.innerHTML = htmlElement.innerHTML.trimRight();
 						}
+					}else if(removeClassArray.includes(getChildClassName)){
+						var newSpan = document.createElement("span");
+						newSpan.setAttribute("class", "space");
+						newSpan.innerHTML = ".";
+						htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML+newSpan.outerHTML;
 					}
 				} else if (lastPrevChild && lastPrevChild.attributes.length > 0) {
 					if (
@@ -722,7 +734,7 @@ function FullTextSearch() {
 							);
 							var newSpan = document.createElement("span");
 							newSpan.setAttribute("class", "space");
-							newSpan.innerHTML = "";
+							newSpan.innerHTML = ".";
 							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
 							placeCursor = false;
 							placeCursorPos = true;
@@ -742,13 +754,13 @@ function FullTextSearch() {
 					// }
 				}
 				console.log(htmlElement, "htmlElement..");
-				placeCaretAtEnd(htmlElement);
+				// placeCaretAtEnd(htmlElement);
 			} else {
 				if (htmlElement.innerHTML.slice(-1) != ">") {
 					htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 					// htmlElement.innerHTML = htmlElement.innerHTML.replace(/&nbsp;/g,"");
 					htmlElement.innerHTML = htmlElement.innerHTML.replaceAll("<br>", "");
-					placeCaretAtEnd(htmlElement);
+					// placeCaretAtEnd(htmlElement);
 				}
 			}
 		} else if (keyCode == 8) {
@@ -1081,6 +1093,18 @@ function FullTextSearch() {
 								htmlElement.innerHTML + ANDString + newSpan.outerHTML;
 						}
 					} else if (getChildClassName == "space") {
+						let removedText = '';
+						Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+							if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+							{
+								removedText = htmlElement.childNodes[key].textContent;
+							}
+						});
+						getChildText = getChildText.replace('.','');
+						if(removedText != "" && (removedText == lastValue))
+						{
+							getChildText = getChildText + lastValue;
+						}
 						if (detectPaste) {
 							let getLastIndex =
 								htmlElement.innerHTML.lastIndexOf(pasteContent);
@@ -1100,56 +1124,77 @@ function FullTextSearch() {
 							lastValue == "n" ||
 							lastValue == "N"
 						) {
-							if (
-								htmlElement.children[htmlElement.children.length - 1]
-									.textContent.length == 0
-							) {
+							let replaceDot = htmlElement.children[htmlElement.children.length - 1]
+								.textContent.replace('.','');
+							Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+								if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+								{
+									htmlElement.removeChild(htmlElement.childNodes[key]); 
+								}
+							});
+							spaceOpacity = false;
+							// htmlElement.children[htmlElement.children.length - 1].style = 'opacity:1';
+							
+							if (replaceDot.length == 0) {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								htmlElement.children[
 									htmlElement.children.length - 1
 								].textContent = lastValue;
 							} else {
-								
-								let replaceDot = htmlElement.children[htmlElement.children.length - 1]
-								.textContent.replace('.','');
-								htmlElement.children[
-                                    htmlElement.children.length - 1
-                                ].style = 'visibility:visible';
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-								htmlElement.children[
-									htmlElement.children.length - 1
-								].textContent = replaceDot + lastValue;
+								// replaceDot = replaceDot.slice(0, -1);
+								if(removedText == lastValue)
+								{
+									htmlElement.children[
+										htmlElement.children.length - 1
+									].textContent = replaceDot + lastValue;
+								}else{
+									htmlElement.children[
+										htmlElement.children.length - 1
+									].textContent = replaceDot;
+								}
+								
+								// htmlElement.children[
+								// 	htmlElement.children.length - 1
+								// ].textContent = replaceDot;
 							}
 						} else if (
 							checkORValues.includes(getChildText) ||
 							checkANDValues.includes(getChildText) ||
 							checkNOTValues.includes(getChildText)
 						) {
+							spaceOpacity = false;
 							htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-							htmlElement.children[
-								htmlElement.children.length - 1
-							].textContent =
-								htmlElement.children[htmlElement.children.length - 1]
-									.textContent + lastValue;
+							htmlElement.children[htmlElement.children.length - 1].textContent = getChildText;
 						} else {
 							// // Adding AND operator if space enters
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 							}
+							Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+								// console.log(htmlElement.childNodes[key].nodeName,'val..');
+								if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+								{
+									lastValue = htmlElement.childNodes[key].textContent;
+									htmlElement.removeChild(htmlElement.childNodes[key]); 
+								}
+							});
+							console.log(htmlElement.childNodes,'childNodes..');
 							//create the DOM object
 							var newSpan = document.createElement("span");
 							// add the class to the 'span'
 							newSpan.setAttribute("class", "query");
 							// let checkOpText = lastPrevChild.innerText+lastValue;
 							lastChild.innerText = lastChild.innerText.replace(".", "");
-							if (lastChild.innerText.length == 0) {
+							if (lastChild.innerText.length == 1) {
 								// if (htmlElement.innerHTML.slice(-1) != ">") {
 								// 	htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								// }
 
 								newSpan.innerHTML = lastValue;
 							} else {
-								newSpan.innerHTML = lastChild.innerText + lastValue;
+								// newSpan.innerHTML = lastChild.innerText + lastValue;
+								newSpan.innerHTML = getChildText ? getChildText : lastValue;
 							}
 							// htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+newSpan.outerHTML;
 
@@ -1158,9 +1203,29 @@ function FullTextSearch() {
 									htmlElement.children.length - 1
 								].outerHTML = newSpan.outerHTML;
 							} else {
-								htmlElement.children[
-									htmlElement.children.length - 1
-								].outerHTML = ANDString + " " + newSpan.outerHTML;
+								let splitPrevClass = [];
+								if(lastPrevChild && lastPrevChild.attributes.class)
+								{
+									splitPrevClass = lastPrevChild.attributes.class ? lastPrevChild.attributes.class.value.split(' '):[];
+								}
+								if(splitPrevClass && splitPrevClass.length > 0)
+								{
+									if(removeClassArray.includes(splitPrevClass[0]))
+									{
+										htmlElement.children[
+											htmlElement.children.length - 1
+										].outerHTML = newSpan.outerHTML;
+									}else{
+										htmlElement.children[
+											htmlElement.children.length - 1
+										].outerHTML = ANDString + " " + newSpan.outerHTML;
+									}
+								}else{
+									htmlElement.children[
+										htmlElement.children.length - 1
+									].outerHTML = ANDString + " " + newSpan.outerHTML;
+								}
+								
 							}
 
 							// htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
@@ -1837,8 +1902,19 @@ function FullTextSearch() {
 					Object.keys(htmlElement.children).forEach(function (key) {
 						htmlElement.children[key].setAttribute("dataId", parseInt(key) + 1);
 					});
+					console.log(document.getElementsByClassName('space'),'spacecheck');
+					if(document.getElementsByClassName('space') && document.getElementsByClassName('space').length > 0)
+					{
+						if(spaceOpacity)
+						{
+							document.getElementsByClassName('space')[0].style = 'opacity: 0';
+						}else{
+							document.getElementsByClassName('space')[0].style = 'opacity: 1';
+						}
+					}
+					
 				}	
-			}, 100);
+			}, 0);
 			
 			console.log(htmlElement.children, "htmlElement.children");
 
@@ -2004,7 +2080,7 @@ function FullTextSearch() {
 			}
 		}
 
-		console.log(searchRes, "searchRes");
+		// console.log(searchRes, "searchRes");
 	};
 	function placeCaretAtEndTag(el) {
 		el.focus();

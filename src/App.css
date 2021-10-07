@@ -367,7 +367,7 @@
 }
 
 .space {
-    visibility: hidden;
+    /* visibility: hidden; */
 }
 
 .opClass::after,
