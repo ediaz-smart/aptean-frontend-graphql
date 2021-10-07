@@ -60,10 +60,10 @@ export default function ProgressBar({datas,getStatus}) {
     const [status, setStatus] = React.useState(datas.status);
     const [initialData,setInitialData] = React.useState(true);
    
-    // console.log(getStatus,'getStatus');
+    console.log(datas,'datas');
     React.useEffect(async () => {
-        // console.log(props.datas.id,'props');
-        if(datas.status == 'STILL_RUNNING')
+        console.log(datas.id ,datas.status,'progress');
+        if(datas.status == 'STILL_RUNNING' || datas.status == 'UNKNOWN')
         {
             const initialsres = await HomeService.getSearchResultsStatus(datas.id);
             progressData(initialsres);
@@ -107,7 +107,7 @@ export default function ProgressBar({datas,getStatus}) {
     function progressData(result){
         if(result && result.response_content)
         {
-            if(result.response_content.status == 'STILL_RUNNING')
+            if(result.response_content.status == ('STILL_RUNNING' || 'UNKNOWN'))
             {
                 let progress = result.response_content.progress ? parseInt(result.response_content.progress):0;
                 if(progress <= 15)

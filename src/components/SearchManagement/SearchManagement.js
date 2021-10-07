@@ -446,19 +446,21 @@ function SearchManagement(props) {
             if (value.type != 'Folder' && value.type != 'Antibody') {
                 console.log('type', value.type)
                 mergeData.push(value.id);
-                if (mergeType.length == 0) {
+                // if (mergeType.length == 0) {
                     mergeType.push(value.type);
-                } else {
-                    if (mergeType.includes(value.type)) {
-                        mergeType.push(value.type);
-                    }
-                }
+                // } else {
+                //     if (mergeType.includes(value.type)) {
+                //         mergeType.push(value.type);
+                //     }
+                // }
 
             }
         });
+        const isMergeEqual = mergeType.every(i => i === mergeType[0]);
+        console.log('isMergeEqual',mergeType, isMergeEqual)
         if (state.selectedCount > 0) {
             setDisableDelete(false);
-            if (state.selectedCount >= 2 && mergeType.length >= 2) {
+            if (state.selectedCount >= 2 && mergeType.length >= 2 && isMergeEqual) {
                 setDisableMergeBtn(false);
             } else {
                 setDisableMergeBtn(true);
@@ -634,6 +636,7 @@ function SearchManagement(props) {
             resultData = data.response_content;
         }
         resultData.forEach(datas => {
+            console.log('dat.status', datas.status, datas.id)
             let tempObj = datas;
             let id = datas.id;
             tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
@@ -653,7 +656,16 @@ function SearchManagement(props) {
             mostRecentTypeUrl = mostRecentTypeUrl.replace('**', id);
             let typeUrl = process.env.REACT_APP_BASE_URL + mostRecentTypeUrl;
             if (datas.type != '') {
-                if (datas.type !== 'GqFolder') {
+                if(datas.status == 'UNKNOWN')
+                {
+                    console.log('UNKNOWN', datas)
+                    console.log('datas.status', datas.status)
+                }
+                if(datas.type == "GqWfMerge" && (datas.status == 'UNKNOWN' || datas.status =='STILL_RUNNING')) {
+                    
+                    tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
+                }
+                else if (datas.type !== 'GqFolder') {
                     if (datas.status == 'STILL_RUNNING') {
                         tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
                     }
@@ -1070,6 +1082,8 @@ function SearchManagement(props) {
         } else {
             getDefaultSearchResult('folder', defaultTitleId, start, stop);
         }
+        setClearCheckedRow(!clearCheckedRow);
+        setDisableMergeBtn(true);
     }
 
     function mergeModalFunction(type) {

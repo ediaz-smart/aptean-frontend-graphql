@@ -342,6 +342,7 @@ function IpSequenceVariation() {
     const [warningMsg, setWarningMsg] = useState("");
     const [isWarningReturned, setIsWarningReturned] = useState(false);
     const [errorHeading, setErrorHeading] = useState("");
+    const [formSubmit, setFromSubmit] = useState(false);
 
 
     let initialCreditValues = {
@@ -1235,6 +1236,16 @@ function IpSequenceVariation() {
         }
     }
 
+    if( formSubmit && formik && formik.errors && Object.keys(formik.errors).length > 0) {
+        document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({behavior: "smooth", block: "center",inline: "start"});
+        setFromSubmit(false);
+        } 
+
+    function submitForm(){
+        formik.handleSubmit();
+        setFromSubmit(true);
+    }
+
 
     let subjectText = "GenomeQuest: Error updating account information [Error code: " + errorMsg + "]";
 
@@ -1253,7 +1264,7 @@ function IpSequenceVariation() {
                 subjectText={subjectText}
                 errorContent={errorHeading}
             />
-            <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
+            <form name="ipSequenceSearchForm">
                 <Row>
                     <Col lg="12" md="12" xs="12" className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
@@ -2127,7 +2138,7 @@ function IpSequenceVariation() {
                 <br></br>
                 <Row >
                     <Col  >
-                        {isSubmitActive && <Button className="accountInfo" type="submit">
+                        {isSubmitActive && <Button className="accountInfo" onClick={submitForm}>
                             {t("submit")}
                         </Button>}
                         {!isSubmitActive && <Button className="cancelButtonDisable" disabled>

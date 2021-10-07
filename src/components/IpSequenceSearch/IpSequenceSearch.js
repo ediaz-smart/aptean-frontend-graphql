@@ -351,6 +351,7 @@ function IpSeqSearch() {
     const [warningMsg, setWarningMsg] = useState("");
     const [isWarningReturned, setIsWarningReturned] = useState(false);
     const [errorHeading, setErrorHeading] = useState("");
+    const [formSubmit, setFromSubmit] = useState(false);
 
     let initialCreditValues = {
         ppu1SubTotal: 0,
@@ -1253,7 +1254,7 @@ function IpSeqSearch() {
             label: "3"
         }
     ];
-    console.log('formik', formik)
+    console.log('outside formik', formik)
 
     function changeIncludeGenUnknownDate() {
         if (!isDocPubUnknownDates) {
@@ -1286,6 +1287,16 @@ function IpSeqSearch() {
 
     let subjectText = "GenomeQuest: Error updating account information [Error code: " + errorMsg + "]";
 
+    if( formSubmit && formik && formik.errors && Object.keys(formik.errors).length > 0) {
+        document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({behavior: "smooth", block: "center",inline: "start"});
+        setFromSubmit(false);
+        } 
+
+    function submitForm(){
+        formik.handleSubmit();
+        setFromSubmit(true);
+    }
+
     return (
         <div className={classes.grow}>
             <SeqVIModal
@@ -1302,7 +1313,7 @@ function IpSeqSearch() {
                 errorContent={errorHeading}
                 isWarning={isWarningReturned}
             />
-            <form name="ipSequenceSearchForm" onSubmit={formik.handleSubmit}>
+            <form name="ipSequenceSearchForm">
                 <Row>
                     <Col lg="12" md="12" sm='12' className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
@@ -2174,7 +2185,7 @@ function IpSeqSearch() {
                     <div>
                     </div>
                     <Col  >
-                        {isSubmitActive && <Button className="accountInfo" type="submit">
+                        {isSubmitActive && <Button className="accountInfo" onClick={submitForm}>
                             {t("submit")}
                         </Button>}
                         {!isSubmitActive && <Button className="cancelButtonDisable" disabled>
@@ -2185,6 +2196,14 @@ function IpSeqSearch() {
                         </Button>
                     </Col>
                 </Row>
+                {/* <FormikErrorFocus
+            // See scroll-to-element for configuration options: https://www.npmjs.com/package/scroll-to-element
+            offset={0}
+            align={'top'}
+            focusDelay={200}
+            ease={'linear'}
+            duration={1000}
+          /> */}
             </form>
         </div >
     );

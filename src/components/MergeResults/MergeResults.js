@@ -266,6 +266,7 @@ function MergeResults(props) {
     };
 
     const setGroupClass = (name, value) => {
+        console.log('groupBValue', selectData.selectedCount, groupAValue.length, groupBValue.length)
         if (name && name == "groupA" && value) {
             if (groupAValue.includes(value)) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
@@ -276,7 +277,9 @@ function MergeResults(props) {
             if (groupBValue.includes(value)) {
                 setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
             }
+            if((groupAValue.length + groupBValue.length) == selectData.selectedCount){
             setIsSubmitActive(true);
+            }
         } else if (name && name == "groupB" && value) {
             if (groupBValue.includes(value)) {
                 setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
@@ -287,7 +290,9 @@ function MergeResults(props) {
             if (groupAValue.includes(value)) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
             }
-            setIsSubmitActive(true);
+            if((groupAValue.length + groupBValue.length) == selectData.selectedCount){
+                setIsSubmitActive(true);
+            }
         }
     }
 
@@ -416,7 +421,7 @@ function MergeResults(props) {
                             </Col>
                         </Row>
                         <div id="mergeButtonDiv">
-                            {!isSubmitActive && <Button type="submit" className={"disableButtonClass float-right ml-2"} id="mergeSubmit">Merge Results</Button>}
+                            {!isSubmitActive && <Button type="submit" className={"disableButtonClass float-right ml-2"} id="mergeSubmit" disabled>Merge Results</Button>}
                             {isSubmitActive && <Button type="submit" className={"submitButtonClass float-right ml-2"} id="mergeSubmit">Merge Results</Button>}
                             <Button className={"cancelButtonClass float-right"} onClick={() => clearForm("closeMergeModal")} id="mergeCancel">Cancel</Button>
                         </div>

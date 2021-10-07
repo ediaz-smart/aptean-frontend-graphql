@@ -207,7 +207,10 @@ function RecentResults() {
 				mostRecentTypeUrl = mostRecentTypeUrl.replace('**', id);
 				let typeUrl = process.env.REACT_APP_BASE_URL + mostRecentTypeUrl;
 				if (datas.type != '') {
-					if (datas.type !== 'GqFolder') {
+					if(datas.type === "GqWfMerge" && (datas.status == 'UNKNOWN' || datas.status =='STILL_RUNNING')) {
+						tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
+					}
+					else if (datas.type !== 'GqFolder') {
 						if (datas.status == 'STILL_RUNNING') {
 							tempObj['results'] = <ProgressBar getStatus={getProgressStatus} datas={datas} />
 						}
