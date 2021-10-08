@@ -284,7 +284,8 @@ function FullTextSearch() {
 			element,
 			isRightArrow:false,
 			pasteContent:'',
-			savedCaretPosition
+			savedCaretPosition,
+			getCurrentSel
 		}
 		parseQuery(postObj);
 
@@ -293,7 +294,7 @@ function FullTextSearch() {
 	const parseQuery = async(data) => {
 		// let value = element.target.textContent;
 		// console.log(element,'innerHTML');
-		let {value,element,isRightArrow,savedCaretPosition} = data;
+		let {value,element,isRightArrow,savedCaretPosition,getCurrentSel} = data;
 		console.log(keyCode, "keyCode");
 		console.log(value, "value");
 		// localStorage.setItem('searchData',value);
@@ -313,14 +314,14 @@ function FullTextSearch() {
 		// If Space Enters without any string
 		if (keyCode == 32) {
 			if (value.length > 1) {
-				replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition);
+				replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition,getCurrentSel);
 			} else {
 				value = "";
 				updateHtmlElement(value);
 			}
 			setSearchTermPopup(false);
 		} else {
-			replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition);
+			replaceStringHtml(value, keyCode, isRightArrow,savedCaretPosition,getCurrentSel);
 			// replaceStringHtml(value,keyCode);
 		}
 
@@ -371,16 +372,17 @@ function FullTextSearch() {
 			return htmlElement;
 		}
 	}
-	async function replaceStringHtml(value, keyCode, isArrowRight,savedCaretPosition) {
+	async function replaceStringHtml(value, keyCode, isArrowRight,savedCaretPosition,getCurrentSel1) {
 		let getCurrentSel = window.getSelection();
+		console.log(getCurrentSel1, "getCurrentSel1");
 		console.log(getCurrentSel, "getCurrentSel");
 		console.log(isArrowRight, "isArrowRight");
 		console.log(savedCaretPosition, "savedCaretPosition");
 		let htmlElement = document.getElementById("textareaDiv");
-		htmlElement.innerHTML = htmlElement.innerHTML.replace(
-			/<br>/g,
-			""
-		);
+		// htmlElement.innerHTML = htmlElement.innerHTML.replace(
+		// 	/<br>/g,
+		// 	""
+		// );
 
 		console.log(pasteContent, "pasteContent1");
 		console.log(detectPaste, "detectPaste");
@@ -620,7 +622,23 @@ function FullTextSearch() {
 							var newSpan = document.createElement("span");
 							newSpan.setAttribute("class", "space");
 							newSpan.innerHTML = ".";
-							htmlElement.innerHTML = htmlElement.innerHTML + newSpan.outerHTML;
+							// if (
+							// 	getCurrentSel &&
+							// 	getCurrentSel.focusNode && getCurrentSel.focusNode.previousSibling
+							// ) {
+								
+							// 		let currDataId = getCurrentSel.focusNode.previousSibling.getAttribute("dataid");
+							// 		Object.keys(htmlElement.children).forEach(function (key) {
+							// 			let getClassId = htmlElement.children[key].getAttribute("dataid");
+							// 			if(getClassId == currDataId)
+							// 			{
+							// 				htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
+							// 			}
+							// 		});
+							// }else{
+								htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
+							// }
+							
 							// placeCursor = false;
 							placeCursorPos = true;
 
@@ -1186,7 +1204,8 @@ function FullTextSearch() {
 							newSpan.setAttribute("class", "query");
 							// let checkOpText = lastPrevChild.innerText+lastValue;
 							lastChild.innerText = lastChild.innerText.replace(".", "");
-							if (lastChild.innerText.length == 1) {
+							lastValue = lastValue.trim();
+							if (lastChild.innerText.length == 1 && lastValue == "") {
 								// if (htmlElement.innerHTML.slice(-1) != ">") {
 								// 	htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								// }
@@ -1901,6 +1920,7 @@ function FullTextSearch() {
 				{
 					Object.keys(htmlElement.children).forEach(function (key) {
 						htmlElement.children[key].setAttribute("dataId", parseInt(key) + 1);
+						// htmlElement.children[key].innerHTML = htmlElement.children[key].innerHTML.replace(/<br>/g, "");
 					});
 					console.log(document.getElementsByClassName('space'),'spacecheck');
 					if(document.getElementsByClassName('space') && document.getElementsByClassName('space').length > 0)
