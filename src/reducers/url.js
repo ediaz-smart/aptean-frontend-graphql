@@ -18,7 +18,7 @@ export const url = {
     searchResPaging: "do=gqfolder.get_elements&id=:id:&sort=:ST:&start=:S1:&stop=:S2:&nocache=:NC:&format=json",
     logout:"do=gquser.logout&format=json",
     createFolder: "do=gqfolder.create_subfolder&format=json&id=**&text_label=",
-    //deleteFolder: "do=gqshareable.delete&format=json&is_recursive=true&id=**", // same as deleteItems
+    deleteFolder: "do=gqshareable.delete&format=json&is_recursive=true&id=**", // same as deleteItems
     moveToFolder: "do=gqfolder.move_shareable_to&format=json&sharing_setting=inherit_recursive&id=FID&shareable_id=WID",
     deleteItems: "do=gqshareable.delete&format=json&is_recursive=true&id=**",
     getServerInfo: "do=gqft.get_server_info&format=json",
@@ -27,7 +27,9 @@ export const url = {
     antibodySearch:"do=gqworkflow&workflow_type=GqWfABIpSearch&format=json&view_helper=ObjectViewer::full",
     authInfoAB:"do=gqresult2.get_auth_info_4ab&format=json&db=wf:ab.resdb",
     seqWorkflow:"do=gqworkflow.get_info_ft&format=json&workflow=id:**",
+    
     seqShareInfo:"do=gqshareable.get_acl_form&id=**&format=json",
+    
     seqAlertInfo:"do=gqworkflow.get_schedule_form&id=**&format=json",
     seqTechnicalData:"do=gqworkflow.get_log&workflow=id:**",
     getAlertRedos:"do=gqworkflow.get_related_workflows_ft&bid=**&format=json",
@@ -35,16 +37,20 @@ export const url = {
     downloadQuerySeq:"do=gqworkflow.show_result&workflow=id:**&workflow_output_name=queries.fasta",
     updateAlertSetting:"do=gqworkflow.update_schedule&format=json&activate=on&relaunch_interval=**&id=WID",
     removeAlert:"do=gqworkflow.delete_schedule&format=json&relaunch_interval=&id=WID",
+    
     removeResultShare:"do=gqshareable.update_acl&format=json&id=WID&read_sharee_id=UID&is_read_recursive=1&write_sharee_id=UID&is_write_recursive=1&request.preventCache=TIMESTAMP",
-    // patentNumberLookup:"https://stage.genomequestlive.com/query?do=gqfetch.field_search&field=PN",
+    
+    //patentNumberLookup:"https://stage.genomequestlive.com/query?do=gqfetch.field_search&field=PN",
     browserDBLink:"do=mygq&from_ft=true#4",
     patentNumLink:"do=gqfetch.get_field_search_form&from_ft=true",
     alignSequencesDirectly:"do=gqsearch.get_align_pair_form&from_ft=true",
     searchResultSet:"do=gqshareable.qsearch&format=json&text=**",
     userList:"do=gqshareable.get_acl_form&id=**&format=json",
+    
     seqShareList:"do=gqworkflow.get_sharees_ft&format=json&workflow=id:**",
     seqAddSharee:"do=gqworkflow.add_sharees_ft&format=json&workflow=id:**&userId=UID",
     seqRemoveSharee:"do=gqworkflow.remove_sharee_ft&format=json&workflow=id:**&userId=UID",
+    
     browseSeqDB:"do=gqfetch&db=id:**",
     getPageCount: "do=gquser.get_paging_size",
     updateSeqData:"do=gqworkflow.update&id=WID&format=json",
@@ -52,5 +58,12 @@ export const url = {
     fullTextSearchResult:"do=gqft.search_by_text&format=json",
     getSearchCount:"do=gqfolder.get_folder_info&format=json",
     mergeResults: "do=gqworkflow.merge_results&format=json",
-    fullDocView: "do=gqft.get_patent_doc&format=json"
+
+    shareableList: "do=gqAccessFt.shareable_list&id=:id:&format=json",
+    addAccess: "do=gqAccessFt.add_shared_item&id=:id:&usr=:usr:&acl=:acl:&format=json",
+    removeAccess: "do=gqAccessFt.remove_shared_item&id=:id:&usr=:usr:&format=json",
+    removeAll: "do=gqAccessFt.remove_all&id=:id:&format=json",
+    sharedWith: "do=gqAccessFt.get_shared_with&id=:id:&format=json",
+    itemsSharedWithMe: "do=gqAccessFt.shared_with_me&parent=:parent:&format=json", //based on folder
+    foldersSharedWithMe: "do=gqAccessFt.folders_shared_with_me&parent=:parent:&format=json"
 }

@@ -1,7 +1,8 @@
-import { get } from '../helpers/fetchServicesMethods';
-import { url } from '../reducers/url';
-import PubSub from 'pubsub-js';
+import { post, get,getFile } from '../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
+import { url } from '../reducers/url';
+
+import PubSub from 'pubsub-js';
 
 function showLoader() {
     PubSub.publish('msg', true);
@@ -11,21 +12,21 @@ function hideLoader() {
     PubSub.publish('msg', false);
 }
 
+async function shareableList(workflowId) {
 
-export const getFolderResultData = async (folderId) => {
     try {
-        let apiUrl = 'do=gqfolder.get_folder_info&format=json&id=' + folderId;
 
+        let apiurl = url.shareableList;
+        apiurl = apiurl.replace(':id:', workflowId)
+       
         showLoader();
-        return await get(apiUrl)
+        return await get(apiurl)
             .then((response) => {
                 hideLoader();
-                console.log(JSON.stringify(response), "getFolderResultData getFolderResultData getFolderResultData");
                 return response;
             })
             .catch((error) => {
                 hideLoader();
-                // toast.error('Failed to change password');
                 console.log("error::", error);
 
             });
@@ -36,91 +37,17 @@ export const getFolderResultData = async (folderId) => {
     }
 }
 
-export const updateFolderName = async (name, id, history) => {
-    try {
-        showLoader();
-        const renameUrl = 'do=gqfolder.rename&id=' + id + '&text_label=' + name + '&format=json';
-
-        return get(renameUrl, history)
-            .then((response) => {
-                hideLoader();
-                console.log(response)
-                return response;
-            })
-            .catch((error) => {
-                console.log("error::", error);
-                hideLoader();
-                return null
-            });
-    } catch (error) {
-        hideLoader();
-        console.error(error);
-        return null
-    }
-}
-
-export const getFolderSharableUserList = async (_id, history) => {
-    console.log(_id)
-    try {
-        const apiUrl = 'do=gqAccessFt.shareable_list&id=' + _id + '&format=json';
-
-        showLoader();
-        return await get(apiUrl, history)
-            .then((response) => {
-                hideLoader();
-                console.log(response)
-                return response;
-            })
-            .catch((error) => {
-                hideLoader();
-                // toast.error('Failed to change password');
-                console.log("error::", error);
-            });
-    } catch (error) {
-        toast.error(error.response_content.message);
-        console.error(error, "errors");
-        hideLoader();
-    }
-}
-export const getFolderSharedList = async (_id, history) => {
+async function addAccess(itemId, usrs) {
 
     try {
-        const data = JSON.stringify({
-            id: _id
-        })
-        const apiUrl = 'do=gqAccessFt.get_shared_with&' + data + '&format=json';
 
+        let apiurl = url.addAccess;
+        apiurl = apiurl.replace(':id:', itemId);
+        apiurl = apiurl.replaceAll(':usr:', usrs);
+        apiurl = apiurl.replaceAll(':acl:', 'read');
+       
         showLoader();
-        return await get(apiUrl, history)
-            .then((response) => {
-                hideLoader();
-                return response;
-            })
-            .catch((error) => {
-                hideLoader();
-                // toast.error('Failed to change password');
-                console.log("error::", error);
-
-            });
-    } catch (error) {
-        toast.error(error.response_content.message);
-        console.error(error, "errors");
-        hideLoader();
-    }
-}
-
-export const addFolderSharing = async (folderId, userIdToShare, accessLevel) => {
-    console.log(userIdToShare)
-    try {
-        // const data = JSON.stringify({
-        //     id: folderId,
-        //     usr: userIdToShare,
-        //     acl: accessLevel //read or write
-        // })
-        const apiUrl = 'do= gqAccessFt.add_shared_item&id=' + folderId + '&usr=' + userIdToShare + '&acl=' + accessLevel + '&format=json'
-
-        showLoader();
-        return await get(apiUrl)
+        return await get(apiurl)
             .then((response) => {
                 hideLoader();
                 // console.log(JSON.stringify(response),"Password");
@@ -138,3 +65,108 @@ export const addFolderSharing = async (folderId, userIdToShare, accessLevel) => 
         hideLoader();
     }
 }
+
+async function removeAccess(id, usrs) {
+
+    try {
+
+        let apiurl = url.removeAccess;
+        apiurl = apiurl.replace(':id:', id)
+
+        //usrs = multiIdString(usrs);
+        apiurl = apiurl.replaceAll(':usr:', usrs)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+
+async function removeAll(postdata) {
+
+    try {
+
+        let apiurl = url.removeAll;
+        apiurl = apiurl.replace('**',postdata.workflowId)
+        apiurl = apiurl.replaceAll('UID',postdata.removeId)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                // console.log(JSON.stringify(response),"Password");
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+
+async function sharedWithMe(workflowId) {
+
+    try {
+
+        let apiurl = url.sharedWith;
+        apiurl = apiurl.replace(':id:',workflowId)
+       
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
+
+function multiIdString(ray){
+    let str = "";
+    ray.forEach(element => {
+        str+= element+",";
+    });
+
+
+    return str;
+}
+
+
+const ftAccess = {
+    shareableList,
+    addAccess,
+    removeAccess,
+    removeAll,
+    sharedWithMe,
+
+};
+
+export default ftAccess;

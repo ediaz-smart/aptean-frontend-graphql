@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
+import Newsupdate from '../../shared/newspdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -217,14 +218,14 @@ function MergeResults(props) {
                     clearForm('closeMergeModal', 'success');
                 } else if (result.status && result.status == "error") {
                     setShowErrorModal(true);
-                    setErrorMsg(result.error.message ? result
-                        .error.message : "Unknown");
+                    setErrorMsg(result.error.message ? result.
+                        error.message : "Unknown");
                     setErrorHeading(t("mergeResultErrorHeading"))
                 }
             } else {
                 setShowErrorModal(true);
-                setErrorMsg(resp.response_content.message ? resp.response_content.message : "Unknown");
-                setErrorHeading(t("mergeResultErrorHeading"))
+                    setErrorMsg(resp.response_content.message ? resp.response_content.message : "Unknown");
+                    setErrorHeading(t("mergeResultErrorHeading"))
             }
         }
     });
@@ -232,22 +233,22 @@ function MergeResults(props) {
     function handleErrorModal(type) {
         setShowErrorModal(!showErrorModal);
         // close()
-        if (type && type == "cancel") {
+        if(type && type == "cancel") {
             clearForm();
         }
     }
-    function clearForm(type, resultType) {
+     function clearForm(type, resultType) {
         setGroupAValue([]);
         setGroupBValue([]);
         setMergeType("COMPLETE");
         formik.setFieldValue("title", "");
         setIsSubmitActive(false);
-        if (type && type == "closeMergeModal" && !resultType) {
+        if(type && type == "closeMergeModal" && !resultType) {
             close();
-        } else if (type && type == "closeMergeModal" && resultType) {
+        } else if(type && type == "closeMergeModal" && resultType) {
             close(resultType);
         }
-    }
+     }
 
     function closeSaveModal() {
         setShowSuccessModal(false);

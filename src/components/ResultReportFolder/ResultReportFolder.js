@@ -27,13 +27,13 @@ import SaveContentModal from '../../shared/Modal/SaveContentModal'
 import searchResSequence from '../../services/searchResSequence';
 import Typography from '@material-ui/core/Typography';
 import resultshareImg from '../../assets/image/resultshare.png';
-import ShareDataModal from '../../shared/Modal/ShareDataModal';
+import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
 import { useSelector } from 'react-redux';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import SortIcon from "@material-ui/icons/ArrowDownward";
 import RenameFolderContainer from './RenameFolderContainer'
-import { getFolderResultData, updateFolderName, getFolderSharedList, getFolderSharableUserList, addFolderSharing } from '../../services/resultReportFolder'
+import SharedWith from '../Sharing/SharedWith.js';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -181,10 +181,6 @@ const useStyles = makeStyles((theme) => ({
   renameFolderText: {
     fontSize: '14px',
     color: '#7e7e7e'
-  },
-  shared_info: {
-    display: 'flex',
-    alignItems: 'center'
   }
 }));
 const customStyles = {
@@ -312,6 +308,11 @@ function ResultReportFolder() {
   const [modalResultShow, setModalResultShow] = React.useState(false);
   const [gqUserId, setGqUserId] = useState();
 
+  const [resultSets, setResultSets] = useState();
+  const [subFolders, setSubFolders] = useState();
+  const [folderSize, setFolderSize] = useState();
+
+
   const classes = useStyles();
 
   const GreyText = {
@@ -338,29 +339,34 @@ function ResultReportFolder() {
 
   useEffect(
     async () => {
-
-      const result = await getFolderResultData(folderId)
+      const data = {};
+      const result = await searchResSequence.getFolderResultData(data, folderId)
       if (result && result.response_content && result.response_content.numerics) {
-        setFolderData(result.response_content.numerics);
-        folderNameRef.current = result.response_content.numerics[0].text_label;
-      }
-      getUserResp();
-      const response = await getFolderSharedList(folderId, history)
-      if (response && response.response_content) {
-        if (response.response_content === 'none') {
-          // getResultShareResp()
-          // getUserResp()
-        }
-      }
 
+        setGqUserId(result.response_content.numerics[0].gq_user_id);
+        setFolderData(result.response_content.numerics);
+
+        setResultSets(result.response_content.numerics[0].resultSets);
+        setSubFolders(result.response_content.numerics[0].subFolders);
+        setFolderSize(result.response_content.numerics[0].thisFolderSize);
+
+        let test = resultSets;
+
+      }
+      console.log("HAI");
+      //getUserResp();
 
       document.addEventListener("keydown", escFunction, false);
+      // console.log(userInfo, 'userInfo');
       let tempAlertArr = [];
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
+      };
+      return () => {
         document.removeEventListener("keydown", escFunction, false);
       };
+
     }, []);
   const escFunction = useCallback((event) => {
     if (event.keyCode === 27) {
@@ -398,6 +404,7 @@ function ResultReportFolder() {
           }
           :last-child {
             padding-left: 20px;
+
           }
         }
       }
@@ -417,196 +424,17 @@ function ResultReportFolder() {
     setModalResultRemoveShow(true);
     setRemoveData(data);
   }
-  const { workflowId } = useParams();
-  const shareResultsForm = async (ids) => {
-    setModalResultShow(false);
-    // let id = ids.join(',');
-    // let postData = {
-    //   id: workflowId,
-    //   userId: id,
-
-    // }
-    let getAddShareResponse = true;
-    for (let i = 0; i < ids.length; i++) {
-      const id = ids[i]
-      getAddShareResponse = await addFolderSharing(folderId, id, 'read');
-      console.log(getAddShareResponse)
-    }
-
-    if (getAddShareResponse && getAddShareResponse.response_status == 0) {
-      getResultShareResp(userList);
-    } else {
-      toast.error('Adding in Error.');
-    }
-  }
-  const [sharedIds, setSharedIds] = useState([]);
-  const getResultShareResp = async (userData) => {
-    const getFolderShareResponse = await getFolderSharedList(folderId, history);
-    let sharedNames = [];
-    let sharedObj = [];
-    let sharedData = {};
-    let shareDatas;
-    if (getFolderShareResponse && getFolderShareResponse.response_status == 0) {
-      console.log(getFolderShareResponse.response_content)
-      if (getFolderShareResponse.response_content && getFolderShareResponse.response_content.userIds) {
-        sharedData['sharedNames'] = '';
-        getFolderShareResponse.response_content.userIds.map(function (value, key) {
-          if (userData && userData[value]) {
-            sharedNames.push(userData[value].full_name);
-            sharedObj.push(userData[value]);
-          }
-        });
-        let sharedIDArr = getFolderShareResponse.response_content.userIds;
-        if (gqUserId) {
-          sharedIDArr.push(gqUserId);
-        }
-        setSharedIds(sharedIDArr);
-
-        sharedData['sharedNameObj'] = sharedObj;
-        if (sharedNames.length == 1) {
-          shareDatas = sharedNames.join(', ');
-          sharedData['sharedNames'] = '<b>' + shareDatas + '</b>';
-        }
-        else if (sharedNames.length < 4) {
-          const last = sharedNames.pop();
-          shareDatas = '<b>' + sharedNames.join(', ') + '</b>' + ' and <b>' + last + '</b>';
-          sharedData['sharedNames'] = shareDatas;
-        } else if (sharedNames.length > 3) {
-          shareDatas = sharedNames.join(', ');
-          sharedData['sharedNames'] = '<b>' + sharedNames[0] + '</b>' + ' et al';
-        }
-        setSeqShare(sharedData);
-      } else {
-        sharedData['sharedNameObj'] = [];
-        sharedData['sharedNames'] = '';
-        if (gqUserId) {
-          setSharedIds([gqUserId]);
-        }
-        setSeqShare(sharedData);
-      }
-    } else {
-      sharedData['sharedNames'] = '';
-      sharedData['sharedNameObj'] = [];
-      if (gqUserId) {
-        setSharedIds([gqUserId]);
-      }
-      setSeqShare(sharedData);
-    }
-  }
-  const [readShareId, setReadShareId] = useState();
-  const [writeShareId, setWriteShareId] = useState();
+  
   const [renameFolder, setRenameFolder] = useState(false);
-  const folderNameRef = useRef('');
+  const folderNameRef = useRef('User Project Folder');
 
-
-  const getShareResp = async () => {
-    const getShareResponse = await searchResSequence.getSequenceShare(workflowId);
-    if (getShareResponse && getShareResponse.response_status == 0) {
-      // Getting Shared Members Name
-      let { gq_user_id, write_sharee_id, read_sharee_id } = getShareResponse.response_content.SUBJECT;
-      setReadShareId(read_sharee_id);
-      setWriteShareId(write_sharee_id);
-      setGqUserId(gq_user_id);
-      if (gq_user_id === write_sharee_id && write_sharee_id === read_sharee_id) {
-        setSeqShare('');
-      } else {
-        let user_candidates = getShareResponse.response_content.user_candidates;
-        let group_candidates = getShareResponse.response_content.group_candidates;
-        let seat_candidates = getShareResponse.response_content.seat_candidates;
-        let universal_team = getShareResponse.response_content.universal_team;
-        let team_candidates = getShareResponse.response_content.team_candidates;
-        let userIds = [write_sharee_id, read_sharee_id];
-        let sharedNames = [];
-        let sharedObj = [];
-        userIds.map(function (value, key) {
-          if (user_candidates && user_candidates[value]) {
-            sharedNames.push(user_candidates[value].full_name);
-            user_candidates[value].text_label = user_candidates[value].full_name;
-            sharedObj.push(user_candidates[value]);
-          }
-          if (group_candidates && group_candidates[value]) {
-            sharedNames.push(group_candidates[value].text_label);
-            sharedObj.push(group_candidates[value]);
-          }
-          if (seat_candidates && seat_candidates[value]) {
-            sharedNames.push(seat_candidates[value].text_label);
-            sharedObj.push(seat_candidates[value]);
-          }
-          if (team_candidates && team_candidates[value]) {
-            sharedNames.push(team_candidates[value].text_label);
-            sharedObj.push(team_candidates[value]);
-          }
-          if (universal_team && universal_team[value]) {
-            sharedNames.push(universal_team[value].text_label);
-            sharedObj.push(universal_team[value]);
-          }
-        });
-        let sharedData = {};
-        let shareDatas;
-        sharedData['sharedNames'] = '';
-        if (write_sharee_id == read_sharee_id) {
-          sharedObj = _.uniqBy(sharedObj, 'id');
-          sharedNames = _.uniq(sharedNames);
-          shareDatas = sharedNames.join(', ');
-          sharedData['sharedNames'] = shareDatas;
-        }
-
-        sharedData['sharedNameObj'] = sharedObj;
-        if (sharedNames.length > 1) {
-          const last = sharedNames.pop();
-          shareDatas = sharedNames.join(', ') + ' and ' + last;
-          sharedData['sharedNames'] = shareDatas;
-        }
-
-        setSeqShare(sharedData);
-      }
-
-    }
-  }
-  const removeResSharing = async (e, id) => {
-    e.preventDefault();
-    let postData = {
-      workflowId,
-      id
-    }
-    const getremoveResponse = await searchResSequence.removeResultSharing(postData);
-    if (getremoveResponse && getremoveResponse.response_status == 0) {
-      getResultShareResp(userList);
-    } else {
-      toast.error('Removing in Error.');
-    }
-  }
-  const removeSharing = async (data) => {
-    setModalResultRemoveShow(false);
-    const removeId = data.id;
-    let postData = {
-      workflowId,
-      removeId
-    }
-    const getremoveResponse = await searchResSequence.removeResultSharing(postData);
-    if (getremoveResponse && getremoveResponse.response_status == 0) {
-      // getUserResp();
-
-      getResultShareResp(userList);
-    } else {
-      toast.error('Failed, Try Again');
-    }
-  }
-  const getUserResp = async () => {
-    const getUserResponse = await getFolderSharableUserList(folderId, history);
-    if (getUserResponse && getUserResponse.response_status == 0) {
-      if (getUserResponse.response_content) {
-        setUserList(getUserResponse.response_content);
-        getResultShareResp(getUserResponse.response_content);
-      }
-    }
-  }
+ 
   const handleRenameClick = () => {
     setRenameFolder(!renameFolder)
   }
 
   const applyNewNameToFolder = (name) => {
-    const response = updateFolderName(name, folderId)
+    console.log(name)
     // Todo: Update the folder name on the server.
     folderNameRef.current = name
   }
@@ -648,9 +476,9 @@ function ResultReportFolder() {
           <div>
             <p> This folder contains:</p>
             <ul>
-              <li><p>A total of 15 result sets within itself and all its subfolders</p></li>
-              <li><p>A total of 5 subfolders at various levels</p></li>
-              <li><p>A total of 918 MB data</p></li>
+              <li><p>A total of {resultSets} result sets within itself and all its subfolders</p></li>
+              <li><p>A total of {subFolders} subfolders at various levels</p></li>
+              <li><p>A total of {folderSize} MB data</p></li>
             </ul>
             {renameFolder ? <span className={classes.renameFolderText} >Rename this folder</span> :
               <span className={classes.renameFolderLinkText} onClick={handleRenameClick}>Rename this folder</span>}
@@ -665,48 +493,15 @@ function ResultReportFolder() {
                       </Col> */}
           <hr />
 
-          <h6 className={"appTextColor loginTitle"} id="resultSharing">Folder Sharing​</h6>
-          <Row>
-            <Col lg="1" md="1" sm="12" className="pr-0">
-              <img src={resultshareImg} alt={t('resSharing')} />
-            </Col>
-            <Col lg="8" md="9" sm="12" className={classes.shared_info}>
-              <Row>
-                {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
-                <Typography className={"mb-2 " + (seqShare && seqShare.sharedNameObj.length > 0 ? 'd-block' : 'd-none')}>
-                  {t('folderAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
-                <Typography className={"mb-2 " + (seqShare && seqShare.sharedNameObj.length == 0 ? 'd-block' : 'd-none')}>
-                  {t('folderNotAccess')}. <Link className={"appLink cursorPointer "} onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
-
-                <ShareDataModal
-                  show={modalResultShow}
-                  data={userList}
-                  type={'Folder'}
-                  onHide={() => setModalResultShow(false)}
-                  shareResult={shareResultsForm}
-                  sharedUserId={sharedIds}
-                // onMessage={errorMessage}
-                />
-
-              </Row>
-
-              {seqShare && seqShare.sharedNameObj.length > 0 && seqShare.sharedNameObj.map((dbVal, i) => {
-                return (
-                  <Row key={i}>
-                    <Col lg="4" md="4" className="pr-0 content">
-                      <Typography >
-                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {dbVal.full_name}</Typography>
-                    </Col>
-                    <Col lg="4" md="4" className="pr-0 content">
-                      <Typography ><Link className={"failedTextColor " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} id={dbVal.id} onClick={() => viewRemoveModal(dbVal)}>Remove</Link></Typography>
-                    </Col>
-                  </Row>
-                )
-              })
-              }
-            </Col>
-          </Row>
+          {gqUserId != undefined && folderId != undefined &&
+            <SharedWith
+            workflowId = {folderId}
+            gqUserId = {gqUserId}
+            />
+            }
           <hr />
+
+
           <h6 className={"appTextColor loginTitle"} id="resultSharing">Folder SearchResultContent</h6>
           <div>
             <p>  Result sets and data volume are distributed within this folder as shown below. </p>

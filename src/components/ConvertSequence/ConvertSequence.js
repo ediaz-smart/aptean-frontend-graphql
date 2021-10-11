@@ -99,7 +99,7 @@ function ConvertSequence() {
         //validationSchema: Validate.AntibodySearchValidation(),
         onSubmit: async (values) => {
             let { st26input } = values;
-            console.log(values, 'values');
+            //console.log(values, 'values');
             console.log("heloooooo");
             //console.log(props.title);
 
@@ -108,7 +108,7 @@ function ConvertSequence() {
             }
 
             var getResponse = await st26service.convertXml(postData, history, t);
-            console.log(getResponse,'getresp');
+            //console.log(getResponse,'getresp');
             if (getResponse == 'parsererror') {
                 toast.error('The ST.26 data is not correctly structured.\nPlease correct the XML and try again.');
             } else if (getResponse == 'missing')   {
@@ -125,28 +125,6 @@ function ConvertSequence() {
 
             }
             
-           
-            /*
-            // console.log(strategyItem,'strategyItem');
-            setSearchModal(true);
-            let parentId = '';
-            let postData = {
-                qdb_seq_hc: hcFullSeq,
-                
-                parent_id: parentId
-            }
-            // console.log(postData, 'postData');
-            const getResponse = await searchResAntibody.submitAnitbodySearch(postData, history, t);
-            setSearchModal(false);
-            if (getResponse && getResponse.response_status == 0) {
-                history.push('/home');
-            } else {
-                toast.error('Error in Search');
-            }
-            */
-
-            // console.log(getResponse, 'getResponse');
-            // history.push('/home');
         },
     });
     return (

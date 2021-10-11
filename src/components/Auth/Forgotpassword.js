@@ -3,10 +3,15 @@ import { useDispatch } from 'react-redux';
 // import GQLogo from '../../assets/image/GenomeQuest.svg';
 // import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+<<<<<<< Updated upstream
+import { Container, Row, Col } from 'react-bootstrap';
+import {useTranslation} from "react-i18next";
+=======
 import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
+>>>>>>> Stashed changes
 import { toast } from 'react-toastify';
-import NewsUpdate from '../../shared/NewsUpdate';
+import Newsupdate from '../../shared/newspdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -23,6 +28,11 @@ import GQLogoComponent from '../../shared/components/GQLogoComponent';
 
 
 const useStyles = makeStyles((theme) => ({
+<<<<<<< Updated upstream
+
+   
+    passwordRecoverDiv:{
+=======
     container: {
         width: '100%',
     },
@@ -30,15 +40,35 @@ const useStyles = makeStyles((theme) => ({
         minWidth: containerWidth
     },
     passwordRecoverDiv: {
+>>>>>>> Stashed changes
         padding: '15px 25px 20px',
         border: '2px solid #bfb4b4',
         borderRadius: '6px'
     },
-    navbarClass: {
+    navbarClass :{
         marginTop: '0px'
     },
-    loginLogoDiv: {
+    loginLogoDiv:{
         position: 'relative',
+<<<<<<< Updated upstream
+        left: '0px',
+        width: '200px'
+    },
+    '@media (min-width: 768px)' : {
+        loginLogoDiv:{
+            position: 'relative',
+            left: '50px',
+            width:'100%'
+        }
+    },
+    '@media (min-width: 1024px)' : {
+        loginLogoDiv:{
+            position: 'relative',
+            left: '80px',
+            width:'100%'
+        }
+    }
+=======
         width: '100%'
     },
     // '@media (min-width: 768px)': {
@@ -55,61 +85,83 @@ const useStyles = makeStyles((theme) => ({
     //         width: '100%'
     //     }
     // }
+>>>>>>> Stashed changes
 }));
 
 function Forgotpassword() {
     const classes = useStyles();
-    const { t, i18n } = useTranslation('common');
-    const [errorMsg, setErrorMsg] = useState(0);
+    const {t, i18n} = useTranslation('common');
+    const [errorMsg,setErrorMsg] = useState(0);
     // const [retryState, setRetryState] = useState(false);
     const [passwordForm, setPasswordForm] = useState(true);
     const [locked, setLocked] = useState(false);
 
-    const [verifycaptchaCode, setcaptchaCode] = useState();
+    const [verifycaptchaCode, setcaptchaCode] = useState(); 
     const dispatch = useDispatch();
     const history = useHistory();
-    const formik = useFormik({
+     const formik = useFormik({
         initialValues: {
             userName: '',
             captchaCode: '',
         },
         validationSchema: Validate.ForgotValidate(),
-        onSubmit: async (values) => {
+         onSubmit: async(values) => {
             // setErrorMsg(0);
+<<<<<<< Updated upstream
+            
+            console.log(values,"valessssssssss");
+            if(values.captchaCode == verifycaptchaCode)
+            {
+                 const result = await PasswordService.forgotPassword(values.userName);
+                // dispatch(forgotpasswordSlice({userId:values.userName},history));
+                //  checkflag = result.response_content.success;
+                console.log(result,"resultresultresult");
+                if(result.response_content.success == false)
+                {
+                    const error = result.response_content.errors[0];
+                    console.log(error,"errorerror")
+=======
             if (values.captchaCode == verifycaptchaCode) {
                 const result = await PasswordService.forgotPassword(values.userName);
                 // dispatch(forgotpasswordSlice({userId:values.userName},history));
                 //  checkflag = result.response_content.success;
                 if (result.response_content.success == false) {
                     const error = result.response_content.errors[0];
+>>>>>>> Stashed changes
                     // toast.error(error);
                     // setErrorMsg(3);
                     setErrorMsg(0);
                     setPasswordForm(false);
-
-                    if (result.response_content.errors[0] == 'locked') {
+                    
+                    if(result.response_content.errors[0] == 'locked')
+                    {
                         setLocked(true);
                     }
-
-
+                    
+                   
                 }
-                else {
+                else{
                     setErrorMsg(0);
                     setPasswordForm(false);
                     toast.success("Success");
                 }
-
+               
             }
-            else {
-
-                setErrorMsg(1);
-                // toast.error("Captcha InCorrect ! Try Again");
-                // setPasswordForm(false);
+            else{
+                
+            setErrorMsg(1);
+            // toast.error("Captcha InCorrect ! Try Again");
+            // setPasswordForm(false);
             }
         },
     });
-    function updateCode(captchaCode) {
+    function updateCode(captchaCode)
+    {    
         setcaptchaCode(captchaCode);
+<<<<<<< Updated upstream
+        console.log(captchaCode,"captchaCode");
+=======
+>>>>>>> Stashed changes
     }
     // reset login status
     useEffect(() => {
@@ -118,6 +170,100 @@ function Forgotpassword() {
 
     const passwordVlaue = formik.values.userName;
     const passwordCnVlaue = formik.values.captchaCode;
+<<<<<<< Updated upstream
+    console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
+    const passValCheck = passwordVlaue.length; 
+    const passValCheck1 = passwordCnVlaue.length; 
+
+    return (
+        <Container className="mt-100">
+            
+            <Row className={classes.loginLogoDiv}>
+                <Col sm="12" md="3" className="p-0 ml-4"><Link to="/login"><img src={GQLogo} alt="GQLogo" className="w-75" /></Link></Col>
+
+            </Row>
+            <Row className="justify-content-md-center">
+                {/* <Col sm="12" md="6" className="loginDiv"> */}
+                <Col sm="12" md="5" className={'mb-5 mt-4 '+classes.passwordRecoverDiv}>
+                    <form name="passwordForm" onSubmit={formik.handleSubmit} 
+                    onKeyDown={(e) => {
+                      
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                        }
+                     }}
+                     className={(passwordForm ? 'd-block' : 'd-none')}>
+
+                        <h5 className="loginTitle">{t('pwdRecovery')}</h5>
+                        <p className="bodyText mb-4">{t('pwdRecoveryTitle')}</p>
+                        {errorMsg == 1 ? <h6 className="loginFailedTitle">The code was incorrect, please try again</h6> :errorMsg == 2 ? <h5 className="loginTitle">{t('loginAccount')}</h5> : errorMsg == 3 ? <h6 className="loginFailedTitle">Invalid username</h6>:'' }
+
+                        <div className="form-group">
+                            <TextInput 
+                                fullWidth
+                                id="userName"
+                                name="userName"
+                                label={t('userName')}
+                                variant="outlined"
+                                value={formik.values.userName}
+                                onChange={formik.handleChange} 
+                                error={formik.touched.userName && Boolean(formik.errors.userName)}
+                                helperText={formik.touched.userName && formik.errors.userName}
+                            />
+                        </div>
+                        <div className="form-group">
+                            
+                            <TextInput
+                                fullWidth
+                                id="captchaCode"
+                                name="captchaCode"
+                                label={t('codeShown')}
+                                variant="outlined"
+                                value={formik.values.captchaCode}
+                                onChange={formik.handleChange}
+                                error={formik.touched.captchaCode && Boolean(formik.errors.captchaCode)}
+                                helperText={formik.touched.captchaCode && formik.errors.captchaCode}
+                            />
+                        </div>
+                        <div className="form-group">
+                        <ClientCaptcha fontColor='#FC0202' id='clientCaptcha' backgroundColor='#BDCFF5' width='150' fontSize='32' charsCount='5' captchaCode={updateCode}/>
+                        </div>
+                       
+                        <div className="form-group">
+                        {passValCheck != 0  && passValCheck1 != 0 ?
+                                <Button variant="contained" disableRipple={true} className='accountInfo' type="submit">{t('submit')}</Button> :
+                                <Button variant="contained" className='cancelButtonDisable'  disableRipple={true}>{t('submit')}</Button> 
+                             }
+                       
+                        </div>
+                    </form>
+                    <div className={'p-4 ' +(!locked && !passwordForm ? 'd-block' : 'd-none')}>
+
+                        <h5>{t('pwdRecovery')}</h5>
+                        <br />
+                        <p>{t('thankYou')}</p>
+                        <p>{t('loginInfoText')}</p>
+                        <p>{t('pleaseContactText1')} <a href={"mailto:"+supportMail}>{supportMail}</a> {t('pleaseContactText2')}</p>
+                    </div>
+                    <div className={'p-4 ' +(locked && !passwordForm ? 'd-block' : 'd-none')}>
+
+                            <h5>Password Recovery</h5>
+                            <br />
+                            <br />
+                            <p>Too many unsuccessful attempts to access this account have been received. For your protection, the account has been locked.</p>
+                            <p>Please contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.
+                            </p>
+                    </div>
+                </Col>
+                <Col sm="12" md="5" className="ml-3">
+                    <Newsupdate isForgotPanel={true} />
+                </Col>
+            </Row>
+            <div className={classes.navbarClass}>
+            <Footer />
+        </div>
+        </Container>
+=======
     const passValCheck = passwordVlaue.length;
     const passValCheck1 = passwordCnVlaue.length;
     // const borderStyle = {
@@ -216,6 +362,7 @@ function Forgotpassword() {
                 </div>
             </div>
         </div>
+>>>>>>> Stashed changes
 
     );
 }

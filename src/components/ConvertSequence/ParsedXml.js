@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import { useFormik } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import _ from "lodash";
 
 
@@ -41,6 +42,12 @@ const useStyles = makeStyles((theme) => ({
     searchInput: {
         width: '30%'
     },
+    textField: {
+        // width: '194px',
+        width: '275px',
+        padding: '10px 0px',
+        margin: '-8px 0 0 -5px'
+      },
     antibodyNumInput: {
         width: '8%'
     }
@@ -59,9 +66,16 @@ function ParsedXml(props) {
     const [disableSearch, setDisableSearch] = React.useState(false);
     const [formdata, setFormData] = useState({});
     const { workflowId } = useParams();
-    console.log(props.location.state[0],'hallelj');
+    const [searchSeqValue, setSeqType] = useState(props.location.state[1]);
+    const [seq,setSeq] = useState();
+    //console.log(props.location.state[0],'hallelj');
+    const userInfo = useSelector(state => state.setUserInfo);
+    const [userData, setUserData] = useState();
 
-    useEffect(async () => {
+    console.log('userInfo', userInfo)
+
+    useEffect(() => {
+        (async () => {
         const getResponse = await searchResAntibody.getAuthInfoAB(workflowId);
         if (getResponse && getResponse.response_status == 0) {
             setAuthInfo(getResponse.response_content);
@@ -71,7 +85,11 @@ function ParsedXml(props) {
             console.log(disableSearch, 'disableSearch');
         }
         //dispatch(userActions.logout()); 
-    }, []);
+    })() 
+    if (userInfo && userInfo.current_user) {
+        setUserData(userInfo);
+    }
+},[]);
     function updateFormData(data) {
         setFormData(data.formData);
         var expiredTime = data.expiredTime;
@@ -91,12 +109,34 @@ function ParsedXml(props) {
         history.push('/convertsequence');
     }
 
+    const handleChangee = (event) => {
+        console.log("incside changee");
+        setSeqType(event.target.value);
+       
+    }
+
     function handleChange(e) {
         //this.setState({body: event.target.value});
         console.log(e.target.value);
-
         //return val;
       }
+    
+      const searchSeqItems = [
+        {
+            value: props.location.state[0],
+            label: "Work with: Protein sequences"
+        },
+        {
+            value: props.location.state[1],
+            label: "Work with: Nucleotide sequences"
+        }
+    ];
+
+    const handleSeqType = (event) => {
+        console.log('target', event.target)
+        setSeqType(event.target.value); 
+
+    };
     
     const formik = useFormik({
         initialValues: {
@@ -107,7 +147,7 @@ function ParsedXml(props) {
         //validationSchema: Validate.AntibodySearchValidation(),
         onSubmit: async (values) => {
             let { st26input } = values;
-            console.log(values, 'values');
+            //console.log(values, 'values');
             console.log("heloooooo");
 
             let postData = {
@@ -115,7 +155,7 @@ function ParsedXml(props) {
             }
 
             const getResponse = await st26service.convertXml(postData, history, t);
-            console.log(getResponse,'getresp');
+            //console.log(getResponse,'getresp');
             if (getResponse == 0) {
                 history.push({
                     pathname: '/home',
@@ -126,27 +166,6 @@ function ParsedXml(props) {
             }
             
            
-            /*
-            // console.log(strategyItem,'strategyItem');
-            setSearchModal(true);
-            let parentId = '';
-            let postData = {
-                qdb_seq_hc: hcFullSeq,
-                
-                parent_id: parentId
-            }
-            // console.log(postData, 'postData');
-            const getResponse = await searchResAntibody.submitAnitbodySearch(postData, history, t);
-            setSearchModal(false);
-            if (getResponse && getResponse.response_status == 0) {
-                history.push('/home');
-            } else {
-                toast.error('Error in Search');
-            }
-            */
-
-            // console.log(getResponse, 'getResponse');
-            // history.push('/home');
         },
     });
     return (
@@ -156,37 +175,45 @@ function ParsedXml(props) {
                 <Row>
                 
                     <Col lg="12" md="12" className="mb-2">
+                        
+                        <Row className="mb-2">
                         <h6 className={"appTextColor loginTitle"}>CONVERTED XML</h6>
-
-                        <DropdownButton id="dropdown-basic-button" color={'default'} className={"text-capitalize mr-2 "} >
-                            <Dropdown.Item href="#/action-1">Work with: Nucleotide Sequence</Dropdown.Item>
-                            <Dropdown.Item href="#/action-2">Work with: Nucleotide Sequence</Dropdown.Item>
-                            
-                        </DropdownButton>
+                        </Row>
+                        <Row className="mb-2">
+                        <h6>
+                            {props.location.state[3]} Nucleotide Sequenceee and {props.location.state[2]} Protein sequences were found in the ST.26 input</h6>
+                        </Row>
+                        <Row className="mb-3">
+                            <SelectBox
+                                margin="normal"
+                                variant="outlined"
+                                name="searchType"
+                                id="searchType"
+                                value={searchSeqValue}
+                                items={searchSeqItems}
+                                onChange={handleSeqType}
+                                className={classes.textField}
+                            />
+                         </Row>
 
                         <Row className="mb-3">
                             
                                 <Col lg="12" md="12" className="p-0 content float-left">
-
-                                    <div className="form-group px-3 ">
-                                        
                                         <TextInput 
                                             rows="25"
                                             multiline={true}
                                             fullWidth
                                             id="st26input"
                                             name="st26input"
-                                            //data= "sdfdsfdfffd"
-                                            //label="Copy and Paste your ST.26 XML sequences here"
                                             variant="outlined"
-                                            //value={props.location.state[1]}
-                                            defaultValue={props.location.state[1]}
-                                            onChange={handleChange}
+                                            value={searchSeqValue}
+                                            //defaultValue={props.location.state[1]}
+                                            onChange={handleChangee}
                                             error={formik.touched.st26input && Boolean(formik.errors.st26input)}
                                             helperText={formik.errors.st26input}
                                             //disabled={authInfo && authInfo.redo}
                                         />
-                                    </div>
+                                  
                         
                                 </Col>
                             
@@ -197,7 +224,8 @@ function ParsedXml(props) {
                    
                 
                     <Col lg="12" md="12" className="float-right mb-3">
-                        <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('Next')}</Button>&nbsp;&nbsp;&nbsp;
+                    {userData && userData.vmAccess && <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('ipseqvariation')}</Button>}&nbsp;&nbsp;&nbsp;
+                        <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('ipseqsearch')}</Button>&nbsp;&nbsp;&nbsp;
                     <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={cncl}>{t('cancel')}</Button>
                     </Col>
                 </Row>

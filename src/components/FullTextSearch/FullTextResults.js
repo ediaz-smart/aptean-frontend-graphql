@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 import CustomPagination from '../../shared/CustomPagination';
 
@@ -47,9 +46,7 @@ function FullTextResults(props) {
                         return (
                             <div key={index}>
                                 <p className={"subHeading"}>
-                                    {/* <span className={classes.blueFont + " appLink"}>{item.patentid}</span> */}
-                                    <Link to={"/fulldocview/" + item.patentid} className={classes.blueFont + " appLink"} target="_blank">{item.patentid}</Link>
-                                    <span> - </span><span>{item.title}</span>
+                                    <span className={classes.blueFont + " appLink"}>{item.patentid}</span><span> - </span><span>{item.title}</span>
                                 </p>
                                 <p className={"bodyText"}>
                                     <span>{t('publicationData')}</span><span>{moment(item.pubdate).format('DD-MMM-YYYY')}</span>

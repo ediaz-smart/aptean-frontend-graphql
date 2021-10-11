@@ -29,9 +29,10 @@ import SearchManagementService from '../../services/searchmanagement'
 import Constant from '../../helpers/constant';
 import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
-import ShareDataModal from '../../shared/Modal/ShareDataModal';
+import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
-import { containerWidth } from '../../shared/constants'
+import SharedWith from '../Sharing/SharedWith.js';
+
 
 
 
@@ -40,10 +41,9 @@ import { containerWidth } from '../../shared/constants'
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
-        // width: '96%',
+        width: '96%',
         margin: '0 auto 28px',
         minHeight: '260px',
-        width: containerWidth,
         // borderBottom: '1px solid #cec7c7',
         padding: '23px 16px 14px',
         border: '1px solid #cec7c7',
@@ -187,11 +187,7 @@ const columns = [
     },
     {
         name: "",
-        selector: "results",
-        style: {
-            textAlign: 'center',
-            justifyContent: 'unset !important'
-        }
+        selector: "results"
     },
     {
         name: "",
@@ -325,7 +321,7 @@ function SearchResultSequence(props) {
     // reset login status
     useEffect(async () => {
         getSummaryResp();
-        getUserResp();
+        //getUserResp();
         // getShareResp();
 
         getAlertResp();
@@ -370,18 +366,6 @@ function SearchResultSequence(props) {
         setUpdateTitle(false);
     };
 
-    const getUserResp = async () => {
-        const getUserResponse = await searchResSequence.getUserList(workflowId);
-        console.log(getUserResponse.response_content)
-        if (getUserResponse && getUserResponse.response_status == 0) {
-
-            if (getUserResponse.response_content.user_candidates) {
-                setUserList(getUserResponse.response_content.user_candidates);
-                getResultShareResp(getUserResponse.response_content.user_candidates);
-
-            }
-        }
-    }
     const getSummaryResp = async () => {
         const getSummaryResponse = await searchResSequence.getSequenceSummary(workflowId);
         if (getSummaryResponse && getSummaryResponse.response_status == 0) {
@@ -412,131 +396,7 @@ function SearchResultSequence(props) {
             setAlarmSetting(getAlertResponse.response_content);
         }
     }
-    const getResultShareResp = async (userData) => {
-        console.log(userData)
-        const getResultShareResponse = await searchResSequence.getSequenceResultShare(workflowId);
-        let sharedNames = [];
-        let sharedObj = [];
-        let sharedData = {};
-        let shareDatas;
-        console.log(getResultShareResponse)
-        if (getResultShareResponse && getResultShareResponse.response_status == 0) {
-
-            if (getResultShareResponse.response_content && getResultShareResponse.response_content.userIds) {
-                sharedData['sharedNames'] = '';
-                getResultShareResponse.response_content.userIds.map(function (value, key) {
-                    if (userData && userData[value]) {
-                        sharedNames.push(userData[value].full_name);
-                        sharedObj.push(userData[value]);
-                    }
-                });
-                let sharedIDArr = getResultShareResponse.response_content.userIds;
-                if (gqUserId) {
-                    sharedIDArr.push(gqUserId);
-                }
-                setSharedIds(sharedIDArr);
-
-                sharedData['sharedNameObj'] = sharedObj;
-                if (sharedNames.length == 1) {
-                    shareDatas = sharedNames.join(', ');
-                    sharedData['sharedNames'] = '<b>' + shareDatas + '</b>';
-                }
-                else if (sharedNames.length < 4) {
-                    const last = sharedNames.pop();
-                    shareDatas = '<b>' + sharedNames.join(', ') + '</b>' + ' and <b>' + last + '</b>';
-                    sharedData['sharedNames'] = shareDatas;
-                } else if (sharedNames.length > 3) {
-                    shareDatas = sharedNames.join(', ');
-                    sharedData['sharedNames'] = '<b>' + sharedNames[0] + '</b>' + ' et al';
-                }
-                setSeqShare(sharedData);
-            } else {
-                console.log()
-                sharedData['sharedNameObj'] = [];
-                sharedData['sharedNames'] = '';
-                if (gqUserId) {
-                    setSharedIds([gqUserId]);
-                }
-                setSeqShare(sharedData);
-            }
-        } else {
-            sharedData['sharedNames'] = '';
-            sharedData['sharedNameObj'] = [];
-            if (gqUserId) {
-                setSharedIds([gqUserId]);
-            }
-            setSeqShare(sharedData);
-        }
-    }
-    const getShareResp = async () => {
-        const getShareResponse = await searchResSequence.getSequenceShare(workflowId);
-        if (getShareResponse && getShareResponse.response_status == 0) {
-            // Getting Shared Members Name
-            let { gq_user_id, write_sharee_id, read_sharee_id } = getShareResponse.response_content.SUBJECT;
-            setReadShareId(read_sharee_id);
-            setWriteShareId(write_sharee_id);
-            setGqUserId(gq_user_id);
-            if (gq_user_id === write_sharee_id && write_sharee_id === read_sharee_id) {
-                setSeqShare('');
-            } else {
-                let user_candidates = getShareResponse.response_content.user_candidates;
-                let group_candidates = getShareResponse.response_content.group_candidates;
-                let seat_candidates = getShareResponse.response_content.seat_candidates;
-                let universal_team = getShareResponse.response_content.universal_team;
-                let team_candidates = getShareResponse.response_content.team_candidates;
-                let userIds = [write_sharee_id, read_sharee_id];
-                let sharedNames = [];
-                let sharedObj = [];
-                // console.log(getShareResponse,'getShareResponse');
-                userIds.map(function (value, key) {
-                    if (user_candidates && user_candidates[value]) {
-                        sharedNames.push(user_candidates[value].full_name);
-                        user_candidates[value].text_label = user_candidates[value].full_name;
-                        sharedObj.push(user_candidates[value]);
-                    }
-                    if (group_candidates && group_candidates[value]) {
-                        sharedNames.push(group_candidates[value].text_label);
-                        sharedObj.push(group_candidates[value]);
-                    }
-                    if (seat_candidates && seat_candidates[value]) {
-                        sharedNames.push(seat_candidates[value].text_label);
-                        sharedObj.push(seat_candidates[value]);
-                    }
-                    if (team_candidates && team_candidates[value]) {
-                        sharedNames.push(team_candidates[value].text_label);
-                        sharedObj.push(team_candidates[value]);
-                    }
-                    if (universal_team && universal_team[value]) {
-                        sharedNames.push(universal_team[value].text_label);
-                        sharedObj.push(universal_team[value]);
-                    }
-                });
-                let sharedData = {};
-                let shareDatas;
-                sharedData['sharedNames'] = '';
-                if (write_sharee_id == read_sharee_id) {
-                    sharedObj = _.uniqBy(sharedObj, 'id');
-                    sharedNames = _.uniq(sharedNames);
-                    // console.log(sharedNames,'sharedNames');
-                    shareDatas = sharedNames.join(', ');
-                    sharedData['sharedNames'] = shareDatas;
-                }
-
-                sharedData['sharedNameObj'] = sharedObj;
-                if (sharedNames.length > 1) {
-                    const last = sharedNames.pop();
-                    shareDatas = sharedNames.join(', ') + ' and ' + last;
-                    sharedData['sharedNames'] = shareDatas;
-                }
-
-                setSeqShare(sharedData);
-                // setTimeout(() => {
-                //     console.log(seqShare,'seqShare');
-                // }, 3000);
-            }
-
-        }
-    }
+    
     const getAlertRedoResp = async () => {
         const getAlertRedoResponse = await searchResSequence.getAlertRedo(workflowId);
         if (getAlertRedoResponse && getAlertRedoResponse.response_status == 0 && getAlertRedoResponse.response_content.relatives.length > 0) {
@@ -726,60 +586,11 @@ function SearchResultSequence(props) {
         }
         console.log(getremoveResponse, 'getremoveResponse');
     }
-    const removeResSharing = async (e, id) => {
-        e.preventDefault();
-        let postData = {
-            workflowId,
-            id
-        }
-        const getremoveResponse = await searchResSequence.removeResultSharing(postData);
-        if (getremoveResponse && getremoveResponse.response_status == 0) {
-            getResultShareResp(userList);
-        } else {
-            toast.error('Removing in Error.');
-        }
-        // console.log(getremoveResponse,'getremoveResponse');
-    }
-    const shareResultsForm = async (ids) => {
-        setModalResultShow(false);
-        let id = ids.join(',');
-        let postData = {
-            workflowId,
-            userId: id
-        }
-        const getaddShareResponse = await searchResSequence.addResultSharing(postData);
-        if (getaddShareResponse && getaddShareResponse.response_status == 0) {
-            getResultShareResp(userList);
-        } else {
-            toast.error('Adding in Error.');
-        }
-        // console.log(getaddShareResponse,'getaddShareResponse');
-    }
 
     function cancelForm() {
         setModalResultRemoveShow(false);
     }
-    const removeSharing = async (data) => {
-        setModalResultRemoveShow(false);
-        const removeId = data.id;
-        let postData = {
-            workflowId,
-            removeId
-        }
-        const getremoveResponse = await searchResSequence.removeResultSharing(postData);
-        if (getremoveResponse && getremoveResponse.response_status == 0) {
-            // getUserResp();
 
-            getResultShareResp(userList);
-        } else {
-            toast.error('Failed, Try Again');
-        }
-    }
-
-    function viewRemoveModal(data) {
-        setModalResultRemoveShow(true);
-        setRemoveData(data);
-    }
     const updateNewTitle = async (e) => {
         if (e.keyCode == 13) {
             if (titleNameErr) {
@@ -822,12 +633,17 @@ function SearchResultSequence(props) {
             setTitleNameErr(false);
         }
     }
+    function searchResult() {
+        history.push('/searchResult')
+    }
 
     return (
         <div className={classes.grow}>
             <Row className="p-3">
                 <Col lg="12" md="12" sm="12" className="mb-5">
                     <Typography className={classes.root + " float-right"}>
+                    <span className={classes.pTagMargin}><a onClick={searchResult}>{t('allSearchResults')}</a></span>
+                        <span className={classes.headerPipe + " appTextColor"}>|</span>
                         <span className={"appTextColor appLink"} title={t('auditTrial')}>
                             {t('auditTrial')}
                         </span>
@@ -1061,48 +877,13 @@ function SearchResultSequence(props) {
                     <br />
                     <hr />
 
-                    <h6 className={"appTextColor loginTitle"} id="resultSharing">{t('resSharing')}​</h6>
-                    <Row>
-                        <Col lg="1" md="1" sm="12" className="pr-0">
-                            <img src={resultshareImg} alt={t('resSharing')} />
-                        </Col>
-                        <Col lg="8" md="9" sm="12" className="p-0 content">
-                            <Row>
-                                {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
-                                <Typography className={"mb-2 " + (seqShare && seqShare.sharedNameObj.length > 0 ? 'd-block' : 'd-none')}>
-                                    {t('resultAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
-                                <Typography className={"mb-2 " + (seqShare && seqShare.sharedNameObj.length == 0 ? 'd-block' : 'd-none')}>
-                                    {t('resultNotAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
-
-                                <ShareDataModal
-                                    show={modalResultShow}
-                                    data={userList}
-                                    type={'Results'}
-                                    onHide={() => setModalResultShow(false)}
-                                    // getSelectUser={getSelectUser}
-                                    shareResult={shareResultsForm}
-                                    sharedUserId={sharedIds}
-                                // onMessage={errorMessage}
-                                />
-
-                            </Row>
-
-                            {seqShare && seqShare.sharedNameObj.length > 0 && seqShare.sharedNameObj.map((dbVal, i) => {
-                                return (
-                                    <Row key={i}>
-                                        <Col lg="4" md="4" className="pr-0 content">
-                                            <Typography >
-                                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> {dbVal.full_name}</Typography>
-                                        </Col>
-                                        <Col lg="4" md="4" className="pr-0 content">
-                                            <Typography ><Link className={"failedTextColor " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} id={dbVal.id} onClick={() => viewRemoveModal(dbVal)}>Remove</Link></Typography>
-                                        </Col>
-                                    </Row>
-                                )
-                            })
-                            }
-                        </Col>
-                    </Row>
+                    {gqUserId != undefined && workflowId != undefined &&
+                    <SharedWith
+                    workflowId = {workflowId}
+                    gqUserId = {gqUserId}
+                    />
+                    }
+                    
                     <hr />
                     <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('alertSetting')}​</h6>
                     <Row>
@@ -1347,12 +1128,6 @@ function SearchResultSequence(props) {
                     </div>
                 </Modal.Body>
             </Modal>
-            <ShareResultsRemoveModal
-                show={modalResultRemoveShow}
-                onHide={() => cancelForm()}
-                removeShare={removeSharing}
-                onMessage={removeData}
-            />
         </div>
     )
 }

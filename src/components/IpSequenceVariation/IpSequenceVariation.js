@@ -28,7 +28,7 @@ import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStru
 import SeqVIModal from '../../shared/Modal/SeqVIModal';
 import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModal';
 import SavedSearch from '../../services/savedsearch';
-import { containerWidth } from '../../shared/constants'
+
 //validation
 import Validate from '../../helpers/validate';
 
@@ -39,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
+<<<<<<< Updated upstream
+=======
         maxWidth: containerWidth,
+>>>>>>> Stashed changes
         margin: '0 auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',
@@ -97,20 +100,34 @@ const useStyles = makeStyles((theme) => ({
     numberInput: {
         width: '80px'
     },
-    loginSubmitCancel: {
+    loginSubmitCancel:{
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
-        border: '2px solid #1F4E79',
-        color: 'white',
-        margin: "4px",
-        float: 'right',
+        border: '2px solid #1F4E79' ,
+        color:'white',
+        margin:"4px",
+        float:'right',
         textTransform: 'capitalize',
         '&:hover': {
-            backgroundColor: '#0182C5',
-            boxShadow: 'none',
+          backgroundColor: '#0182C5',
+          boxShadow: 'none',
         },
     },
+    '@media (min-width: 768px)': {
+        desktopHelpLink: {
+            display: 'block'
+        },
+        mobileHelpLink: {
+            display: 'none'
+        }
+    },
     '@media (max-width: 760px)': {
+        desktopHelpLink: {
+            display: 'none'
+        },
+        mobileHelpLink: {
+            display: 'block'
+        },
         arrowIcon: {
             fontSize: '2.5rem',
             marginTop: '-2px',
@@ -118,6 +135,14 @@ const useStyles = makeStyles((theme) => ({
         },
         arrowIconTitle: {
             marginLeft: '-8px'
+        }
+    },
+    '@media (min-width: 768px)': {
+        desktopHelpLink: {
+            display: 'block'
+        },
+        mobileHelpLink: {
+            display: 'none'
         }
     },
     '@media (min-width: 900px)': {
@@ -450,14 +475,14 @@ function IpSequenceVariation() {
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
-                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIsDocPubUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_D2") {
                             redoInitialState.publishGQSel = item.O;
                             redoInitialState.publishGQDate = moment(item.V)._d;
                             setIsPublished(true);
-                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIspublishGQUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_P9") {
@@ -530,14 +555,14 @@ function IpSequenceVariation() {
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
-                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIsDocPubUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_D2") {
                             redoInitialState.publishGQSel = item.O;
                             redoInitialState.publishGQDate = moment(item.V)._d;
                             setIsPublished(true);
-                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIspublishGQUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_P9") {
@@ -650,38 +675,38 @@ function IpSequenceVariation() {
             //     }
             // }
             // setTimeout(() => {
-            if (userInfo && userInfo.current_user) {
-                let userPpu = userInfo.current_user.ppu_type;
-                let currentUser = userInfo.current_user;
-                console.log('userData', userInfo)
-                setPpuType(userPpu);
-
-
-                if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
-                    setIsSubmitActive(false);
-
-                }
-                if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
-                    setShowCreditCalc(true);
-                }
-
-                // if (userPpu == "0") {
-                //     setIsSubmitActive(true);
-                // } else {
-                //     setIsSubmitActive(false);
-                // }
-
-                if (userInfo.current_user.user_class_name) {
-                    setUserClassName(userInfo.current_user.user_class_name)
-                }
-                if (userInfo.current_user.accounting_group_name) {
-                    setAccGroupName(userInfo.current_user.accounting_group_name)
-                }
-                if (parentId) {
-                    console.log('pare', parentId)
-                    calTextCredits(null, false, 'redo')
-                }
-            }
+                if (userInfo && userInfo.current_user) {
+                    let userPpu = userInfo.current_user.ppu_type;
+                    let currentUser = userInfo.current_user;
+                    console.log('userData', userInfo)
+                    setPpuType(userPpu);
+    
+    
+                    if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
+                        setIsSubmitActive(false);
+    
+                    }
+                    if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
+                        setShowCreditCalc(true);
+                    }
+    
+                    // if (userPpu == "0") {
+                    //     setIsSubmitActive(true);
+                    // } else {
+                    //     setIsSubmitActive(false);
+                    // }
+    
+                    if (userInfo.current_user.user_class_name) {
+                        setUserClassName(userInfo.current_user.user_class_name)
+                    }
+                    if (userInfo.current_user.accounting_group_name) {
+                        setAccGroupName(userInfo.current_user.accounting_group_name)
+                    }
+                    if (parentId) {
+                        console.log('pare', parentId)
+                        calTextCredits(null, false, 'redo')
+                    }
+                } 
             // }, 1000);
 
         })()
@@ -1207,32 +1232,32 @@ function IpSequenceVariation() {
     console.log('scoring', scoringMatrixValue, wordSizeValue)
 
 
-    function changeIncludeGenUnknownDate() {
-        if (!isDocPubUnknownDates) {
-            formik.values.docPublicSel == "BEF" ? formik.setFieldValue("docPublicSel", "BEF_IE") : formik.values.docPublicSel == "AFT" ? formik.setFieldValue("docPublicSel", "AFT_IE") : formik.setFieldValue("docPublicSel", formik.values.docPublicSel)
-        } else {
-            formik.setFieldValue("docPublicSel", "BEF");
-        }
-        setIsDocPubUnknownDates(!isDocPubUnknownDates);
+        function changeIncludeGenUnknownDate() {
+        if(!isDocPubUnknownDates){
+        formik.values.docPublicSel == "BEF" ? formik.setFieldValue("docPublicSel", "BEF_IE") :formik.values.docPublicSel == "AFT" ? formik.setFieldValue("docPublicSel", "AFT_IE") : formik.setFieldValue("docPublicSel", formik.values.docPublicSel)
+    } else {
+        formik.setFieldValue("docPublicSel", "BEF");
+    }
+    setIsDocPubUnknownDates(!isDocPubUnknownDates);
     }
 
     function changeIncludeGQSpecificDate() {
-        if (!ispublishGQUnknownDates) {
-            formik.values.publishGQSel == "BEF" ? formik.setFieldValue("publishGQSel", "BEF_IE") : formik.values.publishGQSel == "AFT" ? formik.setFieldValue("publishGQSel", "AFT_IE") : formik.setFieldValue("publishGQSel", formik.values.publishGQSel)
-        } else {
-            formik.setFieldValue("publishGQSel", "BEF");
-        }
-        setIspublishGQUnknownDates(!ispublishGQUnknownDates)
+        if(!ispublishGQUnknownDates){
+        formik.values.publishGQSel == "BEF" ? formik.setFieldValue("publishGQSel", "BEF_IE") :formik.values.publishGQSel == "AFT" ? formik.setFieldValue("publishGQSel", "AFT_IE") : formik.setFieldValue("publishGQSel", formik.values.publishGQSel)
+    } else {
+        formik.setFieldValue("publishGQSel", "BEF");
+    }
+    setIspublishGQUnknownDates(!ispublishGQUnknownDates)
     }
 
     const beforeAfterSelection = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         console.log('e.target', e.target)
         formik.setFieldValue(name, value);
-        if (name == "docPublicSel") {
-            (value == "AFT" || value == "BEF") ? setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
-        } else if (name == "publishGQSel") {
-            (value == "AFT" || value == "BEF") ? setIspublishGQUnknownDates(false) : setIspublishGQUnknownDates(true);
+        if(name == "docPublicSel") {
+           (value == "AFT" || value == "BEF") ?  setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
+        } else if(name == "publishGQSel") {
+            (value == "AFT" || value == "BEF") ?  setIspublishGQUnknownDates(false) : setIspublishGQUnknownDates(true);
         }
     }
 
@@ -1266,7 +1291,7 @@ function IpSequenceVariation() {
             />
             <form name="ipSequenceSearchForm">
                 <Row>
-                    <Col lg="12" md="12" xs="12" className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
+                    <Col lg="12" md="12" className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
                             {t('ABsearchDisableText')}
                             {systemControlSubmitText}
@@ -1287,7 +1312,7 @@ function IpSequenceVariation() {
                 {parentId &&
                     <Fragment>
                         <Row>
-                            <Col sm="12" md="12" xs="12">
+                            <Col sm="12" md="12">
                                 <p className="subHeading w-75 mb-10 float-left">{t('queryPreloaded')}</p>
                             </Col>
                         </Row>
@@ -1299,13 +1324,17 @@ function IpSequenceVariation() {
                 {!parentId &&
                     <Fragment>
                         <Row>
-                            <Col sm="12" md="12" xs="12">
+                            <Col sm="12" md="12">
                                 <p className="subHeading w-75 mb-10 float-left">{t('searchDetails')}</p>
-                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank" rel="noreferrer">{t('help')}</a>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
+<<<<<<< Updated upstream
+                            <Col md="6">
+=======
                             <Col md="6" xs="6" sm='6'>
+>>>>>>> Stashed changes
                                 {/* <p className="subHeading">{t('searchDetails')}</p> */}
                                 <div className="form-group">
                                     <TextInput
@@ -1324,13 +1353,13 @@ function IpSequenceVariation() {
                         </Row>
                         <hr />
                         <Row>
-                            <Col sm="12" md="12" xs="12">
+                            <Col sm="12" md="12">
                                 <p className="subHeading w-75 mb-10 float-left">{t('querySequences')}</p>
-                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank" rel="noreferrer">{t('help')}</a>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
-                            <Col sm="10" md="10" xs="10">
+                            <Col sm="12" md="10">
                                 <div className="form-group">
                                     <TextInput
                                         rowsMax="8"
@@ -1350,10 +1379,14 @@ function IpSequenceVariation() {
                                     />
                                 </div>
                             </Col>
-                            <Col md="2" sm="2" xs="2"></Col>
+                            <Col md="2"></Col>
                         </Row>
                         <Row>
+<<<<<<< Updated upstream
+                            <Col md="9">
+=======
                             <Col md="9" xs="9" sm='9'>
+>>>>>>> Stashed changes
                                 <FormControl component="fieldset">
                                     <RadioGroup row aria-label="These are" name="customized-radios" value={sequenceTypeValue} onChange={handleSequenceType}>
                                         <span className={classes.theseAreText + " bodyText"}>{t("theseAre")}</span>
@@ -1367,14 +1400,18 @@ function IpSequenceVariation() {
                 }
                 <hr />
                 <Row>
-                    <Col sm="12" md="12" xs="12">
+                    <Col sm="12" md="12">
                         <p className="subHeading w-75 mb-10 float-left">{t('searchAlgorithmAndSetting')}</p>
-                        <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank" rel="noreferrer">{t('help')}</a>
+                        <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank">{t('help')}</a>
                     </Col>
                 </Row>
                 <Row>
                     <AccordionDetails>
+<<<<<<< Updated upstream
+                        <Col md="12">
+=======
                         <Col md="12" xs="12" sm='12'>
+>>>>>>> Stashed changes
                             <SelectBox
                                 margin="normal"
                                 variant="outlined"
@@ -1470,7 +1507,7 @@ function IpSequenceVariation() {
                                 <div className={classes.blastMargin}>
                                     <Typography className={"float-left " + classes.seqText}>
                                         {t("expectCutOff")}&nbsp;&nbsp;&nbsp;
-                                    </Typography>
+                                </Typography>
                                     <TextInput
                                         fullWidth={false}
                                         id="expectCutoff"
@@ -1500,7 +1537,7 @@ function IpSequenceVariation() {
                             {searchAlgorithmValue && searchAlgorithmValue == 'fragment' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     {t("findStretchAtLeast")}&nbsp;&nbsp;&nbsp;
-                                </Typography>
+                            </Typography>
                                 <TextInput
                                     fullWidth={false}
                                     id="fragmentStretch"
@@ -1538,16 +1575,26 @@ function IpSequenceVariation() {
                             }
                             {searchAlgorithmValue && searchAlgorithmValue == 'motif' && <Fragment>
                                 <Link className={"float-left " + classes.seqText}>
+<<<<<<< Updated upstream
+                                    {t("examplesOfValidMotif")}&nbsp;&nbsp;&nbsp;
+                            </Link>
+=======
                                     {t("examplesOfValidMotif")}
                                 </Link>
+>>>>>>> Stashed changes
                             </Fragment>
                             }
                         </Col>
                     </AccordionDetails>
                 </Row>
                 <Row>
+<<<<<<< Updated upstream
+                    <AccordionDetails className="appTextColor">
+                        <Col md="12">
+=======
                     <AccordionDetails className="appTextColor" style={{ marginLeft: '-5px' }}>
                         <Col md="12" xs="12" sm='12'>
+>>>>>>> Stashed changes
                             <Typography className={"float-left " + classes.seqText}>
                                 {t("Report")}&nbsp;&nbsp;&nbsp;
                             </Typography>
@@ -1588,12 +1635,16 @@ function IpSequenceVariation() {
                 </Row> */}
                 <hr />
                 <Row>
+<<<<<<< Updated upstream
+                    <Col md="11">
+=======
                     <Col md="12" xs="12" sm='12'>
                         <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right" rel="noreferrer">{t("help")}</a>
                     </Col>
                 </Row>
                 <Row>
                     <Col md="12" xs="12" sm='12'>
+>>>>>>> Stashed changes
                         <Accordion square expanded={seqDBFilter} onChange={() => setSeqDBFilter(prevState => !prevState)}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
                                 <p className="subHeading m-0">
@@ -1603,8 +1654,13 @@ function IpSequenceVariation() {
                                 </p>
                             </AccordionSummary>
                             <AccordionDetails className="appTextColor">
+<<<<<<< Updated upstream
+                                <Col md="12">
+                                    <Typography className={"float-left " + classes.seqText}>
+=======
                                 <Col md="12" xs="12" sm='12' className={classes.row1}>
                                     <Typography className={"float-left " + classes.seqText} style={{ width: '225px' }}>
+>>>>>>> Stashed changes
                                         {t("searchOnlySeqBetween")}&nbsp;&nbsp;&nbsp;
                                     </Typography>
                                     <TextInput
@@ -1638,6 +1694,20 @@ function IpSequenceVariation() {
                                         &nbsp;&nbsp;&nbsp;{t("residuesInLength")}
                                     </Typography>
                                 </Col>
+<<<<<<< Updated upstream
+                                <br clear="all"></br>
+                                <br clear="all"></br>
+                                <Col md="12">
+                                <CheckBox
+                                        color="primary"
+                                        className={"float-left"}
+                                        name="isDocumentPublic"
+                                        id="isDocumentPublic"
+                                        onChange={() => setIsDocPubDate(!isDocPubDate)}
+                                        checked={isDocPubDate}
+                                    />
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
+=======
                                 {/* <br clear="all"></br> */}
                                 {/* <br clear="all"></br> */}
                                 <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
@@ -1652,6 +1722,7 @@ function IpSequenceVariation() {
                                         />
                                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
                                     </div>
+>>>>>>> Stashed changes
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1692,7 +1763,14 @@ function IpSequenceVariation() {
                             </AccordionDetails>
                         </Accordion>
                     </Col>
+<<<<<<< Updated upstream
+                    <Col md="1" className={classes.desktopHelpLink}>
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
+                    </Col>
+                    <Col md="12">
+=======
                     <Col md="12" xs="12" sm='12'>
+>>>>>>> Stashed changes
                         <Accordion square expanded={specificDBFilter} onChange={() => setSpecificDBFilter(prevState => !prevState)}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
                                 <p className="subHeading m-0">
@@ -1702,6 +1780,18 @@ function IpSequenceVariation() {
                                 </p>
                             </AccordionSummary>
                             <AccordionDetails>
+<<<<<<< Updated upstream
+                                <Col md="12">
+                                <CheckBox
+                                        color="primary"
+                                        className={"float-left"}
+                                        name="publishGenomeQuest"
+                                        id="publishGenomeQuest"
+                                        onChange={() => setIsPublished(!isPublished)}
+                                        checked={isPublished}
+                                    />
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="publishGenomeQuest">{t("publishedInGenomeQuest")}</label>
+=======
                                 <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
                                     <div style={{ width: '230px', display: 'flex' }}>
                                         <CheckBox
@@ -1714,6 +1804,7 @@ function IpSequenceVariation() {
                                         />
                                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="publishGenomeQuest">{t("publishedInGenomeQuest")}</label>
                                     </div>
+>>>>>>> Stashed changes
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1751,6 +1842,20 @@ function IpSequenceVariation() {
                                     />
                                     <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGQSpecificDate">{t("includeUnknownDates")}</label>
                                 </Col>
+<<<<<<< Updated upstream
+                                <br clear="all"></br>
+                                <br clear="all"></br>
+                                <Col md="12">
+                                    <CheckBox
+                                        color="primary"
+                                        className={"float-left"}
+                                        name="isPatientDoc"
+                                        id="isPatientDoc"
+                                        onChange={() => setIsPatientDoc(!isPatientDoc)}
+                                        checked={isPatientDoc}
+                                    />
+                                    <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
+=======
                                 {/* <br clear="all"></br> */}
                                 {/* <br clear="all"></br> */}
                                 <Col md="12" xs="12" sm='12' className={classes.rowElementsContainer}>
@@ -1765,6 +1870,7 @@ function IpSequenceVariation() {
                                         />
                                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
                                     </div>
+>>>>>>> Stashed changes
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1785,8 +1891,13 @@ function IpSequenceVariation() {
                                         value={formik.values.patientDocInp}
                                         onChange={formik.handleChange}
                                         error={formik.touched.patientDocInp && Boolean(formik.errors.patientDocInp)}
+<<<<<<< Updated upstream
+                                        helperText={ isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
+                                        className={"float-left mx-4 " + classes.mediumSizedTextBox}
+=======
                                         helperText={isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
                                         className={"float-left mx-4 " + classes.numberInput}
+>>>>>>> Stashed changes
                                         disabled={isPatientDoc ? false : true}
                                     />
                                     <Typography className={"float-left mt-2"}>
@@ -1796,18 +1907,30 @@ function IpSequenceVariation() {
                             </AccordionDetails>
                         </Accordion>
                     </Col>
+                    <Col md="12" className={classes.mobileHelpLink}>
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
+                    </Col>
                 </Row>
                 {/* <ColoredLine color="black" /> */}
                 <hr />
                 <div>
                     <Row>
+<<<<<<< Updated upstream
+                        <Col sm="12" md="12">
+                            <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
+=======
                         <Col sm="12" md="12" xs="12">
                             <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right" rel="noreferrer">{t("help")}</a>
+>>>>>>> Stashed changes
                         </Col>
                     </Row>
                     {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
                     <Row>
+<<<<<<< Updated upstream
+                        <Col md="6">
+=======
                         <Col md="6" xs="6" sm='6'>
+>>>>>>> Stashed changes
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="subHeading p-0">
@@ -1918,7 +2041,11 @@ function IpSequenceVariation() {
                             </div>
                             }
                         </Col>
+<<<<<<< Updated upstream
+                        <Col md="6">
+=======
                         <Col md="6" xs="6" sm='6'>
+>>>>>>> Stashed changes
                             {proPatentData && _.size(proPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
@@ -2005,7 +2132,11 @@ function IpSequenceVariation() {
                     <Fragment>
                         <ColoredLine color="#f3f2f2" />
                         <Row>
+<<<<<<< Updated upstream
+                            <Col md="11">
+=======
                             <Col md="11" xs="11" sm='11'>
+>>>>>>> Stashed changes
                                 <p className="subHeading">Search Fee</p>
                                 {ppuType == "1" && <p>{t('executingSearchCharges')}</p>}
                                 {ppuType == "2" && <p>{t('executingSearchCredits')}</p>}
@@ -2071,12 +2202,21 @@ function IpSequenceVariation() {
                                     }
                                 </table>
                             </Col>
+<<<<<<< Updated upstream
+                            {/* <Col md="1" className={classes.desktopHelpLink}>
+                                <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
+                            </Col> */}
+                        </Row>
+                        {ppuType != "0" && <Row>
+                            <Col md="12">
+=======
                             <Col md="1" xs="1">
                                 <Link className="appTextFont appLink float-right">{t("help")}</Link>
                             </Col>
                         </Row>
                         {ppuType != "0" && <Row>
                             <Col md="12" xs="12" sm='12' style={{ paddingLeft: '10px' }}>
+>>>>>>> Stashed changes
                                 <CheckBox
                                     // defaultChecked
                                     color="primary"
@@ -2094,7 +2234,11 @@ function IpSequenceVariation() {
                 }
                 <ColoredLine color="#f3f2f2" />
                 <Row>
+<<<<<<< Updated upstream
+                    <Col md="12">
+=======
                     <Col md="12" xs="12" sm='12' style={{ paddingLeft: '10px' }}>
+>>>>>>> Stashed changes
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2108,7 +2252,11 @@ function IpSequenceVariation() {
                     </Col>
                 </Row>
                 <Row>
+<<<<<<< Updated upstream
+                    <Col md='4'>
+=======
                     <Col md='4' xs="4" sm='4' style={{ paddingLeft: '10px' }}>
+>>>>>>> Stashed changes
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2120,7 +2268,11 @@ function IpSequenceVariation() {
                         />
                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left mx-2 ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
+<<<<<<< Updated upstream
+                    <Col md='6'>
+=======
                     <Col md='6' xs="6" sm='6' style={{ marginLeft: '-80px' }}>
+>>>>>>> Stashed changes
                         <TextInput
                             id="formName"
                             name="formName"
@@ -2138,10 +2290,14 @@ function IpSequenceVariation() {
                 <br></br>
                 <Row >
                     <Col  >
+<<<<<<< Updated upstream
+                        {isSubmitActive && <Button  className="accountInfo" type="submit">
+=======
                         {isSubmitActive && <Button className="accountInfo" onClick={submitForm}>
+>>>>>>> Stashed changes
                             {t("submit")}
                         </Button>}
-                        {!isSubmitActive && <Button className="cancelButtonDisable" disabled>
+                        {!isSubmitActive && <Button  className="cancelButtonDisable" disabled>
                             {t("submit")}
                         </Button>}
                         <Button className={classes.loginSubmitCancel} onClick={homeRedirect}>

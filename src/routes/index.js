@@ -82,6 +82,7 @@ class Routes extends React.Component {
                         <Route exact path="/parsedxml" title="Sequence format Conversion" component={ParsedXml} />
                         <Route exact path="/personaldb" title="Personal Databases" component={PersonalDatabase} />
                         <Route exact path="/fulldocview/:patentId" title="Full Document View" component={fullDocView} />
+
                     </React.Fragment>
                     {/* :  */}
                     <Redirect to='/login' />

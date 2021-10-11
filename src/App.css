@@ -312,17 +312,8 @@
 /* News and Update */
 
 .newsUpdateContent {
-    padding-right: 15px;
-    max-height: 250px;
-    overflow: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.newsUpdateContent:hover {
-    padding-right: 15px;
-    -ms-overflow-style: auto;
-    scrollbar-width: auto;
+    max-height: 200px;
+    overflow: auto
 }
 
 .MuiFormHelperText-root.Mui-error {
@@ -365,10 +356,13 @@
     color: #777777;
     font-style: italic;
 }
+<<<<<<< Updated upstream
+=======
 
 .space {
     /* visibility: hidden; */
 }
+>>>>>>> Stashed changes
 
 .opClass::after,
 .space::after,
@@ -644,6 +638,9 @@ label {
     clear: both
 }
 
+<<<<<<< Updated upstream
+@media only screen and (min-width: 768px) {}
+=======
 .MuiCheckbox-colorPrimary.Mui-checked {
     color: #337ab7 !important;
 }
@@ -665,3 +662,4 @@ label {
         padding-right: 15px;
     }
 }
+>>>>>>> Stashed changes

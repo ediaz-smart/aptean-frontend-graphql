@@ -62,31 +62,31 @@ async function getSequenceShare(workflowId) {
         hideLoader();
     }
 }
-async function getSequenceResultShare(workflowId) {
+// async function getSequenceResultShare(workflowId) {
 
-    try {
-        let apiurl = url.seqShareList;
-        apiurl = apiurl.replace('**',workflowId)
+//     try {
+//         let apiurl = url.seqShareList;
+//         apiurl = apiurl.replace('**',workflowId)
        
-        showLoader();
-        return await get(apiurl)
-            .then((response) => {
-                hideLoader();
-                // console.log(JSON.stringify(response),"Password");
-                return response;
-            })
-            .catch((error) => {
-                hideLoader();
-                // toast.error('Failed to change password');
-                console.log("error::", error);
+//         showLoader();
+//         return await get(apiurl)
+//             .then((response) => {
+//                 hideLoader();
+//                 // console.log(JSON.stringify(response),"Password");
+//                 return response;
+//             })
+//             .catch((error) => {
+//                 hideLoader();
+//                 // toast.error('Failed to change password');
+//                 console.log("error::", error);
 
-            });
-    } catch (error) {
-        toast.error(error.response_content.message);
-        console.error(error, "errors");
-        hideLoader();
-    }
-}
+//             });
+//     } catch (error) {
+//         toast.error(error.response_content.message);
+//         console.error(error, "errors");
+//         hideLoader();
+//     }
+// }
 async function getSeqAlert(workflowId) {
 
     try {
@@ -291,31 +291,31 @@ async function removeResultSharing(postdata) {
         hideLoader();
     }
 }
-async function getUserList(workflowId) {
+// async function getUserList(workflowId) {
 
-    try {
-        let apiurl = url.userList;
-        apiurl = apiurl.replace('**',workflowId)
+//     try {
+//         let apiurl = url.userList;
+//         apiurl = apiurl.replace('**',workflowId)
        
-        showLoader();
-        return await get(apiurl)
-            .then((response) => {
-                hideLoader();
-                // console.log(JSON.stringify(response),"Password");
-                return response;
-            })
-            .catch((error) => {
-                hideLoader();
-                // toast.error('Failed to change password');
-                console.log("error::", error);
+//         showLoader();
+//         return await get(apiurl)
+//             .then((response) => {
+//                 hideLoader();
+//                 // console.log(JSON.stringify(response),"Password");
+//                 return response;
+//             })
+//             .catch((error) => {
+//                 hideLoader();
+//                 // toast.error('Failed to change password');
+//                 console.log("error::", error);
 
-            });
-    } catch (error) {
-        toast.error(error.response_content.message);
-        console.error(error, "errors");
-        hideLoader();
-    }
-}
+//             });
+//     } catch (error) {
+//         toast.error(error.response_content.message);
+//         console.error(error, "errors");
+//         hideLoader();
+//     }
+// }
 async function getFolderResultData(datas,folderId)
 {
     try {
@@ -343,32 +343,33 @@ async function getFolderResultData(datas,folderId)
         hideLoader();
     }
 }
-async function addResultSharing(postdata) {
 
-    try {
-        let apiurl = url.seqAddSharee;
-        apiurl = apiurl.replace('**',postdata.workflowId)
-        apiurl = apiurl.replaceAll('UID',postdata.userId)
+// async function addResultSharing(postdata) {
+
+//     try {
+//         let apiurl = url.seqAddSharee;
+//         apiurl = apiurl.replace('**',postdata.workflowId)
+//         apiurl = apiurl.replaceAll('UID',postdata.userId)
        
-        showLoader();
-        return await get(apiurl)
-            .then((response) => {
-                hideLoader();
-                // console.log(JSON.stringify(response),"Password");
-                return response;
-            })
-            .catch((error) => {
-                hideLoader();
-                // toast.error('Failed to change password');
-                console.log("error::", error);
+//         showLoader();
+//         return await get(apiurl)
+//             .then((response) => {
+//                 hideLoader();
+//                 // console.log(JSON.stringify(response),"Password");
+//                 return response;
+//             })
+//             .catch((error) => {
+//                 hideLoader();
+//                 // toast.error('Failed to change password');
+//                 console.log("error::", error);
 
-            });
-    } catch (error) {
-        toast.error(error.response_content.message);
-        console.error(error, "errors");
-        hideLoader();
-    }
-}
+//             });
+//     } catch (error) {
+//         toast.error(error.response_content.message);
+//         console.error(error, "errors");
+//         hideLoader();
+//     }
+// }
 const searchResSequence = {
     getSequenceSummary,
     getSequenceShare,
@@ -379,10 +380,10 @@ const searchResSequence = {
     downloadQuerySeq,
     updateAlertSettings,
     removeAlertSettings,
-    addResultSharing,
+    //addResultSharing,
     removeResultSharing,
-    getUserList,
-    getSequenceResultShare,
+    //getUserList,
+    //getSequenceResultShare,
     getFolderResultData
 };
 
