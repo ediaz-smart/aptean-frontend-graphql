@@ -32,6 +32,7 @@ import SelectBox from '../../shared/Fields/SelectBox';
 import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
 import SharedWith from '../Sharing/SharedWith.js';
+import {containerWidth} from '../../shared/constants';
 
 
 
@@ -47,7 +48,8 @@ const useStyles = makeStyles((theme) => ({
         // borderBottom: '1px solid #cec7c7',
         padding: '23px 16px 14px',
         border: '1px solid #cec7c7',
-        borderRadius: '3px'
+        borderRadius: '3px',
+        maxWidth: containerWidth
     },
     headerPipe: {
         margin: '0 10px'

@@ -90,7 +90,6 @@ const useStyles = makeStyles((theme) => ({
    
   }));
 function AccountInfo() {
-<<<<<<< Updated upstream
     const [accountInfoData, setAccountInfoData] = useState([]);
     const [accountInfoNames, setAccountInfoNames] = useState([]);
     const [errorMessage, seterrorMessage] = useState("");
@@ -125,64 +124,6 @@ function AccountInfo() {
     {
       setmodalShowSaved(false);
       history.push('/home')
-=======
-  const [accountInfoData, setAccountInfoData] = useState([]);
-  const [accountInfoNames, setAccountInfoNames] = useState([]);
-  const [errorMessage, seterrorMessage] = useState("");
-  const history = useHistory();
-  const { t, i18n } = useTranslation('common');
-  const [prop1, setProp1] = useState("prop1");
-  const [modalShow, setModalShow] = React.useState(false);
-  const [modalShowSaved, setmodalShowSaved] = React.useState(false);
-  const [userIdCon, setuserIdCon] = useState("");
-  const [userId, setuserId] = useState("");
-  const [userFirstName, setuserfirstName] = useState("");
-  const [userLastName, setuserlastName] = useState("");
-  const [userEmail, setuserEmail] = useState("");
-  const [userAccountingGroup, setuserAccountingGroup] = useState("");
-  const [userAccountType, setuserAccountType] = useState("");
-  const [userAccountCreated, setuserAccountCreated] = useState("");
-  const [userAccountExpires, setuserAccountExpires] = useState("");
-  const [userAccountClitoken, setuserAccountClitoken] = useState("");
-  const [userAnalyses, setuserAnalyses] = useState("");
-  const [userSeqDatabase, setuserSeqDatabase] = useState("");
-  const [userUploads, setuserUploads] = useState("");
-
-  const classes = useStyles();
-
-  const GreyText = {
-    marginTop: "30px",
-    marginLeft: '36px',
-    color: "black",
-    textAlign: "left"
-  };
-  function successMessage() {
-    setmodalShowSaved(false);
-    history.push('/home')
-  }
-  function bytesToSize(bytes) {
-    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    if (bytes == 0) return '0 Byte';
-    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
-  }
-  function setAccountInfo(data) {
-    if (data) {
-      data.id ? setuserIdCon(data.id) : setuserIdCon('');
-      data.login_name ? setuserId(data.login_name) : setuserId('');
-      data.email ? setuserEmail(data.email) : setuserEmail('');
-      data.accounting_group_name ? setuserAccountingGroup(data.accounting_group_name) : setuserAccountingGroup('');
-      data.user_class_name ? setuserAccountType(data.user_class_name) : setuserAccountType('');
-      // moment(values.docPublicDate).format('YYYYMMDD') moment(data.expire_time).format("MMMM Do YYYY"))  moment(data.expire_time).format("LL"))
-      data.create_time ? setuserAccountCreated(data.create_time) : setuserAccountCreated('');
-      data.expire_time ? setuserAccountExpires('After ' + moment(data.expire_time).format("LL")) : setuserAccountExpires('Never');
-      data.clitoken ? setuserAccountClitoken(data.clitoken) : setuserAccountClitoken('');
-      data.dspace_workflow ? setuserAnalyses(bytesToSize(data.dspace_workflow)) : setuserAnalyses(0);
-      data.dspace_seqdb ? setuserSeqDatabase(bytesToSize(data.dspace_seqdb)) : setuserSeqDatabase(0);
-      data.dspace_uploaded ? setuserUploads(bytesToSize(data.dspace_uploaded)) : setuserUploads(0);
-      data.first_name ? setuserfirstName(data.first_name) : accountInfoData && accountInfoData.first_name ? setuserfirstName(accountInfoData.first_name) : setuserfirstName('');
-      data.last_name ? setuserlastName(data.last_name) : accountInfoData && accountInfoData.last_name ? setuserlastName(accountInfoData.last_name) : setuserlastName('');
->>>>>>> Stashed changes
     }
     function bytesToSize(bytes) {
       var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -276,7 +217,6 @@ function AccountInfo() {
         }
       }
     `;
-<<<<<<< Updated upstream
     const TextLeft = {
       textAlign:"left",
       marginLeft:"70px"
@@ -295,25 +235,6 @@ function AccountInfo() {
     console.log(passwordVlaue,"vlauess vlauess vlauess vlauess vlauess");
     const passValCheck = passwordVlaue.length; 
     console.log(passValCheck,"passValCheck passValCheck passValCheck passValCheck passValCheck");
-=======
-  const TextLeft = {
-    textAlign: "left",
-    marginLeft: "70px"
-  };
-  function homePage() {
-    history.push('/home');
-  }
-  function tryAgainForm() {
-    formik.setFieldValue('confirmPassword', '');
-    setModalShow(false)
-  }
-  const passwordVlaue = formik.values.confirmPassword;
-  const passValCheck = passwordVlaue.length;
-
-  function cancelForm() {
-    setModalShow(false);
-    history.push('/home');
->>>>>>> Stashed changes
 
     function cancelForm()
     {

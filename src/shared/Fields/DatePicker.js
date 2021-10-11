@@ -12,7 +12,6 @@ import DatePickerNew from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const useStyles = makeStyles((theme) => ({
-<<<<<<< Updated upstream
     root: {
        display:'block',
        padding: '9px',
@@ -30,25 +29,6 @@ const useStyles = makeStyles((theme) => ({
         }
     }
   }));
-=======
-  root: {
-    display: 'block',
-    padding: '9px',
-    marginTop: '2px'
-  },
-  gridRoot: {
-    width: '205px'
-  },
-  // '@media (max-width: 780px)': {
-  //   gridRoot: {
-  //     width: '193px',
-  //   },
-  //   root: {
-  //     margin: '0 !important'
-  //   }
-  // }
-}));
->>>>>>> Stashed changes
 export default function DatePicker(props) {
   // The first commit of Material-UI
   const classes = useStyles();

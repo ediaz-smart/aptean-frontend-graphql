@@ -56,10 +56,33 @@ async function getFullTextSearchResult(history, searchParam) {
     }
    
 }
+
+async function fullDocViewService(history, searchParam) {
+    try {
+        let apiurl = `${url.fullDocView}&patent_number=${searchParam}`;
+        showLoader();
+        return await get(apiurl, history)
+        .then((response) => {
+            hideLoader();
+            return response;
+        })
+        .catch((error) => {
+            // hideLoader();
+            toast.error('A');
+            console.log("error::", error);
+
+            // return dispatch(loginError(error));
+            // dispatch(showMessage({ message: error }));
+        });
+    } catch (error) {
+        console.error(error);
+    }
+   
+}
 const fullTextService = {
     getFullTextSearchTerm,
-    getFullTextSearchResult
+    getFullTextSearchResult,
+    fullDocViewService
 };
 
 export default fullTextService;
-

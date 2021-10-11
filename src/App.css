@@ -356,13 +356,10 @@
     color: #777777;
     font-style: italic;
 }
-<<<<<<< Updated upstream
-=======
 
 .space {
     /* visibility: hidden; */
 }
->>>>>>> Stashed changes
 
 .opClass::after,
 .space::after,
@@ -638,9 +635,6 @@ label {
     clear: both
 }
 
-<<<<<<< Updated upstream
-@media only screen and (min-width: 768px) {}
-=======
 .MuiCheckbox-colorPrimary.Mui-checked {
     color: #337ab7 !important;
 }
@@ -662,4 +656,3 @@ label {
         padding-right: 15px;
     }
 }
->>>>>>> Stashed changes

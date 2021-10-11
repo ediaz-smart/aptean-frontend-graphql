@@ -4,15 +4,9 @@ import { useDispatch } from 'react-redux';
 // import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
-<<<<<<< Updated upstream
-import {useTranslation} from "react-i18next";
-import { toast } from 'react-toastify';
-import Newsupdate from '../../shared/newspdate';
-=======
 import { useTranslation } from "react-i18next";
 // import { toast } from 'react-toastify';
-import NewsUpdate from '../../shared/NewsUpdate';
->>>>>>> Stashed changes
+import NewsUpdate from '../../shared/newspdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -20,13 +14,8 @@ import Validate from '../../helpers/validate';
 import TextInput from '../../shared/Fields/TextInput';
 // import ClientCaptcha from "react-client-captcha"
 import "react-client-captcha/dist/index.css"
-<<<<<<< Updated upstream
-import { Link, useHistory ,useParams} from 'react-router-dom';
-import PasswordService from '../../services/forgotpassword'
-=======
 import { Link, useHistory, useParams } from 'react-router-dom';
 // import PasswordService from '../../services/forgotpassword'
->>>>>>> Stashed changes
 import { supportMail } from '../../config';
 import Footer from '../../shared/footer';
 import AccountService from '../../services/accountInfo';
@@ -290,21 +279,12 @@ function NewPassword() {
                             </div>
                             <div className={'p-4 ' +( !sucKey ? 'd-block' : 'd-none')}>
 
-<<<<<<< Updated upstream
-                                    <h5>Password Recovery</h5>
-                                    <br />
-                                    <p>Your password recovery token has expired. <br/> Please return to the passord reset option and try again.</p>
-                                    <p>Please contact <a href={"mailto:"+supportMail}>{supportMail}</a> for assistance.</p>
-                                    <Button variant="contained" className='accountInfo' onClick={()=>forgotPage()}>Password reset</Button> 
-                            </div>
-=======
                         <h5>Password Recovery</h5>
                         <br />
                         <p>Your password recovery token has expired. <br /> Please return to the password reset option and try again.</p>
                         <p>Please contact <a href={"mailto:" + supportMail}>{supportMail}</a> for assistance.</p>
                         <Button variant="contained" className='accountInfo' onClick={() => forgotPage()}>Password reset</Button>
                     </div>
->>>>>>> Stashed changes
 
 
                             {/* <div className={'p-4 ' +(passwordForm ? 'd-block' : 'd-block')}>
@@ -352,7 +332,7 @@ function NewPassword() {
 
                   </div>
                   :
-                  <Newsupdate />
+                  <NewsUpdate />
                
                 }
                

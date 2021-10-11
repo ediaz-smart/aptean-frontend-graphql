@@ -127,15 +127,7 @@ const columns = [
 	{
 		name: "",
 		selector: "results",
-<<<<<<< Updated upstream
 		sortable: false
-=======
-		sortable: false,
-		style: {
-			justifyContent: 'unset !important',
-			maxWidth: '200px'
-		}
->>>>>>> Stashed changes
 	},
 	{
 		name: " ",

@@ -32,6 +32,7 @@ import ContactSupportErrorModal from '../../shared/Modal/ContactSupportErrorModa
 
 //validation
 import Validate from '../../helpers/validate';
+import { containerWidth } from '../../shared/constants';
 
 //service
 import AccountInfo from '../../services/accountInfo';
@@ -40,10 +41,7 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
-<<<<<<< Updated upstream
-=======
         maxWidth: containerWidth,
->>>>>>> Stashed changes
         margin: '0 auto 28px',
         minHeight: '260px',
         borderBottom: '1px solid #cec7c7',
@@ -92,17 +90,10 @@ const useStyles = makeStyles((theme) => ({
     loginSubmitCancel:{
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
-<<<<<<< Updated upstream
-        border: '2px solid #1F4E79' ,
-        color:'white',
-        margin:"4px",
-        float:'right',
-=======
         border: '1px solid #1F4E79',
         color: 'white',
         margin: "4px",
         float: 'right',
->>>>>>> Stashed changes
         textTransform: 'capitalize',
         '&:hover': {
           backgroundColor: '#0182C5',
@@ -1320,8 +1311,6 @@ function IpSeqSearch() {
 
     let subjectText = "GenomeQuest: Error updating account information [Error code: " + errorMsg + "]";
 
-<<<<<<< Updated upstream
-=======
     if( formSubmit && formik && formik.errors && Object.keys(formik.errors).length > 0) {
         document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({behavior: "smooth", block: "center",inline: "start"});
         setFromSubmit(false);
@@ -1332,7 +1321,6 @@ function IpSeqSearch() {
         setFromSubmit(true);
     }
 
->>>>>>> Stashed changes
     return (
         <div className={classes.grow}>
             <SeqVIModal
@@ -1351,15 +1339,9 @@ function IpSeqSearch() {
             />
             <form name="ipSequenceSearchForm">
                 <Row>
-<<<<<<< Updated upstream
-                    <Col lg="12" md="12" className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
-                    <Typography className="text-danger">
-                        {t('ABsearchDisableText')}
-=======
                     <Col lg="12" md="12" sm='12' className={"mb-2 " + (!systemControlSubmit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
                             {t('ABsearchDisableText')}
->>>>>>> Stashed changes
                             {systemControlSubmitText}
                             {t('patienceThanksText')}
                         </Typography>
@@ -1378,17 +1360,10 @@ function IpSeqSearch() {
                 {parentId &&
                     <Fragment>
                         <Row>
-<<<<<<< Updated upstream
-                        <Col sm="12" md="12">
-                            <p className="subHeading w-75 mb-10 float-left">{t('queryPreloaded')}</p>
-                        </Col>
-                    </Row>
-=======
                             <Col sm="12" md="12" sm='12'>
                                 <p className="subHeading w-75 mb-10 float-left">{t('queryPreloaded')}</p>
                             </Col>
                         </Row>
->>>>>>> Stashed changes
                         <p className="bodyText">
                             {t('redoAlertText')}
                         </p>
@@ -1403,11 +1378,7 @@ function IpSeqSearch() {
                             </Col>
                         </Row>
                         <Row>
-<<<<<<< Updated upstream
-                            <Col md="6">
-=======
                             <Col md="6" xs="6" sm='6'>
->>>>>>> Stashed changes
                                 {/* <p className="subHeading">{t('searchDetails')}</p> */}
                                 <div className="form-group">
                                     <TextInput
@@ -1640,26 +1611,15 @@ function IpSeqSearch() {
                             }
                             {searchAlgorithmValue && searchAlgorithmValue == 'motif' && <Fragment>
                                 <Link className={"float-left " + classes.seqText}>
-<<<<<<< Updated upstream
-                                    {t("examplesOfValidMotif")}&nbsp;&nbsp;&nbsp;
-                            </Link>
-=======
                                     {t("examplesOfValidMotif")}
                                 </Link>
->>>>>>> Stashed changes
                             </Fragment>
                             }
                         </Col>
                     </AccordionDetails>
-<<<<<<< Updated upstream
-                    </Row>
-                    <Row>
-                    <AccordionDetails className="appTextColor">
-=======
                 </Row>
                 <Row>
                     <AccordionDetails className="appTextColor" style={{ marginLeft: '-5px' }}>
->>>>>>> Stashed changes
                         <Col md="12">
                             <Typography className={"float-left " + classes.seqText}>
                                 {t("Report")}&nbsp;&nbsp;&nbsp;
@@ -1701,16 +1661,12 @@ function IpSeqSearch() {
                 </Row>
                 <hr />
                 <Row>
-<<<<<<< Updated upstream
-                    <Col md="11">
-=======
                     <Col md="12">
                         <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right" rel="noreferrer">{t("help")}</a>
                     </Col>
                 </Row>
                 <Row>
                     <Col md="12">
->>>>>>> Stashed changes
                         <Accordion square expanded={seqDBFilter} onChange={() => setSeqDBFilter(prevState => !prevState)}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" className="subHeading p-0">
                                 <p className="subHeading m-0">
@@ -1734,11 +1690,7 @@ function IpSeqSearch() {
                                         onChange={formik.handleChange}
                                         error={formik.touched.minResidues && Boolean(formik.errors.minResidues)}
                                         helperText={formik.touched.minResidues && formik.errors.minResidues}
-<<<<<<< Updated upstream
-                                        className={"float-left "+ classes.mediumSizedTextBox}
-=======
                                         className={"float-left " + classes.numberInput}
->>>>>>> Stashed changes
                                     />
                                     <Typography className={"float-left " + classes.seqText}>
                                         &nbsp;&nbsp;{t("and")}&nbsp;&nbsp;
@@ -1874,20 +1826,6 @@ function IpSeqSearch() {
                                     />
                                     <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3 mt-2"} for="includeGQSpecificDate">{t("includeUnknownDates")}</label>
                                 </Col>
-<<<<<<< Updated upstream
-                                <br clear="all"></br>
-                                <br clear="all"></br>
-                                <Col md="12">
-                                    <CheckBox
-                                        color="primary"
-                                        className={"float-left"}
-                                        name="isPatientDoc"
-                                        id="isPatientDoc"
-                                        onChange={() => setIsPatientDoc(!isPatientDoc)}
-                                        checked={isPatientDoc}
-                                    />
-                                <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
-=======
                                 {/* <br clear="all"></br> */}
                                 {/* <br clear="all"></br> */}
                                 <Col md="12" sm='12' xs='12' className={classes.rowElementsContainer}>
@@ -1902,7 +1840,6 @@ function IpSeqSearch() {
                                         />
                                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isPatientDoc">{t("patentDocContains")}</label>
                                     </div>
->>>>>>> Stashed changes
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -1923,13 +1860,8 @@ function IpSeqSearch() {
                                         value={formik.values.patientDocInp}
                                         onChange={formik.handleChange}
                                         error={formik.touched.patientDocInp && Boolean(formik.errors.patientDocInp)}
-<<<<<<< Updated upstream
-                                        helperText={ isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
-                                        className={"float-left mx-4 "+ classes.mediumSizedTextBox}
-=======
                                         helperText={isPatientDoc && formik.touched.patientDocInp && formik.errors.patientDocInp}
                                         className={"float-left mx-4 " + classes.numberInput}
->>>>>>> Stashed changes
                                         disabled={isPatientDoc ? false : true}
                                     />
                                     <Typography className={"float-left mt-2"}>
@@ -1939,36 +1871,21 @@ function IpSeqSearch() {
                             </AccordionDetails>
                         </Accordion>
                     </Col>
-<<<<<<< Updated upstream
-                    <Col md="12" className={classes.mobileHelpLink}>
-                        <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
-                    </Col>
-=======
                     {/* <Col md="12" className={classes.mobileHelpLink}>
                         <Link className="appTextFont appLink float-right">{t("help")}</Link>
                     </Col> */}
->>>>>>> Stashed changes
                 </Row>
                 {/* <ColoredLine color="black" /> */}
                 <hr />
                 <div>
                     <Row>
-<<<<<<< Updated upstream
-                        <Col sm="12" md="12">
-                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
-=======
                         <Col sm="12" md="12" xs='12'>
                             <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right" rel="noreferrer">{t("help")}</a>
->>>>>>> Stashed changes
                         </Col>
                     </Row>
                     {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
                     <Row>
-<<<<<<< Updated upstream
-                        <Col md="6">
-=======
                         <Col md="6" xs="6" sm='6'>
->>>>>>> Stashed changes
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
                                 <Accordion expanded={formCheck1} onChange={() => setformCheck1(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="subHeading p-0">
@@ -2076,13 +1993,8 @@ function IpSeqSearch() {
                             </div>
                             }
                         </Col>
-<<<<<<< Updated upstream
-                        <Col md="6">
-                            {proPatentData && _.size(proPatentData) > 0 &&<div>
-=======
                         <Col md="6" xs="6" sm='6'>
                             {proPatentData && _.size(proPatentData) > 0 && <div>
->>>>>>> Stashed changes
                                 <Accordion expanded={formCheck2} onChange={() => setformCheck2(prevState => !prevState)}>
                                     <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
                                         <p className="subHeading m-0">
@@ -2164,11 +2076,7 @@ function IpSeqSearch() {
                     <Fragment>
                         <ColoredLine color="#f3f2f2" />
                         <Row>
-<<<<<<< Updated upstream
-                            <Col md="11">
-=======
                             <Col md="11" xs="11" sm='11'>
->>>>>>> Stashed changes
                                 <p className="subHeading">Search Fee</p>
                                 {ppuType == "1" && <p>{t('executingSearchCharges')}</p>}
                                 {ppuType == "2" && <p>{t('executingSearchCredits')}</p>}
@@ -2234,21 +2142,12 @@ function IpSeqSearch() {
                                     }
                                 </table>
                             </Col>
-<<<<<<< Updated upstream
-                            {/* <Col md="1" className={classes.desktopHelpLink}>
-                                <Link className="appTextFont appLink float-right mr-2">{t("help")}</Link>
-                            </Col> */}
-                        </Row>
-                        {ppuType != "0" && <Row>
-                            <Col md="12">
-=======
                             <Col md="1" xs="1" sm='1'>
                                 <Link className="appTextFont appLink float-right">{t("help")}</Link>
                             </Col>
                         </Row>
                         {ppuType != "0" && <Row>
                             <Col md="12" xs="12" sm='12' style={{ paddingLeft: '10px' }}>
->>>>>>> Stashed changes
                                 <CheckBox
                                     // defaultChecked
                                     color="primary"
@@ -2266,11 +2165,7 @@ function IpSeqSearch() {
                 }
                 <ColoredLine color="#f3f2f2" />
                 <Row>
-<<<<<<< Updated upstream
-                    <Col md="12">
-=======
                     <Col md="12" xs="12" sm='12' style={{ paddingLeft: '10px' }}>
->>>>>>> Stashed changes
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2284,11 +2179,7 @@ function IpSeqSearch() {
                     </Col>
                 </Row>
                 <Row>
-<<<<<<< Updated upstream
-                    <Col md='4'>
-=======
                     <Col md='4' xs="4" sm='4' style={{ paddingLeft: '10px' }}>
->>>>>>> Stashed changes
                         <CheckBox
                             // defaultChecked
                             color="primary"
@@ -2300,11 +2191,7 @@ function IpSeqSearch() {
                         />
                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-2 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
                     </Col>
-<<<<<<< Updated upstream
-                    <Col md='6'>
-=======
                     <Col md='6' xs="6" sm='6' style={{ marginLeft: '-80px' }}>
->>>>>>> Stashed changes
                         <TextInput
                             id="formName"
                             name="formName"
@@ -2325,11 +2212,7 @@ function IpSeqSearch() {
                 <div>
                 </div>
                     <Col  >
-<<<<<<< Updated upstream
-                        {isSubmitActive && <Button  className="accountInfo" type="submit">
-=======
                         {isSubmitActive && <Button className="accountInfo" onClick={submitForm}>
->>>>>>> Stashed changes
                             {t("submit")}
                         </Button>}
                         {!isSubmitActive && <Button  className="cancelButtonDisable" disabled>

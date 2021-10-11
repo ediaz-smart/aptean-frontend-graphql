@@ -43,10 +43,6 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
-<<<<<<< Updated upstream
-=======
-        maxWidth: containerWidth,
->>>>>>> Stashed changes
         margin: '0 auto',
         minHeight: '260px',
         padding: '23px 0 5px'

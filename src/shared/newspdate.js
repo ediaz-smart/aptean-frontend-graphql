@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
             fontSize: '14px'
         }
     },
-<<<<<<< Updated upstream:src/shared/newspdate.js
     '@media (min-width: 780px)': {
         newsContent: {
             marginLeft: '1.5rem',
@@ -40,18 +39,6 @@ const useStyles = makeStyles((theme) => ({
             height: '210px',
             overflowX: 'unset'
         }
-=======
-    newsMostUsedContent: {
-        marginLeft: '0',
-        paddingLeft: '0',
-        borderLeft: 'none',
-        height: '250px',
-        overflowX: 'unset'
-    },
-    forgotNewsContent: {
-        height: '380px',
-        overflow: 'auto'
->>>>>>> Stashed changes:src/shared/NewsUpdate.js
     }
 }));
 function Newsupdate(props) {
@@ -74,12 +61,8 @@ function Newsupdate(props) {
         if (myElement) {
             const height = myElement.clientHeight;
             if (height > 195) {
-<<<<<<< Updated upstream:src/shared/newspdate.js
                 // setShowMore(true);
                 document.getElementById("newsUpdateDiv").className = props.isMostUsedPanel ? "newsUpdateContent" : "p-3";
-=======
-                document.getElementById("newsUpdateDiv").className = props.isForgotPanel ? "p-3" : props.isMostUsedPanel ? "newsUpdateContent" : "p-3";
->>>>>>> Stashed changes:src/shared/NewsUpdate.js
             }
         }
 

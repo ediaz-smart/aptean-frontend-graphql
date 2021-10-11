@@ -21,12 +21,7 @@ import SearchPrompt from '../../shared/Modal/SearchPromptModal'
 import searchResAntibody from '../../services/searchResAntibody';
 import UtilsService from '../../helpers/utils';
 import SavedSearch from '../../services/savedsearch';
-<<<<<<< Updated upstream
 
-=======
-import SeqVIModal from '../../shared/Modal/SeqVIModal';
-import { containerWidth } from '../../shared/constants'
->>>>>>> Stashed changes
 
 
 
@@ -36,10 +31,6 @@ const useStyles = makeStyles((theme) => ({
         width: '96%',
         margin: '0 auto 28px',
         minHeight: '260px',
-<<<<<<< Updated upstream
-=======
-        maxWidth: containerWidth,
->>>>>>> Stashed changes
         // borderBottom: '1px solid #cec7c7',
         padding: '23px 16px 14px',
     },
@@ -52,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     antibodyNumInput: {
         width: '8%'
     }
-
 }));
 
 function SearchResultAntibody() {
@@ -61,7 +51,6 @@ function SearchResultAntibody() {
     const history = useHistory();
     const [selectData, setSelectData] = useState();
     const [searchModal, setSearchModal] = useState(false);
-    const [showDBRequiredError, setShowDBRequiredError] = useState(false);
     // const [strategy, setStrategy] = useState('genepast');
     const [authInfo, setAuthInfo] = useState();
     // const [workflowId, setWorkflowId] = useState();
@@ -103,9 +92,9 @@ function SearchResultAntibody() {
                     setDisableSearch(false);
                 }
             }
+            console.log(disableSearch, 'disableSearch');
         }
         let tempparam = decodeURI(tempname);
-<<<<<<< Updated upstream
             tempparam = tempparam.toString().replace(/~~GQSF~~/g,'%');
             console.log(tempparam,"tempparam")
             if(tempparam)
@@ -119,25 +108,12 @@ function SearchResultAntibody() {
             finalData.formData = data;
             finalData.savedRedo = true;
         updateFormData(finalData);
-=======
-        console.log(tempparam)
-        tempparam = tempparam.toString().replace(/~~GQSF~~/g, '%');
-        if (tempparam) {
-            let getResponse = await SavedSearch.getParticularTemplate(tempparam, 'Antibody');
-            if (getResponse && getResponse.response_status == 0) {
-                let data = getResponse.response_content.map;
-                data.savedRedo = true;
-                let finalData = {}
-                finalData.formData = data;
-                finalData.savedRedo = true;
-                updateFormData(finalData);
-            }
->>>>>>> Stashed changes
         }
             }
         //dispatch(userActions.logout()); 
     }, []);
     function updateFormData(data) {
+        console.log('data', data)
         if (data.redo || data.savedRedo) {
             if (data.formData) {
                 data.formData['searchName'] = data.formData['title'];
@@ -168,6 +144,7 @@ function SearchResultAntibody() {
                 }
                 setPatientDBData([...patientDBData]);
                 setFormData(data.formData);
+                // console.log(formdata, 'formdata');
             }
         }
         var expiredTime = data.expiredTime;
@@ -177,23 +154,20 @@ function SearchResultAntibody() {
             expiredTimeInSecs = expiredTimeInSecs - Math.round(new Date().getTime() / 1000) - 90;
             // Idle.setIdle(expiredTimeInSecs < 0 ? (30 * 59) : expiredTimeInSecs);
             //Idle.watch();
+            //console.log(Idle.getIdle());
+
+            console.log("NRB expired at: " + expiredTime.date);
         }
     }
     const handleCheckbox = (event, i) => {
+        // console.log(event, value); 
         patientDBData[i]['selected'] = event.target.checked;
         // patientDBData[i]['ticked'] = event.target.checked;
         setPatientDBData([...patientDBData]);
-        if (event.target.checked) {
-            if (showDBRequiredError) setShowDBRequiredError(false)
-        }
     }
     function homePage()
     {
       history.push('/home');
-    }
-    function closeSaveModal() {
-        setSearchModal(false);
-        homePage();
     }
     let initialData = {};
     if(formdata && formdata.savedRedo) {
@@ -244,11 +218,13 @@ function SearchResultAntibody() {
         }
     }
 
+    console.log('initial', initialData)
     const formik = useFormik({
         initialValues: initialData,
         enableReinitialize: true,
         validationSchema: Validate.AntibodySearchValidation(saveFormValue),
         onSubmit: async (values) => {
+            console.log(values, 'values');
             let { searchName, cdrhcseq1, cdrhcseq2, cdrhcseq3, cdrlcseq1, cdrlcseq2, cdrlcseq3, hcOption1, hcOption2, hcOption3, lcOption1, lcOption2, lcOption3, strategy, percId, expectCutoff, wordSize, hcFullSeq, lcFullSeq, formName } = values;
             if (cdrhcseq1 == '' && cdrhcseq2 == '' && cdrhcseq3 == '' && cdrlcseq1 == '' && cdrlcseq2 == '' && cdrlcseq3 == '') {
                 toast.error(t('CDRSeqValidation'));
@@ -260,13 +236,13 @@ function SearchResultAntibody() {
             let selectDB = [];
             selectDB = _.filter(patientDBData, { selected: true }).map(v => "p:" + v.value);
             if (selectDB.length == 0) {
-                setShowDBRequiredError(true)
-                // toast.error(t('dbMandatoryErr'));
+                toast.error(t('dbMandatoryErr'));
                 return false;
             }
             let strategyItem = _.find(Constant['strategies'], function (obj) {
                 return obj.value == strategy;
             });
+            // console.log(strategyItem,'strategyItem');
             setSearchModal(true);
             let parentId = '';
             let postData = {
@@ -296,9 +272,10 @@ function SearchResultAntibody() {
                 protdbs: selectDB,
                 protdb_type: 'multiple',
                 parent_id: parentId,
-                template_name: saveFormValue ? formName.trim() : '', // Set this value when selecting "Save this form for later use as"
+                template_name: saveFormValue ? formName : '', // Set this value when selecting "Save this form for later use as"
 
             }
+            console.log(postData, 'postData');
             const getResponse = await searchResAntibody.submitAnitbodySearch(postData, history, t);
             setSearchModal(false);
             if (getResponse && getResponse.response_status == 0) {
@@ -306,9 +283,14 @@ function SearchResultAntibody() {
             } else {
                 toast.error('Error in Search');
             }
+
+            // console.log(getResponse, 'getResponse');
             // history.push('/home');
         },
     });
+
+    console.log('formik', formik)
+
 
     function setFormValue() {
         setSaveFormValue(!saveFormValue);
@@ -320,13 +302,13 @@ function SearchResultAntibody() {
             <form name="antibodySearchForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
 
                 <Row>
-                    <Col lg="12" md="12" sm='12' xs='12' className={"mb-2 " + (authInfo && !authInfo.syscontrol_search_submit ? 'd-block' : 'd-none')}>
+                    <Col lg="12" md="12" className={"mb-2 " + (authInfo && !authInfo.syscontrol_search_submit ? 'd-block' : 'd-none')}>
                         <Typography className="text-danger">
                             {t('ABsearchDisableText')}
                             {authInfo && authInfo.syscontrol_search_submit_txt}
                             {t('patienceThanksText')}</Typography>
                     </Col>
-                    <Col lg="12" md="12" sm='12' xs='12'>
+                    <Col lg="12" md="12">
                         <h6 className={"appTextColor loginTitle"}>{t('searchDetails')}​</h6>
                         <Row>
                             {/* <Col lg="1" md="1"  className="pr-0">
@@ -351,7 +333,7 @@ function SearchResultAntibody() {
                         </Row>
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" sm='12' xs='12' className="mb-2">
+                    <Col lg="12" md="12" className="mb-2">
                         <h6 className={"appTextColor loginTitle"}>{t('cdrhHeavyChain')}</h6>
                         <Row className="mb-2">
                             <Col lg="12" md="12" className="p-0 content">
@@ -386,7 +368,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
+                            <Col lg="12" md="12" className="p-0 content">
                                 <TextInput
                                     id="cdrhcseq2"
                                     name="cdrhcseq2"
@@ -422,7 +404,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
+                            <Col lg="12" md="12" className="p-0 content">
                                 <TextInput
                                     id="cdrhcseq3"
                                     name="cdrhcseq3"
@@ -459,7 +441,7 @@ function SearchResultAntibody() {
                         </Row>
                         <h6 className={"appTextColor loginTitle"}>{t('cdrhLightChain')}</h6>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
+                            <Col lg="12" md="12" className="p-0 content">
                                 <TextInput
                                     id="cdrlcseq1"
                                     name="cdrlcseq1"
@@ -495,7 +477,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
+                            <Col lg="12" md="12" className="p-0 content">
                                 <TextInput
                                     id="cdrlcseq2"
                                     name="cdrlcseq2"
@@ -531,7 +513,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <Row className="mb-4">
-                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
+                            <Col lg="12" md="12" className="p-0 content">
                                 <TextInput
                                     id="cdrlcseq3"
                                     name="cdrlcseq3"
@@ -569,16 +551,11 @@ function SearchResultAntibody() {
 
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" sm='12' xs='12' className="mb-2">
+                    <Col lg="12" md="12" className="mb-2">
                         <h6 className={"appTextColor loginTitle"}>{t('heavyLightChain')}</h6>
                         <Row className="mb-2">
-<<<<<<< Updated upstream
                             <Col lg="12" md="12" className="p-0 content">
                                 <Col lg="2" md="2" className="p-0 float-left">
-=======
-                            <Col lg="12" md="12" sm='12' xs='12' className="p-0 content">
-                                <Col lg="3" md="3" sm="3" xs="3" className="p-0 float-left">
->>>>>>> Stashed changes
                                     <SelectBox
                                         margin="normal"
                                         variant="outlined"
@@ -616,7 +593,7 @@ function SearchResultAntibody() {
                                     />
                                     <Typography className="mx-2 mt-2 float-left">% Identity over the Chain Sequence</Typography>
                                 </Col>
-                                <Col lg="9" md="9" sm='9' xs='9' className={"p-0 content " + (formik.values.strategy == "blast" ? 'd-block' : 'd-none')}>
+                                <Col lg="9" md="9" className={"p-0 content " + (formik.values.strategy == "blast" ? 'd-block' : 'd-none')}>
                                     <Typography className="ml-5 mr-1 mt-2 float-left">Expect Cutoff</Typography>
                                     <TextInput
                                         fullWidth={false}
@@ -659,7 +636,7 @@ function SearchResultAntibody() {
                                         disabled={authInfo && authInfo.redo}
                                     />
                                 </Col>
-                                <Col lg="12" md="12" sm='12' xs='12' className="p-0 content float-left">
+                                <Col lg="12" md="12" className="p-0 content float-left">
                                     <div className="form-group px-3 ">
                                         <TextInput
                                             rowsMax="4"
@@ -699,13 +676,10 @@ function SearchResultAntibody() {
                         </Row>
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" sm='12' xs='12' className="mb-2">
-                        <span className={showDBRequiredError ? 'd-block' : 'd-none'} style={{ color: '#f44336', fontSize: '13px', fontStyle: 'italic', marginBottom: '5px' }}>
-                            {t('dbMandatoryErr')}
-                        </span>
-                        <h6 className={"appTextColor loginTitle mb-2 "}>{t('patientDBSearch')}</h6>
+                    <Col lg="12" md="12" className="mb-2">
+                        <h6 className={"appTextColor loginTitle"}>{t('patientDBSearch')}</h6>
                         <Row className="mb-2">
-                            <Col lg="4" md="4" sm='4' xs='4' className="p-0 content">
+                            <Col lg="4" md="4" className="p-0 content">
                                 {patientDBData.map((values, i) => {
                                     // Return the element. Also pass key     
                                     return (<div className="float-left w-100 content" key={"id-" + values.value}>
@@ -721,7 +695,7 @@ function SearchResultAntibody() {
                                             onChange={(e) => handleCheckbox(e, i)}
                                         // onChange={() => { setIspublishGQUnknownDates(!ispublishGQUnknownDates) }}
                                         />
-                                        <Typography className={"float-left mt-1 w-75 " + (values.ticked ? 'd-block' : 'd-none')}>
+                                        <Typography className={"float-left mt-2 w-75 " + (values.ticked ? 'd-block' : 'd-none')}>
                                             {values.label}
                                         </Typography>
                                     </div>)
@@ -730,7 +704,7 @@ function SearchResultAntibody() {
                         </Row>
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" xs="12" sm='12' className={"mb-2 " + (authInfo && (authInfo.ppuType == 1 || (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block' : 'd-none'))}>
+                    <Col lg="12" md="12" className={"mb-2 " + (authInfo && (authInfo.ppuType == 1 || (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block' : 'd-none'))}>
                         <div className={(authInfo && (authInfo.ppuType == 1) ? 'd-block' : 'd-none')}>
                             <h6 className={"appTextColor loginTitle"}>{t('ppuuserSearchTitle')}</h6>
                             <h6 className={"appTextColor loginTitle ml-4 "}>{t('ppuuserCreditPrice')}</h6>
@@ -740,7 +714,7 @@ function SearchResultAntibody() {
                             <h6 className={"appTextColor loginTitle ml-4 "}>{t('ppubundleCreditPrice')}</h6>
                         </div>
                         <Row className="mb-2">
-                            <Col lg="12" md="12" sm='12' xs='12' className="p-0">
+                            <Col lg="12" md="12" className="p-0">
                                 <CheckBox
                                     // checked={values.selected}
                                     color="primary"
@@ -749,7 +723,7 @@ function SearchResultAntibody() {
                                     id="ackSearch"
                                     onChange={() => { setDisableSearch(!disableSearch) }}
                                 />
-                                <Typography className={"float-left mt-1 w-75"}>
+                                <Typography className={"float-left mt-2 w-75"}>
                                     {t('ackAntibodySearch')}
                                 </Typography>
                             </Col>
@@ -758,7 +732,6 @@ function SearchResultAntibody() {
                         <hr />
                     </Col>
                     <Col lg="12" md="12" className="p-0">
-<<<<<<< Updated upstream
                             <Row>
                                 <Col md='4' className="">
                                     <CheckBox
@@ -788,37 +761,6 @@ function SearchResultAntibody() {
                                 </Col>
                             </Row>
                     <hr />
-=======
-                        <Row>
-                            <Col md='4' sm="4" xs="4" className="">
-                                <CheckBox
-                                    // defaultChecked
-                                    color="primary"
-                                    className={"float-left ml-2"}
-                                    name="saveForm"
-                                    id="saveForm"
-                                    onChange={setFormValue}
-                                    checked={saveFormValue}
-                                />
-                                <label className={"checkBoxContent" + " bodyText cursorPointer float-left mt-1 mx-2 ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
-                            </Col>
-                            <Col md='6' sm="6" xs="6" >
-                                <TextInput
-                                    id="formName"
-                                    name="formName"
-                                    label='Name the form'
-                                    variant="outlined"
-                                    onChange={formik.handleChange}
-                                    fullWidth={true}
-                                    disabled={!saveFormValue}
-                                    value={formik.values.formName ? formik.values.formName : ""}
-                                    error={saveFormValue && Boolean(formik.errors.formName)}
-                                    helperText={saveFormValue && formik.errors.formName}
-                                />
-                            </Col>
-                        </Row>
-                        <hr />
->>>>>>> Stashed changes
                     </Col>
                     
                     <Col lg="12" md="12" className="float-right mb-3">
@@ -828,13 +770,7 @@ function SearchResultAntibody() {
                 </Row>
 
             </form>
-            {/* <SearchPrompt searchModal={searchModal} /> */}
-            <SeqVIModal
-                show={searchModal}
-                onMessage={t('searchSubmitted')}
-                type="seqSearch"
-                saveCallBack={closeSaveModal}
-            />
+            <SearchPrompt searchModal={searchModal} />
         </div>
 
     )
