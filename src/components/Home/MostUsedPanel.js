@@ -91,12 +91,12 @@ function MostUsedPanel() {
                             <Link to="/ipseqsearch" className="appLink">{t('ipSequence')}</Link>
                         </p>
                         <p className={classes.pTagMargin}>
-                        <Fragment>
+                            <Fragment>
                                 {userData && !userData.ftAccess && <span className={classes.pTagMargin + " bodyText"}>{t('patentFullText')}</span>}
                                 {userData && userData.ftAccess && <Link to="/fulltextsearch" className="appLink">{t('patentFullText')}</Link>}
                             </Fragment>
                             {/* <a className="appLink" href='#' onClick={e => e.preventDefault()}>{t('patentFullText')}</a> */}
-                            </p>
+                        </p>
                         <p className={classes.pTagMargin}>
                             <Fragment>
                                 {userData && !userData.vmAccess && <span className={classes.pTagMargin + " bodyText"}>{t('sequenceVariation')}</span>}
@@ -109,7 +109,7 @@ function MostUsedPanel() {
                                 {userData && userData.abAccess && <Link to="/searchresantibody" className="appLink">{t('antibodySequence')}</Link>}
                             </Fragment>
                         </p>
-                        <p className={classes.pTagMargin}><a className="appLink" href={process.env.REACT_APP_API_URL + url.patentNumLink} target="_blank" >{t('patentnumlookup')}</a></p>
+                        <p className={classes.pTagMargin}><a className="appLink" href={url.patentNumLink} target="_blank" rel="noreferrer" >{t('patentNumbers')}</a></p>
                     </div>
                 </Col>
             </Row>
