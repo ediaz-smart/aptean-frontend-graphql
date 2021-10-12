@@ -98,17 +98,17 @@ const useStyles = makeStyles((theme) => ({
     numberInput: {
         width: '80px'
     },
-    loginSubmitCancel:{
+    loginSubmitCancel: {
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
-        border: '2px solid #1F4E79' ,
-        color:'white',
-        margin:"4px",
-        float:'right',
+        border: '2px solid #1F4E79',
+        color: 'white',
+        margin: "4px",
+        float: 'right',
         textTransform: 'capitalize',
         '&:hover': {
-          backgroundColor: '#0182C5',
-          boxShadow: 'none',
+            backgroundColor: '#0182C5',
+            boxShadow: 'none',
         },
     },
     '@media (min-width: 768px)': {
@@ -473,14 +473,14 @@ function IpSequenceVariation() {
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
-                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIsDocPubUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_D2") {
                             redoInitialState.publishGQSel = item.O;
                             redoInitialState.publishGQDate = moment(item.V)._d;
                             setIsPublished(true);
-                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIspublishGQUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_P9") {
@@ -553,14 +553,14 @@ function IpSequenceVariation() {
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
-                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIsDocPubUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_D2") {
                             redoInitialState.publishGQSel = item.O;
                             redoInitialState.publishGQDate = moment(item.V)._d;
                             setIsPublished(true);
-                            if(item.O == "AFT_IE" || item.O == "BEF_IE") {
+                            if (item.O == "AFT_IE" || item.O == "BEF_IE") {
                                 setIspublishGQUnknownDates(true);
                             }
                         } else if (item && item.P && item.P == "SEQUENCE_P9") {
@@ -673,38 +673,38 @@ function IpSequenceVariation() {
             //     }
             // }
             // setTimeout(() => {
-                if (userInfo && userInfo.current_user) {
-                    let userPpu = userInfo.current_user.ppu_type;
-                    let currentUser = userInfo.current_user;
-                    console.log('userData', userInfo)
-                    setPpuType(userPpu);
-    
-    
-                    if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
-                        setIsSubmitActive(false);
-    
-                    }
-                    if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
-                        setShowCreditCalc(true);
-                    }
-    
-                    // if (userPpu == "0") {
-                    //     setIsSubmitActive(true);
-                    // } else {
-                    //     setIsSubmitActive(false);
-                    // }
-    
-                    if (userInfo.current_user.user_class_name) {
-                        setUserClassName(userInfo.current_user.user_class_name)
-                    }
-                    if (userInfo.current_user.accounting_group_name) {
-                        setAccGroupName(userInfo.current_user.accounting_group_name)
-                    }
-                    if (parentId) {
-                        console.log('pare', parentId)
-                        calTextCredits(null, false, 'redo')
-                    }
-                } 
+            if (userInfo && userInfo.current_user) {
+                let userPpu = userInfo.current_user.ppu_type;
+                let currentUser = userInfo.current_user;
+                console.log('userData', userInfo)
+                setPpuType(userPpu);
+
+
+                if (currentUser.user_class_name != "ippreview" && (userPpu == "1" || (userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) || (!setSystemControlSubmit && currentUser.user_class_name != "adminium")) {
+                    setIsSubmitActive(false);
+
+                }
+                if ((systemControlSubmit || currentUser.user_class_name == "adminium") && currentUser.user_class_name != "ippreview" && (userPpu == "1" || userPpu == "2" && !parentId && !accGroupName.includes('FT - ') && !accGroupName.includes('SB - '))) {
+                    setShowCreditCalc(true);
+                }
+
+                // if (userPpu == "0") {
+                //     setIsSubmitActive(true);
+                // } else {
+                //     setIsSubmitActive(false);
+                // }
+
+                if (userInfo.current_user.user_class_name) {
+                    setUserClassName(userInfo.current_user.user_class_name)
+                }
+                if (userInfo.current_user.accounting_group_name) {
+                    setAccGroupName(userInfo.current_user.accounting_group_name)
+                }
+                if (parentId) {
+                    console.log('pare', parentId)
+                    calTextCredits(null, false, 'redo')
+                }
+            }
             // }, 1000);
 
         })()
@@ -1230,41 +1230,41 @@ function IpSequenceVariation() {
     console.log('scoring', scoringMatrixValue, wordSizeValue)
 
 
-        function changeIncludeGenUnknownDate() {
-        if(!isDocPubUnknownDates){
-        formik.values.docPublicSel == "BEF" ? formik.setFieldValue("docPublicSel", "BEF_IE") :formik.values.docPublicSel == "AFT" ? formik.setFieldValue("docPublicSel", "AFT_IE") : formik.setFieldValue("docPublicSel", formik.values.docPublicSel)
-    } else {
-        formik.setFieldValue("docPublicSel", "BEF");
-    }
-    setIsDocPubUnknownDates(!isDocPubUnknownDates);
+    function changeIncludeGenUnknownDate() {
+        if (!isDocPubUnknownDates) {
+            formik.values.docPublicSel == "BEF" ? formik.setFieldValue("docPublicSel", "BEF_IE") : formik.values.docPublicSel == "AFT" ? formik.setFieldValue("docPublicSel", "AFT_IE") : formik.setFieldValue("docPublicSel", formik.values.docPublicSel)
+        } else {
+            formik.setFieldValue("docPublicSel", "BEF");
+        }
+        setIsDocPubUnknownDates(!isDocPubUnknownDates);
     }
 
     function changeIncludeGQSpecificDate() {
-        if(!ispublishGQUnknownDates){
-        formik.values.publishGQSel == "BEF" ? formik.setFieldValue("publishGQSel", "BEF_IE") :formik.values.publishGQSel == "AFT" ? formik.setFieldValue("publishGQSel", "AFT_IE") : formik.setFieldValue("publishGQSel", formik.values.publishGQSel)
-    } else {
-        formik.setFieldValue("publishGQSel", "BEF");
-    }
-    setIspublishGQUnknownDates(!ispublishGQUnknownDates)
+        if (!ispublishGQUnknownDates) {
+            formik.values.publishGQSel == "BEF" ? formik.setFieldValue("publishGQSel", "BEF_IE") : formik.values.publishGQSel == "AFT" ? formik.setFieldValue("publishGQSel", "AFT_IE") : formik.setFieldValue("publishGQSel", formik.values.publishGQSel)
+        } else {
+            formik.setFieldValue("publishGQSel", "BEF");
+        }
+        setIspublishGQUnknownDates(!ispublishGQUnknownDates)
     }
 
     const beforeAfterSelection = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         console.log('e.target', e.target)
         formik.setFieldValue(name, value);
-        if(name == "docPublicSel") {
-           (value == "AFT" || value == "BEF") ?  setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
-        } else if(name == "publishGQSel") {
-            (value == "AFT" || value == "BEF") ?  setIspublishGQUnknownDates(false) : setIspublishGQUnknownDates(true);
+        if (name == "docPublicSel") {
+            (value == "AFT" || value == "BEF") ? setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
+        } else if (name == "publishGQSel") {
+            (value == "AFT" || value == "BEF") ? setIspublishGQUnknownDates(false) : setIspublishGQUnknownDates(true);
         }
     }
 
-    if( formSubmit && formik && formik.errors && Object.keys(formik.errors).length > 0) {
-        document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({behavior: "smooth", block: "center",inline: "start"});
+    if (formSubmit && formik && formik.errors && Object.keys(formik.errors).length > 0) {
+        document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({ behavior: "smooth", block: "center", inline: "start" });
         setFromSubmit(false);
-        } 
+    }
 
-    function submitForm(){
+    function submitForm() {
         formik.handleSubmit();
         setFromSubmit(true);
     }
@@ -1324,7 +1324,7 @@ function IpSequenceVariation() {
                         <Row>
                             <Col sm="12" md="12">
                                 <p className="subHeading w-75 mb-10 float-left">{t('searchDetails')}</p>
-                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank">{t('help')}</a>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/?s=ip_sequence_searching" target="_blank" rel="noreferrer">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
@@ -1349,7 +1349,7 @@ function IpSequenceVariation() {
                         <Row>
                             <Col sm="12" md="12">
                                 <p className="subHeading w-75 mb-10 float-left">{t('querySequences')}</p>
-                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank">{t('help')}</a>
+                                <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#querysequenceinput" target="_blank" rel="noreferrer">{t('help')}</a>
                             </Col>
                         </Row>
                         <Row>
@@ -1392,7 +1392,7 @@ function IpSequenceVariation() {
                 <Row>
                     <Col sm="12" md="12">
                         <p className="subHeading w-75 mb-10 float-left">{t('searchAlgorithmAndSetting')}</p>
-                        <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank">{t('help')}</a>
+                        <a className={"appTextFont appLink float-right"} href="https://docs.genomequestlive.com/section/sequence-comparison-algorithms/#searchstrategy" target="_blank" rel="noreferrer">{t('help')}</a>
                     </Col>
                 </Row>
                 <Row>
@@ -1409,7 +1409,7 @@ function IpSequenceVariation() {
                                 className={"float-left"}
                             />
                             {searchAlgorithmValue && searchAlgorithmValue == 'kerr' && <Fragment>
-                                <Typography className={"float-left " + classes.seqText}>
+                                <Typography className={"float-left " + classes.seqText} style={{ marginLeft: '10px' }}>
                                     {t("findAtleast")}&nbsp;&nbsp;&nbsp;
                                 </Typography>
                                 <TextInput
@@ -1493,7 +1493,7 @@ function IpSequenceVariation() {
                                 <div className={classes.blastMargin}>
                                     <Typography className={"float-left " + classes.seqText}>
                                         {t("expectCutOff")}&nbsp;&nbsp;&nbsp;
-                                </Typography>
+                                    </Typography>
                                     <TextInput
                                         fullWidth={false}
                                         id="expectCutoff"
@@ -1523,7 +1523,7 @@ function IpSequenceVariation() {
                             {searchAlgorithmValue && searchAlgorithmValue == 'fragment' && <Fragment>
                                 <Typography className={"float-left " + classes.seqText}>
                                     {t("findStretchAtLeast")}&nbsp;&nbsp;&nbsp;
-                            </Typography>
+                                </Typography>
                                 <TextInput
                                     fullWidth={false}
                                     id="fragmentStretch"
@@ -1820,7 +1820,7 @@ function IpSequenceVariation() {
                         </Accordion>
                     </Col>
                     <Col md="12" className={classes.mobileHelpLink}>
-                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2">{t("help")}</a>
+                        <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right mr-2" rel="noreferrer">{t("help")}</a>
                     </Col>
                 </Row>
                 {/* <ColoredLine color="black" /> */}
@@ -2167,7 +2167,7 @@ function IpSequenceVariation() {
                         {isSubmitActive && <Button className="accountInfo" onClick={submitForm}>
                             {t("submit")}
                         </Button>}
-                        {!isSubmitActive && <Button  className="cancelButtonDisable" disabled>
+                        {!isSubmitActive && <Button className="cancelButtonDisable" disabled>
                             {t("submit")}
                         </Button>}
                         <Button className={classes.loginSubmitCancel} onClick={homeRedirect}>

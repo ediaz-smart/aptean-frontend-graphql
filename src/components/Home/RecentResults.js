@@ -129,6 +129,7 @@ const columns = [
 		selector: "results",
 		sortable: false,
 		style: {
+			justifyContent: 'unset !important',
 			maxWidth: '200px'
 		}
 	},
