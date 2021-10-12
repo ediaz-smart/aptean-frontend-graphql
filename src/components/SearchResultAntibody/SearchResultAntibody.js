@@ -271,7 +271,7 @@ function SearchResultAntibody() {
                 protdbs: selectDB,
                 protdb_type: 'multiple',
                 parent_id: parentId,
-                template_name: saveFormValue ? formName : '', // Set this value when selecting "Save this form for later use as"
+                template_name: saveFormValue ? (formName).trim() : '', // Set this value when selecting "Save this form for later use as"
 
             }
             const getResponse = await searchResAntibody.submitAnitbodySearch(postData, history, t);

@@ -444,7 +444,7 @@ function SearchManagement(props) {
         let mergeData = [];
         let mergeType = [];
         state.selectedRows.map((value, index) => {
-            if (value.type != 'Folder' && value.type != 'Antibody') {
+            // if (value.type != 'Folder' && value.type != 'Antibody') {
                 console.log('type', value.type)
                 mergeData.push(value.id);
                 // if (mergeType.length == 0) {
@@ -455,13 +455,14 @@ function SearchManagement(props) {
                 //     }
                 // }
 
-            }
+            // }
         });
         const isMergeEqual = mergeType.every(i => i === mergeType[0]);
-        console.log('isMergeEqual', mergeType, isMergeEqual)
+        const isFolderOrAntiBody = mergeType.includes("Folder") || mergeType.includes("Antibody") ? true : false;
+        console.log('isMergeEqual',mergeType, isMergeEqual)
         if (state.selectedCount > 0) {
             setDisableDelete(false);
-            if (state.selectedCount >= 2 && mergeType.length >= 2 && isMergeEqual) {
+            if (state.selectedCount >= 2 && mergeType.length >= 2 && isMergeEqual && !isFolderOrAntiBody) {
                 setDisableMergeBtn(false);
             } else {
                 setDisableMergeBtn(true);

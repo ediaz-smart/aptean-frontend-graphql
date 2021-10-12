@@ -1320,6 +1320,22 @@ function IpSeqSearch() {
         setFromSubmit(true);
     }
 
+    const handleDocCheck = (e) => {
+        const { name } = e.target;
+        console.log('e.target', e.target)
+        if(name && name == "isDocumentPublic") {
+            if(isDocPubDate == true) {
+                setIsDocPubUnknownDates(false);
+            }
+            setIsDocPubDate(prevState=>!prevState)
+        } else if(name && name == "publishGenomeQuest") {
+            if(isPublished == true) {
+                setIspublishGQUnknownDates(false);
+            }
+            setIsPublished(prevState => !prevState);
+        }
+    }
+
     return (
         <div className={classes.grow}>
             <SeqVIModal
@@ -1719,7 +1735,8 @@ function IpSeqSearch() {
                                             className={"float-left"}
                                             name="isDocumentPublic"
                                             id="isDocumentPublic"
-                                            onChange={() => setIsDocPubDate(!isDocPubDate)}
+                                            // onChange={() => setIsDocPubDate(!isDocPubDate)}
+                                            onChange={handleDocCheck}
                                             checked={isDocPubDate}
                                         />
                                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="isDocumentPublic">{t("docPublicationDate")}</label>
@@ -1783,7 +1800,8 @@ function IpSeqSearch() {
                                             className={"float-left"}
                                             name="publishGenomeQuest"
                                             id="publishGenomeQuest"
-                                            onChange={() => setIsPublished(!isPublished)}
+                                            // onChange={() => setIsPublished(!isPublished)}
+                                            onChange={handleDocCheck}
                                             checked={isPublished}
                                         />
                                         <label className={classes.checkBoxContent + " bodyText cursorPointer float-left ml-0 mr-3"} for="publishGenomeQuest">{t("publishedInGenomeQuest")}</label>

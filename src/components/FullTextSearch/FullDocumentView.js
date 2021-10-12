@@ -138,7 +138,7 @@ function FullDocumentView() {
     const handleScroll = (e, id) => {
         document.getElementById(id).scrollIntoView({ behavior: "smooth", inline: "nearest" });
     }
-
+    const { abstracts } = docContent;
     return (
         <div className="mt-4 pl-5 pr-5">
             <div className={classes.parentDiv}>
@@ -156,6 +156,9 @@ function FullDocumentView() {
                                 </AccordionSummary>
                                 <AccordionDetails className="appTextColor">
                                     <p>Sample abstract</p>
+                                {/* {abstracts && abstracts.length >0 && abstracts.forEach(item => {
+                                    // {item.langCode == "en" && <p>{item.</p>}
+                                })} */}
                                 </AccordionDetails>
                             </Accordion>
                             <Accordion square expanded={isClaimsOpen} onChange={() => setIsClaimsOpen(prevState => !prevState)} id="claims">
