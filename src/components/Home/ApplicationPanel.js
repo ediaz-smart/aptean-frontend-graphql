@@ -24,8 +24,9 @@ const useStyles = makeStyles((theme) => ({
     },
     savedForm: {
         backgroundColor: '#f5f2f2',
-        paddingLeft: "30px",
-        paddingTop: "34px",
+        // paddingLeft: "30px",
+        // paddingTop: "34px",
+        padding: '30px',
         height: '100%'
     },
     anchorTag: {

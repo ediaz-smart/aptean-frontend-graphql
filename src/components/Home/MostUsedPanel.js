@@ -23,8 +23,9 @@ const useStyles = makeStyles((theme) => ({
     savedSearchForm: {
         backgroundColor: '#f5f2f2',
         height: '250px',
-        paddingTop: '30px',
-        paddingLeft: '20px',
+        // paddingTop: '30px',
+        // paddingLeft: '20px',
+        padding: '30px 20px',
         overflowX: 'auto'
     },
     anchorTag: {
@@ -109,7 +110,7 @@ function MostUsedPanel() {
                                 {userData && userData.abAccess && <Link to="/searchresantibody" className="appLink">{t('antibodySequence')}</Link>}
                             </Fragment>
                         </p>
-                        <p className={classes.pTagMargin}><a className="appLink" href={url.patentNumLink} target="_blank" rel="noreferrer" >{t('patentNumbers')}</a></p>
+                        <p className={classes.pTagMargin}><a className="appLink" href={'query?' + url.patentNumLink} target="_blank" rel="noreferrer" >{t('patentNumbers')}</a></p>
                     </div>
                 </Col>
             </Row>
