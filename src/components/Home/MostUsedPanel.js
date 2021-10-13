@@ -56,13 +56,12 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '50px',
         color: '#5A6868'
     },
-    '@media (min-width: 780px)': {
-        newsContent: {
-            marginLeft: '0',
-            paddingLeft: '0',
-            borderLeft: 'none',
-        }
+    newsContent: {
+        marginLeft: '0',
+        paddingLeft: '0',
+        borderLeft: 'none',
     }
+
 }));
 
 function MostUsedPanel() {

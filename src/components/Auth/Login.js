@@ -38,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
         height: '100%'
     },
     navbarClass: {
-        marginTop: '60px'
+        marginTop: '60px',
+        width: '100%'
     },
     loginSubmitDis: {
         backgroundColor: '#EEEEEE',

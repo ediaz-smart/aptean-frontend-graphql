@@ -20,25 +20,16 @@ const useStyles = makeStyles((theme) => ({
             fontSize: '14px'
         }
     },
-    '@media (min-width: 780px)': {
-        newsContent: {
-            marginLeft: '1.5rem',
-            paddingLeft: '36px',
-            borderLeft: '1px solid #d8d4d4',
-            height: '315px',
-            overflowX: 'scroll'
-        },
-        forgotNewsContent: {
-            height: '380px'
-        },
-        newsMostUsedContent: {
-            marginLeft: '0',
-            paddingLeft: '0',
-            borderLeft: 'none',
-            padding: '12px 0',
-            height: '210px',
-            overflowX: 'unset'
-        }
+    forgotNewsContent: {
+        height: '380px'
+    },
+    newsMostUsedContent: {
+        marginLeft: '0',
+        paddingLeft: '0',
+        borderLeft: 'none',
+        padding: '12px 0',
+        height: '210px',
+        overflowX: 'unset'
     }
 }));
 function Newsupdate(props) {
