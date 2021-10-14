@@ -16,6 +16,8 @@ import PersonalDBModal from '../../shared/Modal/PersonalDBModal';
 import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
 import styled from "styled-components";
 import Radio from '@material-ui/core/Radio';
+import UploadPersonalDBModal from "../../shared/Modal/UploadPersonalDBModal";
+
 
 const useStyles = makeStyles((theme) => ({
     loginDiv: {
@@ -199,6 +201,7 @@ function PersonalDatabase() {
     const [thing, setThing] = useState([]);
     const handleAction = value => setThing(value);
     const [modalShow, setModalShow] = React.useState(false);
+    const [dbmodalShow, setDbmodalShow] = React.useState(false);
 
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -266,15 +269,16 @@ function PersonalDatabase() {
             if (result && result.response_content) {
                 console.log(result, "result");
                 const resultCon = result.response_content.results;
-               // await constrainTemplateData(resultCon);
+                // await constrainTemplateData(resultCon);
                 //setSearchFormsData(resultCon);
                 const list = []
                 result.response_content.results.forEach((product) => {
-                    if(product.type == 'DlPhysicalSeqdb'){
+                    if (product.type == 'DlPhysicalSeqdb' || product.type == 'DlVirtualSeqdb') {
                         list.push(product);
                     }
-                        
-                 })
+
+                })
+                list.sort((a, b) => a.description > b.description ? 1 : -1)
                 await constrainTemplateData(list);
                 setSearchFormsData(list);
 
@@ -309,6 +313,18 @@ function PersonalDatabase() {
                     <Link >{datas.description}</Link>
                 </Fragment>
             }
+            else if (datas.type == 'DlPhysicalSeqdb') {
+                datas.typeContent = 'Physical Sequence Database';
+                datas.nameContent = <Fragment>
+                    <Link >{datas.description}</Link>
+                </Fragment>
+            }
+            else if (datas.type == 'DlVirtualSeqdb') {
+                datas.typeContent = 'Virtual Sequence Database';
+                datas.nameContent = <Fragment>
+                    <Link >{datas.description}</Link>
+                </Fragment>
+            }
             else {
                 datas.typeContent = datas.type;
                 datas.nameContent = <Fragment>
@@ -317,7 +333,7 @@ function PersonalDatabase() {
             }
 
 
-             //console.log(datas,"constrainTemplateData")
+            //console.log(datas,"constrainTemplateData")
 
         });
     }
@@ -345,6 +361,18 @@ function PersonalDatabase() {
             toast.error("Select Any One Item");
             console.log("Hi");
         }
+    }
+    async function uploadTemplate() {
+        // console.log(updateState,"SAMple Data that enters")
+        // console.log(thing,"SAMple");
+        const data = [];
+
+        setDbmodalShow(true);
+        // const result = await SavedSearch.deleteSavedTemplate(thing.selectedRows,thing.selectedCount);
+
+        // toast.error("Under Construction!");
+        // console.log("Hi there, user!",result);
+
 
     }
     function cancelForm() {
@@ -353,6 +381,8 @@ function PersonalDatabase() {
     }
     function cancelForms() {
         setModalShow(false);
+        setDbmodalShow(false);
+
     }
     async function deleteForm() {
         console.log("deleteForm");
@@ -420,7 +450,7 @@ function PersonalDatabase() {
                                 : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">Delete Selected Database</Button>
 
                             }
-                            <Button className={classes.buttonStyleS} disableRipple={true} onClick={() => console.log("")} >Upload New Database</Button>
+                            <Button className={classes.buttonStyleS} disableRipple={true} onClick={() => uploadTemplate()} >Upload New Database</Button>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <Button className={classes.buttonStyleCancel} onClick={() => cancelForm()} disableRipple={true} color="default" variant="contained">Cancel</Button>
                             <PersonalDBModal
@@ -429,6 +459,13 @@ function PersonalDatabase() {
                                 tryAgain={() => deleteForm()}
                             // onMessage={errorMessage}
                             />
+                            <UploadPersonalDBModal
+                                show={dbmodalShow}
+                                onHide={() => cancelForms()}
+                                tryAgain={() => deleteForm()}
+                            // onMessage={errorMessage}
+                            />
+
                         </Fragment>
                         : <p></p>
                     }
