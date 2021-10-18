@@ -374,6 +374,7 @@
 .orClass,
 .notClass {
     text-transform: uppercase;
+    pointer-events: none;
 }
 
 .pub,

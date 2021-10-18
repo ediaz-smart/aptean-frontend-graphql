@@ -91,7 +91,7 @@ function FullTextSearch() {
 
 	// For Auto Complete Search
 	const [searchTermPopup, setSearchTermPopup] = React.useState(false);
-	const [ontology, setOntology] = React.useState(";GO");
+	const [ontology, setOntology] = React.useState(";MSH;USER");
 	const [searchTermData, setSearchTermData] = React.useState(null);
 
 	// For Search
@@ -355,11 +355,25 @@ function FullTextSearch() {
 		// 	""
 		// );
 
-		value = value.replace(".", "");
+		console.log(pasteContent, "pasteContent1");
+		console.log(detectPaste, "detectPaste");
+		console.log(keyPressCode, "keyPressCode");
+		value = value.replace(".", "").replace(" ", "");
 		let lastValue = value.slice(-1);
 		let lastPrevValue = value.charAt(value.length - 2);
-		let lastChild = htmlElement.children[htmlElement.children.length - 1];
-		let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
+		// console.log(lastChildEl,'lastChildEl1');
+		console.log(lastValue, "lastValue");
+		let lastChild='';
+		let lastPrevChild = '';
+		// let lastChild = htmlElement.children[htmlElement.children.length - 1];
+		// let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
+		if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+		{
+			lastChild = getCurrentSel.focusNode.previousElementSibling;
+		}else{
+			lastChild = getCurrentSel.focusNode.parentElement;
+		}
+		
 		let placeCursor = true;
 		let spanArr = "";
 		let getEndPosition = 0;
@@ -367,8 +381,11 @@ function FullTextSearch() {
 		var placeCursorPos = false;
 		var removedText = '';
 		var spaceOpacity = true;
-
-
+		var getCurrClass = '';
+		var getCurrDataId = '';
+		console.log(htmlElement.children,'htmlElement.children..');
+		
+		
 		let getChildClass = "",
 			getChildClassName = "",
 			getChildText = "",
@@ -535,7 +552,7 @@ function FullTextSearch() {
 			// If Space Enters
 			setSearchTermPopup(false);
 
-			if (lastPrevValue.trim().length > 0) {
+			// if (lastPrevValue.trim().length > 0) {
 				if (lastChild && lastChild.attributes.length > 0) {
 					if (
 						getChildClassName == "autoquery" ||
@@ -570,26 +587,59 @@ function FullTextSearch() {
 							// 	/<br>/g,
 							// 	""
 							// );
+							let splitPrevClass = [];
+							console.log(htmlElement.innerHTML,'htmlElement.innerHTML..');
+							console.log(htmlElement.textContent,'htmlElement.textContent..');
 							var newSpan = document.createElement("span");
 							newSpan.setAttribute("class", "space");
 							newSpan.innerHTML = ".";
-							// if (
-							// 	getCurrentSel &&
-							// 	getCurrentSel.focusNode && getCurrentSel.focusNode.previousSibling
-							// ) {
-
-							// 		let currDataId = getCurrentSel.focusNode.previousSibling.getAttribute("dataid");
-							// 		Object.keys(htmlElement.children).forEach(function (key) {
-							// 			let getClassId = htmlElement.children[key].getAttribute("dataid");
-							// 			if(getClassId == currDataId)
-							// 			{
-							// 				htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
-							// 			}
-							// 		});
-							// }else{
-							htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
-							// }
-
+							if(getCurrentSel.focusNode.nodeName == "#text")
+							{
+								if(getCurrentSel.focusNode.previousElementSibling)
+								{
+									PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+								}else{
+									PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+								}
+								
+								splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+								getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid"):'';
+							}
+							else if(getCurrentSel.focusNode.nodeName == "SPAN")
+							{
+								PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+								splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+								getCurrDataId =getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid"):'';
+							}
+							else if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+							{
+								PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+								splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+								getCurrDataId = getCurrentSel.focusNode ? getCurrentSel.focusNode.getAttribute("dataid"):'';
+							}
+							if (
+								getCurrentSel &&
+								getCurrentSel.focusNode && getCurrentSel.focusNode.parentElement
+							) {
+								// let currDataId = '';
+								if(getCurrentSel.focusNode.previousElementSibling)
+								{
+									getCurrDataId = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid");
+								}else{
+									getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid");
+								}
+								
+									Object.keys(htmlElement.children).forEach(function (key) {
+										let getClassId = htmlElement.children[key].getAttribute("dataid");
+										if(getClassId == getCurrDataId)
+										{
+											htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
+										}
+									});
+							}else{
+								htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
+							}
+							
 							// placeCursor = false;
 							placeCursorPos = true;
 
@@ -721,14 +771,14 @@ function FullTextSearch() {
 					// }
 				}
 				// placeCaretAtEnd(htmlElement);
-			} else {
-				if (htmlElement.innerHTML.slice(-1) != ">") {
-					htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-					// htmlElement.innerHTML = htmlElement.innerHTML.replace(/&nbsp;/g,"");
-					htmlElement.innerHTML = htmlElement.innerHTML.replaceAll("<br>", "");
-					// placeCaretAtEnd(htmlElement);
-				}
-			}
+			// } else {
+			// 	if (htmlElement.innerHTML.slice(-1) != ">") {
+			// 		htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+			// 		// htmlElement.innerHTML = htmlElement.innerHTML.replace(/&nbsp;/g,"");
+			// 		htmlElement.innerHTML = htmlElement.innerHTML.replaceAll("<br>", "");
+			// 		// placeCaretAtEnd(htmlElement);
+			// 	}
+			// }
 		} else if (keyCode == 8) {
 
 			if (lastChild && lastChild.attributes.length > 0) {
@@ -884,12 +934,11 @@ function FullTextSearch() {
 				getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode
 			) {
 				if (getCurrentSel.focusNode.parentNode.className) {
-					let getClass =
-						getCurrentSel.focusNode.parentNode.className.split(" ");
-					let currDataId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
+					getCurrClass = getCurrentSel.focusNode.parentNode.className.split(" ");
+					getCurrDataId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
 					// let getDataId = getCurrentSel.focusNode.parentNode.attributes.dataid;
 
-					if (removeClassArray.includes(getClass[0])) {
+					if (removeClassArray.includes(getCurrClass[0])) {
 						Object.keys(htmlElement.children).forEach(function (key) {
 							let getClassVal =
 								htmlElement.children[key].attributes.class.value.split(" ");
@@ -907,8 +956,14 @@ function FullTextSearch() {
 								}
 							}
 						});
-					} else {
-						let placeKey = currDataId - 1;
+					}else{
+						console.log(getCurrentSel.focusNode.parentNode.getAttribute("dataid"),'dataid');
+						
+						console.log(htmlElement.children,'htmlElement.children');
+						
+						let placeKey = getCurrDataId - 1;
+						console.log(htmlElement.children[placeKey],'htmlElement.children[currDataId - 1]');
+						console.log(removedText,'removedText');
 						// placeCaretAtEndTag(htmlElement.children[placeKey]);
 						// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
 						// setCurrentCursorPosition(savedCaretPosition.end);
@@ -1030,14 +1085,45 @@ function FullTextSearch() {
 						}
 					} else if (getChildClassName == "space") {
 						let removedText = '';
-						Object.keys(htmlElement.childNodes).forEach(function (key, val) {
-							if (htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "") {
-								removedText = htmlElement.childNodes[key].textContent;
-							}
-						});
-						getChildText = getChildText.replace('.', '');
-						if (removedText != "" && (removedText == lastValue)) {
-							getChildText = getChildText + lastValue;
+						let childLen = htmlElement.childNodes.length;
+						let inc = 0;
+						let checkKey = 0;
+						getChildText = getChildText.replace('.','');
+						
+						console.log(getChildText,'getChildText');
+						// if((lastValue == "" || lastValue == " "))
+						// {
+							console.log('loopcheck');
+							Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+								if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+								{
+									removedText = htmlElement.childNodes[key].textContent;
+									// lastValue = htmlElement.childNodes[key].textContent;
+								}
+								checkKey = parseInt(inc)+1;
+								if(childLen == checkKey && (lastValue == "" || lastValue == " "))
+								{
+									let lastKey = inc;
+									let prevKey = inc-1;
+									if(htmlElement.childNodes[lastKey].textContent != " ")
+									{
+										lastValue = htmlElement.childNodes[lastKey].textContent;
+									}else{
+										lastValue = htmlElement.childNodes[prevKey].textContent;
+									}
+								}
+								inc++;
+							});
+						// }
+						lastValue = lastValue.replace('.','');
+						// getChildText = getChildText + lastValue;
+						if(removedText != "" && (removedText == lastValue))
+						{
+							// if(getChildText == "")
+							// {
+								getChildText = getChildText + lastValue;
+							// }
+							
 						}
 						if (detectPaste) {
 							let getLastIndex =
@@ -1058,11 +1144,19 @@ function FullTextSearch() {
 							lastValue == "n" ||
 							lastValue == "N"
 						) {
-							let replaceDot = htmlElement.children[htmlElement.children.length - 1]
-								.textContent.replace('.', '');
-							Object.keys(htmlElement.childNodes).forEach(function (key, val) {
-								if (htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "") {
-									htmlElement.removeChild(htmlElement.childNodes[key]);
+							// let replaceDot = htmlElement.children[htmlElement.children.length - 1]
+							// 	.textContent.replace('.','');
+							let replaceDot = '';
+							if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+							{
+								replaceDot = getCurrentSel.focusNode.previousElementSibling.textContent.replace('.','');
+							}else{
+								replaceDot = getCurrentSel.focusNode.parentElement.textContent.replace('.','');
+							}
+							Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+								if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+								{
+									htmlElement.removeChild(htmlElement.childNodes[key]); 
 								}
 							});
 							spaceOpacity = false;
@@ -1100,13 +1194,12 @@ function FullTextSearch() {
 							htmlElement.children[htmlElement.children.length - 1].textContent = getChildText;
 						} else {
 							// // Adding AND operator if space enters
-							if (htmlElement.innerHTML.slice(-1) != ">") {
-								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-							}
-							Object.keys(htmlElement.childNodes).forEach(function (key, val) {
-								if (htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "") {
+							
+							Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+								// console.log(htmlElement.childNodes[key].nodeName,'val..');
+								if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+								{
 									lastValue = htmlElement.childNodes[key].textContent;
-									htmlElement.removeChild(htmlElement.childNodes[key]);
 								}
 							});
 							//create the DOM object
@@ -1134,11 +1227,48 @@ function FullTextSearch() {
 								].outerHTML = newSpan.outerHTML;
 							} else {
 								let splitPrevClass = [];
-								if (lastPrevChild && lastPrevChild.attributes.class) {
-									splitPrevClass = lastPrevChild.attributes.class ? lastPrevChild.attributes.class.value.split(' ') : [];
+								// if(lastPrevChild && lastPrevChild.attributes.class)
+								// {
+								// 	splitPrevClass = lastPrevChild.attributes.class ? lastPrevChild.attributes.class.value.split(' '):[];
+								// }
+								var PrevElSibling ='';
+								
+								// To Check Prev Element values has operator or not, if not we place operator dynamically
+								if(getCurrentSel.focusNode.nodeName == "#text")
+								{
+									PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+									splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+									getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid"):'';
 								}
-								if (splitPrevClass && splitPrevClass.length > 0) {
-									if (removeClassArray.includes(splitPrevClass[0])) {
+								else if(getCurrentSel.focusNode.nodeName == "SPAN")
+								{
+									PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+									splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+									getCurrDataId =getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid"):'';
+								}
+								else if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+								{
+									PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+									splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+									getCurrDataId = getCurrentSel.focusNode ? getCurrentSel.focusNode.getAttribute("dataid"):'';
+								}else{
+									PrevElSibling = getCurrentSel.focusNode;
+									splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+									getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid"):'';
+								}
+								let curPrevKey = 0;
+								Object.keys(htmlElement.children).forEach(function (key) {
+									let getClassId = htmlElement.children[key].getAttribute("dataid");
+									curPrevKey = key - 1;
+									if((getClassId == getCurrDataId) && getCurrDataId > 1)
+									{
+										splitPrevClass = htmlElement.children[curPrevKey].attributes.class.value.split(' ')
+									}
+								});
+								if(splitPrevClass && splitPrevClass.length > 0)
+								{
+									if(removeClassArray.includes(splitPrevClass[0]))
+									{
 										htmlElement.children[
 											htmlElement.children.length - 1
 										].outerHTML = newSpan.outerHTML;
@@ -1154,7 +1284,16 @@ function FullTextSearch() {
 								}
 
 							}
-
+							Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+								// console.log(htmlElement.childNodes[key].nodeName,'val..');
+								if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+								{
+									htmlElement.removeChild(htmlElement.childNodes[key]); 
+								}
+							});
+							if (htmlElement.innerHTML.slice(-1) != ">") {
+								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+							}
 							// htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
 							// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;
 						}
@@ -1248,15 +1387,91 @@ function FullTextSearch() {
 
 						// htmlElement.children[htmlElement.children.length - 1].outerHTML =
 						// 		ANDString + " " + spanArr;
-
-					} else if (getChildClassName == "query") {
-						let childElId = getChildEl.getAttribute("dataid");
+						
+					}else if (getChildClassName == "query") {
+						let childElId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
 						var PrevElClass = [];
-						var PrevElSibling = getChildEl.previousElementSibling;
+						var PrevElSibling ='';
 						// To Check Prev Element values has operator or not, if not we place operator dynamically
-						if (PrevElSibling && PrevElSibling.attributes.class != undefined) {
-							PrevElClass = PrevElSibling.attributes.class.value.split(' ');
+						if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+						{
+							PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+							if(getCurrentSel.focusNode.nodeName == "#text")
+							{
+								let prevSib = getCurrentSel.focusNode.previousElementSibling;
+								if(prevSib && prevSib.parentElement.nodeName == "DIV")
+								{
+									if(prevSib.previousElementSibling)
+									{
+										PrevElSibling = prevSib.previousElementSibling;
+									}else{
+										PrevElSibling = prevSib;
+									}
+									
+								}else{
+									PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+								}
+								
+								PrevElClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+								// getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid"):'';
+							}else{
+								PrevElClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+							}
+							
+							getCurrDataId = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid");
+							getSelectedNodeText = getCurrentSel.focusNode.previousElementSibling.textContent.replace('.','').replace(' ','');
+						}else{
+							if(getCurrentSel.focusNode.previousElementSibling)
+							{
+								PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+							}else{
+								if(getCurrentSel.focusNode.parentElement && getCurrentSel.focusNode.parentElement.previousElementSibling)
+								{
+									PrevElSibling = getCurrentSel.focusNode.parentElement.previousElementSibling;
+								}else{
+									PrevElSibling = getCurrentSel.focusNode.parentElement;
+								}
+								
+							}
+							
+							PrevElClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+							getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid");
+							getSelectedNodeText = getCurrentSel.focusNode.parentElement.textContent.replace('.','').replace(' ','');
 						}
+						// if(getCurrentSel.focusNode.nodeName == "#text")
+						// 	{
+						// 		if(getCurrentSel.focusNode.previousElementSibling)
+						// 		{
+						// 			PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+						// 		}else{
+						// 			PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+						// 		}
+								
+						// 		splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+						// 		getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid"):'';
+						// 	}
+						// 	else if(getCurrentSel.focusNode.nodeName == "SPAN")
+						// 	{
+						// 		PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+						// 		splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+						// 		getCurrDataId =getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid"):'';
+						// 	}
+						// 	else if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+						// 	{
+						// 		PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+						// 		splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+						// 		getCurrDataId = getCurrentSel.focusNode ? getCurrentSel.focusNode.getAttribute("dataid"):'';
+						// 	}
+						if (htmlElement.innerHTML.slice(-1) != ">") {
+							// htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+							getSelectedNodeText = getSelectedNodeText + lastValue;
+						}else{
+							getSelectedNodeText = getSelectedNodeText;
+						}
+						
+						// console.log(lastElClass,'lastElClass');
+						console.log(childElId, "childElId");
+						console.log(getChildEl.getAttribute("dataid"), "checkdataid");
 
 						// let getDataId = getCurrentSel.focusNode.parentNode.attributes.dataid;
 
@@ -1301,22 +1516,31 @@ function FullTextSearch() {
 							currOffsetTop = htmlElement.children[htmlElement.children.length - 1].offsetTop - 2;
 							currOffsetLeft = htmlElement.children[htmlElement.children.length - 1].offsetLeft;
 							styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
-							htmlElement.innerHTML = htmlElement.innerHTML.trim().replace(/&nbsp;/g, '');
-							if (htmlElement.innerHTML.slice(-1) != ">") {
-								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-								htmlElement.children[
-									htmlElement.children.length - 1
-								].textContent =
-									htmlElement.children[htmlElement.children.length - 1]
-										.textContent + lastValue;
-								getSelectedNodeText =
-									htmlElement.children[htmlElement.children.length - 1]
-										.textContent;
-							} else {
-								getSelectedNodeText =
-									htmlElement.children[htmlElement.children.length - 1]
-										.textContent;
-							}
+							// htmlElement.innerHTML = htmlElement.innerHTML.trim().replace(/&nbsp;/g, '');
+							// if (getCurrentSel && getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode) {
+							// 	if (getCurrentSel.focusNode.parentNode.className != "form-group") {
+							// 		getCurrClass = getCurrentSel.focusNode.parentNode.className.split(" ");
+							// 		getCurrDataId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
+							// 		getSelectedNodeText = getCurrentSel.focusNode.parentNode.textContent.replace('.','').replace(' ','');
+							// 	}
+							// }else{
+							// 	if (htmlElement.innerHTML.slice(-1) != ">") {
+							// 		htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+							// 		htmlElement.children[
+							// 			htmlElement.children.length - 1
+							// 		].textContent =
+							// 			htmlElement.children[htmlElement.children.length - 1]
+							// 				.textContent + lastValue;
+							// 		getSelectedNodeText =
+							// 			htmlElement.children[htmlElement.children.length - 1]
+							// 				.textContent;
+							// 	} else {
+							// 		getSelectedNodeText =
+							// 			htmlElement.children[htmlElement.children.length - 1]
+							// 				.textContent;
+							// 	}
+							// }
+							
 						}
 						// Checking If Pub Text matching in the current selection node
 						if (
@@ -1373,81 +1597,247 @@ function FullTextSearch() {
 									checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
 								}
 							}
-						} else {
-							let currentTxt = htmlElement.children[htmlElement.children.length - 1].textContent;
+						}else {
+							// console.log(htmlElement.children, "htmlElement.children");
+							// console.log(htmlElement.innerHTML, "htmlElement.innerHTML");
+							// console.log(PrevElSibling, "getChildEl.previousElementSibling");
+							// console.log(PrevElClass, "PrevElClass");
+							// console.log(htmlElement.children[htmlElement.children.length - 1].textContent, "textcontent");
+
+							if (
+								getSelectedNodeText == "o" ||
+								getSelectedNodeText == "O" ||
+								getSelectedNodeText == "a" ||
+								getSelectedNodeText == "A" ||
+								getSelectedNodeText == "n" ||
+								getSelectedNodeText == "N"
+							) {
+								// let replaceDot = htmlElement.children[htmlElement.children.length - 1]
+								// 	.textContent.replace('.','');
+								let replaceDot = '';
+								if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+								{
+									replaceDot = getCurrentSel.focusNode.previousElementSibling.textContent.replace('.','');
+								}else{
+									replaceDot = getCurrentSel.focusNode.parentElement.textContent.replace('.','');
+								}
+								Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+									if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+									{
+										htmlElement.removeChild(htmlElement.childNodes[key]); 
+									}
+								});
+								spaceOpacity = false;
+								// htmlElement.children[htmlElement.children.length - 1].style = 'opacity:1';
+								
+								if (replaceDot.length == 0) {
+									htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+									htmlElement.children[
+										htmlElement.children.length - 1
+									].textContent = lastValue;
+								} else {
+									htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+									// replaceDot = replaceDot.slice(0, -1);
+									if(removedText == lastValue)
+									{
+										htmlElement.children[
+											htmlElement.children.length - 1
+										].textContent = replaceDot + lastValue;
+									}else{
+										htmlElement.children[
+											htmlElement.children.length - 1
+										].textContent = replaceDot;
+									}
+									
+									// htmlElement.children[
+									// 	htmlElement.children.length - 1
+									// ].textContent = replaceDot;
+								}
+							} else if (
+								checkORValues.includes(getSelectedNodeText) ||
+								checkANDValues.includes(getSelectedNodeText) ||
+								checkNOTValues.includes(getSelectedNodeText)
+							) {
+								spaceOpacity = false;
+								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+								htmlElement.children[htmlElement.children.length - 1].textContent = getChildText;
+							} else {
+								// // Adding AND operator if space enters
+								Object.keys(htmlElement.childNodes).forEach(function (key,val) {
+									// console.log(htmlElement.childNodes[key].nodeName,'val..');
+									if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "")
+									{
+										lastValue = htmlElement.childNodes[key].textContent;
+										htmlElement.removeChild(htmlElement.childNodes[key]); 
+									}
+								});
+								console.log(htmlElement.childNodes,'childNodes..');
+								//create the DOM object
+								var newSpan = document.createElement("span");
+								// add the class to the 'span'
+								newSpan.setAttribute("class", "query");
+								// let checkOpText = lastPrevChild.innerText+lastValue;
+								lastValue = getSelectedNodeText.trim();
+								if (lastValue.length == 1 && lastValue == "") {
+									// if (htmlElement.innerHTML.slice(-1) != ">") {
+									// 	htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+									// }
+	
+									newSpan.innerHTML = lastValue;
+								} else {
+									// newSpan.innerHTML = lastChild.innerText + lastValue;
+									newSpan.innerHTML = getSelectedNodeText ? getSelectedNodeText : lastValue;
+								}
+								// htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString+' '+newSpan.outerHTML;
+	
+								if (checkOperatorText.includes(newSpan.textContent)) {
+									// htmlElement.children[
+									// 	htmlElement.children.length - 1
+									// ].outerHTML = newSpan.outerHTML;
+									Object.keys(htmlElement.children).forEach(function (key) {
+										let getClassId = htmlElement.children[key].getAttribute("dataid");
+										if(getClassId == getCurrDataId)
+										{
+											htmlElement.children[key].outerHTML = newSpan.outerHTML;
+										}
+									});
+								} else {
+									let htmlLength = htmlElement.children.length;
+									if(PrevElClass && PrevElClass.length > 0)
+									{
+										if(removeClassArray.includes(PrevElClass[0]))
+										{
+											htmlElement.children[
+												htmlElement.children.length - 1
+											].outerHTML = newSpan.outerHTML;
+										}else{
+											Object.keys(htmlElement.children).forEach(function (key) {
+												let getClassId = htmlElement.children[key].getAttribute("dataid");
+												if(getClassId == getCurrDataId && htmlLength.length > 1)
+												{
+													htmlElement.children[key].outerHTML = ANDString +" "+ newSpan.outerHTML;
+												}else{
+													htmlElement.children[key].outerHTML = newSpan.outerHTML;
+												}
+											});
+										}
+									}else{
+										// htmlElement.children[
+										// 	htmlElement.children.length - 1
+										// ].outerHTML = ANDString + " " + newSpan.outerHTML;
+										
+										Object.keys(htmlElement.children).forEach(function (key) {
+											let getClassId = htmlElement.children[key].getAttribute("dataid");
+											if(getClassId == getCurrDataId)
+											{
+												htmlElement.children[key].innerHTML = newSpan.outerHTML;
+											}
+										});
+									}
+									
+								}
+	
+								// htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
+								// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1].textContent+lastValue;
+							}
+
+							// let currentTxt = htmlElement.children[htmlElement.children.length - 1].textContent;
+							// if (htmlElement.innerHTML.slice(-1) != ">") {
+							// 	htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+							// 	if(PrevElSibling)
+							// 	{
+							// 		if(PrevElClass.length > 0 && removeClassArray.includes(PrevElClass[0]))
+							// 		{
+							// 			htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+							// 					.textContent + lastValue;
+							// 		}else{
+							// 			htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 		}
+							// 	}else{
+							// 		htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+							// 					.textContent + lastValue;
+							// 	}
+								
+							// 	// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+							// 	// 				.textContent + lastValue;
+							// 	getSearchVal =
+							// 		htmlElement.children[htmlElement.children.length - 1]
+							// 			.textContent;
+							// }else{
+							// 	// console.log(PrevElSibling,'PrevElSibling');
+							// 	if(PrevElSibling)
+							// 	{
+							// 		// console.log(removeClassArray,'removeClassArray');
+							// 		// console.log(PrevElClass[0],'PrevElClass[0]');
+							// 		if(PrevElClass.length > 0)
+							// 		{
+							// 			if(removeClassArray.includes(PrevElClass[0]))
+							// 			{
+							// 				// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
+							// 				// 	.textContent;
+							// 				// Object.keys(htmlElement.children).forEach(function (key) {
+							// 				// 	let getClassId = htmlElement.children[key].getAttribute("dataid");
+							// 				// 	if(getClassId == currDataId)
+							// 				// 	{
+							// 				// 		htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
+							// 				// 	}
+							// 				// });
+							// 				console.log(savedCaretPosition,'savedCaretPosition');
+							// 				getEndPosition = savedCaretPosition.end;
+							// 				// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
+							// 				placeCursor = false;
+							// 				// setTimeout(() => {
+												
+							// 				// 	setCurrentCursorPosition(setPos);
+							// 				// }, 0);
+							// 				placeCursorPos = true;
+							// 			}else{
+							// 				if (checkANDValues.includes(currentTxt)) {
+							// 					htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 				}else if (checkORValues.includes(currentTxt)) {
+							// 					htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 				}else if (checkNOTValues.includes(currentTxt)) {
+							// 					htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 				}else{
+							// 					if(currentTxt.length > 2)
+							// 					{
+							// 						htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 					}else {
+							// 						htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 					}
+							// 				}
+							// 				// htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 			}
+										
+							// 		}else{
+							// 			if(currentTxt.length > 1)
+							// 			{
+							// 				if (checkANDValues.includes(currentTxt)) {
+							// 					htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 				}else if (checkORValues.includes(currentTxt)) {
+							// 					htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 				}else if (checkNOTValues.includes(currentTxt)) {
+							// 					htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 				}else{
+							// 					if(currentTxt.length > 2)
+							// 					{
+							// 						htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 					}else {
+							// 						htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 					}
+							// 				}
+
+							// 			}else{
+							// 				htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
+							// 			}
+							// 		}
+							// 	}
+								
+							// 	getSearchVal = htmlElement.children[htmlElement.children.length - 1].textContent;
+							// }
+							// console.log(htmlElement.children, "htmlElement.children1");
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
-								if (PrevElSibling) {
-									if (PrevElClass.length > 0 && removeClassArray.includes(PrevElClass[0])) {
-										htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
-											.textContent + lastValue;
-									} else {
-										htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
-									}
-								} else {
-									htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
-										.textContent + lastValue;
-								}
-
-								// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
-								// 				.textContent + lastValue;
-								getSearchVal =
-									htmlElement.children[htmlElement.children.length - 1]
-										.textContent;
-							} else {
-								if (PrevElSibling) {
-									if (PrevElClass.length > 0) {
-										if (removeClassArray.includes(PrevElClass[0])) {
-											// htmlElement.children[htmlElement.children.length - 1].textContent = htmlElement.children[htmlElement.children.length - 1]
-											// 	.textContent;
-											getEndPosition = savedCaretPosition.end;
-											// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
-											placeCursor = false;
-											// setTimeout(() => {
-
-											// 	setCurrentCursorPosition(setPos);
-											// }, 0);
-											placeCursorPos = true;
-										} else {
-											if (checkANDValues.includes(currentTxt)) {
-												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-											} else if (checkORValues.includes(currentTxt)) {
-												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-											} else if (checkNOTValues.includes(currentTxt)) {
-												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-											} else {
-												if (currentTxt.length > 2) {
-													htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
-												} else {
-													htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-												}
-											}
-											// htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
-										}
-
-									} else {
-										if (currentTxt.length > 1) {
-											if (checkANDValues.includes(currentTxt)) {
-												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-											} else if (checkORValues.includes(currentTxt)) {
-												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-											} else if (checkNOTValues.includes(currentTxt)) {
-												htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-											} else {
-												if (currentTxt.length > 2) {
-													htmlElement.children[htmlElement.children.length - 1].outerHTML = ANDString + " " + htmlElement.children[htmlElement.children.length - 1].outerHTML;
-												} else {
-													htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-												}
-											}
-
-										} else {
-											htmlElement.children[htmlElement.children.length - 1].outerHTML = htmlElement.children[htmlElement.children.length - 1].outerHTML;
-										}
-									}
-								}
-
-								getSearchVal = htmlElement.children[htmlElement.children.length - 1].textContent;
 							}
 						}
 					} else if (getChildClassName == "" && detectPaste) {
@@ -1703,7 +2093,6 @@ function FullTextSearch() {
 			let prevClassData = "";
 			let nextClass = "";
 			let nextClassData = "";
-			let getClass = "";
 			let splitClass = [];
 			let prevKey = 0;
 			let nextKey = 0;
@@ -1711,10 +2100,11 @@ function FullTextSearch() {
 			if (htmlElement.children && htmlElement.children.length > 0) {
 				Object.keys(htmlElement.children).forEach(function (key) {
 					if (htmlElement.children[key]) {
-						getClass = htmlElement.children[key]
+						getCurrClass = htmlElement.children[key]
 							? htmlElement.children[key].attributes.class.value
 							: "";
-						splitClass = getClass ? getClass.split(" ") : [];
+						splitClass = getCurrClass ? getCurrClass.split(" ") : [];
+						console.log(splitClass,'splitClass');
 						// To Remove, If Two operator exists between the words
 						if (key > 0) {
 							prevKey = parseInt(key) - 1;
@@ -1733,7 +2123,7 @@ function FullTextSearch() {
 							htmlElement.children[key] &&
 							htmlElement.children[key].textContent != ""
 						) {
-							if (getClass == "autoquery") {
+							if (getCurrClass == "autoquery") {
 								queryTxt +=
 									'"' +
 									htmlElement.children[key].id +
@@ -1917,36 +2307,38 @@ function FullTextSearch() {
 		setSearchTermPopup(false);
 		let userId = userInfo && userInfo.current_user.gq_user_id;
 		let searchParam = `&json_query=${value}&rows=25&ontologies=${ontology}&user_id=${userId}`;
-		const searchRes = await fullTextService.getFullTextSearchTerm(
-			history,
-			searchParam
-		);
-		if (searchRes && searchRes.response_status == 0) {
-			if (searchRes.response_content.length > 0) {
-				setSearchTermData(searchRes.response_content);
-				let getXYCoordinates = getCaretGlobalPosition();
+		// const searchRes = await fullTextService.getFullTextSearchTerm(
+		// 	history,
+		// 	searchParam
+		// );
+		// if (searchRes && searchRes.response_status == 0) {
+		// 	if (searchRes.response_content.length > 0) {
+		// 		setSearchTermData(searchRes.response_content);
+		// 		let getXYCoordinates = getCaretGlobalPosition();
 
-				if (getXYCoordinates) {
-					setTopPosition(getXYCoordinates.top);
-					setLeftPosition(getXYCoordinates.left);
-				}
+		// 		if (getXYCoordinates) {
+		// 			setTopPosition(getXYCoordinates.top);
+		// 			setLeftPosition(getXYCoordinates.left);
+		// 		}
+		// 		console.log(keyCode, "searchkeycode");
+		// 		if (keyCode != 32) {
+		// 			setSearchTermPopup(true);
+		// 		}
 
-				if (keyCode != 32) {
-					setSearchTermPopup(true);
-				}
+		// 		// setTimeout(() => {
+		// 		let htmlElement = document.getElementById("textareaDiv");
+		// 		// htmlElement.focus();
 
-				// setTimeout(() => {
-				let htmlElement = document.getElementById("textareaDiv");
-				// htmlElement.focus();
+		// 		placeCaretAtEnd(htmlElement);
+		// 		// placeCaretAtEnd(htmlElement);
+		// 		// htmlElement.innerHTML.focus();
+		// 		// }, 500);
+		// 	} else {
+		// 		setSearchTermPopup(false);
+		// 	}
+		// }
 
-				placeCaretAtEnd(htmlElement);
-				// placeCaretAtEnd(htmlElement);
-				// htmlElement.innerHTML.focus();
-				// }, 500);
-			} else {
-				setSearchTermPopup(false);
-			}
-		}
+		// console.log(searchRes, "searchRes");
 	};
 	function placeCaretAtEndTag(el) {
 		el.focus();
@@ -2008,9 +2400,9 @@ function FullTextSearch() {
 		let queryText = htmlElement.textContent;
 		let queryTxt = "";
 		Object.keys(htmlElement.children).forEach(function (key) {
-			let getClass = htmlElement.children[key].attributes.class.value;
+			let getCurrClass = htmlElement.children[key].attributes.class.value;
 			if (htmlElement.children[key].textContent != "") {
-				if (getClass == "autoquery") {
+				if (getCurrClass == "autoquery") {
 					queryTxt +=
 						'"' +
 						htmlElement.children[key].id +
