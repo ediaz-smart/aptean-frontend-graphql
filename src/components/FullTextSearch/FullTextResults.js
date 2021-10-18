@@ -36,7 +36,6 @@ function FullTextResults(props) {
         return str;
 
     }
-    console.log('full')
     return (
         <div className="w-75">
             {

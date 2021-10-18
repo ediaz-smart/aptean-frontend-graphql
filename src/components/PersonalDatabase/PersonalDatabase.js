@@ -262,12 +262,10 @@ function PersonalDatabase() {
 
     async function getPersonalData() {
         const userInfo = await PersonalDB.getUserInfo();
-        console.log(userInfo, "userInfo")
         if (userInfo && userInfo.response_content && userInfo.response_content.home_folder_id) {
             const homeId = userInfo.response_content.home_folder_id;
             const result = await PersonalDB.getPersonalData(homeId);
             if (result && result.response_content) {
-                console.log(result, "result");
                 const resultCon = result.response_content.results;
                 // await constrainTemplateData(resultCon);
                 //setSearchFormsData(resultCon);
@@ -331,49 +329,32 @@ function PersonalDatabase() {
                     <Link >{datas.description}</Link>
                 </Fragment>
             }
-
-
-            //console.log(datas,"constrainTemplateData")
-
         });
     }
     async function routeToTemplateForm(e, tempObj) {
         e.preventDefault();
-        console.log(tempObj, "tempObj tempObj tempObj");
-
-
     }
     async function deleteTemplate() {
-        // console.log(updateState,"SAMple Data that enters")
-        // console.log(thing,"SAMple");
         const data = [];
         const dataValues = thing && thing.selectedRows && data.push(thing.selectedRows[0]);
-        // console.log(data,"data data data");
         if (thing && thing.selectedCount >= 1 && data && data.length > 0) {
             // setSelectedTemplateData();
             setModalShow(true);
             // const result = await SavedSearch.deleteSavedTemplate(thing.selectedRows,thing.selectedCount);
 
             // toast.error("Under Construction!");
-            // console.log("Hi there, user!",result);
         }
         else {
             toast.error("Select Any One Item");
-            console.log("Hi");
         }
     }
     async function uploadTemplate() {
-        // console.log(updateState,"SAMple Data that enters")
-        // console.log(thing,"SAMple");
         const data = [];
 
         setDbmodalShow(true);
         // const result = await SavedSearch.deleteSavedTemplate(thing.selectedRows,thing.selectedCount);
 
         // toast.error("Under Construction!");
-        // console.log("Hi there, user!",result);
-
-
     }
     function cancelForm() {
         history.push('/home');
@@ -385,18 +366,14 @@ function PersonalDatabase() {
 
     }
     async function deleteForm() {
-        console.log("deleteForm");
         const data = [];
         const dataValues = thing && thing.selectedRows && data.push(thing.selectedRows[0]);
-        console.log(data, "data data data");
         if (thing && thing.selectedCount >= 1 && data && data.length > 0) {
-            console.log(thing.selectedRows, "thing.selectedRows thing.selectedRows thing.selectedRows");
             const personaldata = thing.selectedRows;
             const personalId = [];
             await personaldata && personaldata.length > 0 && personaldata.forEach(res => {
                 personalId.push(res.id)
             });
-            console.log(personalId);
             const result = await PersonalDB.deletePerData(personalId, thing.selectedCount);
             getPersonalData();
             setModalShow(false);
@@ -406,12 +383,9 @@ function PersonalDatabase() {
         }
         else {
             toast.error("Select Any One Item");
-            console.log("Hi");
         }
         // setModalShow(true);
     }
-    console.log(thing, "thing thing thing");
-    console.log(searchPersonalData, "searchPersonalData searchPersonalData searchPersonalData");
 
     return (
         <div >

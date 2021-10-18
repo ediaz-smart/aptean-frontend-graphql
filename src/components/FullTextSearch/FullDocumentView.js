@@ -122,18 +122,15 @@ function FullDocumentView() {
     const [isCitationsOpen, setIsCitationsOpen] = useState(true);
     const [docContent, setDocContent] = useState({});
 
-    useEffect(async()=>{
+    useEffect(async () => {
         let getResponse;
-        if(patentId){
-        getResponse = await fullTextService.fullDocViewService(null, patentId);
+        if (patentId) {
+            getResponse = await fullTextService.fullDocViewService(null, patentId);
         }
-        if(getResponse && getResponse.response_status && getResponse.response_status == 0) {
+        if (getResponse && getResponse.response_status && getResponse.response_status == 0) {
             setDocContent(getResponse.response_content);
         }
-        console.log('getResponse', getResponse)
     });
-
-    console.log('stateres', docContent)
 
     const handleScroll = (e, id) => {
         document.getElementById(id).scrollIntoView({ behavior: "smooth", inline: "nearest" });
@@ -156,7 +153,7 @@ function FullDocumentView() {
                                 </AccordionSummary>
                                 <AccordionDetails className="appTextColor">
                                     <p>Sample abstract</p>
-                                {/* {abstracts && abstracts.length >0 && abstracts.forEach(item => {
+                                    {/* {abstracts && abstracts.length >0 && abstracts.forEach(item => {
                                     // {item.langCode == "en" && <p>{item.</p>}
                                 })} */}
                                 </AccordionDetails>

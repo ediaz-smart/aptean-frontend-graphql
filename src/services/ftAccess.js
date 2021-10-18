@@ -1,4 +1,4 @@
-import { post, get,getFile } from '../helpers/fetchServicesMethods';
+import { post, get, getFile } from '../helpers/fetchServicesMethods';
 import { toast } from 'react-toastify';
 import { url } from '../reducers/url';
 
@@ -18,7 +18,7 @@ async function shareableList(workflowId) {
 
         let apiurl = url.shareableList;
         apiurl = apiurl.replace(':id:', workflowId)
-       
+
         showLoader();
         return await get(apiurl)
             .then((response) => {
@@ -45,12 +45,11 @@ async function addAccess(itemId, usrs) {
         apiurl = apiurl.replace(':id:', itemId);
         apiurl = apiurl.replaceAll(':usr:', usrs);
         apiurl = apiurl.replaceAll(':acl:', 'read');
-       
+
         showLoader();
         return await get(apiurl)
             .then((response) => {
                 hideLoader();
-                // console.log(JSON.stringify(response),"Password");
                 return response;
             })
             .catch((error) => {
@@ -75,12 +74,11 @@ async function removeAccess(id, usrs) {
 
         //usrs = multiIdString(usrs);
         apiurl = apiurl.replaceAll(':usr:', usrs)
-       
+
         showLoader();
         return await get(apiurl)
             .then((response) => {
                 hideLoader();
-                // console.log(JSON.stringify(response),"Password");
                 return response;
             })
             .catch((error) => {
@@ -101,14 +99,13 @@ async function removeAll(postdata) {
     try {
 
         let apiurl = url.removeAll;
-        apiurl = apiurl.replace('**',postdata.workflowId)
-        apiurl = apiurl.replaceAll('UID',postdata.removeId)
-       
+        apiurl = apiurl.replace('**', postdata.workflowId)
+        apiurl = apiurl.replaceAll('UID', postdata.removeId)
+
         showLoader();
         return await get(apiurl)
             .then((response) => {
                 hideLoader();
-                // console.log(JSON.stringify(response),"Password");
                 return response;
             })
             .catch((error) => {
@@ -129,8 +126,8 @@ async function sharedWithMe(workflowId) {
     try {
 
         let apiurl = url.sharedWith;
-        apiurl = apiurl.replace(':id:',workflowId)
-       
+        apiurl = apiurl.replace(':id:', workflowId)
+
         showLoader();
         return await get(apiurl)
             .then((response) => {
@@ -149,10 +146,10 @@ async function sharedWithMe(workflowId) {
     }
 }
 
-function multiIdString(ray){
+function multiIdString(ray) {
     let str = "";
     ray.forEach(element => {
-        str+= element+",";
+        str += element + ",";
     });
 
 

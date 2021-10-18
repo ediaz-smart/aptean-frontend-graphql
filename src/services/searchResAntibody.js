@@ -14,11 +14,9 @@ function hideLoader() {
 export const submitAnitbodySearch = async (data, history, t) => {
     // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
     // const history = useHistory();
-    console.log('getdata', data)
     return post(url.antibodySearch, data, history)
         .then(async (response) => {
             if (response) {
-                console.log('seqresponse', response)
                 return response;
                 // toast.success('loginSuccess');
                 // localStorage.setItem('isLoggedIn', true);
@@ -26,8 +24,6 @@ export const submitAnitbodySearch = async (data, history, t) => {
                 // dispatch(setUser({GQUSERID: data.GQUSERID,isLoggedIn: true }));
                 // history.push('/home');
             } else {
-                console.log('seqerrorresponse', response)
-
                 // let errorMsg = 'Unable to Login';
                 // if(response && typeof response.response_content === 'object' && response.response_content !== null){
                 //     errorMsg = response.response_content.message;
@@ -51,14 +47,13 @@ async function getAuthInfoAB(workflowId) {
         let apiurl = url.authInfoAB;
         if (workflowId) {
             // Comes from the route URL '/antibody/parent_id={parentId}'
-            let db = 'db=wf:' + workflowId + '.resdb&parentId='+workflowId;
+            let db = 'db=wf:' + workflowId + '.resdb&parentId=' + workflowId;
             apiurl = apiurl.replace('db=', db);
         }
         showLoader();
         return await get(apiurl)
             .then((response) => {
                 hideLoader();
-                // console.log(JSON.stringify(response),"Password");
                 return response;
             })
             .catch((error) => {

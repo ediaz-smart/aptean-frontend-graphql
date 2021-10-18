@@ -208,24 +208,21 @@ function MergeResults(props) {
         initialValues,
         validationSchema: Validate.MergeResultsValidate(),
         onSubmit: async (values, { resetForm }) => {
-            console.log('values', values)
             let resp = await SearchManagementService.mergeResults(groupAValue, groupBValue, values.title, mergeType);
             if (resp && resp.response_status == 0) {
                 let result = resp.response_content ? JSON.parse(resp.response_content) : "";
-                console.log('result', result)
-
                 if (result.status && result.status == "success") {
                     clearForm('closeMergeModal', 'success');
                 } else if (result.status && result.status == "error") {
                     setShowErrorModal(true);
-                    setErrorMsg(result.error.message ? result.
-                        error.message : "Unknown");
+                    setErrorMsg(result.error.message ? result
+                        .error.message : "Unknown");
                     setErrorHeading(t("mergeResultErrorHeading"))
                 }
             } else {
                 setShowErrorModal(true);
-                    setErrorMsg(resp.response_content.message ? resp.response_content.message : "Unknown");
-                    setErrorHeading(t("mergeResultErrorHeading"))
+                setErrorMsg(resp.response_content.message ? resp.response_content.message : "Unknown");
+                setErrorHeading(t("mergeResultErrorHeading"))
             }
         }
     });
@@ -233,22 +230,22 @@ function MergeResults(props) {
     function handleErrorModal(type) {
         setShowErrorModal(!showErrorModal);
         // close()
-        if(type && type == "cancel") {
+        if (type && type == "cancel") {
             clearForm();
         }
     }
-     function clearForm(type, resultType) {
+    function clearForm(type, resultType) {
         setGroupAValue([]);
         setGroupBValue([]);
         setMergeType("COMPLETE");
         formik.setFieldValue("title", "");
         setIsSubmitActive(false);
-        if(type && type == "closeMergeModal" && !resultType) {
+        if (type && type == "closeMergeModal" && !resultType) {
             close();
-        } else if(type && type == "closeMergeModal" && resultType) {
+        } else if (type && type == "closeMergeModal" && resultType) {
             close(resultType);
         }
-     }
+    }
 
     function closeSaveModal() {
         setShowSuccessModal(false);
@@ -267,7 +264,6 @@ function MergeResults(props) {
     };
 
     const setGroupClass = (name, value) => {
-        console.log('groupBValue', selectData.selectedCount, groupAValue.length, groupBValue.length)
         if (name && name == "groupA" && value) {
             if (groupAValue.includes(value)) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
@@ -278,8 +274,8 @@ function MergeResults(props) {
             if (groupBValue.includes(value)) {
                 setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
             }
-            if((groupAValue.length + groupBValue.length) == selectData.selectedCount){
-            setIsSubmitActive(true);
+            if ((groupAValue.length + groupBValue.length) == selectData.selectedCount) {
+                setIsSubmitActive(true);
             }
         } else if (name && name == "groupB" && value) {
             if (groupBValue.includes(value)) {
@@ -291,14 +287,11 @@ function MergeResults(props) {
             if (groupAValue.includes(value)) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
             }
-            if((groupAValue.length + groupBValue.length) == selectData.selectedCount){
+            if ((groupAValue.length + groupBValue.length) == selectData.selectedCount) {
                 setIsSubmitActive(true);
             }
         }
     }
-
-    console.log('groupA', groupAValue, 'groupB', groupBValue)
-
 
     const columns = [
         {
@@ -336,10 +329,7 @@ function MergeResults(props) {
         }
     ];
 
-    console.log('data', mergeType)
-
     let imageSrc = mergeType == "COMPLETE" ? complete : mergeType == "OVERLAP" ? overlap : mergeType == "ONLY_A_B" ? nonOverlap : mergeType == "ONLY_A" ? nonOverlapGroupA : nonOverlapGroupB;
-    console.log('formik', formik)
 
     let subjectText = "GenomeQuest: Error merging the selected items [Error code: " + errorMsg + "]";
 

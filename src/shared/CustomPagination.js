@@ -8,19 +8,18 @@ const useStyles = makeStyles({
     root: {
         '& .Mui-selected': {
             backgroundColor: 'transparent',
-            color:'grey !important',
-           },
-           '& .MuiPaginationItem-root': {
-               color: "#008EC5"
-           },
-           '& .Mui-disabled': {
-               color: 'grey !important'
-           }
+            color: 'grey !important',
+        },
+        '& .MuiPaginationItem-root': {
+            color: "#008EC5"
+        },
+        '& .Mui-disabled': {
+            color: 'grey !important'
+        }
     }
 });
 
 export default function CustomPagination({ count, showFirstButton, showLastButton, recordPerPage, changePage, className, defaultPage, page }) {
-    console.log('defaultPage', defaultPage, 'page', page)
     const classes = useStyles();
     const { t, i18n } = useTranslation('common');
     let recrdperPage = Math.ceil(count / recordPerPage);
@@ -35,13 +34,13 @@ export default function CustomPagination({ count, showFirstButton, showLastButto
     return (
         <Pagination
             disabled={count.length == 0}
-            className={classes.root+' '+className} 
+            className={classes.root + ' ' + className}
             count={recrdperPage}
             onChange={changePage}
             showFirstButton={showFirstButton}
             showLastButton={showLastButton}
             defaultPage={defaultPage}
             page={page}
-            />
+        />
     )
 }

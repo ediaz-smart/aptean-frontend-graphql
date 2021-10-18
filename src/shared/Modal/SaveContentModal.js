@@ -64,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
 
 function SaveContentModal(props) {
 	const classes = useStyles();
-	console.log(props, "props");
 	return (
 		<Modal
 			{...props}

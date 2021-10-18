@@ -67,7 +67,6 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle, selectedTitleId,
 	infoFolderIds = infoFolderIds ? infoFolderIds : [];
 
 	useEffect(() => {
-		// console.log(moveFolderId,'moveFolderId');
 		setDefaultTitle(selectedTitle);
 		setDefaultTitleId(selectedTitleId);
 		setMoveToFolderId(moveFolderId);
@@ -100,7 +99,6 @@ const FolderTreeMenu = ({ items, parentCallback, selectedTitle, selectedTitleId,
 				</div>
 			}
 			onLabelClick={() => {
-				console.log(nodes, 'nodes');
 				onSelect(nodes.id, nodes.text_label);
 				setSelectTitle(nodes.text_label);
 				if (type === "selectFolder") {

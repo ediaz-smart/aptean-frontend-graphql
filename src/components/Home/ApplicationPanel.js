@@ -85,7 +85,6 @@ function ApplicationPanel() {
         (async () => {
             const result = await SavedSearch.getSavedSearchData();
             if (result && result.response_content && result.response_content.templates) {
-                console.log(result.response_content, "result.response_content.template) result.response_content.template)");
                 const dta = await result.response_content.templates;
                 setSearchFormsData(dta);
             }

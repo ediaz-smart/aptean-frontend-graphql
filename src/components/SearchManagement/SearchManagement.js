@@ -440,26 +440,23 @@ function SearchManagement(props) {
     // unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
     const updateState = useCallback(state => setSelectData(state));
     function updateVal(state) {
-        console.log(state, 'state');
         let mergeData = [];
         let mergeType = [];
         state.selectedRows.map((value, index) => {
             // if (value.type != 'Folder' && value.type != 'Antibody') {
-                console.log('type', value.type)
-                mergeData.push(value.id);
-                // if (mergeType.length == 0) {
-                mergeType.push(value.type);
-                // } else {
-                //     if (mergeType.includes(value.type)) {
-                //         mergeType.push(value.type);
-                //     }
-                // }
+            mergeData.push(value.id);
+            // if (mergeType.length == 0) {
+            mergeType.push(value.type);
+            // } else {
+            //     if (mergeType.includes(value.type)) {
+            //         mergeType.push(value.type);
+            //     }
+            // }
 
             // }
         });
         const isMergeEqual = mergeType.every(i => i === mergeType[0]);
         const isFolderOrAntiBody = mergeType.includes("Folder") || mergeType.includes("Antibody") ? true : false;
-        console.log('isMergeEqual',mergeType, isMergeEqual)
         if (state.selectedCount > 0) {
             setDisableDelete(false);
             if (state.selectedCount >= 2 && mergeType.length >= 2 && isMergeEqual && !isFolderOrAntiBody) {
@@ -473,28 +470,20 @@ function SearchManagement(props) {
         setSelectData(state)
     }
     function greetUser() {
-        // console.log(updateState,"SAMple Data that enters")
-        console.log(selectData, "SAMple")
         const data = [];
         const dataValues = selectData && data.push(selectData.selectedRows[0]);
-        console.log(data, "data data data");
         if (selectData.selectedCount >= 1 && data && data.length > 0) {
             toast.success("Successfully Deleted");
-            console.log("Hi there, user!");
         }
         else {
             toast.error("Select Any One Item");
-            console.log("Hi");
         }
 
     }
     const getRowData = (event) => {
-        // console.log(event, 'event');
     };
 
     async function deleteSearch(type) {
-
-        // console.log(defaultTitleId, "defaultTitleId")
         setModalShow(false);
         setFolderModalShow(false);
         setConfirmContent(false);
@@ -570,7 +559,6 @@ function SearchManagement(props) {
             pageStart = 1;
             pageStop = pageCount;
         }
-        console.log('pagesize', pageCount)
         // setSearchResultData([]);
         if (type == "defaultText") {
             let recentParentId = parentFolderId;
@@ -591,7 +579,6 @@ function SearchManagement(props) {
                 // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchmanagement');
                 tempArr = await getSearchDataArr(result, 'searchmanagement');
                 // tempArr = _.orderBy(tempArr, [(obj) => new Date(obj.date)], ['desc']);
-                // console.log(tempArr,'tempArr');
 
             }
         } else {
@@ -602,7 +589,6 @@ function SearchManagement(props) {
                     if (result.response_content.results.length > 0) {
                         // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
                         tempArr = await getSearchDataArr(result, 'searchfolder');
-                        console.log('inside folder', folderResultCount)
                     }
                 }
             } else if (isSearchDone) {
@@ -612,7 +598,6 @@ function SearchManagement(props) {
                     if (getSearchResp.response_content.results.length > 0) {
                         // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
                         tempArr = await getSearchResultArr(getSearchResp, 'searchResults');
-                        console.log('inside folder', tempArr)
                     }
                     // setSearchResultData(tempArr);
                     // setDefaultTitle(`All data which contains: "${searchResSet}"`);
@@ -638,7 +623,6 @@ function SearchManagement(props) {
             resultData = data.response_content;
         }
         resultData.forEach(datas => {
-            console.log('dat.status', datas.status, datas.id)
             let tempObj = datas;
             let id = datas.id;
             tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
@@ -659,8 +643,7 @@ function SearchManagement(props) {
             let typeUrl = process.env.REACT_APP_BASE_URL + mostRecentTypeUrl;
             if (datas.type != '') {
                 if (datas.status == 'UNKNOWN') {
-                    console.log('UNKNOWN', datas)
-                    console.log('datas.status', datas.status)
+                    // NO ACTION AVAILABLE
                 }
                 if (datas.type == "GqWfMerge" && (datas.status == 'UNKNOWN' || datas.status == 'STILL_RUNNING')) {
 
@@ -772,7 +755,7 @@ function SearchManagement(props) {
             tempObj.updateTime = datas.update_time;
             tempArr.push(tempObj);
         });
-        console.log('dataArr', tempArr)
+
         return tempArr;
     }
     async function getFolderResultData() {
@@ -836,7 +819,7 @@ function SearchManagement(props) {
         setDisableMergeBtn(true);
     }
     // const deleteRecord = () => {
-    //  console.log(deleteRecord,'deleteRecord');
+    // NO ACTION AVAILABLE
     // };
     const closeModal = () => {
         setModalShow(false);
@@ -918,30 +901,21 @@ function SearchManagement(props) {
         node.children && node.children.forEach(mapIt);
     }
     async function findParentObj(obj) {
-        console.log(folderDetail, 'folderDetail');
         let parentObj = await findAncestors(obj.id);
         parentObj.push(obj.id);
-        console.log(parentObj, 'findParentObj');
         setParentTreeObj(...[parentObj]);
-        // setTimeout(() => {
-        //     console.log(parentTreeObj,  'parentTreeObj');
-        // }, 1000);
-
     }
     async function findAncestors(nodeId) {
         var ancestors = [];
         // ancestors.unshift(nodeId);
-        console.log(lookup, 'lookup');
         var parentId = lookup[nodeId] && lookup[nodeId].parent_gq_folder_id;
         var desc = lookup[parentId] && lookup[parentId].description;
         var regex = new RegExp('home folder for', "i");
         var checkRootFolder = regex.test(desc);
-        console.log(checkRootFolder, 'checkRootFolder');
         while (parentId !== undefined && parentId != '2') {
             ancestors.unshift(parentId)
             parentId = lookup[parentId] && lookup[parentId].parent_gq_folder_id;
         }
-        // console.log(ancestors,'ancestors');
         return ancestors;
     }
     const selectedFolder = (event) => {
@@ -979,7 +953,6 @@ function SearchManagement(props) {
         if (e.keyCode == 13) {
             var regex = new RegExp(Constant.folderRestrictNames.join("|"), "i");
             var isAvailable = regex.test(e.target.value);
-            // console.log(isAvailable,'isAvailable');
             if (isAvailable) {
                 setAddFolderModalShow(true);
             } else if (e.target.value.length > 200) {
@@ -1005,7 +978,6 @@ function SearchManagement(props) {
     }
     async function getInfoIconData(e, data, textLabel) {
         e.preventDefault();
-        // console.log(data,'data');
         if (data) {
             setDefaultTitle(textLabel ? textLabel : data.description);
             setDefaultTitleId(data.id);
@@ -1029,7 +1001,6 @@ function SearchManagement(props) {
     const getsearchResultSet = async (e) => {
         // Enter or Click
         if (e.keyCode == 13 || e.type == "click") {
-            console.log(searchResSet, 'searchResSet');
             let tempArr = [];
             if (searchResSet || searchResSet == "") {
                 setIsSearchDone(true);
@@ -1041,14 +1012,12 @@ function SearchManagement(props) {
                     if (getSearchResp.response_content.results.length > 0) {
                         // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchfolder');
                         tempArr = await getSearchResultArr(getSearchResp, 'searchResults');
-                        console.log('inside folder', tempArr)
                     }
                     setSearchResultData(tempArr);
                     searchResSet != "" ? setDefaultTitle(`All data which contains: "${searchResSet}"`) : setDefaultTitle("All data");
                     setDefaultTitleId('searchResult');
                     setCurrentPage(1);
                 }
-                // console.log(getSearchResp,'getSearchResp');
             }
 
             // if(addResp.response_status == 0)
@@ -1070,8 +1039,6 @@ function SearchManagement(props) {
         }
     }
     const changePage = async (e, page) => {
-        console.log(e, 'ee');
-        console.log(page, 'page');
         let start, stop;
         if (page) {
             start = ((page - 1) * pageCount) + 1;
@@ -1088,7 +1055,6 @@ function SearchManagement(props) {
     }
 
     function mergeModalFunction(type) {
-        console.log('searchType', type)
         setShowMergeModal(!showMergeModal);
         if (type && type == "success") {
             updateDefaultValue('Recent Search Results');

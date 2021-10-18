@@ -77,7 +77,6 @@ function LogoutModal(props) {
 	const { t, i18n } = useTranslation('common');
 	let mailUrl = "mailto:" + supportMail + "?subject=" + props.subjectText;
 
-	console.log(props, "props");
 	return (
 		<Modal
 			{...props}

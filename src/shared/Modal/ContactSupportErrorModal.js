@@ -104,7 +104,6 @@ function ContactSupportErrorModal(props) {
     const classes = useStyles();
     const { t, i18n } = useTranslation('common');
     const history = useHistory();
-    console.log(props, "props");
     function redirect() {
         history.push("/home");
     }

@@ -15,8 +15,8 @@ let baseUrl = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials = true
 const transport = axios.create({
     withCredentials: true
-  });
-  
+});
+
 // import { Auth } from "../helpers/Auth";
 // import { environment } from "../helpers/config";
 // import PubSub from 'pubsub-js';
@@ -67,15 +67,13 @@ const transport = axios.create({
 //     return fetch(url, requestOptions)
 //     .then(response => response.json())
 // }
-function HandleResponse(response,history) {
+function HandleResponse(response, history) {
     const contentType = response.headers["content-type"];
     if (contentType && contentType.indexOf("application/json") !== -1) {
-        if(response.status == 200)
-        {
-            if(response.data.response_status == 1)
-            {
+        if (response.status == 200) {
+            if (response.data.response_status == 1) {
                 let getMsg = response.data.response_content.message;
-                if(getMsg == 'REQUIRED_LOGIN' || getMsg == 'SESSION_EXPIRED'){
+                if (getMsg == 'REQUIRED_LOGIN' || getMsg == 'SESSION_EXPIRED') {
                     // var link=document.createElement("a");
                     // link.href="/";
                     // link.click();
@@ -84,7 +82,7 @@ function HandleResponse(response,history) {
                 }
             }
             return response.data;
-        }else {
+        } else {
             if (response.status === 401) {
                 // logout();
             }
@@ -95,13 +93,12 @@ function HandleResponse(response,history) {
             // PubSub.publish('msg', false);
             return Promise.reject(error);
         }
-    }else if (contentType && contentType.indexOf("text/html") !== -1) {
+    } else if (contentType && contentType.indexOf("text/html") !== -1) {
         return response.data;
     }
 }
 
-export function post(url, postdata,history) {
-    console.log('setSubmit', url, postdata)
+export function post(url, postdata, history) {
     // if (window.location.hostname == 'localhost') {
     //     let file;
     //     if (url.includes('gquser.login')) {
@@ -111,12 +108,11 @@ export function post(url, postdata,history) {
     //     }
     //     return fetch(file).then(r => r.text())
     //         .then(text => {
-    //             console.log('text decoded:', text);
     //             return JSON.parse(text);
     //         });
     // } else {
-    
-    return axios.post(baseUrl + url, postdata,{
+
+    return axios.post(baseUrl + url, postdata, {
         // method: 'post',
         // headers: {
         //     //'Content-Type': 'application/json; charset=utf-8;application/x-www-form-urlencoded',
@@ -127,16 +123,15 @@ export function post(url, postdata,history) {
         // body: postdata
         //body: JSON.stringify(data)
     })
-    .then(resp => {
-        return HandleResponse(resp,history)
-        // return resp
-    });
-    
+        .then(resp => {
+            return HandleResponse(resp, history)
+            // return resp
+        });
+
     // }
 
     // .then(json)
     // .then(function (data) {
-    //     console.log('Request succeeded with JSON response', data);
     //     return data;
     // })
     // .catch(function (error) {
@@ -148,7 +143,6 @@ export function post(url, postdata,history) {
 // axios get
 export function get(url, history) {
     try {
-        // console.log('getttt', url)
         // if (window.location.hostname == 'localhost') {
         //     let file;
         //     if (url.includes('mygq.get_welcome_page_v2')) {
@@ -159,19 +153,18 @@ export function get(url, history) {
         //     }
         //     return fetch(file).then(r => r.text())
         //         .then(text => {
-        //             console.log('text decoded:', text);
         //             return JSON.parse(text);
         //         });
         // } else {
-            const headers = {
-                'Accept': 'application/json',
-                // 'Cookie': 'PHPSESSID=ou3h9cqpcdm0sh3tq4adb5ipq2'
-            };
-            return axios.get(baseUrl + url, { headers })
-                .then(resp => {
-                    return HandleResponse(resp,history)
-                    // return resp
-                });
+        const headers = {
+            'Accept': 'application/json',
+            // 'Cookie': 'PHPSESSID=ou3h9cqpcdm0sh3tq4adb5ipq2'
+        };
+        return axios.get(baseUrl + url, { headers })
+            .then(resp => {
+                return HandleResponse(resp, history)
+                // return resp
+            });
         // }
     } catch (error) {
         console.error(error);
@@ -179,7 +172,7 @@ export function get(url, history) {
 
 }
 
-export function getFile(url, history,type) {
+export function getFile(url, history, type) {
     try {
         // if (window.location.hostname == 'localhost') {
         //     let file;
@@ -191,34 +184,32 @@ export function getFile(url, history,type) {
         //     }
         //     return fetch(file).then(r => r.text())
         //         .then(text => {
-        //             console.log('text decoded:', text);
         //             return JSON.parse(text);
         //         });
         // } else {
-            const headers = {
-                // 'Content-Length': 0,
-                // 'Content-Type': 'text/plain'
-            };
-            
-            return axios.get(
-                baseUrl + url, { headers }
-                )
-                .then(resp => {
-                    const url = window.URL.createObjectURL(new Blob([resp.data]));
-                    const link = document.createElement('a');
-                    link.href = url;
-                    if(type == "querySeq")
-                    {
-                        link.setAttribute('download', 'queries.fasta.txt'); //or any other extension
-                    }else {
-                        link.setAttribute('download', 'techLog.txt'); //or any other extension
-                    }
-                    
-                    document.body.appendChild(link);
-                    link.click();
-                    return HandleResponse(resp,history)
-                    // return resp
-                });
+        const headers = {
+            // 'Content-Length': 0,
+            // 'Content-Type': 'text/plain'
+        };
+
+        return axios.get(
+            baseUrl + url, { headers }
+        )
+            .then(resp => {
+                const url = window.URL.createObjectURL(new Blob([resp.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                if (type == "querySeq") {
+                    link.setAttribute('download', 'queries.fasta.txt'); //or any other extension
+                } else {
+                    link.setAttribute('download', 'techLog.txt'); //or any other extension
+                }
+
+                document.body.appendChild(link);
+                link.click();
+                return HandleResponse(resp, history)
+                // return resp
+            });
         // }
     } catch (error) {
         console.error(error);

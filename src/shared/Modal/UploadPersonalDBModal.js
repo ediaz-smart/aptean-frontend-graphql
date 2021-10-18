@@ -89,7 +89,6 @@ function UploadPersonalDBModal(props) {
     const { t, i18n } = useTranslation('common');
     let mailUrl = "mailto:" + supportMail + "?subject=" + props.subjectText;
 
-    console.log(props, "props");
     return (
         <Modal
             {...props}
@@ -105,10 +104,10 @@ function UploadPersonalDBModal(props) {
             <Modal.Body className={classes.modalBody}>
                 {/* <h5>{props.onMessage}</h5> */}
                 <div className={classes.colorContainer}>
-                <h5>Upload Personal Database</h5>
+                    <h5>Upload Personal Database</h5>
                     <br></br>
-               
-                            {/*
+
+                    {/*
                             <Col md="12" className="p-0 content">
                                     <TextInput 
                                         rows="2"
@@ -131,14 +130,14 @@ function UploadPersonalDBModal(props) {
                     <br></br>
                     <div className={classes.footerDiv}>
                         <span>
-    
-                        <h7>We support the following formats: .txt, .gz , .bz2 </h7>
-                        <br></br>
-                        <h7>Compressing your data file will reduce the data time.</h7>
+
+                            <h7>We support the following formats: .txt, .gz , .bz2 </h7>
+                            <br></br>
+                            <h7>Compressing your data file will reduce the data time.</h7>
                         </span>
                         <span>
-                        <Button onClick={props.tryAgain} disableRipple={true} className='accountInfo' color="default" variant="contained">Upload</Button>
-                        <Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyleCancel} color="default" variant="contained">Cancel</Button>
+                            <Button onClick={props.tryAgain} disableRipple={true} className='accountInfo' color="default" variant="contained">Upload</Button>
+                            <Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyleCancel} color="default" variant="contained">Cancel</Button>
                         </span>
                     </div>
 

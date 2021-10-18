@@ -9,45 +9,45 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'11px',
+		paddingTop: '11px',
 		paddingRight: '4px',
-		marginTop:'-7px',
+		marginTop: '-7px',
 	},
-	footerDiv:{
-		padding:'0 30px',
-		
+	footerDiv: {
+		padding: '0 30px',
+
 
 	},
-	buttonStyleCan:{
-		float:'right',
+	buttonStyleCan: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
-		backgroundColor:'#008EC5 !important',
+		margin: '4px',
+		backgroundColor: '#008EC5 !important',
 		border: '2px solid #1F4E79 !important',
-		borderColor:'#1F4E79',
-		color:'white'
+		borderColor: '#1F4E79',
+		color: 'white'
 
 	},
-	buttonStyleCancel:{
-		float:'right',
+	buttonStyleCancel: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
-	
+		margin: '4px',
+
 	},
-	buttonStyleSubmit:{
-		float:'right',
+	buttonStyleSubmit: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
-		backgroundColor:'##DB862D !important',
-        border: '2px solid ##DB862D !important',
+		margin: '4px',
+		backgroundColor: '##DB862D !important',
+		border: '2px solid ##DB862D !important',
 		marginTop: '4px',
-		color:'white'
+		color: 'white'
 
 	},
-	modalBoxContent :{
+	modalBoxContent: {
 		maxHeight: '675px',
 	},
-	modalClassContent:{
+	modalClassContent: {
 		position: 'absolute',
 		width: '96%',
 		height: '40%',
@@ -57,12 +57,12 @@ const useStyles = makeStyles((theme) => ({
 		bottom: 'auto',
 		transform: 'translate(-50%, -50%)'
 	},
-	colorContainer:{
+	colorContainer: {
 		backgroundColor: '#EEEEEE',
 		marginTop: '-36px',
 		fontFamily: 'Arial, Helvetica, sans-serif, Helvetica Neue',
-        fontsize: '14px',
-         fontWeight: '400',
+		fontsize: '14px',
+		fontWeight: '400',
 		// marginLeft: 0px;
 		paddingTop: '28px',
 		paddingBottom: '65px',
@@ -78,14 +78,10 @@ const useStyles = makeStyles((theme) => ({
 function ShareResultsRemoveModal(props) {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation('common');
-    let mailUrl = "mailto:" + supportMail+"?subject="+props.subjectText;
-    function sendRemoveData()
-	{ 
-		console.log(props.onMessage,"props.onMessage) props.onMessage)");
-        props.removeShare(props.onMessage);
-
+	let mailUrl = "mailto:" + supportMail + "?subject=" + props.subjectText;
+	function sendRemoveData() {
+		props.removeShare(props.onMessage);
 	}
-    console.log(props,"props props props props props");
 	return (
 		<Modal
 			{...props}
@@ -103,17 +99,17 @@ function ShareResultsRemoveModal(props) {
 			<Modal.Body className={"text-center "}>
 				{/* <h5>{props.onMessage}</h5> */}
 				<div className={classes.colorContainer}>
-				<br></br>
-				<p>Are you sure you want to stop sharing this result set with  {props.onMessage ? props.onMessage.full_name : ""}?</p>
-                <br></br>
-				<br></br>
-				<div className={classes.footerDiv}>
-					<Button onClick={sendRemoveData} disableRipple={true} className='accountInfo' color="default" >Remove Share</Button> 
-					<Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyleCan}  color="default" >Cancel</Button>
+					<br></br>
+					<p>Are you sure you want to stop sharing this result set with  {props.onMessage ? props.onMessage.full_name : ""}?</p>
+					<br></br>
+					<br></br>
+					<div className={classes.footerDiv}>
+						<Button onClick={sendRemoveData} disableRipple={true} className='accountInfo' color="default" >Remove Share</Button>
+						<Button onClick={props.onHide} disableRipple={true} className={classes.buttonStyleCan} color="default" >Cancel</Button>
 
+					</div>
 				</div>
-				</div>
-				
+
 			</Modal.Body>
 			{/* <Modal.Footer>
 				<Button onClick={props.onHide}>Close</Button>

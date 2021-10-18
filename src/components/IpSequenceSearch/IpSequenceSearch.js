@@ -304,7 +304,6 @@ function IpSeqSearch() {
 
     //using state
     const userInfo = useSelector(state => state.setUserInfo);
-    console.log('userInfo', userInfo)
 
     const { parentId } = useParams();
     const { tempname } = useParams();
@@ -389,7 +388,6 @@ function IpSeqSearch() {
     };
     const [creditValues, setCreditValues] = useState(initialCreditValues);
     let pubFormatted = moment()._d;
-    console.log('moment', moment()._d)
     // pubFormatted = moment(pubFormatted).format('MMMM-DD-YYYY')
     let redoInitialObj = {
         searchDetails: `IP ${moment().format('YYYY-MM-DD h:mm:ss')}`,
@@ -415,19 +413,14 @@ function IpSeqSearch() {
     useEffect(() => {
         (async () => {
             let resp;
-            console.log(decodeURI(tempname), "tempname tempname tempname tempname ")
-            console.log(parentId, "parentId parentId parentId parentId ")
 
             let tempparam = decodeURI(tempname);
             tempparam = tempparam.toString().replace(/~~GQSF~~/g, '%');
-            console.log(tempparam, "tempparam")
             if (tempparam) {
                 const dat = await SavedSearch.getParticularTemplate(tempparam, 'Sequence');
 
-                console.log(dat, "resp.response_content.map");
                 if (dat && dat.response_content && dat.response_content.map) {
                     const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = dat.response_content.map;
-                    console.log('qdb_seq_type', qdb_seq_type)
                     qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
                     qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
 
@@ -473,7 +466,6 @@ function IpSeqSearch() {
                     let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
                     redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
                         if (item && item.P && item.P == "SEQUENCE_D1") {
-                            console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
@@ -501,10 +493,8 @@ function IpSeqSearch() {
             }
             if (parentId) {
                 resp = await getSeqSearchInit(history, parentId);
-                console.log('redoresp', resp)
                 if (resp && resp.response_content && resp.response_content.redoParams) {
                     const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = resp.response_content.redoParams;
-                    console.log('qdb_seq_type', qdb_seq_type)
                     qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
                     qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
 
@@ -550,7 +540,6 @@ function IpSeqSearch() {
                     let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
                     redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
                         if (item && item.P && item.P == "SEQUENCE_D1") {
-                            console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
@@ -574,7 +563,6 @@ function IpSeqSearch() {
                     setRedoInitialState({ ...redoInitialState });
                 }
             } else {
-                console.log(resp, "parentId parentId parentId parentId");
                 resp = await getSeqSearchInit(history, null);
             }
             // const resp = await getSeqSearchResults(history);
@@ -582,7 +570,6 @@ function IpSeqSearch() {
                 let nucData = resp.response_content.sdb_nuc_tree;
                 let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [], nucDefaultPatentDb = [];
                 let nucFormattedData = await list_to_tree(nucData);
-                console.log('nucformatted', nucFormattedData)
                 let getNucChild = [];
                 if (nucFormattedData && nucFormattedData.length > 0) {
                     getNucChild = nucFormattedData[0].children;
@@ -597,7 +584,6 @@ function IpSeqSearch() {
                         });
                     } else if (item && item.id == ':Reference Data') {
                         // nucleotideReferenceData = item.children;
-                        console.log('item.children', item.children);
                         item.children && item.children.length > 0 && item.children.map((item, index) => {
                             if (item.id.includes("GB_")) {
                                 nucGenBank.push(item)
@@ -614,7 +600,6 @@ function IpSeqSearch() {
                 setNucReferenceData(nucleotideReferenceData);
                 setNucPersonalData(nucDataShardWithMe);
                 setNucGenBankData(nucGenBank);
-                console.log('nucDefaultPatentDb', nucDefaultPatentDb)
                 if (!parentId && !tempname) {
                     setNucDb(nucDefaultPatentDb);
                 }
@@ -623,7 +608,6 @@ function IpSeqSearch() {
                 let proteinData = resp.response_content.sdb_pro_tree;
                 let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [], proDefaultPatentDb = [];
                 let proFormattedData = await list_to_tree(proteinData);
-                console.log('proFormattedData', proFormattedData)
                 let getProChild = [];
                 if (proFormattedData && proFormattedData.length > 0) {
                     getProChild = proFormattedData[0].children;
@@ -676,7 +660,6 @@ function IpSeqSearch() {
             if (userInfo && userInfo.current_user) {
                 let userPpu = userInfo.current_user.ppu_type;
                 let currentUser = userInfo.current_user;
-                console.log('userData', userInfo, 'userPpu', userPpu)
                 setPpuType(userPpu);
 
 
@@ -710,15 +693,10 @@ function IpSeqSearch() {
         })()
     }, [ppuType]);
 
-
-    console.log('system', systemControlSubmit, 'setsubmit', isSubmitActive, 'showcredirt', showCreditCalC)
-    console.log('personal', nucPersonalData, 'pro', proPersonalData)
-
     const formik = useFormik({
         initialValues: redoInitialState,
         validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue, searchAlgorithmValue, isPatientDoc),
         onSubmit: async (values) => {
-            console.log('formikValues', values)
             if ((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
                 // setNoDbSelected(true);
             } else {
@@ -768,7 +746,6 @@ function IpSeqSearch() {
                 sdbFilterData.push(obj);
             }
             let userMail = userInfo && userInfo.current_user && userInfo.current_user.email ? userInfo.current_user.email : '';
-            console.log('sdbFilterData.toString()', sdbFilterData)
             let data = {
                 qdb_seq: values.querySequence,
                 qdb_seq_type: sequenceTypeValue, // nucleotide or protein, query sequence type based on the above query seq.
@@ -825,8 +802,6 @@ function IpSeqSearch() {
                 data.strat_fragment_perc_id_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentAminoAcid : "95"; // Percentage Identity - Prt
             }
 
-
-            console.log('submitdata', data)
             let resp = await submitSeqSearch(data, null, t);
             if (resp && resp.response_status == 0) {
                 setShowSuccessModal(true);
@@ -854,8 +829,6 @@ function IpSeqSearch() {
         },
     });
 
-    console.log('warning', warningMsg, isWarningReturned)
-
     function list_to_tree(list) {
         var map = {}, node, roots = [], i;
 
@@ -866,7 +839,6 @@ function IpSeqSearch() {
 
         for (i = 0; i < list.length; i += 1) {
             node = list[i];
-            //   console.log('node', node)
             if (node.parent !== null) {
                 // if you have dangling branches check that map[node.parentId] exists
                 list[map[node.parent]].children.push(node);
@@ -894,7 +866,6 @@ function IpSeqSearch() {
     }
 
     const handleSearchAlgorithm = (event) => {
-        console.log('target', event.target)
         setSearchAlgorithm(event.target.value);
         if (sequenceTypeValue == "nucleotide") {
             setScoringMatrix('NUC.3.1');
@@ -972,14 +943,12 @@ function IpSeqSearch() {
         } else if (name && name == "pro") {
             if (proDb.includes(id)) {
                 if (proDb.length == 1 && nucDb.length > 0) {
-                    console.log('inside pro', proDb.length)
                     setIsBothDbSelected(false);
                     calTextCredits(null, false, "isCompare");
                 }
                 setProDb(proDb.filter(dbName => dbName !== id));
             } else {
                 if (proDb.length == 0 && nucDb.length > 0) {
-                    console.log('inside pro', proDb.length)
                     setIsBothDbSelected(true);
                     calTextCredits(null, true, "isCompare");
                 }
@@ -990,14 +959,8 @@ function IpSeqSearch() {
         setNoDbSelected(false);
     }
 
-    console.log('dbtypearray', dbTypeArray)
-    console.log('bothdbselected', isBothDbSelected)
-    console.log('nucDb', nucDb)
-    console.log('proDb', proDb)
-
     async function handleCompareBothDb() {
         let type = "isCompare";
-        console.log('bothdb1', isBothDbSelected)
         if (isBothDbSelected == true) {
             setIsBothDbSelected(false);
             calTextCredits(null, false, type);
@@ -1023,21 +986,15 @@ function IpSeqSearch() {
                 });
             }
         }
-
-        console.log('bothdb2', isBothDbSelected)
     }
     function calTextCredits(e, bothDb, type) {
-        console.log('texte', e)
         //     if(type && type =="isCompare"){
-        //         console.log('insideType', type)
         //     setIsBothDbSelected(!isBothDbSelected);
         // }
         let text;
         text = type && (type == "isCompare" || type == "redo") ? formik.values.querySequence : e.target.value;
         if ((e && (e.keyCode == 9 || e.type == "blur")) || type == "isCompare" || type == "redo") {
             // let text = formik.values.querySequence;
-            console.log('textCode', text, type)
-
             if (ppuType == '0') {
                 return;
             }
@@ -1074,10 +1031,8 @@ function IpSeqSearch() {
                     }
                 }
             }
-            console.log('calcVal', val, 'credits', credits, 'userclsname', userClassName, 'groupname', accGroupName, 'ppu', ppuType, 'sequenceTypeValue', sequenceTypeValue, 'isBothDbSelected', bothDb)
             // seqCount = val;
             if (ppuType && ppuType == "1") {
-                console.log('Insidepputype1')
                 let ppu1SubTotal = val * 850;
                 let ppu1NucSubTotal = (sequenceTypeValue == "nucleotide" || bothDb) ? val * 850 : 0;
                 let ppu1ProSubTotal = (sequenceTypeValue == "protein" || bothDb) ? val * 850 : 0;
@@ -1089,10 +1044,8 @@ function IpSeqSearch() {
                 creditValues.seqCount = val;
                 setCreditValues({ ...creditValues });
                 setTimeout(() => {
-                    console.log('creditValues', creditValues)
                 }, 2000);
             } else if (ppuType && ppuType == "2") {
-                console.log('Insidepputype2')
                 let ppu2NucCredit = (sequenceTypeValue == "nucleotide" || bothDb) ? val : 0;
                 let ppu2ProCredit = (sequenceTypeValue == "protein" || bothDb) ? val : 0;
                 let ppu2TotalCredit = ppu2NucCredit + ppu2ProCredit;
@@ -1103,9 +1056,6 @@ function IpSeqSearch() {
                 creditValues.ppu2RemainingCredits = ppu2RemainingCredits;
                 creditValues.seqCount = val;
                 setCreditValues({ ...creditValues });
-                setTimeout(() => {
-                    console.log('creditValues', creditValues)
-                }, 2000);
             }
             // seqCount = val;            
             // calCredits(vßal);
@@ -1277,7 +1227,6 @@ function IpSeqSearch() {
             label: "3"
         }
     ];
-    console.log('outside formik', formik)
 
     function changeIncludeGenUnknownDate() {
         if (!isDocPubUnknownDates) {
@@ -1299,7 +1248,6 @@ function IpSeqSearch() {
 
     const beforeAfterSelection = (e) => {
         const { name, value } = e.target;
-        console.log('e.target', e.target)
         formik.setFieldValue(name, value);
         if (name == "docPublicSel") {
             (value == "AFT" || value == "BEF") ? setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
@@ -1322,14 +1270,13 @@ function IpSeqSearch() {
 
     const handleDocCheck = (e) => {
         const { name } = e.target;
-        console.log('e.target', e.target)
-        if(name && name == "isDocumentPublic") {
-            if(isDocPubDate == true) {
+        if (name && name == "isDocumentPublic") {
+            if (isDocPubDate == true) {
                 setIsDocPubUnknownDates(false);
             }
-            setIsDocPubDate(prevState=>!prevState)
-        } else if(name && name == "publishGenomeQuest") {
-            if(isPublished == true) {
+            setIsDocPubDate(prevState => !prevState)
+        } else if (name && name == "publishGenomeQuest") {
+            if (isPublished == true) {
                 setIspublishGQUnknownDates(false);
             }
             setIsPublished(prevState => !prevState);

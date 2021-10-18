@@ -223,7 +223,6 @@ function SearchResultAntibody() {
         enableReinitialize: true,
         validationSchema: Validate.AntibodySearchValidation(saveFormValue),
         onSubmit: async (values) => {
-            console.log(values, 'values');
             let { searchName, cdrhcseq1, cdrhcseq2, cdrhcseq3, cdrlcseq1, cdrlcseq2, cdrlcseq3, hcOption1, hcOption2, hcOption3, lcOption1, lcOption2, lcOption3, strategy, percId, expectCutoff, wordSize, hcFullSeq, lcFullSeq, formName } = values;
             if (cdrhcseq1 == '' && cdrhcseq2 == '' && cdrhcseq3 == '' && cdrlcseq1 == '' && cdrlcseq2 == '' && cdrlcseq3 == '') {
                 toast.error(t('CDRSeqValidation'));

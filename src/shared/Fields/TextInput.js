@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function TextInput(props) {
-    console.log('props', props)
     const classes = useStyles();
     return (
         <TextField

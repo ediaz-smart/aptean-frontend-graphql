@@ -8,23 +8,20 @@ async function getProgress(workflow) {
         let location = url.progress
 
         locaiton = location.replace('**', workflow);
-        console.log(locaiton);
 
         return await get(location)
-        .then((response) => {
-            
-            console.log(JSON.stringify(response));
-            return response;
-        })
-        .catch((error) => {
-            toast.error('Failed to retrieve progress');
-            console.log("error::", error);
+            .then((response) => {
+                return response;
+            })
+            .catch((error) => {
+                toast.error('Failed to retrieve progress');
+                console.log("error::", error);
 
-        });
+            });
     } catch (error) {
         console.error(error);
     }
-   
+
 }
 
 const progressService = {

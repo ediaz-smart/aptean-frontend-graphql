@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, Fragment } from 'react';
-import { useHistory,useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTranslation } from "react-i18next";
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ConvertSequence() {
     const { t, i18n } = useTranslation('common');
-    
+
     const classes = useStyles();
     const history = useHistory();
     const [selectData, setSelectData] = useState();
@@ -66,8 +66,6 @@ function ConvertSequence() {
             setAuthInfo(getResponse.response_content);
             updateFormData(getResponse.response_content);
             //setDisableSearch(true);
-
-            console.log(disableSearch, 'disableSearch');
         }
         //dispatch(userActions.logout()); 
     }, []);
@@ -80,55 +78,48 @@ function ConvertSequence() {
             expiredTimeInSecs = expiredTimeInSecs - Math.round(new Date().getTime() / 1000) - 90;
             // Idle.setIdle(expiredTimeInSecs < 0 ? (30 * 59) : expiredTimeInSecs);
             //Idle.watch();
-            //console.log(Idle.getIdle());
-
-            console.log("NRB expired at: " + expiredTime.date);
         }
     }
 
-    function cncl(){
+    function cncl() {
         history.push('/home');
     }
-    
+
     const formik = useFormik({
         initialValues: {
-            st26input: formdata.st26input 
-            
+            st26input: formdata.st26input
+
         },
         enableReinitialize: true,
         //validationSchema: Validate.AntibodySearchValidation(),
         onSubmit: async (values) => {
             let { st26input } = values;
-            //console.log(values, 'values');
-            console.log("heloooooo");
-            //console.log(props.title);
 
             let postData = {
-                 st26input
+                st26input
             }
 
             var getResponse = await st26service.convertXml(postData, history, t);
-            //console.log(getResponse,'getresp');
             if (getResponse == 'parsererror') {
                 toast.error('The ST.26 data is not correctly structured.\nPlease correct the XML and try again.');
-            } else if (getResponse == 'missing')   {
+            } else if (getResponse == 'missing') {
                 toast.error('The ST.26 data is not correctly structured.\nEither the moltype or Sequence data  is missing.');
             }
-            else if(getResponse == 'empty')   {
+            else if (getResponse == 'empty') {
                 toast.error('The ST.26 xml has no sequence data to be parsed.');
             }
-            else{
+            else {
                 history.push({
-                    pathname:'/parsedxml',
-                    state: getResponse 
+                    pathname: '/parsedxml',
+                    state: getResponse
                 });
 
             }
-            
+
         },
     });
     return (
-       <div className={classes.grow}>
+        <div className={classes.grow}>
             <form name="antibodySearchForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
 
                 <Row>
@@ -138,44 +129,44 @@ function ConvertSequence() {
                             {authInfo && authInfo.syscontrol_search_submit_txt}
                             {t('patienceThanksText')}</Typography>
                     </Col>
-                
+
                     <Col lg="12" md="12" className="mb-2">
                         <h6 className={"appTextColor loginTitle"}>ST.26 Sequences Input</h6>
                         <Row className="mb-3">
-                            
-                                <Col lg="12" md="12" className="p-0 content float-left">
-                                    <div className="form-group px-3 ">
-                                        <TextInput
-                                            
-                                            rows="20"
-                                            multiline={true}
-                                            fullWidth
-                                            id="st26input"
-                                            name="st26input"
-                                            label="Copy and Paste your ST.26 XML sequences here"
-                                            variant="outlined"
-                                            value={formik.values.st26input}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.st26input && Boolean(formik.errors.st26input)}
-                                            helperText={formik.errors.st26input}
-                                            //disabled={authInfo && authInfo.redo}
-                                        />
-                                    </div>
-                        
-                                </Col>
-                            
+
+                            <Col lg="12" md="12" className="p-0 content float-left">
+                                <div className="form-group px-3 ">
+                                    <TextInput
+
+                                        rows="20"
+                                        multiline={true}
+                                        fullWidth
+                                        id="st26input"
+                                        name="st26input"
+                                        label="Copy and Paste your ST.26 XML sequences here"
+                                        variant="outlined"
+                                        value={formik.values.st26input}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.st26input && Boolean(formik.errors.st26input)}
+                                        helperText={formik.errors.st26input}
+                                    //disabled={authInfo && authInfo.redo}
+                                    />
+                                </div>
+
+                            </Col>
+
                         </Row>
                         <hr />
                     </Col>
-                
+
                     <Col lg="12" md="12" className="float-right mb-3">
                         <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('Next')}</Button>&nbsp;&nbsp;&nbsp;
-                    <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={cncl}>{t('cancel')}</Button>
+                        <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={cncl}>{t('cancel')}</Button>
                     </Col>
                 </Row>
 
             </form>
-            
+
         </div>
 
     )

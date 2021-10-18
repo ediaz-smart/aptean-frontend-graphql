@@ -11,19 +11,18 @@ const useStyles = makeStyles((theme) => ({
 	modalHeader: {
 		borderBottom: 'none !important'
 	},
-	footerDiv:{
-		padding:'0 30px'
+	footerDiv: {
+		padding: '0 30px'
 	},
-	contentDiv:{
-		height:'300px',
-		overflowX:'auto',
-		textAlign:'justify'
+	contentDiv: {
+		height: '300px',
+		overflowX: 'auto',
+		textAlign: 'justify'
 	}
 }));
 
 function ContentModal(props) {
 	const classes = useStyles();
-    // console.log(props,'props');
 	return (
 		<Modal
 			{...props}
@@ -32,17 +31,17 @@ function ContentModal(props) {
 			centered
 			contentClassName='modalPromptContent'
 		>
-			<Modal.Header closeButton className={"pt-2 pb-0 "+classes.modalHeader}>
+			<Modal.Header closeButton className={"pt-2 pb-0 " + classes.modalHeader}>
 				<Modal.Title id="contained-modal-title-vcenter" className={"text-center w-100"}>
-				{props.title}
-          </Modal.Title>
+					{props.title}
+				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body className={"text-center "} closeButton>
 				{/* <h4>{props.title}</h4> */}
 
 				<div className={classes.contentDiv}>
-				{ReactHtmlParser(props.contentdata)}
-				<br></br>  <br></br>
+					{ReactHtmlParser(props.contentdata)}
+					<br></br>  <br></br>
 				</div>
 			</Modal.Body>
 			{/* <Modal.Footer>

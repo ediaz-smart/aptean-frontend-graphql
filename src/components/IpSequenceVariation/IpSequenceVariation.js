@@ -401,24 +401,14 @@ function IpSequenceVariation() {
     };
     const [redoInitialState, setRedoInitialState] = useState(redoInitialObj);
 
-
-
-    console.log('personalDataValue', personalDataValue)
-
-    console.log('sendMailAfterSearch', sendMailAfterSearch)
-    console.log('processHsp', processHsp)
-
     // reset login status
     useEffect(() => {
         (async () => {
             let resp;
-            console.log(tempname, "tempname tempname tempname tempname ")
-            console.log(parentId, "parentId parentId parentId parentId ")
             if (tempname) {
                 const dat = await SavedSearch.getParticularTemplate(tempname, 'Variation');
                 if (dat && dat.response_content && dat.response_content.map) {
                     const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = dat.response_content.map;
-                    console.log('qdb_seq_type', qdb_seq_type)
                     qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
                     qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
 
@@ -469,7 +459,6 @@ function IpSequenceVariation() {
                     let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
                     redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
                         if (item && item.P && item.P == "SEQUENCE_D1") {
-                            console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
@@ -495,10 +484,8 @@ function IpSequenceVariation() {
             }
             if (parentId) {
                 resp = await getSeqSearchInit(history, parentId);
-                console.log('redoresp', resp)
                 if (resp && resp.response_content && resp.response_content.redoParams) {
                     const { nucdbs, protdbs, best_hit_keep_max, nucandprot, qdb_seq, qdb_seq_type, sdb_filters, seqlenrange_high, seqlenrange_low, strat_genepast_perc_id, strat_genepast_perc_id_over, strat_name, title, strat_blast_word_size_nuc, strat_blast_scoring_matrix_nuc, strat_blast_word_size_pro, strat_blast_scoring_matrix_pro, strat_blast_eval_cutoff, strat_blast_hsp, template_name, email, strat_fragment_window_length_nuc, strat_fragment_perc_id_nuc, strat_fragment_window_length_pro, strat_fragment_perc_id_pro } = resp.response_content.redoParams;
-                    console.log('qdb_seq_type', qdb_seq_type)
                     qdb_seq_type ? setSequenceType(qdb_seq_type) : setSequenceType("nucleotide");
                     qdb_seq_type && qdb_seq_type == "protein" && strat_blast_word_size_pro ? setWordSize(strat_blast_word_size_pro) : setWordSize('3');
 
@@ -549,7 +536,6 @@ function IpSequenceVariation() {
                     let redoFilters = sdb_filters ? JSON.parse(sdb_filters) : [];
                     redoFilters && redoFilters.length > 0 && redoFilters.map((item, index) => {
                         if (item && item.P && item.P == "SEQUENCE_D1") {
-                            console.log('seq1date', moment(item.V), moment(item.V).format('YYYYMMDD'), moment(item.V).format('DD/MM/YYYY'))
                             redoInitialState.docPublicSel = item.O;
                             redoInitialState.docPublicDate = moment(item.V)._d;
                             setIsDocPubDate(true);
@@ -594,7 +580,6 @@ function IpSequenceVariation() {
                         });
                     } else if (item && item.id == ':Reference Data') {
                         // nucleotideReferenceData = item.children;
-                        console.log('item.children', item.children);
                         item.children && item.children.length > 0 && item.children.map((item, index) => {
                             if (item.id.includes("GB_")) {
                                 nucGenBank.push(item)
@@ -640,7 +625,6 @@ function IpSequenceVariation() {
 
             // if(userInfo && userInfo.current_user && userInfo.current_user.ppu_type) {
             //     let userPpu = userInfo.current_user.ppu_type;
-            //     console.log('userData', userInfo)
 
             //     setPpuType(userInfo.current_user.ppu_type);
             //     if (userPpu == "1" || userPpu == "2") {
@@ -676,7 +660,6 @@ function IpSequenceVariation() {
             if (userInfo && userInfo.current_user) {
                 let userPpu = userInfo.current_user.ppu_type;
                 let currentUser = userInfo.current_user;
-                console.log('userData', userInfo)
                 setPpuType(userPpu);
 
 
@@ -701,7 +684,6 @@ function IpSequenceVariation() {
                     setAccGroupName(userInfo.current_user.accounting_group_name)
                 }
                 if (parentId) {
-                    console.log('pare', parentId)
                     calTextCredits(null, false, 'redo')
                 }
             }
@@ -710,14 +692,10 @@ function IpSequenceVariation() {
         })()
     }, [ppuType]);
 
-    console.log('system', systemControlSubmit, 'setsubmit', isSubmitActive, 'showcredirt', showCreditCalC)
-
-
     const formik = useFormik({
         initialValues: redoInitialState,
         validationSchema: Validate.IpSeqSearchValidate(sequenceTypeValue, saveFormValue, searchAlgorithmValue, isPatientDoc),
         onSubmit: async (values) => {
-            console.log('formikValues', values)
             if ((nucDb && nucDb.length > 0) || (proDb && proDb.length > 0)) {
                 // setNoDbSelected(true);
             } else {
@@ -766,7 +744,6 @@ function IpSequenceVariation() {
                 }
                 sdbFilterData.push(obj);
             }
-            console.log('sdbFilterData.toString()', sdbFilterData)
             let userMail = userInfo && userInfo.current_user && userInfo.current_user.email ? userInfo.current_user.email : '';
             let data = {
                 qdb_seq: values.querySequence,
@@ -825,8 +802,6 @@ function IpSequenceVariation() {
                 data.strat_fragment_perc_id_pro = sequenceTypeValue && sequenceTypeValue == "protein" ? values.fragmentAminoAcid : "95"; // Percentage Identity - Prt
             }
 
-
-            console.log('submitdata', data)
             let resp = await submitSeqSearch(data, null, t);
             if (resp && resp.response_status == 0) {
                 setShowSuccessModal(true);
@@ -848,8 +823,6 @@ function IpSequenceVariation() {
         },
     });
 
-    console.log('warning', warningMsg, isWarningReturned)
-
     function list_to_tree(list) {
         var map = {}, node, roots = [], i;
 
@@ -860,7 +833,6 @@ function IpSequenceVariation() {
 
         for (i = 0; i < list.length; i += 1) {
             node = list[i];
-            //   console.log('node', node)
             if (node.parent !== null) {
                 // if you have dangling branches check that map[node.parentId] exists
                 list[map[node.parent]].children.push(node);
@@ -970,21 +942,14 @@ function IpSequenceVariation() {
         }
     }
 
-    console.log('dbtypearray', dbTypeArray)
-    console.log('nucDb', nucDb)
-    console.log('proDb', proDb)
-
     function calTextCredits(e, bothDb, type) {
-        console.log('texte', e)
         //     if(type && type =="isCompare"){
-        //         console.log('insideType', type)
         //     setIsBothDbSelected(!isBothDbSelected);
         // }
         let text;
         text = type && (type == "isCompare" || type == "redo") ? formik.values.querySequence : e.target.value;
         if ((e && (e.keyCode == 9 || e.type == "blur")) || type == "isCompare" || type == "redo") {
             // let text = formik.values.querySequence;
-            console.log('textCode', text, type)
 
             if (ppuType == '0') {
                 return;
@@ -1022,10 +987,8 @@ function IpSequenceVariation() {
                     }
                 }
             }
-            console.log('calcVal', val, 'credits', credits, 'userclsname', userClassName, 'groupname', accGroupName, 'ppu', ppuType, 'sequenceTypeValue', sequenceTypeValue, 'isBothDbSelected', bothDb)
             // seqCount = val;
             if (ppuType && ppuType == "1") {
-                console.log('Insidepputype1')
                 let ppu1SubTotal = val * 850;
                 let ppu1NucSubTotal = (sequenceTypeValue == "nucleotide" || bothDb) ? val * 850 : 0;
                 let ppu1ProSubTotal = (sequenceTypeValue == "protein" || bothDb) ? val * 850 : 0;
@@ -1037,10 +1000,8 @@ function IpSequenceVariation() {
                 creditValues.seqCount = val;
                 setCreditValues({ ...creditValues });
                 setTimeout(() => {
-                    console.log('creditValues', creditValues)
                 }, 2000);
             } else if (ppuType && ppuType == "2") {
-                console.log('Insidepputype2')
                 let ppu2NucCredit = (sequenceTypeValue == "nucleotide" || bothDb) ? val : 0;
                 let ppu2ProCredit = (sequenceTypeValue == "protein" || bothDb) ? val : 0;
                 let ppu2TotalCredit = ppu2NucCredit + ppu2ProCredit;
@@ -1051,9 +1012,6 @@ function IpSequenceVariation() {
                 creditValues.ppu2RemainingCredits = ppu2RemainingCredits;
                 creditValues.seqCount = val;
                 setCreditValues({ ...creditValues });
-                setTimeout(() => {
-                    console.log('creditValues', creditValues)
-                }, 2000);
             }
             // seqCount = val;            
             // calCredits(vßal);
@@ -1225,10 +1183,6 @@ function IpSequenceVariation() {
             label: "3"
         }
     ];
-    console.log('formik', formik)
-
-    console.log('scoring', scoringMatrixValue, wordSizeValue)
-
 
     function changeIncludeGenUnknownDate() {
         if (!isDocPubUnknownDates) {
@@ -1250,7 +1204,6 @@ function IpSequenceVariation() {
 
     const beforeAfterSelection = (e) => {
         const { name, value } = e.target;
-        console.log('e.target', e.target)
         formik.setFieldValue(name, value);
         if (name == "docPublicSel") {
             (value == "AFT" || value == "BEF") ? setIsDocPubUnknownDates(false) : setIsDocPubUnknownDates(true);
@@ -1271,14 +1224,13 @@ function IpSequenceVariation() {
 
     const handleDocCheck = (e) => {
         const { name } = e.target;
-        console.log('e.target', e.target)
-        if(name && name == "isDocumentPublic") {
-            if(isDocPubDate == true) {
+        if (name && name == "isDocumentPublic") {
+            if (isDocPubDate == true) {
                 setIsDocPubUnknownDates(false);
             }
-            setIsDocPubDate(prevState=>!prevState)
-        } else if(name && name == "publishGenomeQuest") {
-            if(isPublished == true) {
+            setIsDocPubDate(prevState => !prevState)
+        } else if (name && name == "publishGenomeQuest") {
+            if (isPublished == true) {
                 setIspublishGQUnknownDates(false);
             }
             setIsPublished(prevState => !prevState);

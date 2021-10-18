@@ -12,23 +12,23 @@ const useStyles = makeStyles((theme) => ({
 
 	modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'14px',
+		paddingTop: '14px',
 		paddingRight: '1px',
-		marginTop:'-7px',
+		marginTop: '-7px',
 		display: "block !important"
 	},
-	footerDiv:{
-		padding:'0 30px',
-		marginTop:'-5px',
-		marginRight: '-10px',	
+	footerDiv: {
+		padding: '0 30px',
+		marginTop: '-5px',
+		marginRight: '-10px',
 	},
 	contentPadding: {
 		padding: "45px !important"
 	},
-	modalBoxContent :{
+	modalBoxContent: {
 		maxHeight: '675px',
 	},
-	modalClassContent:{
+	modalClassContent: {
 		position: 'absolute',
 		width: '96%',
 		height: '31%',
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 		bottom: 'auto',
 		transform: 'translate(-50%, -50%)'
 	},
-	colorContainer:{
+	colorContainer: {
 		backgroundColor: '#EEEEEE',
 		marginTop: '-32px',
 		// marginLeft: 0px;
@@ -51,13 +51,13 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '5px',
 
 	},
-	buttonStyle:{
-		float:'right',
+	buttonStyle: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
-		color:'white',
-		backgroundColor:'##DB862D !important',
-        border: '2px solid ##DB862D !important',
+		margin: '4px',
+		color: 'white',
+		backgroundColor: '##DB862D !important',
+		border: '2px solid ##DB862D !important',
 
 	},
 	bodyPadding: {
@@ -67,7 +67,6 @@ const useStyles = makeStyles((theme) => ({
 
 function SeqVIModal(props) {
 	const classes = useStyles();
-    console.log(props,"props");
 	return (
 		<Modal
 			{...props}
@@ -77,26 +76,26 @@ function SeqVIModal(props) {
 			contentClassName={classes.modalClassContent}
 			className={classes.modalBoxContent}
 		>
-			<Modal.Header  className={classes.modalHeader}>
-				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}>
-				<CloseIcon onClick={props.saveCallBack} />
+			<Modal.Header className={classes.modalHeader}>
+				<Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}>
+					<CloseIcon onClick={props.saveCallBack} />
 				</Link>
 			</Modal.Header>
 			<Modal.Body className={"text-center " + classes.bodyPadding}>
-			<div className={classes.colorContainer}>
-			    <br></br>
-				<h5> {props.onMessage}</h5>
-				
-				
-				<br></br>
-				<div className={classes.footerDiv}>
-				{/* <Button onClick={props.onHide} className='accountInfo' color="default"  variant="contained">OK</Button>  */}
+				<div className={classes.colorContainer}>
+					<br></br>
+					<h5> {props.onMessage}</h5>
 
-					{/* <Button onClick={props.onHide} className={classes.buttonStyle} color="default" variant="contained">OK</Button> */}
+
+					<br></br>
+					<div className={classes.footerDiv}>
+						{/* <Button onClick={props.onHide} className='accountInfo' color="default"  variant="contained">OK</Button>  */}
+
+						{/* <Button onClick={props.onHide} className={classes.buttonStyle} color="default" variant="contained">OK</Button> */}
+					</div>
+
 				</div>
-		
-				</div>
-				
+
 			</Modal.Body>
 			{/* <Modal.Footer>
 				<Button onClick={props.onHide}>Close</Button>

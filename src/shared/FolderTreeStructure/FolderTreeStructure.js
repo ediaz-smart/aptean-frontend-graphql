@@ -31,11 +31,11 @@ const useStyles = makeStyles({
 });
 
 const TreeItem = withStyles({
-	root: {
-		"&.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label": {
-			backgroundColor: '#fff !important'
-		}
-	}
+  root: {
+    "&.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label": {
+      backgroundColor: '#fff !important'
+    }
+  }
 })(MaterialTreeItem);
 
 
@@ -94,7 +94,6 @@ const FolderTreeStructure = ({ treeData, parentCallBack, dbName, dataArray, seQV
         </div>
       }
     // onLabelClick={() => {
-    // console.log('nodes.label', nodes.label)
     // onSelect(nodes.type, nodes.label);
     // parentCallBack(nodes.id, dbName)
     // }}

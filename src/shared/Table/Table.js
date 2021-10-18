@@ -85,10 +85,7 @@ export default function Table({ columns, data }) {
 		columns,
 		data
 	});
-
-	console.log(headerGroups,'headerGroup');
 	// delete headerGroups[0];
-	console.log(headerGroups,'headerGroupsss');
 	return (
 		<Styles>
 			<table className="w-100 borderless tableWrap" {...getTableProps()}>

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, Fragment } from 'react';
-import { useHistory,useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { Dropdown, MenuItem, DropdownButton } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
         width: '275px',
         padding: '10px 0px',
         margin: '-8px 0 0 -5px'
-      },
+    },
     antibodyNumInput: {
         width: '8%'
     }
@@ -67,29 +67,24 @@ function ParsedXml(props) {
     const [formdata, setFormData] = useState({});
     const { workflowId } = useParams();
     const [searchSeqValue, setSeqType] = useState(props.location.state[1]);
-    const [seq,setSeq] = useState();
-    //console.log(props.location.state[0],'hallelj');
+    const [seq, setSeq] = useState();
     const userInfo = useSelector(state => state.setUserInfo);
     const [userData, setUserData] = useState();
 
-    console.log('userInfo', userInfo)
-
     useEffect(() => {
         (async () => {
-        const getResponse = await searchResAntibody.getAuthInfoAB(workflowId);
-        if (getResponse && getResponse.response_status == 0) {
-            setAuthInfo(getResponse.response_content);
-            updateFormData(getResponse.response_content);
-            //setDisableSearch(true);
-
-            console.log(disableSearch, 'disableSearch');
+            const getResponse = await searchResAntibody.getAuthInfoAB(workflowId);
+            if (getResponse && getResponse.response_status == 0) {
+                setAuthInfo(getResponse.response_content);
+                updateFormData(getResponse.response_content);
+                //setDisableSearch(true);
+            }
+            //dispatch(userActions.logout()); 
+        })()
+        if (userInfo && userInfo.current_user) {
+            setUserData(userInfo);
         }
-        //dispatch(userActions.logout()); 
-    })() 
-    if (userInfo && userInfo.current_user) {
-        setUserData(userInfo);
-    }
-},[]);
+    }, []);
     function updateFormData(data) {
         setFormData(data.formData);
         var expiredTime = data.expiredTime;
@@ -99,29 +94,24 @@ function ParsedXml(props) {
             expiredTimeInSecs = expiredTimeInSecs - Math.round(new Date().getTime() / 1000) - 90;
             // Idle.setIdle(expiredTimeInSecs < 0 ? (30 * 59) : expiredTimeInSecs);
             //Idle.watch();
-            //console.log(Idle.getIdle());
-
-            console.log("NRB expired at: " + expiredTime.date);
         }
     }
 
-    function cncl(){
+    function cncl() {
         history.push('/convertsequence');
     }
 
     const handleChangee = (event) => {
-        console.log("incside changee");
         setSeqType(event.target.value);
-       
+
     }
 
     function handleChange(e) {
         //this.setState({body: event.target.value});
-        console.log(e.target.value);
         //return val;
-      }
-    
-      const searchSeqItems = [
+    }
+
+    const searchSeqItems = [
         {
             value: props.location.state[0],
             label: "Work with: Protein sequences"
@@ -133,55 +123,51 @@ function ParsedXml(props) {
     ];
 
     const handleSeqType = (event) => {
-        console.log('target', event.target)
-        setSeqType(event.target.value); 
+        setSeqType(event.target.value);
 
     };
-    
+
     const formik = useFormik({
         initialValues: {
-            st26input: formdata.st26input 
-            
+            st26input: formdata.st26input
+
         },
         enableReinitialize: true,
         //validationSchema: Validate.AntibodySearchValidation(),
         onSubmit: async (values) => {
             let { st26input } = values;
-            //console.log(values, 'values');
-            console.log("heloooooo");
 
             let postData = {
                 xml_seq: st26input
             }
 
             const getResponse = await st26service.convertXml(postData, history, t);
-            //console.log(getResponse,'getresp');
             if (getResponse == 0) {
                 history.push({
                     pathname: '/home',
                     //state: postData 
-                    });
+                });
             } else {
                 toast.error('Error in Search');
             }
-            
-           
+
+
         },
     });
     return (
         <div className={classes.grow}>
             <form name="antibodySearchForm" onSubmit={formik.handleSubmit} className={classes.loginDiv}>
-               
+
                 <Row>
-                
+
                     <Col lg="12" md="12" className="mb-2">
-                        
+
                         <Row className="mb-2">
-                        <h6 className={"appTextColor loginTitle"}>CONVERTED XML</h6>
+                            <h6 className={"appTextColor loginTitle"}>CONVERTED XML</h6>
                         </Row>
                         <Row className="mb-2">
-                        <h6>
-                            {props.location.state[3]} Nucleotide Sequenceee and {props.location.state[2]} Protein sequences were found in the ST.26 input</h6>
+                            <h6>
+                                {props.location.state[3]} Nucleotide Sequenceee and {props.location.state[2]} Protein sequences were found in the ST.26 input</h6>
                         </Row>
                         <Row className="mb-3">
                             <SelectBox
@@ -194,44 +180,44 @@ function ParsedXml(props) {
                                 onChange={handleSeqType}
                                 className={classes.textField}
                             />
-                         </Row>
+                        </Row>
 
                         <Row className="mb-3">
-                            
-                                <Col lg="12" md="12" className="p-0 content float-left">
-                                        <TextInput 
-                                            rows="25"
-                                            multiline={true}
-                                            fullWidth
-                                            id="st26input"
-                                            name="st26input"
-                                            variant="outlined"
-                                            value={searchSeqValue}
-                                            //defaultValue={props.location.state[1]}
-                                            onChange={handleChangee}
-                                            error={formik.touched.st26input && Boolean(formik.errors.st26input)}
-                                            helperText={formik.errors.st26input}
-                                            //disabled={authInfo && authInfo.redo}
-                                        />
-                                  
-                        
-                                </Col>
-                            
+
+                            <Col lg="12" md="12" className="p-0 content float-left">
+                                <TextInput
+                                    rows="25"
+                                    multiline={true}
+                                    fullWidth
+                                    id="st26input"
+                                    name="st26input"
+                                    variant="outlined"
+                                    value={searchSeqValue}
+                                    //defaultValue={props.location.state[1]}
+                                    onChange={handleChangee}
+                                    error={formik.touched.st26input && Boolean(formik.errors.st26input)}
+                                    helperText={formik.errors.st26input}
+                                //disabled={authInfo && authInfo.redo}
+                                />
+
+
+                            </Col>
+
                         </Row>
                         <hr />
                     </Col>
 
-                   
-                
+
+
                     <Col lg="12" md="12" className="float-right mb-3">
-                    {userData && userData.vmAccess && <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('ipseqvariation')}</Button>}&nbsp;&nbsp;&nbsp;
+                        {userData && userData.vmAccess && <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('ipseqvariation')}</Button>}&nbsp;&nbsp;&nbsp;
                         <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('ipseqsearch')}</Button>&nbsp;&nbsp;&nbsp;
-                    <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={cncl}>{t('cancel')}</Button>
+                        <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={cncl}>{t('cancel')}</Button>
                     </Col>
                 </Row>
 
             </form>
-            
+
         </div>
 
     )

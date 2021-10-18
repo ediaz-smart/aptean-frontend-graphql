@@ -174,7 +174,6 @@ function RecentResults() {
 		setSearchResultData(tempArr);
 	}
 	const getProgressStatus = async (isCompleted) => {
-		console.log(isCompleted, 'isCompleted')
 		if (isCompleted) {
 			getDefaultSearchResult();
 		}
@@ -235,7 +234,6 @@ function RecentResults() {
 				} else {
 					tempObj['results'] = <a href="#" onClick={(e) => e.preventDefault()}>Empty</a>;
 				}
-				// console.log(parseInt(datas.results),'datas.results');
 				let mostRecentClassicUrl = url.mostRecentClassicUrl
 				mostRecentClassicUrl = mostRecentClassicUrl.replace('**', id);
 				let classicLink = process.env.REACT_APP_API_URL + mostRecentClassicUrl
@@ -244,7 +242,6 @@ function RecentResults() {
 				} else {
 
 					if (datas.type != '' && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED')) {
-						// console.log(datas.results.props,'datas.results');
 						if (datas.results.props.children && datas.results.props.children[0] > 0) {
 							if (datas.type == "GqWfABIpSearch") {
 								let mostRecentReportUrl = url.mostRecentReportUrl

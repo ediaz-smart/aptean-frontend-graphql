@@ -36,7 +36,6 @@ export default function Footer() {
     useEffect(() => {
         (async () => {
             let result = await CopyrightService.getCopyright();
-            // console.log(result,'result');
             if (result) {
                 setCopyRightData(result.copyright);
             }

@@ -353,20 +353,15 @@ function ResultReportFolder() {
         let test = resultSets;
 
       }
-      console.log("HAI");
       //getUserResp();
 
       document.addEventListener("keydown", escFunction, false);
-      // console.log(userInfo, 'userInfo');
       let tempAlertArr = [];
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
-      };
-      return () => {
         document.removeEventListener("keydown", escFunction, false);
-      };
-
+      };  
     }, []);
   const escFunction = useCallback((event) => {
     if (event.keyCode === 27) {
@@ -424,17 +419,16 @@ function ResultReportFolder() {
     setModalResultRemoveShow(true);
     setRemoveData(data);
   }
-  
+
   const [renameFolder, setRenameFolder] = useState(false);
   const folderNameRef = useRef('User Project Folder');
 
- 
+
   const handleRenameClick = () => {
     setRenameFolder(!renameFolder)
   }
 
   const applyNewNameToFolder = (name) => {
-    console.log(name)
     // Todo: Update the folder name on the server.
     folderNameRef.current = name
   }
@@ -495,10 +489,10 @@ function ResultReportFolder() {
 
           {gqUserId != undefined && folderId != undefined &&
             <SharedWith
-            workflowId = {folderId}
-            gqUserId = {gqUserId}
+              workflowId={folderId}
+              gqUserId={gqUserId}
             />
-            }
+          }
           <hr />
 
 

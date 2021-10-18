@@ -32,7 +32,7 @@ import SelectBox from '../../shared/Fields/SelectBox';
 import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
 import SharedWith from '../Sharing/SharedWith.js';
-import {containerWidth} from '../../shared/constants';
+import { containerWidth } from '../../shared/constants';
 
 
 
@@ -330,7 +330,6 @@ function SearchResultSequence(props) {
         getAlertRedoResp();
 
         document.addEventListener("keydown", escFunction, false);
-        // console.log(userInfo, 'userInfo');
         let tempAlertArr = [];
 
         _.each(Constant['alertOptions'], (value, key) => {
@@ -345,12 +344,11 @@ function SearchResultSequence(props) {
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-        };
-
-        return () => {
             document.removeEventListener("keydown", escFunction, false);
         };
-
+        // return () => {
+        //     document.removeEventListener("keydown", escFunction, false);
+        // };
     }, []);
 
     const escFunction = useCallback((event) => {
@@ -398,7 +396,7 @@ function SearchResultSequence(props) {
             setAlarmSetting(getAlertResponse.response_content);
         }
     }
-    
+
     const getAlertRedoResp = async () => {
         const getAlertRedoResponse = await searchResSequence.getAlertRedo(workflowId);
         if (getAlertRedoResponse && getAlertRedoResponse.response_status == 0 && getAlertRedoResponse.response_content.relatives.length > 0) {
@@ -475,7 +473,6 @@ function SearchResultSequence(props) {
                 // }
             });
             setSearchHistoryData(searchHistoryArr);
-            // console.log(redoArr,'redoArr');
             // setRedoData(redoArr);
             // setAlertData(alertArr);
         } else {
@@ -485,7 +482,6 @@ function SearchResultSequence(props) {
         }
     }
     function updateVal(state) {
-        // console.log(state, 'state');
         if (state.selectedCount > 0) {
             setDisableDelete(false);
         } else {
@@ -530,7 +526,6 @@ function SearchResultSequence(props) {
         } else {
             getIds = alertRedoData.map(function (a) { return a.id; }).join(',');
         }
-        // console.log(getIds,'getIds');
         const deleteResp = await SearchManagementService.deleteSearchResult(getIds, history);
         // setModalShow(true);
         setDelLoaderContent(true);
@@ -558,7 +553,6 @@ function SearchResultSequence(props) {
     const downloadTechLog = async (e, workflowId) => {
         e.preventDefault()
         await searchResSequence.getSeqTechnical(workflowId);
-        // console.log(getTechResp,'getTechResp');
     }
     const showAlertModal = async (e) => {
         e.preventDefault();
@@ -576,7 +570,6 @@ function SearchResultSequence(props) {
         } else {
             toast.error('Update in Error.');
         }
-        // console.log(getSettingResponse,'getSettingResponse');
     }
     const removeAlert = async (e) => {
         e.preventDefault();
@@ -586,7 +579,6 @@ function SearchResultSequence(props) {
         } else {
             toast.error('Removing in Error.');
         }
-        console.log(getremoveResponse, 'getremoveResponse');
     }
 
     function cancelForm() {
@@ -606,7 +598,6 @@ function SearchResultSequence(props) {
         if (notes) {
             let updateParam = '&description=' + notes;
             updateSeqData(workflowId, updateParam);
-            // console.log(getnotesResponse,'getnotesResponse');
         } else {
             toast.error('Please Enter Notes to Save Changes.');
         }
@@ -644,7 +635,7 @@ function SearchResultSequence(props) {
             <Row className="p-3">
                 <Col lg="12" md="12" sm="12" className="mb-5">
                     <Typography className={classes.root + " float-right"}>
-                    <span className={classes.pTagMargin}><a onClick={searchResult}>{t('allSearchResults')}</a></span>
+                        <span className={classes.pTagMargin}><a onClick={searchResult}>{t('allSearchResults')}</a></span>
                         <span className={classes.headerPipe + " appTextColor"}>|</span>
                         <span className={"appTextColor appLink"} title={t('auditTrial')}>
                             {t('auditTrial')}
@@ -880,12 +871,12 @@ function SearchResultSequence(props) {
                     <hr />
 
                     {gqUserId != undefined && workflowId != undefined &&
-                    <SharedWith
-                    workflowId = {workflowId}
-                    gqUserId = {gqUserId}
-                    />
+                        <SharedWith
+                            workflowId={workflowId}
+                            gqUserId={gqUserId}
+                        />
                     }
-                    
+
                     <hr />
                     <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('alertSetting')}​</h6>
                     <Row>

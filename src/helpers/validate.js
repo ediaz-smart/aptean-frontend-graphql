@@ -11,7 +11,7 @@ const Validate = {
     InformationDataValidate,
     ChangePasswordValidate,
     AntibodySearchValidation,
-    MergeResultsValidate    
+    MergeResultsValidate
 };
 
 function LoginValidate() {
@@ -102,7 +102,6 @@ function ChangePasswordValidate() {
 }
 
 function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm, isPatientDoc) {
-    console.log('seqType', seqType, searchAlgorithm)
     const { t, i18n } = useTranslation('common');
     let validationShape = {
         searchDetails: yup
@@ -158,7 +157,7 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm, isPatientD
             .max(48, t('48OnlyAllowed'))
             .trim()
     }
-    if(searchAlgorithm && searchAlgorithm == "kerr") {
+    if (searchAlgorithm && searchAlgorithm == "kerr") {
         validationShape.genePastPercentage = yup
             .number()
             .integer(t('valueMustBeInteger'))
@@ -166,54 +165,53 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm, isPatientD
             .min(65, t('genePastPercentageIncorrect'))
             .max(100, t('genePastPercentageIncorrect'))
             .typeError(t('genePastPercentageIncorrect'))
-    } else if(searchAlgorithm && searchAlgorithm == "blast") {
+    } else if (searchAlgorithm && searchAlgorithm == "blast") {
         validationShape.expectCutoff = yup
             .number()
             .required(t('expectCutoffRequired'))
             .typeError(t('expectCutoffNotNumber'))
             .min(0, t('expectCutOffErr'))
             .max(100, t('expectCutOffErr'))
-    } else if(searchAlgorithm && searchAlgorithm == "fragment") {
-        console.log('fragSeq', seqType)
+    } else if (searchAlgorithm && searchAlgorithm == "fragment") {
         validationShape.fragmentStretch = yup
             .number()
             .integer(t('valueMustBeInteger'))
             .required(t('fragmentStretchRequired'))
             .typeError(t('fragmentStretchNotNumber'))
             .min(1, t('fragmentStretchNotNumber'))
-            if(seqType && seqType == "nucleotide") {
-                validationShape.fragmentAminoAcid = yup
+        if (seqType && seqType == "nucleotide") {
+            validationShape.fragmentAminoAcid = yup
                 .number()
                 .integer(t('valueMustBeInteger'))
                 .required(t('genePastPercentageReq'))
                 .min(91, t('fragmentNucPerError'))
                 .max(100, t('fragmentNucPerError'))
                 .typeError(t('fragmentNucPerError'))
-                validationShape.fragmentStretch = yup
+            validationShape.fragmentStretch = yup
                 .number()
                 .integer(t('valueMustBeInteger'))
                 .required(t('fragmentStretchRequired'))
                 .typeError(t('fragmentStretchNotNumber'))
                 .min(10, t('fragNucStretchError'))
                 .max(1000, t('fragNucStretchError'))
-            } else if(seqType && seqType == "protein") {
-                validationShape.fragmentAminoAcid = yup
+        } else if (seqType && seqType == "protein") {
+            validationShape.fragmentAminoAcid = yup
                 .number()
                 .integer(t('valueMustBeInteger'))
                 .required(t('genePastPercentageReq'))
                 .min(81, t('fragmentProPerError'))
                 .max(100, t('fragmentProPerError'))
                 .typeError(t('fragmentProPerError'))
-                validationShape.fragmentStretch = yup
+            validationShape.fragmentStretch = yup
                 .number()
                 .integer(t('valueMustBeInteger'))
                 .required(t('fragmentStretchRequired'))
                 .typeError(t('fragmentStretchNotNumber'))
                 .min(5, t('fragProStretchError'))
                 .max(1000, t('fragProStretchError'))
-            }
-    } 
-    if(isPatientDoc) {
+        }
+    }
+    if (isPatientDoc) {
         validationShape.patientDocInp = yup
             .number()
             .integer(t('valueMustBeInteger'))
@@ -228,7 +226,6 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm, isPatientD
 }
 yup.addMethod(yup.string, "validateCdr", function (message) {
     // const { message } = args;
-    // console.log(args,'args');
     return yup.mixed().test(`validateCdr`, message, function (value) {
         const { path, createError } = this;
         let isValid = true;
@@ -242,7 +239,7 @@ yup.addMethod(yup.string, "validateCdr", function (message) {
                 isValid = value.match(letters);
             }
             return isValid || createError({ path, message });
-        }else {
+        } else {
             return isValid || createError({ path, message });
         }
 
@@ -251,8 +248,7 @@ yup.addMethod(yup.string, "validateCdr", function (message) {
 })
 yup.addMethod(yup.string, "validateMismatch", function (seqType) {
     // const { message } = args;
-    // console.log(yup.mixed().parent,'data');
-    return yup.mixed().test(`validateMismatch`, function (val,ctx) {
+    return yup.mixed().test(`validateMismatch`, function (val, ctx) {
         const { path, createError } = this;
         let message = '';
         let isValid = true;
@@ -262,8 +258,7 @@ yup.addMethod(yup.string, "validateMismatch", function (seqType) {
             let isValid = true;
             // value = value.replace(/\s+/g, '');
             let maxVal = 0;
-            if(text)
-            {
+            if (text) {
                 maxVal = Math.floor(text.length / 5);
             }
             if (val !== undefined && val !== null && val >= 0 && val <= maxVal) {
@@ -272,17 +267,16 @@ yup.addMethod(yup.string, "validateMismatch", function (seqType) {
                 isValid = false;
             }
             return isValid || createError({ path, message });
-        }else {
+        } else {
             return isValid || createError({ path, message });
         }
 
 
     })
 })
-yup.addMethod(yup.string, "validateStrategy", function (strategyType,t) {
+yup.addMethod(yup.string, "validateStrategy", function (strategyType, t) {
     // const { message } = args;
-    // console.log(yup.mixed().parent,'data');
-    return yup.mixed().test(`validateStrategy`, function (val,ctx) {
+    return yup.mixed().test(`validateStrategy`, function (val, ctx) {
         const { path, createError } = this;
         let message = '';
         let isValid = true;
@@ -290,20 +284,18 @@ yup.addMethod(yup.string, "validateStrategy", function (strategyType,t) {
             // let keyValue = "cdrhcseq"+num;
             let text = ctx.parent[strategyType];
             let isValid = true;
-            if(text =='genepast' && path == "percId")
-            {
+            if (text == 'genepast' && path == "percId") {
                 if (val < 65 || val > 100) {
                     isValid = false;
                     message = t('percErr');
                 }
-            }else {
-                if(path == "expectCutoff")
-                {
+            } else {
+                if (path == "expectCutoff") {
                     if (val < 0 || val > 100) {
                         isValid = false;
                         message = t('expectCutOffErr');
                     }
-                }else if(path == "wordSize"){
+                } else if (path == "wordSize") {
                     if (val < 2 || val > 3) {
                         isValid = false;
                         message = t('wordSizeErr');
@@ -311,7 +303,7 @@ yup.addMethod(yup.string, "validateStrategy", function (strategyType,t) {
                 }
             }
             return isValid || createError({ path, message });
-        }else {
+        } else {
             return isValid || createError({ path, message });
         }
 
@@ -321,13 +313,11 @@ yup.addMethod(yup.string, "validateStrategy", function (strategyType,t) {
 yup.addMethod(yup.string, "validateSeq", function (message) {
     const { t, i18n } = useTranslation('common');
     // const { message } = args;
-    // console.log(args,'args');
-    return yup.mixed().test(`validateSeq`,message, function (text) {
+    return yup.mixed().test(`validateSeq`, message, function (text) {
         const { path, createError } = this;
         let isValid = true;
         let val = 0;
-        let returnMsg='';
-        console.log('requiredMsg', t('required'))
+        let returnMsg = '';
         if (text && text !== undefined && text !== 'undefined') {
             returnMsg = message;
             let lines = text.split(/[\r\n]+/); // split by \n, \r and \r\n, and filter out empty lines
@@ -365,8 +355,8 @@ yup.addMethod(yup.string, "validateSeq", function (message) {
                 isValid = false;
             }
             return isValid || createError({ path, message: returnMsg });
-        }else {
-            if(path == 'querySequence' && val == 0) {
+        } else {
+            if (path == 'querySequence' && val == 0) {
                 isValid = false;
                 returnMsg = t('querySeqReq');
             }
@@ -376,7 +366,6 @@ yup.addMethod(yup.string, "validateSeq", function (message) {
     })
 })
 function AntibodySearchValidation(saveFormValue) {
-    // console.log('seqType', seqType)
     const { t, i18n } = useTranslation('common');
 
     let validationShape = {
@@ -386,13 +375,13 @@ function AntibodySearchValidation(saveFormValue) {
             .max(188, t('188OnlyAllowed')),
         cdrhcseq1: yup.string()
             .validateCdr(t('sequenceTextErr')),
-            // .required(t('cdrhc1Req')),
+        // .required(t('cdrhc1Req')),
         cdrhcseq2: yup.string()
             .validateCdr(t('sequenceTextErr')),
-            // .required(t('cdrhc2Req')),
+        // .required(t('cdrhc2Req')),
         cdrhcseq3: yup.string()
             .validateCdr(t('sequenceTextErr')),
-            // .required(t('cdrhc3Req')),
+        // .required(t('cdrhc3Req')),
         hcOption1: yup.string()
             .validateMismatch('cdrhcseq1'),
         hcOption2: yup.string()
@@ -401,13 +390,13 @@ function AntibodySearchValidation(saveFormValue) {
             .validateMismatch('cdrhcseq3'),
         cdrlcseq1: yup.string()
             .validateCdr(t('sequenceTextErr')),
-            // .required(t('cdrhc1Req')),
+        // .required(t('cdrhc1Req')),
         cdrlcseq2: yup.string()
             .validateCdr(t('sequenceTextErr')),
-            // .required(t('cdrhc2Req')),
+        // .required(t('cdrhc2Req')),
         cdrlcseq3: yup.string()
             .validateCdr(t('sequenceTextErr')),
-            // .required(t('cdrhc3Req')),
+        // .required(t('cdrhc3Req')),
         lcOption1: yup.string()
             .validateMismatch('cdrlcseq1'),
         lcOption2: yup.string()
@@ -415,11 +404,11 @@ function AntibodySearchValidation(saveFormValue) {
         lcOption3: yup.string()
             .validateMismatch('cdrlcseq3'),
         percId: yup.string()
-            .validateStrategy('strategy',t),
+            .validateStrategy('strategy', t),
         expectCutoff: yup.string()
-            .validateStrategy('strategy',t),
+            .validateStrategy('strategy', t),
         wordSize: yup.string()
-            .validateStrategy('strategy',t),
+            .validateStrategy('strategy', t),
         hcFullSeq: yup.string()
             .validateSeq(t('fullSeqErr')),
         lcFullSeq: yup.string()
@@ -438,11 +427,11 @@ function AntibodySearchValidation(saveFormValue) {
     return validationSchema;
 }
 
-yup.addMethod(yup.string, "validateFormName", function(message, isSaveForm) {
+yup.addMethod(yup.string, "validateFormName", function (message, isSaveForm) {
     return yup.mixed().test(`validateFormName`, message, function () {
         const { path, createError } = this;
         let isValid = true;
-        if(isSaveForm){
+        if (isSaveForm) {
             isValid = false;
         }
         return isValid || createError(path, message)

@@ -8,39 +8,36 @@ import { getPageCount } from '../../reducers/slice/comonSlice';
 const initialState = { isLoggedIn: false }
 
 
-export const submitLogin = (data,history, t) => async (dispatch) => {
+export const submitLogin = (data, history, t) => async (dispatch) => {
     // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
-   // const history = useHistory();
-   const postdata = new FormData();
+    // const history = useHistory();
+    const postdata = new FormData();
     postdata.append("GQUSERID", data.GQUSERID);
     postdata.append("GQPASSWORD", data.GQPASSWORD);
-    return post(url.login, postdata,history)
+    return post(url.login, postdata, history)
         .then(async (response) => {
-            console.log(response,"response response response response response response response");
-            if(response && response.response_status == 0)
-            {
-                console.log(response,"response response response response response response response");
+            if (response && response.response_status == 0) {
                 await dispatch(getUserServerInfo());
                 await dispatch(getPageCount());
                 toast.success(t('loginSuccess'));
-                localStorage.setItem('User_'+data.GQUSERID, response);
+                localStorage.setItem('User_' + data.GQUSERID, response);
 
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('userName', data.GQUSERID);
-                dispatch(setUser({GQUSERID: data.GQUSERID,isLoggedIn: true }));
+                dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
                 history.push('/home');
-            }else {
+            } else {
                 let errorMsg = 'Unable to Login';
-                dispatch(setUser({isLoggedIn: false }));
-                if(response && typeof response.response_content === 'object' && response.response_content !== null){
+                dispatch(setUser({ isLoggedIn: false }));
+                if (response && typeof response.response_content === 'object' && response.response_content !== null) {
                     errorMsg = response;
                 }
                 return errorMsg;
                 // toast.error(errorMsg);
-                
+
             }
         })
-        .catch((error) => { 
+        .catch((error) => {
             toast.error('loginFailed');
             console.log("error::", error);
 

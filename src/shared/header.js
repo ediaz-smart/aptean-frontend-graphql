@@ -122,7 +122,6 @@ export default function Header(props) {
 
 
     // const routeToDocLink = () => {
-    //     console.log("SDAASDADSADSDAS");
     //     window.location.assign('http://github.com');
     // };
 
