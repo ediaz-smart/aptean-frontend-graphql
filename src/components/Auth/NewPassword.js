@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 // import { toast } from 'react-toastify';
-import NewsUpdate from '../../shared/newspdate';
+import NewsUpdate from '../../shared/NewsUpdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';

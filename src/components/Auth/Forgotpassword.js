@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
-import NewsUpdate from '../../shared/newspdate';
+import NewsUpdate from '../../shared/NewsUpdate';
 import { makeStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -34,10 +34,10 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #bfb4b4',
         borderRadius: '6px'
     },
-    navbarClass :{
+    navbarClass: {
         marginTop: '0px'
     },
-    loginLogoDiv:{
+    loginLogoDiv: {
         position: 'relative',
         width: '100%'
     },
@@ -59,22 +59,22 @@ const useStyles = makeStyles((theme) => ({
 
 function Forgotpassword() {
     const classes = useStyles();
-    const {t, i18n} = useTranslation('common');
-    const [errorMsg,setErrorMsg] = useState(0);
+    const { t, i18n } = useTranslation('common');
+    const [errorMsg, setErrorMsg] = useState(0);
     // const [retryState, setRetryState] = useState(false);
     const [passwordForm, setPasswordForm] = useState(true);
     const [locked, setLocked] = useState(false);
 
-    const [verifycaptchaCode, setcaptchaCode] = useState(); 
+    const [verifycaptchaCode, setcaptchaCode] = useState();
     const dispatch = useDispatch();
     const history = useHistory();
-     const formik = useFormik({
+    const formik = useFormik({
         initialValues: {
             userName: '',
             captchaCode: '',
         },
         validationSchema: Validate.ForgotValidate(),
-         onSubmit: async(values) => {
+        onSubmit: async (values) => {
             // setErrorMsg(0);
             if (values.captchaCode == verifycaptchaCode) {
                 const result = await PasswordService.forgotPassword(values.userName);
@@ -86,31 +86,29 @@ function Forgotpassword() {
                     // setErrorMsg(3);
                     setErrorMsg(0);
                     setPasswordForm(false);
-                    
-                    if(result.response_content.errors[0] == 'locked')
-                    {
+
+                    if (result.response_content.errors[0] == 'locked') {
                         setLocked(true);
                     }
-                    
-                   
+
+
                 }
-                else{
+                else {
                     setErrorMsg(0);
                     setPasswordForm(false);
                     toast.success("Success");
                 }
-               
+
             }
-            else{
-                
-            setErrorMsg(1);
-            // toast.error("Captcha InCorrect ! Try Again");
-            // setPasswordForm(false);
+            else {
+
+                setErrorMsg(1);
+                // toast.error("Captcha InCorrect ! Try Again");
+                // setPasswordForm(false);
             }
         },
     });
-    function updateCode(captchaCode)
-    {    
+    function updateCode(captchaCode) {
         setcaptchaCode(captchaCode);
     }
     // reset login status

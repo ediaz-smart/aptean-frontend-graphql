@@ -32,7 +32,7 @@ import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal'
 import { useSelector } from 'react-redux';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import SortIcon from "@material-ui/icons/ArrowDownward";
-import RenameFolderContainer from './RenameFolderContainer'
+import RenameContainer from '../../shared/components/RenameContainer'
 import SharedWith from '../Sharing/SharedWith.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -361,7 +361,7 @@ function ResultReportFolder() {
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
         document.removeEventListener("keydown", escFunction, false);
-      };  
+      };
     }, []);
   const escFunction = useCallback((event) => {
     if (event.keyCode === 27) {
@@ -461,10 +461,10 @@ function ResultReportFolder() {
               <Button variant="contained" disableRipple={true} onClick={handleRenameClick} className={classes.loginSubmitCancel}>{t('cancel')}</Button>
           </div>  */}
           {renameFolder ?
-            <RenameFolderContainer value={folderNameRef.current}
-              applyNewName={applyNewNameToFolder}
-              folderNameRef={folderNameRef}
-              cancelButtonClass={classes.loginSubmitCancel} setRenameFolder={setRenameFolder} />
+            <RenameContainer applyNewName={applyNewNameToFolder}
+              nameRef={folderNameRef}
+              placeHolderText={'Folder Name'}
+              cancelButtonClass={classes.loginSubmitCancel} setRenameEnabled={setRenameFolder} />
             : <h6 className={"appTextColor loginTitle"} id="resultSharing">{folderNameRef.current}</h6>}
 
           <div>

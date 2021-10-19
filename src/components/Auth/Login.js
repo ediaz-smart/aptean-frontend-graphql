@@ -7,7 +7,7 @@ import GQLogoComponent from '../../shared/components/GQLogoComponent';
 import Button from '@material-ui/core/Button';
 import { Row, Col } from 'react-bootstrap';
 import { useTranslation, } from "react-i18next";
-import NewsUpdate from '../../shared/newspdate';
+import NewsUpdate from '../../shared/NewsUpdate';
 import { makeStyles } from '@material-ui/core/styles';
 import { submitLogin } from '../../reducers/slice/loginSlice';
 import Validate from '../../helpers/validate';

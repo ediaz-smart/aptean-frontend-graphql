@@ -1,15 +1,18 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Button } from "@material-ui/core";
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 
-const RenameFolderContainer = props => {
+const RenameContainer = props => {
     const { t } = useTranslation('common');
-    const tempFolderNameRef = useRef(props.folderNameRef.current)
+    const tempNameRef = useRef(props.nameRef.current)
     const inputRef = useRef(null)
     const handleCancelButtonClick = () => {
-        props.setRenameFolder(false)
+        props.setRenameEnabled(false)
     }
+    useEffect(() => {
+        inputRef.current.focus()
+    })
     const useStyles = makeStyles((theme) => ({
         applyButtonStyle: {
             float: 'right',
@@ -35,10 +38,10 @@ const RenameFolderContainer = props => {
     // }
 
     const inputElementStyle = {
-        height: '33px',
+        height: '39px',
         fontSize: '14px',
         outline: 'none',
-        borderRadius: '4px',
+        borderRadius: '6px',
         padding: '1px 10px',
         border: '1px solid #ccc',
         '&:placeholder': {
@@ -48,20 +51,21 @@ const RenameFolderContainer = props => {
 
     const handleApplyButtonClick = (e) => {
         e.stopPropagation()
-        if (tempFolderNameRef.current.length > 0) {
-            props.applyNewName(tempFolderNameRef.current)
-            handleCancelButtonClick()
+        if (tempNameRef.current.length > 0) {
+            props.applyNewName(tempNameRef.current)
         }
     }
     const handleChange = e => {
-        tempFolderNameRef.current = e.target.value
+        tempNameRef.current = e.target.value
     }
-
     return (
         <div className={classes.renameFolderContainer}>
             <input style={inputElementStyle}
+                type={'text'}
                 onInput={handleChange} ref={inputRef}
-                defaultValue={props.value} placeholder={'Folder Name'} />
+                maxLength={props.maxLength}
+                defaultValue={tempNameRef?.current ? tempNameRef.current : ''}
+                placeholder={props.placeHolderText} />
             <Button variant="contained" disableRipple={true} className={props.cancelButtonClass} onClick={handleCancelButtonClick}>{t('cancel')}</Button>
             <Button className={classes.applyButtonStyle} onClick={handleApplyButtonClick}>
                 {t("Apply")}
@@ -70,4 +74,4 @@ const RenameFolderContainer = props => {
     )
 }
 
-export default RenameFolderContainer
+export default RenameContainer

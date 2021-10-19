@@ -31,13 +31,9 @@ import { url } from '../../reducers/url';
 import SelectBox from '../../shared/Fields/SelectBox';
 import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
 import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
+import RenameContainer from '../../shared/components/RenameContainer'
 import SharedWith from '../Sharing/SharedWith.js';
 import { containerWidth } from '../../shared/constants';
-
-
-
-
-
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -75,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     loginSubmitCancel: {
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
-        border: '2px solid #1F4E79',
+        border: '1px solid #1F4E79',
         color: 'white',
         margin: '4px',
         textTransform: 'capitalize',
@@ -179,7 +175,11 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '-16px',
         display: "block !important"
     },
-
+    searchTitleText: {
+        '&:hover': {
+            cursor: 'pointer'
+        },
+    }
 
 }));
 const columns = [
@@ -310,7 +310,7 @@ function SearchResultSequence(props) {
 
     // To Update Title
     const [updateTitle, setUpdateTitle] = useState(false);
-    const [titleName, setTitleName] = useState('');
+    const titleNameRef = useRef('');
     const [titleNameErr, setTitleNameErr] = useState(false);
 
     // To disable shared user ids in add share popup
@@ -341,9 +341,9 @@ function SearchResultSequence(props) {
         });
         setAlertSettingData([...alertSettingData])
         // setAlertSettingValue(7);
-        document.addEventListener("mousedown", handleClickOutside);
+        // document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+            // document.removeEventListener("mousedown", handleClickOutside);
             document.removeEventListener("keydown", escFunction, false);
         };
         // return () => {
@@ -352,19 +352,20 @@ function SearchResultSequence(props) {
     }, []);
 
     const escFunction = useCallback((event) => {
-        if (event.keyCode === 27) {
+        if (updateTitle && event.keyCode === 27) {
             //Do whatever when esc is pressed
-            disableTitleText();
+            setUpdateTitle(false);
         }
     }, []);
-    const handleClickOutside = event => {
-        if (event.target.type !== "text") {
-            disableTitleText();
-        }
-    };
-    const disableTitleText = async () => {
-        setUpdateTitle(false);
-    };
+    // const handleClickOutside = event => {
+    //     console.log(updateTitle)
+    //     if (event.target.type !== "text") {
+    //         disableTitleText();
+    //     }
+    // };
+    // const disableTitleText = async () => {
+    //     setUpdateTitle(false);
+    // };
 
     const getSummaryResp = async () => {
         const getSummaryResponse = await searchResSequence.getSequenceSummary(workflowId);
@@ -375,7 +376,7 @@ function SearchResultSequence(props) {
                 usedSpace = (diskUsage / (1024 * 1024));
                 usedSpace = usedSpace.toFixed(2);
             }
-            setTitleName(getSummaryResponse.response_content.text_label);
+            titleNameRef.current = getSummaryResponse.response_content.text_label;
             setGqUserId(getSummaryResponse.response_content.gq_user_id);
             // setSharedIds(getSummaryResponse.response_content.gq_user_id);
             getSummaryResponse.response_content['usedSpace'] = usedSpace;
@@ -585,14 +586,15 @@ function SearchResultSequence(props) {
         setModalResultRemoveShow(false);
     }
 
-    const updateNewTitle = async (e) => {
-        if (e.keyCode == 13) {
-            if (titleNameErr) {
-                return;
-            }
-            let updateParam = '&text_label=' + titleName;
-            updateSeqData(workflowId, updateParam);
+    const updateNewTitle = async (name) => {
+        // if (e.keyCode == 13) {
+        if (titleNameErr) {
+            return;
         }
+        let updateParam = '&text_label=' + name;
+        titleNameRef.current = name;
+        updateSeqData(workflowId, updateParam);
+        // }
     }
     const updateNotes = async () => {
         if (notes) {
@@ -604,6 +606,7 @@ function SearchResultSequence(props) {
     }
     const updateSeqData = async (workflowId, updateParam) => {
         const getnotesResponse = await searchResSequence.updateSeqNotes(workflowId, updateParam);
+        console.log(getnotesResponse)
         if (getnotesResponse && getnotesResponse.response_status == 0) {
             getSummaryResp();
             toast.success('Updated Successfully');
@@ -615,11 +618,11 @@ function SearchResultSequence(props) {
     }
     const showUpdateTitleText = (e) => {
         e.preventDefault();
+        titleNameRef.current = seqSummary.text_label;
         setUpdateTitle(true);
-        setTitleName(seqSummary.text_label);
     }
     const updateTitleName = async (e) => {
-        setTitleName(e.target.value);
+        titleNameRef.current = e.target.value;
         if (e.target.value.length > 188) {
             setTitleNameErr(true);
         } else {
@@ -659,7 +662,7 @@ function SearchResultSequence(props) {
                     </Typography>
                 </Col>
                 <Col lg="12" md="12" sm="12">
-                    <h6 className={"appTextColor loginTitle " + (!updateTitle ? 'd-block' : 'd-none')} onClick={(e) => showUpdateTitleText(e)}>{seqSummary && seqSummary.text_label}</h6>
+                    {/* <h6 className={"appTextColor loginTitle " + (!updateTitle ? 'd-block ' : 'd-none ') + classes.searchTitleText} onClick={(e) => showUpdateTitleText(e)}>{seqSummary && seqSummary.text_label}</h6>
                     <div className={"form-group col-md-6 " + (updateTitle ? 'd-block' : 'd-none')}>
                         <TextInput
                             fullWidth={true}
@@ -675,7 +678,14 @@ function SearchResultSequence(props) {
                             error={titleNameErr}
                             helperText={titleNameErr && t('188OnlyAllowed')}
                         />
-                    </div>
+                    </div> */}
+                    {updateTitle ?
+                        <RenameContainer applyNewName={updateNewTitle}
+                            nameRef={titleNameRef}
+                            placeHolderText={'Title'}
+                            maxLength={188}
+                            cancelButtonClass={classes.loginSubmitCancel} setRenameEnabled={setUpdateTitle} />
+                        : <h6 className={"appTextColor loginTitle " + classes.searchTitleText} onClick={e => showUpdateTitleText(e)} id="resultSharing">{titleNameRef.current}</h6>}
                     <Row>
                         <Col lg="1" md="1" sm="12" className="pr-0 text-center">
                             <img src={seqSearchImg} alt={seqSummary && seqSummary.text_label} />

@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
         overflowX: 'unset'
     }
 }));
-function Newsupdate(props) {
+function NewsUpdate(props) {
     const classes = useStyles();
     const [newsData, setNewsData] = useState('');
     const { t, i18n } = useTranslation('common');
@@ -80,4 +80,4 @@ function Newsupdate(props) {
     );
 }
 
-export default Newsupdate;
+export default NewsUpdate;

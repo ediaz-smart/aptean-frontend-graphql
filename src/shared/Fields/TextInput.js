@@ -13,7 +13,10 @@ const useStyles = makeStyles((theme) => ({
         },
         "& .MuiOutlinedInput-root": {
             borderRadius: "7px",
-            backgroundColor: "white"
+            backgroundColor: "white",
+            '&.Mui-focused fieldset': {
+                borderColor: '#337AB7',
+            },
         },
         "&::placeholder": {
             fontFamily: 'Arial, Helvetica, sans-serif ,Helvetica Neue',
