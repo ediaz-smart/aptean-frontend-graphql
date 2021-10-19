@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
   gridRoot: {
     width: '257px'
   }
-  // ,
   // '@media (max-width: 780px)': {
   //     gridRoot: {
   //         width: '193px',

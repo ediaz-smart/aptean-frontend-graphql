@@ -564,7 +564,7 @@ function IpSequenceVariation() {
             // const resp = await getSeqSearchResults(history);
             if (resp && resp.response_content && resp.response_content.sdb_nuc_tree && resp.response_content.sdb_nuc_tree.length > 0) {
                 let nucData = resp.response_content.sdb_nuc_tree;
-                let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [], nucDefaultPatentDb = [];
+                let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [], nucDefaultPatentDb = [], nucMyData = [];
                 let nucFormattedData = await list_to_tree(nucData);
                 let getNucChild = [];
                 if (nucFormattedData && nucFormattedData.length > 0) {
@@ -589,12 +589,16 @@ function IpSequenceVariation() {
                         })
                     } else if (item && item.id == ':Data Shared With Me') {
                         nucDataShardWithMe = item;
+
+                    } else if (item && item.id == ':My Data') {
+                        nucMyData = item;
                     }
+
                 })
                 setNucleotideData(resp.response_content.sdb_nuc_tree);
                 setNucPatentData(nucleotidePatent);
                 setNucReferenceData(nucleotideReferenceData);
-                setNucPersonalData(nucDataShardWithMe);
+                setNucPersonalData(nucMyData);
                 setNucGenBankData(nucGenBank);
                 if (!parentId && !tempname) {
                     setNucDb(nucDefaultPatentDb);
@@ -602,7 +606,7 @@ function IpSequenceVariation() {
             }
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
                 let proteinData = resp.response_content.sdb_pro_tree;
-                let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [];
+                let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [], proMyData = [];
                 let proFormattedData = await list_to_tree(proteinData);
                 let getProChild = [];
                 if (proFormattedData && proFormattedData.length > 0) {
@@ -615,12 +619,14 @@ function IpSequenceVariation() {
                         proteinReferenceData = item.children;
                     } else if (item && item.id == ':Data Shared With Me') {
                         proDataShardWithMe = item;
+                    } else if (item && item.id == ':My Data') {
+                        proMyData = item;
                     }
                 })
                 setProteinData(resp.response_content.sdb_pro_tree);
                 setProPatentData(proteinPatent);
                 setProReferenceData(proteinReferenceData);
-                setProPersonalData(proDataShardWithMe);
+                setProPersonalData(proMyData);
             }
 
             // if(userInfo && userInfo.current_user && userInfo.current_user.ppu_type) {

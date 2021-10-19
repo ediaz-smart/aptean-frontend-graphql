@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link, useHistory } from 'react-router-dom';
@@ -17,12 +16,12 @@ import { toast } from 'react-toastify';
 import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
 import SaveContentModal from '../../shared/Modal/SaveContentModal'
 import moment from 'moment';
-
+import { containerWidth } from '../../shared/constants'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
-    width: '96%',
+    width: containerWidth,
     margin: '30px auto',
     minHeight: '260px',
     marginTop: '70px',
@@ -230,7 +229,7 @@ function AccountInfo() {
       <form name="accountInformationForm" onSubmit={formik.handleSubmit} >
         <div>
           <h5 style={GreyText}>{t('yourdetails')}</h5>
-          <Container>
+          <div>
             <div style={TextLeft}>
               <br></br>
               <TextInput
@@ -278,11 +277,11 @@ function AccountInfo() {
                 </TableBody>
               </Table>
             </TableContainer>
-          </Container>
+          </div>
         </div>
         <div>
           <h5 style={GreyText}>{t('aiaccount')}</h5>
-          <Container>
+          <div>
             <TableContainer>
               <Table aria-label="simple table">
                 <TableBody>
@@ -309,11 +308,11 @@ function AccountInfo() {
                 </TableBody>
               </Table>
             </TableContainer>
-          </Container>
+          </div>
         </div>
         <div>
           <h5 style={GreyText}>{t('aistorage')}</h5>
-          <Container>
+          <div>
             <TableContainer>
               <Table aria-label="simple table">
                 <TableBody>
@@ -332,11 +331,11 @@ function AccountInfo() {
                 </TableBody>
               </Table>
             </TableContainer>
-          </Container>
+          </div>
         </div>
         <div>
           <h5 style={GreyText}>{t('aiapplychange')}</h5>
-          <Container>
+          <div>
             <div style={TextLeft}>
               <br></br>
               <div >
@@ -386,8 +385,7 @@ function AccountInfo() {
               onMessage={'Your changes have been saved.'}
               type="seqSearch"
             />
-
-          </Container>
+          </div>
         </div>
       </form>
     </div>

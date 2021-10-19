@@ -358,7 +358,6 @@ function SearchResultSequence(props) {
         }
     }, []);
     // const handleClickOutside = event => {
-    //     console.log(updateTitle)
     //     if (event.target.type !== "text") {
     //         disableTitleText();
     //     }
@@ -606,7 +605,6 @@ function SearchResultSequence(props) {
     }
     const updateSeqData = async (workflowId, updateParam) => {
         const getnotesResponse = await searchResSequence.updateSeqNotes(workflowId, updateParam);
-        console.log(getnotesResponse)
         if (getnotesResponse && getnotesResponse.response_status == 0) {
             getSummaryResp();
             toast.success('Updated Successfully');

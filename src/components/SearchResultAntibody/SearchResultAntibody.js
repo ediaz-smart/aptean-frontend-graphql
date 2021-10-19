@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, Fragment } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { useTranslation } from "react-i18next";
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
@@ -10,6 +10,13 @@ import { useFormik } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import { toast } from 'react-toastify';
 import _ from "lodash";
+
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import FolderTreeStructure from '../../shared/FolderTreeStructure/FolderTreeStructure';
 
 
 import TextInput from '../../shared/Fields/TextInput';
@@ -24,7 +31,52 @@ import SavedSearch from '../../services/savedsearch';
 import SeqVIModal from '../../shared/Modal/SeqVIModal';
 import { containerWidth } from '../../shared/constants'
 
+const Accordion = withStyles({
+    root: {
+        boxShadow: 'none',
+        '&:not(:last-child)': {
+            borderBottom: 0,
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
 
+const AccordionSummary = withStyles({
+    root: {
+        minHeight: 30,
+        width: '102%',
+        margin: 0,
+        '&$expanded': {
+            minHeight: 30,
+            margin: 0,
+        },
+    },
+    content: {
+        '&$expanded': {
+            margin: '0',
+        },
+    },
+    expanded: {},
+    '@media (max-width: 780px)': {
+        root: {
+            width: '100%',
+        }
+    }
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+    root: {
+        padding: '0 20px',
+        margin: '12px 0',
+        display: 'block'
+    },
+}))(MuiAccordionDetails);
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -47,6 +99,27 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+function list_to_tree(list) {
+    var map = {}, node, roots = [], i;
+
+    for (i = 0; i < list.length; i += 1) {
+        map[list[i].id] = i; // initialize the map
+        list[i].children = []; // initialize the children
+    }
+
+    for (i = 0; i < list.length; i += 1) {
+        node = list[i];
+        //   console.log('node', node)
+        if (node.parent !== null) {
+            // if you have dangling branches check that map[node.parentId] exists
+            list[map[node.parent]].children.push(node);
+        } else {
+            roots.push(node);
+        }
+    }
+    return roots;
+}
+
 function SearchResultAntibody() {
     const { t, i18n } = useTranslation('common');
     const classes = useStyles();
@@ -61,6 +134,11 @@ function SearchResultAntibody() {
     const [disableSearch, setDisableSearch] = React.useState(false);
     const [formdata, setFormData] = useState({});
     const [saveFormValue, setSaveFormValue] = useState(false);
+
+    const [proPersonalData, setProPersonalData] = useState({});
+    const [formCheck6, setformCheck6] = React.useState(false);
+    const [sequenceTypeValue, setSequenceType] = useState("nucleotide");
+    const [proDb, setProDb] = useState([]);
 
     const { workflowId } = useParams();
     const { tempname } = useParams();
@@ -95,6 +173,32 @@ function SearchResultAntibody() {
                     setDisableSearch(false);
                 }
             }
+
+            if (getResponse && getResponse.response_content && getResponse.response_content.pdbs.sdb_pro_tree && getResponse.response_content.pdbs.sdb_pro_tree.length > 0) {
+                let proteinData = getResponse.response_content.pdbs.sdb_pro_tree;
+                let proteinPatent = [], proDefaultPatentDb = [], proMyData = [];
+                let proFormattedData = await list_to_tree(proteinData);
+                console.log('proFormattedData', proFormattedData)
+                let getProChild = [];
+                if (proFormattedData && proFormattedData.length > 0) {
+                    getProChild = proFormattedData[0].children;
+                }
+                getProChild && getProChild.length > 0 && getProChild.map((item, index) => {
+                    if (item && item.id == ':Patents') {
+                        proteinPatent = item.children;
+                        item.children.filter(i => {
+                            if (i.label.includes("Patent sequences")) {
+                                proDefaultPatentDb.push(i.id);
+                            }
+                        });
+                    } else if (item && item.id == ':My Data') {
+                        proMyData = item;
+                    }
+                })
+                setProPersonalData(proMyData);
+            }
+
+
         }
         let tempparam = decodeURI(tempname);
         tempparam = tempparam.toString().replace(/~~GQSF~~/g, '%');
@@ -696,6 +800,22 @@ function SearchResultAntibody() {
                                 })}
                             </Col>
                         </Row>
+
+                        {proPersonalData && _.size(proPersonalData) > 0 && <div>
+                            <Accordion expanded={formCheck6} onChange={() => setformCheck6(prevState => !prevState)}>
+                                <AccordionSummary aria-controls="panel1c-content" id="panel1c-header" className="p-0">
+                                    <p className="subHeading m-0">
+                                        {formCheck6 && <ArrowDropDownIcon className={classes.arrowIcon} />}
+                                        {!formCheck6 && <ArrowRightIcon className={classes.arrowIcon} />}
+                                        <span className={classes.arrowIconTitle}>{t("personalProDb")}</span>
+                                    </p>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <FolderTreeStructure treeData={proPersonalData} dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq" />
+                                </AccordionDetails>
+                            </Accordion>
+                        </div>
+                        }
                         <hr />
                     </Col>
                     <Col lg="12" md="12" xs="12" sm='12' className={"mb-2 " + (authInfo && (authInfo.ppuType == 1 || (authInfo.ppuType == 2 && !authInfo.redo) ? 'd-block' : 'd-none'))}>
