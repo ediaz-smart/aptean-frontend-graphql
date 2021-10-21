@@ -673,14 +673,14 @@ function SearchManagement(props) {
                         }
                     }
                 } else {
-                    let folderLabel = 'Empty';
+                    let folderLabel = '';
                     if (datas.results > 0) {
                         folderLabel = datas.results + ' Search Results';
                     }
                     tempObj['results'] = <a href="#" onClick={(e) => getInfoIconData(e, tempObj, null)}>{folderLabel}</a>;
                 }
             } else {
-                tempObj['results'] = <a href="#" onClick={(e) => e.preventDefault()}>Empty</a>;
+                tempObj['results'] = <a href="#" onClick={(e) => e.preventDefault()} />;
             }
 
             let mostRecentClassicUrl = url.mostRecentClassicUrl

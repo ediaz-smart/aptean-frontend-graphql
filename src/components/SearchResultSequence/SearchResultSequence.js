@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cancelButtonModal: {
         backgroundColor: '#EEEEEE',
-        border: '2px solid #a2a2a3',
+        border: '1px solid #a2a2a3',
         float: 'left',
         textTransform: 'none',
         margin: '4px',
@@ -688,7 +688,7 @@ function SearchResultSequence(props) {
                         <Col lg="1" md="1" sm="12" className="pr-0 text-center">
                             <img src={seqSearchImg} alt={seqSummary && seqSummary.text_label} />
                         </Col>
-                        <Col lg="10" md="9" sm="12" className="p-0 content">
+                        <Col lg="10" md="10" sm="12" className="p-0 content" style={{ display: 'flex', alignItems: 'center' }}>
                             <Typography className={(seqSummary ? 'd-block' : 'd-none')}>
                                 {/* <img className="float-left mx-3" src={seqSearchImg} alt={t('ImmunoglobulinVariationsFor')}/> */}
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /><span>{t('searchLaunchTitle')} {seqSummary && seqSummary.create_time ? format(new Date(seqSummary.create_time), 'dd-MMM-yyyy') : ''} {t('by')} <b>{seqSummary && seqSummary.sdb__owner_full_name}</b>.​</span></Typography>
@@ -888,9 +888,9 @@ function SearchResultSequence(props) {
                     <hr />
                     <h6 className={"appTextColor loginTitle"} id="alertSettings">{t('alertSetting')}​</h6>
                     <Row>
-                        <Col lg="10" md="9" sm="12" className="p-0 content">
+                        <Col lg="10" md="10" sm="12" className="p-0 content">
                             <Row>
-                                <Col lg="9" md="9" className="pr-0 content">
+                                <Col lg="9" md="9" className="pr-0 content" style={{ display: 'flex', alignItems: 'center' }}>
                                     <img className="float-left mx-3" src={alertImg} alt={t('alertSetting')} />
                                     <Typography className={(alarmSetting && alarmSetting.is_created ? 'd-block' : 'd-none')}>
                                         {/* This result is repeated automatically {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]}. New results are emailed to {alarmSetting && alarmSetting.is_created && alarmSetting.email}. ​ */}
@@ -901,7 +901,7 @@ function SearchResultSequence(props) {
                                     </Typography>
 
                                 </Col>
-                                <Col lg="12" md="12" className="pr-0 content float-right">
+                                <Col lg="12" md="12" sm='12' xs='12' className="pr-0 content float-right">
                                     <Typography className={"float-right " + (alarmSetting && alarmSetting.is_created ? 'd-block' : 'd-none')}>
                                         <Link href="#" title={t('resSharing')} className={"appLink appLink " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={(e) => showAlertModal(e)}>
                                             {t('changeSettings')}
@@ -926,9 +926,9 @@ function SearchResultSequence(props) {
                         {/* <Col lg="1" md="1" sm="12" className="pr-0">
                             <img src={searchResultImg} alt="Search History"  />
                         </Col> */}
-                        <Col lg="10" md="9" sm="12" className="p-0 content">
+                        <Col lg="10" md="10" sm="12" className="p-0 content">
                             <Row>
-                                <Col lg="8" md="8" className="pr-0 content">
+                                <Col lg="10" md="10" sm="10" xs='10' className="pr-0 content">
                                     <img className="float-left mx-3" src={searchResultImg} alt={t('searchHistory')} />
                                     <Typography >
                                         The following previous versions of this search are stored on our servers. Please consider deleting results that you no longer need.​​</Typography>
@@ -1006,7 +1006,7 @@ function SearchResultSequence(props) {
                     <Row>
                         <Col lg="10" md="9" sm="12" className="p-0 content">
                             <Row>
-                                <Col lg="8" md="8" className="pr-0 content">
+                                <Col lg="10" md="10" sm="10" xs='10' className="pr-0 content">
                                     <img className="float-left mx-3" src={notesImg} alt={t('notes')} />
                                     <Typography >
                                         You can leave notes in the box below. Press “Save Changes” to remember them. Notes are visible to and editable by people you share this result with.

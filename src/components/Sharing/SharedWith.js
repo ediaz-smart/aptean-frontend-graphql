@@ -97,15 +97,16 @@ function SharedWith(props) {
         <>
             <h6 className={"appTextColor loginTitle"} id="resultSharing">{t('resSharing')}​</h6>
             <Row>
-                <Col lg="1" md="1" sm="12" className="pr-0">
-                    <img src={resultshareImg} alt={t('resSharing')} />
-                </Col>
-                <Col lg="8" md="9" sm="12" className="p-0 content">
-                    <Row>
+                {/* <Col lg="1" md="1" sm="12" className="pr-0">
+                    
+                </Col> */}
+                <Col lg="12" md="12" sm="12" xs='12' className="p-0 content">
+                    <Row style={{ paddingLeft: '15px', display: 'flex', alignItems: 'center' }}>
+                        <img style={{ padding: '0 16px' }} src={resultshareImg} alt={t('resSharing')} />
                         {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
-                        <Typography className={"mb-2 " + (sharedWithMe && sharedWithMe != "none" ? 'd-block' : 'd-none')}>
+                        <Typography className={(sharedWithMe && sharedWithMe != "none" ? 'd-block' : 'd-none')}>
                             {t('resultAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
-                        <Typography className={"mb-2 " + (sharedWithMe && sharedWithMe == "none" ? 'd-block' : 'd-none')}>
+                        <Typography className={(sharedWithMe && sharedWithMe == "none" ? 'd-block' : 'd-none')}>
                             {t('resultNotAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
 
                         <ShareResultsModal
@@ -122,12 +123,12 @@ function SharedWith(props) {
 
                     {sharedWithMe && sharedWithMe != 'none' && Object.keys(sharedWithMe).map((item, i) => {
                         return (
-                            <Row key={i}>
+                            <Row key={i} lg="4" md="4" sm='4' xs='4' style={{ marginLeft: '80px' }}>
                                 <Col lg="4" md="4" className="pr-0 content">
                                     <Typography >
                                         <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />{sharedWithMe[item].full_name}</Typography>
                                 </Col>
-                                <Col lg="4" md="4" className="pr-0 content">
+                                <Col lg="2" md="2" sm="2" xs='2' className="pr-0 content">
                                     <Typography ><Link className={"failedTextColor " + (userInfo && userInfo.current_user.id === gqUserId ? '' : 'd-none')} id={sharedWithMe[item].id} onClick={() => viewRemoveModal(sharedWithMe[item])}>Remove</Link></Typography>
                                 </Col>
                             </Row>
