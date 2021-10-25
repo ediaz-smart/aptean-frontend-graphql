@@ -658,28 +658,48 @@ function FullTextSearch() {
 					var newSpan = document.createElement("span");
 					newSpan.setAttribute("class", "space");
 					newSpan.innerHTML = ".";
-					htmlElement.innerHTML = htmlElement.innerHTML.trim();
-					let splitPrevClass = [];
+					// htmlElement.innerHTML = htmlElement.innerHTML.trim();
+					var splitPrevClass = [];
 					
+					let PrevElSibling = '';
+					// if(getCurrentSel.focusNode.nodeName == "#text")
+					// {
+					// 	let prevSib = getCurrentSel.focusNode.previousElementSibling;
+					// 	if(prevSib && prevSib.parentElement.nodeName == "DIV")
+					// 	{
+					// 		if(prevSib.previousElementSibling)
+					// 		{
+					// 			PrevElSibling = prevSib.previousElementSibling;
+					// 		}else{
+					// 			PrevElSibling = prevSib;
+					// 		}
+							
+					// 	}else{
+					// 		PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+					// 	}
+						
+					// 	splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
+					// 	getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid"):'';	
+					// }
 
-					if(getCurrentSel.focusNode.nodeName == "#text")
-					{
-						let prevSib = getCurrentSel.focusNode.previousElementSibling;
-						if(prevSib && prevSib.parentElement.nodeName == "DIV")
+					if (getCurrentSel.focusNode.nodeName == "#text") {
+						if(getCurrentSel.focusNode.previousElementSibling)
 						{
-							if(prevSib.previousElementSibling)
+							PrevElSibling = getCurrentSel.focusNode.previousElementSibling.previousElementSibling;
+							if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
 							{
-								PrevElSibling = prevSib.previousElementSibling;
+								getCurrDataId = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") ? getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") : '';
 							}else{
-								PrevElSibling = prevSib;
+								getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
 							}
 							
-						}else{
-							PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+						}else if(getCurrentSel.focusNode.parentElement.previousElementSibling){
+							PrevElSibling = getCurrentSel.focusNode.parentElement.previousElementSibling;
+							getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
 						}
-						
-						splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' '):[];
-						getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid"):'';	
+
+						splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' ') : [];
+						// getCurrDataId = getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid") : '';
 					}
 					else if (getCurrentSel.focusNode.nodeName == "SPAN") {
 						PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
@@ -698,25 +718,46 @@ function FullTextSearch() {
 							getClassId = htmlElement.children[key].getAttribute("dataid");
 							if (getClassId == getCurrDataId) {
 								htmlElement.children[key].outerHTML = ORString + newSpan.outerHTML;
+								getEndPosition = savedCaretPosition.end + 1;
+								placeCursor = false;
+								placeCursorPos = true;
 							}
 						});
 						// lastChildEl.innerHTML = ORString;
 					} else if (checkANDValues.includes(getChildText)) {
 						// htmlElement.children[htmlElement.children.length - 1].outerHTML =
 						// 	ANDString + newSpan.outerHTML;
+						// Object.keys(htmlElement.children).forEach(function (key) {
+						// 	getClassId = htmlElement.children[key].getAttribute("dataid");
+						// 	if (getClassId == getCurrDataId) {
+						// 		htmlElement.children[key].outerHTML = ANDString + newSpan.outerHTML;
+						// 	}
+						// });
 						Object.keys(htmlElement.children).forEach(function (key) {
 							getClassId = htmlElement.children[key].getAttribute("dataid");
 							if (getClassId == getCurrDataId) {
 								htmlElement.children[key].outerHTML = ANDString + newSpan.outerHTML;
+								getEndPosition = savedCaretPosition.end;
+								placeCursor = false;
+								placeCursorPos = true;
 							}
 						});
 					} else if (checkNOTValues.includes(getChildText)) {
 						// htmlElement.children[htmlElement.children.length - 1].outerHTML =
 						// 	NOTString + newSpan.outerHTML;
+						// Object.keys(htmlElement.children).forEach(function (key) {
+						// 	getClassId = htmlElement.children[key].getAttribute("dataid");
+						// 	if (getClassId == getCurrDataId) {
+						// 		htmlElement.children[key].outerHTML = NOTString + newSpan.outerHTML;
+						// 	}
+						// });
 						Object.keys(htmlElement.children).forEach(function (key) {
 							getClassId = htmlElement.children[key].getAttribute("dataid");
 							if (getClassId == getCurrDataId) {
 								htmlElement.children[key].outerHTML = NOTString + newSpan.outerHTML;
+								getEndPosition = savedCaretPosition.end;
+								placeCursor = false;
+								placeCursorPos = true;
 							}
 						});
 					} else {
@@ -1156,16 +1197,16 @@ function FullTextSearch() {
 							inc++;
 						});
 						// }
-						lastValue = lastValue.replace('.', '');
+						
 						// getChildText = getChildText + lastValue;
-						if (removedText != "" && (removedText == lastValue)) {
+						if (removedText != "") {
 							// if(getChildText == "")
 							// {
-							getChildText = getChildText + lastValue;
+							getChildText = getChildText + removedText;
 							// }
 
 						}
-
+						lastValue = getChildText.slice(-1).replace('.', '');
 						let splitPrevClass = [];
 						// if(lastPrevChild && lastPrevChild.attributes.class)
 						// {
@@ -1177,8 +1218,14 @@ function FullTextSearch() {
 						if (getCurrentSel.focusNode.nodeName == "#text") {
 							if(getCurrentSel.focusNode.previousElementSibling)
 							{
-								PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
-								getCurrDataId = getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid") : '';
+								PrevElSibling = getCurrentSel.focusNode.previousElementSibling.previousElementSibling;
+								if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+								{
+									getCurrDataId = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") ? getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") : '';
+								}else{
+									getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
+								}
+								
 							}else if(getCurrentSel.focusNode.parentElement.previousElementSibling){
 								PrevElSibling = getCurrentSel.focusNode.parentElement.previousElementSibling;
 								getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
@@ -1238,7 +1285,7 @@ function FullTextSearch() {
 									htmlElement.children.length - 1
 								].textContent = lastValue;
 							} else {
-								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+								// htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								// replaceDot = replaceDot.slice(0, -1);
 								if (removedText == lastValue) {
 									htmlElement.children[
@@ -1257,16 +1304,17 @@ function FullTextSearch() {
 											htmlElement.children[key].textContent = replaceDot;
 											if(replaceDot.length == 1)
 											{
-												getEndPosition = savedCaretPosition.end - countOpClass;
+												getEndPosition = savedCaretPosition.end - 1;
 											}else{
 												getEndPosition = savedCaretPosition.end;
 											}
+											placeCursor = false;
+											placeCursorPos = true;
 											
 												// getEndPosition = savedCaretPosition.end + 3;
 												// placeCursor = false;
 												// placeCursorPos = true;
-												placeCursor = false;
-												placeCursorPos = true;
+												
 												isStopCheck = true;
 										}
 										if(!isStopCheck)
@@ -1278,7 +1326,9 @@ function FullTextSearch() {
 										}
 									});
 								}
-
+								if (htmlElement.innerHTML.slice(-1) != ">") {
+									htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+								}
 								// htmlElement.children[
 								// 	htmlElement.children.length - 1
 								// ].textContent = replaceDot;
@@ -1308,6 +1358,9 @@ function FullTextSearch() {
 									placeCursorPos = true;
 								}
 							});
+							if (htmlElement.innerHTML.slice(-1) != ">") {
+								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+							}
 						} else {
 							// // Adding AND operator if space enters
 
@@ -1321,9 +1374,9 @@ function FullTextSearch() {
 							// add the class to the 'span'
 							newSpan.setAttribute("class", "query");
 							// let checkOpText = lastPrevChild.innerText+lastValue;
-							lastChild.innerText = lastChild.innerText.replace(".", "");
+							getChildText = getChildText.replace(".", "");
 							lastValue = lastValue.trim();
-							if (lastChild.innerText.length == 1 && lastValue == "") {
+							if (getChildText.length == 1 && getChildText == "") {
 								// if (htmlElement.innerHTML.slice(-1) != ">") {
 								// 	htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								// }
@@ -1357,10 +1410,28 @@ function FullTextSearch() {
 										// ].outerHTML = newSpan.outerHTML;
 										Object.keys(htmlElement.children).forEach(function (key) {
 											getClassId = htmlElement.children[key].getAttribute("dataid");
+											checkElClass = htmlElement.children[key].attributes.class.value.split(' ');
 											if(getClassId == getCurrDataId)
 											{
+												
+												if(htmlElement.children[key].textContent.includes('.'))
+												{
+													getEndPosition = savedCaretPosition.end - 1;
+												}else{
+													getEndPosition = savedCaretPosition.end - countOpClass;
+												}
 												htmlElement.children[key].outerHTML = newSpan.outerHTML;
 												
+												placeCursor = false;
+												placeCursorPos = true;
+												isStopCheck = true;
+											}
+											if(!isStopCheck)
+											{
+												if(removeClassArray.includes(checkElClass[0]))
+												{
+													countOpClass = countOpClass + 1;
+												}
 											}
 										});
 									} else {
@@ -1384,9 +1455,12 @@ function FullTextSearch() {
 													htmlElement.children[key].outerHTML = newSpan.outerHTML;
 													getEndPosition = savedCaretPosition.end - countOpClass;
 												}else{
+													if(htmlElement.children[key].textContent.includes('.')){
+														getEndPosition = savedCaretPosition.end + 3;
+													}else{
+														getEndPosition = savedCaretPosition.end + 4;
+													}
 													htmlElement.children[key].outerHTML = ANDString + " " + newSpan.outerHTML;
-													getEndPosition = (savedCaretPosition.end - 1) + 3 + newSpan.textContent.length;
-													
 												}
 												placeCursor = false;
 												placeCursorPos = true;
@@ -1429,14 +1503,86 @@ function FullTextSearch() {
 						getChildClassName == "notClass" ||
 						getChildClassName == "autoquery"
 					) {
-						htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+						let isOuterText = false;
+						Object.keys(htmlElement.childNodes).forEach(function (key, val) {
+							if (htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "") {
+								lastValue = htmlElement.childNodes[key].textContent;
+								isOuterText = true;
+							}
+						});
+						lastValue = lastValue.trim();
+						let splitPrevClass = [];
+						// if(lastPrevChild && lastPrevChild.attributes.class)
+						// {
+						// 	splitPrevClass = lastPrevChild.attributes.class ? lastPrevChild.attributes.class.value.split(' '):[];
+						// }
+						var PrevElSibling = '';
+
+						// To Check Prev Element values has operator or not, if not we place operator dynamically
+						if (getCurrentSel.focusNode.nodeName == "#text") {
+							if(getCurrentSel.focusNode.previousElementSibling)
+							{
+								PrevElSibling = getCurrentSel.focusNode.previousElementSibling.previousElementSibling;
+								if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+								{
+									getCurrDataId = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") ? getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") : '';
+								}else{
+									getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
+								}
+								
+							}else if(getCurrentSel.focusNode.parentElement.previousElementSibling){
+								PrevElSibling = getCurrentSel.focusNode.parentElement.previousElementSibling;
+								getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
+							}
+
+							splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' ') : [];
+							// getCurrDataId = getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid") : '';
+						}
+						else if (getCurrentSel.focusNode.nodeName == "SPAN") {
+							PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+							splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' ') : [];
+							getCurrDataId = getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid") : '';
+						}
+						else if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
+							PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
+							splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' ') : [];
+							getCurrDataId = getCurrentSel.focusNode ? getCurrentSel.focusNode.getAttribute("dataid") : '';
+						} else {
+							PrevElSibling = getCurrentSel.focusNode;
+							splitPrevClass = PrevElSibling ? PrevElSibling.attributes.class.value.split(' ') : [];
+							getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid") : '';
+						}
+						// htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 						//create the DOM object
 						var newSpan = document.createElement("span");
 						// add the class to the 'span'
 						newSpan.setAttribute("class", "query");
 						newSpan.innerHTML = lastValue;
-						htmlElement.innerHTML =
-							htmlElement.innerHTML + " " + newSpan.outerHTML;
+						// htmlElement.innerHTML = htmlElement.innerHTML + " " + newSpan.outerHTML;
+						Object.keys(htmlElement.children).forEach(function (key) {
+							getClassId = htmlElement.children[key].getAttribute("dataid");
+							checkElClass = htmlElement.children[key].attributes.class.value.split(' ');
+							// console.log(checkElClass,'checkElClass');
+							if(getClassId == getCurrDataId)
+							{
+								htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML +" "+newSpan.outerHTML;
+								getEndPosition = savedCaretPosition.end;
+								placeCursor = false;
+								placeCursorPos = true;
+							}
+						});
+						if (htmlElement.innerHTML.slice(-1) != ">") {
+							htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
+						}
+						Object.keys(htmlElement.childNodes).forEach(function (key, val) {
+							if (htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == "#text" && htmlElement.childNodes[key].textContent.trim() != "") {
+								htmlElement.removeChild(htmlElement.childNodes[key]);
+								if(isOuterText)
+								{
+
+								}
+							}
+						});
 					} else if (getChildClassName == "pubClass") {
 						if (htmlElement.innerHTML.slice(-1) != ">") {
 							getSelectedNodeText =
