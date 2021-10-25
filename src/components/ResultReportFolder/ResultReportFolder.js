@@ -34,17 +34,19 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import SortIcon from "@material-ui/icons/ArrowDownward";
 import RenameContainer from '../../shared/components/RenameContainer'
 import SharedWith from '../Sharing/SharedWith.js';
+import { containerWidth } from '../../shared/constants';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
     width: '96%',
-    margin: '0 auto 28px',
+    margin: '4px auto 28px',
     minHeight: '260px',
     // borderBottom: '1px solid #cec7c7',
     padding: '23px 16px 14px',
     border: '1px solid #cec7c7',
-    borderRadius: '3px'
+    borderRadius: '3px',
+    maxWidth: containerWidth
   },
   headerPipe: {
     margin: '0 10px'
@@ -432,6 +434,9 @@ function ResultReportFolder() {
     // Todo: Update the folder name on the server.
     folderNameRef.current = name
   }
+  const searchResult = () => {
+    history.push('/searchResult')
+  }
   // const handleCancelButtonClick = () => {
   //   props.setRenameFolderName(false)
   // }
@@ -440,6 +445,8 @@ function ResultReportFolder() {
       <Row className="p-3">
         <Col lg="12" md="12" sm="12" className="mb-5">
           <Typography className={classes.root + " float-right"}>
+            <span className={"appTextColor appLink"}><a onClick={searchResult}>{t('allSearchResults')}</a></span>
+            <span className={classes.headerPipe + " appTextColor"}>|</span>
             <span className={"appTextColor appLink"} title={t('auditTrial')}>
               {t('auditTrial')}
             </span>

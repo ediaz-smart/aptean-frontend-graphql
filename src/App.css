@@ -211,14 +211,14 @@
 
 .cancelButtonClass {
     background-color: #0182C5 !important;
-    border: 2px solid #1F4E79 !important;
+    border: 1px solid #1F4E79 !important;
     color: white !important;
     text-transform: capitalize !important;
 }
 
 .submitButtonClass {
     background-color: #db862c !important;
-    border: 2px solid #ca751b !important;
+    border: 1px solid #ca751b !important;
     color: white !important;
     text-transform: capitalize !important;
 }
@@ -529,7 +529,7 @@ label {
 .loginSubmitCancel {
     background-color: #0182C5 !important;
     border-color: #1F4E79 !important;
-    border: 2px solid #1F4E79 !important;
+    border: 1px solid #1F4E79 !important;
     color: white !important;
     text-transform: capitalize !important;
 }
@@ -543,7 +543,7 @@ label {
     background-color: #db862c !important;
     margin-left: -6px;
     border-color: #ca751b !important;
-    border: 2px solid #ca751b !important;
+    border: 1px solid #ca751b !important;
     color: white !important;
     text-transform: capitalize !important;
 }

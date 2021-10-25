@@ -78,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
         textTransform: 'none',
         margin: '4px',
         color: 'white',
+        padding: '6px 8px',
         backgroundColor: '#008EC5 !important',
         border: '1px solid #1F4E79 !important',
         borderColor: '#1F4E79',

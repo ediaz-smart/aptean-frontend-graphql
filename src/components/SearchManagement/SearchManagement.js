@@ -1060,10 +1060,15 @@ function SearchManagement(props) {
             updateDefaultValue('Recent Search Results');
         }
     }
+    // async function getItemsSharedWithMeInfo() {
+    //     const sharedWithMeData = await SearchManagementService.getItemsSharedWithMe(history)
+    // }
+
     useEffect(() => {
         // (async () => {
         // const result = dispatch(getSearchResult());
         getFolderResultData();
+        // getItemsSharedWithMeInfo()
         getDefaultSearchResult('defaultText', '');
 
         document.addEventListener("keydown", escFunction, false);
@@ -1151,7 +1156,7 @@ function SearchManagement(props) {
                         {/* <p><a className="cursorPointer text-decoration-none appTextColor" onClick={() => changeTitle('Recent Search Results1')}><FolderOpenIcon /><span className={classes.projectTitle}>test1</span></a></p> */}
                         <h6 className="mt-4"><b>{t('resSharedWithMe')}</b></h6>
                         <ListGroup defaultActiveKey="#link1" className={"projectList"}>
-                            <ListGroup.Item className={classes.projectListItem} key="search1">
+                            {/* <ListGroup.Item className={classes.projectListItem} key="search1">
                                 <a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Search1')}>
                                     <img src={FolderIcon} className={classes.folderIcon} />
                                     <span className={classes.projectTitle + ' ' + (defaultTitle === 'Search1' ? classes.projTitleActive : '')}>Search1</span></a>
@@ -1160,7 +1165,8 @@ function SearchManagement(props) {
                                 <a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Search2')}>
                                     <img src={FolderIcon} className={classes.folderIcon} />
                                     <span className={classes.projectTitle + ' ' + (defaultTitle === 'Search2' ? classes.projTitleActive : '')}>Search2</span></a>
-                            </ListGroup.Item>
+                            </ListGroup.Item> */}
+                            <FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} selectedTitleId={defaultTitleId} type="selectFolder" parentCallback={changeTitle} />
                         </ListGroup>
 
 

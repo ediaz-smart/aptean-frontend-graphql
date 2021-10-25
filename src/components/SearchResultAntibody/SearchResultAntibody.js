@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
         width: '30%'
     },
     antibodyNumInput: {
-        width: '8%'
+        width: '12%'
     }
 }));
 
@@ -109,7 +109,6 @@ function list_to_tree(list) {
 
     for (i = 0; i < list.length; i += 1) {
         node = list[i];
-        //   console.log('node', node)
         if (node.parent !== null) {
             // if you have dangling branches check that map[node.parentId] exists
             list[map[node.parent]].children.push(node);
@@ -174,11 +173,10 @@ function SearchResultAntibody() {
                 }
             }
 
-            if (getResponse && getResponse.response_content && getResponse.response_content.pdbs.sdb_pro_tree && getResponse.response_content.pdbs.sdb_pro_tree.length > 0) {
+            if (getResponse && getResponse.response_content && getResponse.response_content.pdbs?.sdb_pro_tree && getResponse.response_content.pdbs.sdb_pro_tree.length > 0) {
                 let proteinData = getResponse.response_content.pdbs.sdb_pro_tree;
                 let proteinPatent = [], proDefaultPatentDb = [], proMyData = [];
                 let proFormattedData = await list_to_tree(proteinData);
-                console.log('proFormattedData', proFormattedData)
                 let getProChild = [];
                 if (proFormattedData && proFormattedData.length > 0) {
                     getProChild = proFormattedData[0].children;
@@ -699,11 +697,7 @@ function SearchResultAntibody() {
                                         className={classes.antibodyNumInput + (" float-left")}
                                         value={formik.values.expectCutoff}
                                         InputProps={{ inputProps: { min: 0, max: 100 } }}
-                                        // onChange={e => {
-                                        //     if (!Number.isNaN(Number(e.target.value))) {
-                                        //         formik.setFieldValue('expectCutoff', Number(e.target.value))
-                                        //     }
-                                        // }}
+                                        onChange={formik.handleChange}
                                         onKeyDown={UtilsService.restrictCharacter}
                                         error={formik.touched.expectCutoff && Boolean(formik.errors.expectCutoff)}
                                         helperText={formik.errors.expectCutoff}
@@ -877,9 +871,9 @@ function SearchResultAntibody() {
                         <hr />
                     </Col>
 
-                    <Col lg="12" md="12" className="float-right mb-3">
-                        <Button color={!disableSearch ? 'default' : 'primary'} variant="contained" className={" text-capitalize mr-2 float-right " + (!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} type="submit" disabled={!disableSearch}>{t('search')}</Button>&nbsp;&nbsp;&nbsp;
-                        <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={homePage} type="submit">{t('cancel')}</Button>
+                    <Col lg="12" md="12" sm='12' xs='12' style={{ display: 'flex', flexDirection: 'row-reverse' }} className="float-right mb-3">
+                        <Button variant="contained" className={" loginSubmitButton " + (!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} type="submit" disabled={!disableSearch}>{t('search')}</Button>&nbsp;
+                        <Button variant="contained" color={'default'} className={" loginSubmitCancel float-right"} onClick={homePage} type="submit">{t('cancel')}</Button>
                     </Col>
                 </Row>
 

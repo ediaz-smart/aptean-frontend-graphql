@@ -19,47 +19,58 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2)
   },
   menu: {
-    width: 100
+    width: 100,
+    top: '150px'
   },
-smallBox: {
-  width: '69px',
-  padding: '10px 0px',
-  margin: '-8px 0 0 -5px'
-},
+  smallBox: {
+    width: '69px',
+    padding: '10px 0px',
+    margin: '-8px 0 0 -5px'
+  },
 
 }));
 
 export default function SelectBox(props) {
   const classes = useStyles();
-  
+
   const items = props.items;
   return (
     // <form className={classes.container} noValidate autoComplete="off">
-      <TextField
-        id={props.id}
-        name={props.name}
-        select
-        // label={gender=== "" ? "Gender": ""}
-        className={props.className+" "+ (props.smallSelectBox ? classes.smallBox : classes.textField)}
-        value={props.value}
-        InputLabelProps={{ shrink: false }}
-        SelectProps={{
-          MenuProps: {
-            className: (props.smallSelectBox ? "" : classes.menu)
-          }
-        }}
-        margin={props.margin}
-        variant={props.variant}
-        onChange={props.onChange}
-        disabled={props.disabled}
-        onBlur={props.onBlur}
-      >
-        {items && items.length > 0 && items.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </TextField>
+    <TextField
+      id={props.id}
+      name={props.name}
+      select
+      // label={gender=== "" ? "Gender": ""}
+      className={props.className + " " + (props.smallSelectBox ? classes.smallBox : classes.textField)}
+      value={props.value}
+      InputLabelProps={{ shrink: false }}
+      SelectProps={{
+        MenuProps: {
+          className: (props.smallSelectBox ? "" : classes.menu),
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "left"
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "left"
+          },
+          getContentAnchorEl: null
+
+        }
+      }}
+      margin={props.margin}
+      variant={props.variant}
+      onChange={props.onChange}
+      disabled={props.disabled}
+      onBlur={props.onBlur}
+    >
+      {items && items.length > 0 && items.map((option) => (
+        <MenuItem key={option.value} value={option.value}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </TextField>
     // </form>
   );
 }

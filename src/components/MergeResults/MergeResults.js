@@ -269,27 +269,35 @@ function MergeResults(props) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
             } else {
                 groupAValue.push(value);
+                if (groupBValue.includes(value)) {
+                    groupBValue.splice(groupBValue.indexOf(value), 1)
+                    setGroupBValue([...groupBValue])
+                }
                 setGroupAValue([...groupAValue]);
             }
             if (groupBValue.includes(value)) {
                 setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
-            }
-            if ((groupAValue.length + groupBValue.length) == selectData.selectedCount) {
-                setIsSubmitActive(true);
             }
         } else if (name && name == "groupB" && value) {
             if (groupBValue.includes(value)) {
                 setGroupBValue(groupBValue.filter(checked_name => checked_name !== value));
             } else {
                 groupBValue.push(value);
+                if (groupAValue.includes(value)) {
+                    groupAValue.splice(groupAValue.indexOf(value), 1)
+                    setGroupAValue([...groupAValue])
+                }
                 setGroupBValue([...groupBValue]);
             }
             if (groupAValue.includes(value)) {
                 setGroupAValue(groupAValue.filter(checked_name => checked_name !== value));
             }
-            if ((groupAValue.length + groupBValue.length) == selectData.selectedCount) {
-                setIsSubmitActive(true);
-            }
+        }
+        if (((groupAValue.length + groupBValue.length) == selectData.selectedCount)
+            && (groupAValue.length > 0) && (groupBValue.length > 0)) {
+            setIsSubmitActive(true);
+        } else {
+            setIsSubmitActive(false);
         }
     }
 
