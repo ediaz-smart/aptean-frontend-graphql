@@ -34,6 +34,7 @@ import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal'
 import RenameContainer from '../../shared/components/RenameContainer'
 import SharedWith from '../Sharing/SharedWith.js';
 import { containerWidth } from '../../shared/constants';
+import ftAccess from '../../services/ftAccess';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -319,12 +320,35 @@ function SearchResultSequence(props) {
     // To detect outside click
     const wrapperRef = useRef(null);
 
+    const sharedWithMe = useRef('none');
+    const getSharedWithMe = async (id) => {
+        const results = await ftAccess.sharedWithMe(id);
+        if (results && results.response_status == 0) {
+            if (results.response_content) {
+                sharedWithMe.current = results.response_content;
+                const sharedToNames = Object.keys(results.response_content).map((item) => {
+                    return results.response_content[item].full_name
+                })
+                let sharedToNamesString = '';
+                for (let i = 0; i < sharedToNames.length; i++) {
+                    if (i === 0) {
+                        sharedToNamesString = sharedToNamesString + sharedToNames[i]
+                    } else if (i !== (sharedToNames.length - 1)) {
+                        sharedToNamesString = sharedToNamesString + ', ' + sharedToNames[i]
+                    } else {
+                        sharedToNamesString = sharedToNamesString + ' and ' + sharedToNames[i] + ' '
+                    }
+                }
+
+                setSeqShare({ 'sharedNames': sharedToNamesString })
+            }
+        }
+    }
 
     // reset login status
     useEffect(async () => {
         getSummaryResp();
-        //getUserResp();
-        // getShareResp();
+        getSharedWithMe(workflowId);
 
         getAlertResp();
         getAlertRedoResp();
@@ -683,12 +707,12 @@ function SearchResultSequence(props) {
                             placeHolderText={'Title'}
                             maxLength={188}
                             cancelButtonClass={classes.loginSubmitCancel} setRenameEnabled={setUpdateTitle} />
-                        : <h6 className={"appTextColor loginTitle " + classes.searchTitleText} onClick={e => showUpdateTitleText(e)} id="resultSharing">{titleNameRef.current}</h6>}
+                        : <h6 className={"appTextColor loginTitle " + classes.searchTitleText} onClick={e => showUpdateTitleText(e)}>{titleNameRef.current}</h6>}
                     <Row>
                         <Col lg="1" md="1" sm="12" className="pr-0 text-center">
                             <img src={seqSearchImg} alt={seqSummary && seqSummary.text_label} />
                         </Col>
-                        <Col lg="10" md="10" sm="12" className="p-0 content" style={{ display: 'flex', alignItems: 'center' }}>
+                        <Col lg="10" md="10" sm="12" className="p-0 content" style={{ display: 'flex', flexDirection: 'column' }}>
                             <Typography className={(seqSummary ? 'd-block' : 'd-none')}>
                                 {/* <img className="float-left mx-3" src={seqSearchImg} alt={t('ImmunoglobulinVariationsFor')}/> */}
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /><span>{t('searchLaunchTitle')} {seqSummary && seqSummary.create_time ? format(new Date(seqSummary.create_time), 'dd-MMM-yyyy') : ''} {t('by')} <b>{seqSummary && seqSummary.sdb__owner_full_name}</b>.​</span></Typography>
@@ -697,7 +721,7 @@ function SearchResultSequence(props) {
                                     <a href="#" onClick={(e) => handleScroll(e, 'resultSharing')}>({t('shareSettings')}).</a></span></Typography>
                             <Typography className={(alarmSetting && alarmSetting.is_created ? 'd-block' : 'd-none')}>
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />
-                                <span>{t('searchRepeatAutomatic')} {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]} {t('emailGoingTo')} {alarmSetting && alarmSetting.email}.{t('alarmSettingText2')} <a href="#" onClick={(e) => handleScroll(e, 'alertSettings')}>({t('alertSettings')}).</a></span></Typography>
+                                <span>{t('searchRepeatAutomatic')} {alarmSetting && alarmSetting.is_created && Constant['alertOptions'][alarmSetting.relaunch_interval]} {t('emailGoingTo')} {alarmSetting && alarmSetting.email}{t('alarmSettingText2')} <a href="#" onClick={(e) => handleScroll(e, 'alertSettings')}>({t('alertSettings')}).</a></span></Typography>
                         </Col>
                     </Row>
                     <hr />
@@ -882,6 +906,8 @@ function SearchResultSequence(props) {
                         <SharedWith
                             workflowId={workflowId}
                             gqUserId={gqUserId}
+                            sharedWithMe={sharedWithMe.current}
+                            getSharedWithMe={getSharedWithMe}
                         />
                     }
 

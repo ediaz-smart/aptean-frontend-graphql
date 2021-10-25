@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 		textTransform: 'none',
 		margin: '4px',
 		backgroundColor: '#008EC5 !important',
-		border: '2px solid #1F4E79 !important',
+		border: '1px solid #1F4E79 !important',
 		borderColor: '#1F4E79',
 		color: 'white'
 
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 		textTransform: 'none',
 		margin: '4px',
 		backgroundColor: '##DB862D !important',
-		border: '2px solid ##DB862D !important',
+		border: '1px solid ##DB862D !important',
 		marginTop: '4px',
 		color: 'white'
 

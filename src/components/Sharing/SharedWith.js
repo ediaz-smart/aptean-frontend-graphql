@@ -35,7 +35,7 @@ function SharedWith(props) {
 
     const userInfo = useSelector(state => state.setUserInfo);
 
-    const [sharedWithMe, setSharedWithMe] = useState([]);
+    // const [sharedWithMe, setSharedWithMe] = useState([]);
     const [shareableTo, setShareableTo] = useState([]);
 
     useEffect(async () => {
@@ -43,18 +43,18 @@ function SharedWith(props) {
         setWorkflowId(props.workflowId);
         setGqUserId(props.gqUserId);
 
-        getSharedWithMe(props.workflowId);
+        props.getSharedWithMe(props.workflowId);
         getShareableTo(props.workflowId);
 
     }, []);
 
 
-    const getSharedWithMe = async (id) => {
-        const results = await ftAccess.sharedWithMe(id);
-        if (results && results.response_status == 0) {
-            setSharedWithMe(results.response_content);
-        }
-    }
+    // const getSharedWithMe = async (id) => {
+    //     const results = await ftAccess.sharedWithMe(id);
+    //     if (results && results.response_status == 0) {
+    //         setSharedWithMe(results.response_content);
+    //     }
+    // }
 
     const getShareableTo = async (id) => {
         const results = await ftAccess.shareableList(id);
@@ -67,8 +67,9 @@ function SharedWith(props) {
         const results = await ftAccess.removeAccess(workflowId, usrs.user_id);
         if (results && results.response_status == 0) {
             getShareableTo(workflowId);
-            getSharedWithMe(workflowId);
+            props.getSharedWithMe(workflowId);
         }
+        cancelForm()
     }
 
     function viewRemoveModal(data) {
@@ -86,7 +87,7 @@ function SharedWith(props) {
 
         const getaddShareResponse = await ftAccess.addAccess(workflowId, usr);
         if (getaddShareResponse && getaddShareResponse.response_status == 0) {
-            getSharedWithMe(workflowId);
+            props.getSharedWithMe(workflowId);
             getShareableTo(workflowId);
         } else {
             toast.error('Adding in Error.');
@@ -104,9 +105,9 @@ function SharedWith(props) {
                     <Row style={{ paddingLeft: '15px', display: 'flex', alignItems: 'center' }}>
                         <img style={{ padding: '0 16px' }} src={resultshareImg} alt={t('resSharing')} />
                         {/* <img className="float-left mx-3" src={resultshareImg} alt="Result sharing"  /> */}
-                        <Typography className={(sharedWithMe && sharedWithMe != "none" ? 'd-block' : 'd-none')}>
+                        <Typography className={(props.sharedWithMe && props.sharedWithMe != "none" ? 'd-block' : 'd-none')}>
                             {t('resultAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('addMore')} …​</Link></Typography>
-                        <Typography className={(sharedWithMe && sharedWithMe == "none" ? 'd-block' : 'd-none')}>
+                        <Typography className={(props.sharedWithMe && props.sharedWithMe == "none" ? 'd-block' : 'd-none')}>
                             {t('resultNotAccess')}. <Link className={"appLink cursorPointer " + (userInfo && userInfo.current_user.gq_user_id === gqUserId ? '' : 'd-none')} onClick={() => setModalResultShow(true)} >{t('shareNow')} …​</Link></Typography>
 
                         <ShareResultsModal
@@ -115,21 +116,21 @@ function SharedWith(props) {
                             onHide={() => setModalResultShow(false)}
                             //getSelectUser={getSelectUser}
                             shareResult={shareResultsForm}
-                            sharedUserId={sharedWithMe}
+                            sharedUserId={props.sharedWithMe}
                         // onMessage={errorMessage}
                         />
 
                     </Row>
 
-                    {sharedWithMe && sharedWithMe != 'none' && Object.keys(sharedWithMe).map((item, i) => {
+                    {props.sharedWithMe && props.sharedWithMe != 'none' && Object.keys(props.sharedWithMe).map((item, i) => {
                         return (
                             <Row key={i} lg="4" md="4" sm='4' xs='4' style={{ marginLeft: '80px' }}>
                                 <Col lg="4" md="4" className="pr-0 content">
                                     <Typography >
-                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />{sharedWithMe[item].full_name}</Typography>
+                                        <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />{props.sharedWithMe[item].full_name}</Typography>
                                 </Col>
                                 <Col lg="2" md="2" sm="2" xs='2' className="pr-0 content">
-                                    <Typography ><Link className={"failedTextColor " + (userInfo && userInfo.current_user.id === gqUserId ? '' : 'd-none')} id={sharedWithMe[item].id} onClick={() => viewRemoveModal(sharedWithMe[item])}>Remove</Link></Typography>
+                                    <Typography ><Link className={"failedTextColor " + (userInfo && userInfo.current_user.id === gqUserId ? '' : 'd-none')} id={props.sharedWithMe[item].id} onClick={() => viewRemoveModal(props.sharedWithMe[item])}>Remove</Link></Typography>
                                 </Col>
                             </Row>
                         )
