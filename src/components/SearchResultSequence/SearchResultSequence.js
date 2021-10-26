@@ -624,6 +624,7 @@ function SearchResultSequence(props) {
             let updateParam = '&description=' + notes;
             updateSeqData(workflowId, updateParam);
         } else {
+            if (toast) toast.dismiss()
             toast.error('Please Enter Notes to Save Changes.');
         }
     }
