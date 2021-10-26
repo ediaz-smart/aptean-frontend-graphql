@@ -2209,8 +2209,16 @@ function FullTextSearch() {
 											Object.keys(htmlElement.children).forEach(function (key) {
 												getClassId = htmlElement.children[key].getAttribute("dataid");
 												if (getClassId == getCurrDataId && htmlLength > 1) {
-													htmlElement.children[key].outerHTML = ANDString + " " + newSpan.outerHTML;
-													getEndPosition = savedCaretPosition.end + 4;
+													if(getCurrDataId == "1")
+													{
+														htmlElement.children[key].outerHTML = newSpan.outerHTML;
+														getEndPosition = savedCaretPosition.end;
+													}else{
+														htmlElement.children[key].outerHTML = ANDString + " " + newSpan.outerHTML;
+														getEndPosition = savedCaretPosition.end + 4;
+													}
+													
+													
 													placeCursor = false;
 													placeCursorPos = true;
 												} else if (getClassId == getCurrDataId){
