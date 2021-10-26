@@ -160,24 +160,20 @@ function FullDocumentView() {
 
             setLegalEvents(formatLegal(getResponse.response_content.legalEvents));
 
-            setSummaryBlock(getResponse.response_content);
+            //setSummaryBlock(getResponse.response_content);
+            setLegalStatus(getResponse.response_content.publicationType ? getResponse.response_content.publicationType : 'Not Available');
+            setPubDate(getResponse.response_content.publicationDate ? formatDate(getResponse.response_content.publicationDate) : 'Not Available');
+            setFilingDate(getResponse.response_content.applicationDate ? formatDate(getResponse.response_content.applicationDate) : 'Not Available');
+            setAppNum(getResponse.response_content.applicationDocNum ? getResponse.response_content.applicationCountry + "" + getResponse.response_content.applicationDocNum : 'Not Available');
+            setAppAssignees(getResponse.response_content.applicants ? formatAssignees(getResponse.response_content.applicants)[0] : ['Not Available']);
+            setInventors(getResponse.response_content.inventors ? formatInventors(getResponse.response_content.inventors) : ['Not Available']);
+            setLatestLegal(getResponse.response_content.legalEvents ? formatLatestLgal(getResponse.response_content.legalEvents) : 'Not Available');
+            setLinkouts(getResponse.response_content.legalStatus ? getResponse.response_content.legalStatus : 'Not Available');
+            setPriorities(getResponse.response_content.priorityClaims ? formatPriorities(getResponse.response_content.priorityClaims) : 'Not Available');
+            setSimFamMembers(getResponse.response_content.patentFamily.simpleFamilyMbrs ? getResponse.response_content.patentFamily.simpleFamilyMbrs : 'None');
+            setExtenFamMembers(getResponse.response_content.legalStatus ? getResponse.response_content.legalStatus : 'None');
         }
     }, []);
-
-    function setSummaryBlock(docContent) {
-
-        setLegalStatus(docContent.status ? docContent.status : 'Not Available');
-        setPubDate(docContent.publicationDate ? formatDate(docContent.publicationDate) : 'Not Available');
-        setFilingDate(docContent.applicationDate ? formatDate(docContent.applicationDate) : 'Not Available');
-        setAppNum(docContent.applicationDocNum ? docContent.applicationDocNum : 'Not Available');
-        setAppAssignees(docContent.applicants ? formatAssignees(docContent.applicants) : ['Not Available']);
-        setInventors(docContent.inventors ? formatInventors(docContent.inventors) : ['Not Available']);
-        setLatestLegal(docContent.legalEvents ? formatLatestLgal(docContent.legalEvents) : 'Not Available');
-        setLinkouts(docContent.legalStatus ? docContent.legalStatus : 'Not Available');
-        setPriorities(docContent.priorityClaims ? formatPriorities(docContent.priorityClaims) : 'Not Available');
-        setSimFamMembers(docContent.patentFamily.simpleFamilyMbrs ? docContent.patentFamily.simpleFamilyMbrs : 'None');
-        setExtenFamMembers(docContent.legalStatus ? docContent.legalStatus : 'None');
-    }
 
     function formatDate(dateString) {
         let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -201,20 +197,22 @@ function FullDocumentView() {
     function formatInventors(inventorsObject) {
         let inventors = [];
         inventorsObject.forEach((object) => {
-            object.addressBooks.forEach((names) => {
-                if (names.nameFirstName != null || names.nameLastName) {
+            if (object.format == null) {
+                object.addressBooks.forEach((names) => {
+                    if ((names.nameFirstName != null || names.nameLastName)) {
 
-                    let fName = names.nameFirstName ? names.nameFirstName : "";
-                    let mName = names.nameMiddleName ? names.nameMiddleName : "";
-                    let lName = names.nameLastName ? names.nameLastName : "";
+                        let fName = names.nameFirstName ? names.nameFirstName : "";
+                        let mName = names.nameMiddleName ? names.nameMiddleName : "";
+                        let lName = names.nameLastName ? names.nameLastName : "";
 
-                    inventors.push(fName + " " + mName + " " + lName);
-                } else {
-                    if (names.name) {
-                        inventors.push(names.name);
+                        inventors.push(fName + " " + mName + " " + lName + ", ");
+                    } else {
+                        if (names.name) {
+                            inventors.push(names.name + ", ");
+                        }
                     }
-                }
-            });
+                });
+            }
         });
 
         return inventors;
@@ -347,7 +345,7 @@ function FullDocumentView() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {legalEvents.map((events) => (
+                                            {legalEvents.reverse().map((events) => (
                                                 <tr>
                                                     <td>{events.code}</td>
                                                     <td>{events.date}</td>
@@ -383,17 +381,17 @@ function FullDocumentView() {
                                                     <td>Application Number:</td>
                                                     <td>{docContent.applicationDocNum ? docContent.applicationDocNum : ""}</td>
                                                     <td>Status:</td>
-                                                    <td>{docContent.status ? docContent.status : ""}</td>
+                                                    <td>{docContent.applStatus ? docContent.applStatus : ""}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Filing or 371 (c) Date:</td>
-                                                    <td>{docContent.fileOr371cDate ? docContent.fileOr371cDate : ""}</td>
+                                                    <td>{docContent.usPairApplicationDate ? formatDate(docContent.usPairApplicationDate) : ""}</td>
                                                     <td>Status Date:</td>
                                                     <td>{docContent.applStatusDate ? docContent.applStatusDate : ""}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Application Type:</td>
-                                                    <td>{docContent.applicationType ? docContent.applicationType : ""}</td>
+                                                    <td>{docContent.usPairApplicationType ? docContent.usPairApplicationType : ""}</td>
                                                     <td>Earliest Publication No:</td>
                                                     <td>{docContent.publicationDocNum ? docContent.publicationDocNum : "Not Available​" /* incorrect */}</td>
                                                 </tr>
@@ -742,7 +740,7 @@ function FullDocumentView() {
 
                                 <tr><td>Application Number​</td><td>{appNum}</td></tr>
 
-                                <tr><td>Applicants and Assignees​</td><td>{appAssignees && appAssignees.map((ppl) => (<tr>{ppl ? ppl : ""}</tr>))}</td></tr>
+                                <tr><td>Applicants and Assignees​</td><td>{appAssignees}</td></tr>
 
                                 <tr><td>Inventors​</td><td>{inventors && inventors.map((inven) => (<tr>{inven ? inven : ""}</tr>))}</td></tr>
 
