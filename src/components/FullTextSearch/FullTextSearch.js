@@ -219,9 +219,9 @@ function FullTextSearch() {
 			if (removeClassArray.includes(getClass[0])) {
 				e.preventDefault();
 			}
-			if (e.target.textContent.trim().length == 0) {
-				clearParser();
-			}
+			// if (e.target.textContent.trim().length == 0) {
+			// 	clearParser();
+			// }
 			setRightArrowEvent(false);
 		} else if (e.keyCode == 39) {
 
@@ -362,7 +362,10 @@ function FullTextSearch() {
 		let lastPrevChild = '';
 		// let lastChild = htmlElement.children[htmlElement.children.length - 1];
 		// let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
-		if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
+		if (getCurrentSel.focusNode.nodeName == "SPAN") {
+			lastChild = getCurrentSel.focusNode;
+		}
+		else if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
 			lastChild = getCurrentSel.focusNode.previousElementSibling;
 		} else {
 			lastChild = getCurrentSel.focusNode.parentElement;
@@ -877,197 +880,265 @@ function FullTextSearch() {
 		} else if (keyCode == 8) {
 
 			if (lastChild && lastChild.attributes.length > 0) {
-				let trimText = htmlElement.children[htmlElement.children.length - 1].textContent.trim();
-				if (
-					htmlElement.children[htmlElement.children.length - 1].textContent
-						.length == 0 ||
-					classArray.includes(getChildClassName)
-				) {
-					// Removing the child span tag if empty text in span
-					removedText = htmlElement.children[htmlElement.children.length - 1].textContent;
-					// if(htmlElement.children[htmlElement.children.length - 1].textContent.length > 0)
-					// {
-					// 	let getLength = htmlElement.children[htmlElement.children.length - 1].textContent.length;
-					// 	placeCursor = false;
-					// 	getEndPosition = savedCaretPosition.end - 4;
-					// }
-					placeCursor = false;
-					htmlElement.children[htmlElement.children.length - 1].outerHTML = "";
-					setSearchTermPopup(false);
-				} else if (
-					htmlElement.children[htmlElement.children.length - 1].textContent &&
-					searchPubArr.includes(htmlElement.children[htmlElement.children.length - 1].textContent)
-				) {
-					// htmlElement.children[htmlElement.children.length - 1].outerHTML = pubString;
-					if (trimText.length == 2) {
+				var currentEl = '';
+				var splitPrevClass = [];
+				var prevKey = 0;
+				if (getCurrentSel.focusNode.nodeName == "#text") {
+					if(getCurrentSel.focusNode.previousElementSibling)
+					{
+						currentEl = getCurrentSel.focusNode.previousElementSibling;
+						if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
+						{
+							getCurrDataId = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") ? getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") : '';
+						}else{
+							getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
+						}
+						
+					}else if(getCurrentSel.focusNode.parentElement){
+						currentEl = getCurrentSel.focusNode.parentElement;
+						getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
+					}
 
-						// Checking If Already Auto Suggest Text updated in DOM
-						if (checkpubelements.length == 0) {
-							var newSpan = document.createElement("span");
-							newSpan.setAttribute("class", "pub");
-							newSpan.innerHTML = "pub";
-							newSpan.setAttribute("style", styleAttr);
-							var div = document.getElementById("textareaDiv");
-							insertAfter(div, newSpan);
-						} else {
-							// Updating Current Position
-							checkpubelements[0].style.cssText = styleAttr;
-						}
-					} else {
-						// Removing Auto Suggest Text from DOM
-						if (checkpubelements.length > 0) {
-							checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
-						}
-						if (checkpublicationelements.length > 0) {
-							checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
-						}
-					}
-				} else if (
-					htmlElement.children[htmlElement.children.length - 1].textContent &&
-					convertLowerPublTxt.startsWith(htmlElement.children[htmlElement.children.length - 1].textContent)) {
-					if (trimText.length > 3) {
-						// Checking If Already Auto Suggest Text updated in DOM
-						if (checkpublicationelements.length == 0) {
-							var newSpan = document.createElement("span");
-							newSpan.setAttribute("class", "publication");
-							newSpan.innerHTML = "publication_Date:";
-							newSpan.setAttribute("style", styleAttr);
-							var div = document.getElementById("textareaDiv");
-							insertAfter(div, newSpan);
-						} else {
-							// Updating Current Position
-							checkpublicationelements[0].style.cssText = styleAttr;
-						}
-					} else {
-						if (checkpubelements.length > 0) {
-							checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
-						}
-						if (checkpublicationelements.length > 0) {
-							checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
-						}
-					}
+					splitPrevClass = currentEl ? currentEl.attributes.class.value.split(' ') : [];
+					// getCurrDataId = getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid") : '';
 				}
-				else {
-					if (checkpubelements.length > 0) {
-						checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
-					}
-					if (checkpublicationelements.length > 0) {
-						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
-					}
-					if (trimText.length != savedCaretPosition.end) {
-						getEndPosition = savedCaretPosition.end - 1;
-					}
+				else if (getCurrentSel.focusNode.nodeName == "SPAN") {
+					currentEl = getCurrentSel.focusNode;
+					splitPrevClass = currentEl ? currentEl.attributes.class.value.split(' ') : [];
+					getCurrDataId = getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid") : '';
+				}
+				else if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
+					currentEl = getCurrentSel.focusNode.previousElementSibling;
+					splitPrevClass = currentEl ? currentEl.attributes.class.value.split(' ') : [];
+					getCurrDataId = getCurrentSel.focusNode ? getCurrentSel.focusNode.getAttribute("dataid") : '';
+				}
+				let currDataId = 0;
+				getCurrDataId = parseInt(getCurrDataId);
+				if(currentEl && currentEl.textContent.length == 0)
+				{
+					Object.keys(htmlElement.children).forEach(function (key, val) {
+						if(htmlElement.children[key])
+						{
+							getClassId = htmlElement.children[key].getAttribute("dataid");
+							if(key > 0){
+								prevKey = key - 1;
+								getCurrClass = htmlElement.children[prevKey].attributes.class.value.split(" ");
+							}
+							currDataId = parseInt(getClassId);
+							
+							if (getCurrDataId == currDataId) {
+								htmlElement.removeChild(htmlElement.children[key]);
+								getEndPosition = savedCaretPosition.end;
+								if (removeClassArray.includes(getCurrClass[0])) {
+									getEndPosition = getEndPosition - 4;
+									htmlElement.removeChild(htmlElement.children[prevKey]);
+								}
+								placeCursor = false;
+								placeCursorPos = true;
+							}
+						}
+					});
+				}else{
+					getEndPosition = savedCaretPosition.end;
 					placeCursor = false;
 					placeCursorPos = true;
-					// getEndPosition = savedCaretPosition.end;
-					// setTimeout(() => {
-					// 	getEndPosition = savedCaretPosition.end;
-					// 	setCurrentCursorPosition(getEndPosition);
-					// }, 50);
 				}
-			} else if (lastPrevChild && lastPrevChild.attributes.length > 0) {
-				if (
-					htmlElement.children[htmlElement.children.length - 2].textContent
-						.length == 0 ||
-					classArray.includes(getChildClassName)
-				) {
-					// Removing the child span tag if empty text in span
-					htmlElement.children[htmlElement.children.length - 2].outerHTML = "";
-					setSearchTermPopup(false);
-				} else if (
-					htmlElement.children[htmlElement.children.length - 2].textContent &&
-					searchPubArr.includes(htmlElement.children[htmlElement.children.length - 2].textContent)
-				) {
-					// htmlElement.children[htmlElement.children.length - 1].outerHTML = pubString;
+				// let trimText = htmlElement.children[htmlElement.children.length - 1].textContent.trim();
+				// if (
+				// 	htmlElement.children[htmlElement.children.length - 1].textContent
+				// 		.length == 0 ||
+				// 	classArray.includes(getChildClassName)
+				// ) {
+				// 	// Removing the child span tag if empty text in span
+				// 	removedText = htmlElement.children[htmlElement.children.length - 1].textContent;
+				// 	// if(htmlElement.children[htmlElement.children.length - 1].textContent.length > 0)
+				// 	// {
+				// 	// 	let getLength = htmlElement.children[htmlElement.children.length - 1].textContent.length;
+				// 	// 	placeCursor = false;
+				// 	// 	getEndPosition = savedCaretPosition.end - 4;
+				// 	// }
+				// 	placeCursor = false;
+				// 	htmlElement.children[htmlElement.children.length - 1].outerHTML = "";
+				// 	setSearchTermPopup(false);
+				// } else if (
+				// 	htmlElement.children[htmlElement.children.length - 1].textContent &&
+				// 	searchPubArr.includes(htmlElement.children[htmlElement.children.length - 1].textContent)
+				// ) {
+				// 	// htmlElement.children[htmlElement.children.length - 1].outerHTML = pubString;
+				// 	if (trimText.length == 2) {
 
-					if (htmlElement.children[htmlElement.children.length - 2].textContent.length == 2) {
-						// Checking If Already Auto Suggest Text updated in DOM
-						if (checkpubelements.length == 0) {
-							var newSpan = document.createElement("span");
-							newSpan.setAttribute("class", "pub");
-							newSpan.innerHTML = "pub";
-							newSpan.setAttribute("style", styleAttr);
-							var div = document.getElementById("textareaDiv");
-							insertAfter(div, newSpan);
-						} else {
-							// Updating Current Position
-							checkpubelements[0].style.cssText = styleAttr;
-						}
-					} else {
-						// Removing Auto Suggest Text from DOM
-						const pubelements = document.getElementsByClassName("pub");
-						if (pubelements.length > 0) {
-							pubelements[0].parentNode.removeChild(pubelements[0]);
-						}
-					}
-				} else if (
-					htmlElement.children[htmlElement.children.length - 2].textContent &&
-					convertLowerPublTxt.startsWith(htmlElement.children[htmlElement.children.length - 2].textContent)) {
-					if (htmlElement.children[htmlElement.children.length - 2].textContent.length > 3) {
-						// Checking If Already Auto Suggest Text updated in DOM
-						if (checkpublicationelements.length == 0) {
-							var newSpan = document.createElement("span");
-							newSpan.setAttribute("class", "publication");
-							newSpan.innerHTML = "publication_Date";
-							newSpan.setAttribute("style", styleAttr);
-							var div = document.getElementById("textareaDiv");
-							insertAfter(div, newSpan);
-						} else {
-							// Updating Current Position
-							checkpublicationelements[0].style.cssText = styleAttr;
-						}
-					}
-				} else {
-					if (checkpublicationelements.length > 0) {
-						checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
-					}
-				}
-			}
+				// 		// Checking If Already Auto Suggest Text updated in DOM
+				// 		if (checkpubelements.length == 0) {
+				// 			var newSpan = document.createElement("span");
+				// 			newSpan.setAttribute("class", "pub");
+				// 			newSpan.innerHTML = "pub";
+				// 			newSpan.setAttribute("style", styleAttr);
+				// 			var div = document.getElementById("textareaDiv");
+				// 			insertAfter(div, newSpan);
+				// 		} else {
+				// 			// Updating Current Position
+				// 			checkpubelements[0].style.cssText = styleAttr;
+				// 		}
+				// 	} else {
+				// 		// Removing Auto Suggest Text from DOM
+				// 		if (checkpubelements.length > 0) {
+				// 			checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+				// 		}
+				// 		if (checkpublicationelements.length > 0) {
+				// 			checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+				// 		}
+				// 	}
+				// } else if (
+				// 	htmlElement.children[htmlElement.children.length - 1].textContent &&
+				// 	convertLowerPublTxt.startsWith(htmlElement.children[htmlElement.children.length - 1].textContent)) {
+				// 	if (trimText.length > 3) {
+				// 		// Checking If Already Auto Suggest Text updated in DOM
+				// 		if (checkpublicationelements.length == 0) {
+				// 			var newSpan = document.createElement("span");
+				// 			newSpan.setAttribute("class", "publication");
+				// 			newSpan.innerHTML = "publication_Date:";
+				// 			newSpan.setAttribute("style", styleAttr);
+				// 			var div = document.getElementById("textareaDiv");
+				// 			insertAfter(div, newSpan);
+				// 		} else {
+				// 			// Updating Current Position
+				// 			checkpublicationelements[0].style.cssText = styleAttr;
+				// 		}
+				// 	} else {
+				// 		if (checkpubelements.length > 0) {
+				// 			checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+				// 		}
+				// 		if (checkpublicationelements.length > 0) {
+				// 			checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+				// 		}
+				// 	}
+				// }
+				// else {
+				// 	if (checkpubelements.length > 0) {
+				// 		checkpubelements[0].parentNode.removeChild(checkpubelements[0]);
+				// 	}
+				// 	if (checkpublicationelements.length > 0) {
+				// 		checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+				// 	}
+				// 	if (trimText.length != savedCaretPosition.end) {
+				// 		getEndPosition = savedCaretPosition.end - 1;
+				// 	}
+				// 	placeCursor = false;
+				// 	placeCursorPos = true;
+				// 	// getEndPosition = savedCaretPosition.end;
+				// 	// setTimeout(() => {
+				// 	// 	getEndPosition = savedCaretPosition.end;
+				// 	// 	setCurrentCursorPosition(getEndPosition);
+				// 	// }, 50);
+				// }
+			}else{
+				getEndPosition = savedCaretPosition.end;
+				placeCursor = false;
+				placeCursorPos = true;
+			} 
+			// else if (lastPrevChild && lastPrevChild.attributes.length > 0) {
+			// 	if (
+			// 		htmlElement.children[htmlElement.children.length - 2].textContent
+			// 			.length == 0 ||
+			// 		classArray.includes(getChildClassName)
+			// 	) {
+			// 		// Removing the child span tag if empty text in span
+			// 		htmlElement.children[htmlElement.children.length - 2].outerHTML = "";
+			// 		setSearchTermPopup(false);
+			// 	} else if (
+			// 		htmlElement.children[htmlElement.children.length - 2].textContent &&
+			// 		searchPubArr.includes(htmlElement.children[htmlElement.children.length - 2].textContent)
+			// 	) {
+			// 		// htmlElement.children[htmlElement.children.length - 1].outerHTML = pubString;
 
-			if (
-				getCurrentSel &&
-				getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode
-			) {
-				if (getCurrentSel.focusNode.parentNode.className) {
-					getCurrClass = getCurrentSel.focusNode.parentNode.className.split(" ");
-					getCurrDataId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
-					// let getDataId = getCurrentSel.focusNode.parentNode.attributes.dataid;
+			// 		if (htmlElement.children[htmlElement.children.length - 2].textContent.length == 2) {
+			// 			// Checking If Already Auto Suggest Text updated in DOM
+			// 			if (checkpubelements.length == 0) {
+			// 				var newSpan = document.createElement("span");
+			// 				newSpan.setAttribute("class", "pub");
+			// 				newSpan.innerHTML = "pub";
+			// 				newSpan.setAttribute("style", styleAttr);
+			// 				var div = document.getElementById("textareaDiv");
+			// 				insertAfter(div, newSpan);
+			// 			} else {
+			// 				// Updating Current Position
+			// 				checkpubelements[0].style.cssText = styleAttr;
+			// 			}
+			// 		} else {
+			// 			// Removing Auto Suggest Text from DOM
+			// 			const pubelements = document.getElementsByClassName("pub");
+			// 			if (pubelements.length > 0) {
+			// 				pubelements[0].parentNode.removeChild(pubelements[0]);
+			// 			}
+			// 		}
+			// 	} else if (
+			// 		htmlElement.children[htmlElement.children.length - 2].textContent &&
+			// 		convertLowerPublTxt.startsWith(htmlElement.children[htmlElement.children.length - 2].textContent)) {
+			// 		if (htmlElement.children[htmlElement.children.length - 2].textContent.length > 3) {
+			// 			// Checking If Already Auto Suggest Text updated in DOM
+			// 			if (checkpublicationelements.length == 0) {
+			// 				var newSpan = document.createElement("span");
+			// 				newSpan.setAttribute("class", "publication");
+			// 				newSpan.innerHTML = "publication_Date";
+			// 				newSpan.setAttribute("style", styleAttr);
+			// 				var div = document.getElementById("textareaDiv");
+			// 				insertAfter(div, newSpan);
+			// 			} else {
+			// 				// Updating Current Position
+			// 				checkpublicationelements[0].style.cssText = styleAttr;
+			// 			}
+			// 		}
+			// 	} else {
+			// 		if (checkpublicationelements.length > 0) {
+			// 			checkpublicationelements[0].parentNode.removeChild(checkpublicationelements[0]);
+			// 		}
+			// 	}
+			// }
 
-					if (removeClassArray.includes(getCurrClass[0])) {
-						Object.keys(htmlElement.children).forEach(function (key) {
-							let getClassVal =
-								htmlElement.children[key].attributes.class.value.split(" ");
-							getClassId = htmlElement.children[key].getAttribute("dataid");
-							if (getClassId == getCurrentSel.focusNode.getAttribute("dataid")) {
-								if (getClassVal[0] == "andClass") {
-									htmlElement.children[key].outerHTML = ANDString;
-									placeCaretAtEnd(htmlElement.children[key]);
-								} else if (getClassVal[0] == "orClass") {
-									htmlElement.children[key].outerHTML = ORString;
-									placeCaretAtEnd(htmlElement.children[key]);
-								} else if (getClassVal[0] == "notClass") {
-									htmlElement.children[key].outerHTML = NOTString;
-									placeCaretAtEnd(htmlElement.children[key]);
-								}
-							}
-						});
-					} else {
-						let placeKey = getCurrDataId - 1;
-						// placeCaretAtEndTag(htmlElement.children[placeKey]);
-						// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
-						// setCurrentCursorPosition(savedCaretPosition.end);
-						let spaceRem = removedText.length;
-						if (removedText && removedText.length > 0) {
-							getEndPosition = savedCaretPosition.end - spaceRem;
+			// if (
+			// 	getCurrentSel &&
+			// 	getCurrentSel.focusNode && getCurrentSel.focusNode.parentNode
+			// ) {
+			// 	if (getCurrentSel.focusNode.parentNode.className) {
+			// 		getCurrClass = getCurrentSel.focusNode.parentNode.className.split(" ");
+			// 		getCurrDataId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
+			// 		// let getDataId = getCurrentSel.focusNode.parentNode.attributes.dataid;
 
-						} else {
-							getEndPosition = savedCaretPosition.end;
-						}
-						placeCursor = false;
-						placeCursorPos = true;
-					}
-				}
-			}
+			// 		if (removeClassArray.includes(getCurrClass[0])) {
+			// 			Object.keys(htmlElement.children).forEach(function (key) {
+			// 				let getClassVal =
+			// 					htmlElement.children[key].attributes.class.value.split(" ");
+			// 				getClassId = htmlElement.children[key].getAttribute("dataid");
+			// 				if (getClassId == getCurrentSel.focusNode.getAttribute("dataid")) {
+			// 					if (getClassVal[0] == "andClass") {
+			// 						htmlElement.children[key].outerHTML = ANDString;
+			// 						placeCaretAtEnd(htmlElement.children[key]);
+			// 					} else if (getClassVal[0] == "orClass") {
+			// 						htmlElement.children[key].outerHTML = ORString;
+			// 						placeCaretAtEnd(htmlElement.children[key]);
+			// 					} else if (getClassVal[0] == "notClass") {
+			// 						htmlElement.children[key].outerHTML = NOTString;
+			// 						placeCaretAtEnd(htmlElement.children[key]);
+			// 					}
+			// 				}
+			// 			});
+			// 		} else {
+			// 			let placeKey = getCurrDataId - 1;
+			// 			// placeCaretAtEndTag(htmlElement.children[placeKey]);
+			// 			// CaretPositioning.restoreSelection(document.getElementById("textareaDiv"), savedCaretPosition);
+			// 			// setCurrentCursorPosition(savedCaretPosition.end);
+			// 			let spaceRem = removedText.length;
+			// 			if (removedText && removedText.length > 0) {
+			// 				getEndPosition = savedCaretPosition.end - spaceRem;
+
+			// 			} else {
+			// 				getEndPosition = savedCaretPosition.end;
+			// 			}
+			// 			placeCursor = false;
+			// 			placeCursorPos = true;
+			// 		}
+			// 	}
+			// }
 			// If Html Content is Empty, will clear the div content
 			// if(htmlElement.textContent.trim().length == 0)
 			// {
