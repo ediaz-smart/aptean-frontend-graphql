@@ -324,7 +324,7 @@ function SearchResultSequence(props) {
     const getSharedWithMe = async (id) => {
         const results = await ftAccess.sharedWithMe(id);
         if (results && results.response_status == 0) {
-            if (results.response_content) {
+            if (results.response_content && results.response_content !== 'none') {
                 sharedWithMe.current = results.response_content;
                 const sharedToNames = Object.keys(results.response_content).map((item) => {
                     return results.response_content[item].full_name

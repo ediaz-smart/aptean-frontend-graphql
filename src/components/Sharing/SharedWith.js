@@ -42,10 +42,9 @@ function SharedWith(props) {
 
         setWorkflowId(props.workflowId);
         setGqUserId(props.gqUserId);
-
-        props.getSharedWithMe(props.workflowId);
+        if (props.getSharedWithMe) props.getSharedWithMe(props.workflowId);
         getShareableTo(props.workflowId);
-
+        
     }, []);
 
 
