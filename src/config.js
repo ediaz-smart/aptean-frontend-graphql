@@ -9,3 +9,7 @@ export const environment = {
 };
 
 export const supportMail = "support@gqlifesciences.com";
+export const usBaseUrl = "http://www.uspto.gov/web/patents/classification/";
+export const ipcBaseUrl = "http://web2.wipo.int/ipcpub/#refresh=page&notion=scheme&version=20130101&symbol=";
+export const ipcrBaseUrl = "http://web2.wipo.int/ipcpub/#refresh=page&notion=scheme&version=20130101&symbol=";
+export const cpcBaseUrl = "http://worldwide.espacenet.com/classification#!/CPC=";

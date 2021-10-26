@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useTranslation } from "react-i18next";
 import { Row, Col } from 'react-bootstrap';
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -7,11 +7,14 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
+import ReactHtmlParser from 'react-html-parser';
+import DataTable from "react-data-table-component";
 
 import Footer from '../../shared/footer';
 import fullTextService from '../../services/fulltextsearch';
 import { property } from 'lodash';
+import {usBaseUrl, ipcBaseUrl, ipcrBaseUrl, cpcBaseUrl } from '../../config';
 
 const Accordion = withStyles({
     root: {
@@ -112,6 +115,7 @@ function FullDocumentView() {
     const { t, i18n } = useTranslation('common');
     const classes = useStyles();
     const { patentId } = useParams();
+    const history = useHistory();
     //state
     const [isAbstractOpen, setIsAbstractOpen] = useState(true);
     const [isClaimsOpen, setIsClaimsOpen] = useState(true);
@@ -121,6 +125,7 @@ function FullDocumentView() {
     const [isUsPairOpen, setUsPairOpen] = useState(true);
     const [isCitationsOpen, setIsCitationsOpen] = useState(true);
     const [docContent, setDocContent] = useState({});
+    const [classificationData, setClassificationData] = useState([]);
 
     //substate
     //usPair
@@ -172,6 +177,9 @@ function FullDocumentView() {
             setPriorities(getResponse.response_content.priorityClaims ? formatPriorities(getResponse.response_content.priorityClaims) : 'Not Available');
             setSimFamMembers(getResponse.response_content.patentFamily.simpleFamilyMbrs ? getResponse.response_content.patentFamily.simpleFamilyMbrs : 'None');
             setExtenFamMembers(getResponse.response_content.legalStatus ? getResponse.response_content.legalStatus : 'None');
+
+            const { internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses } = getResponse.response_content;
+                setClassification(internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses);
         }
     }, []);
 
@@ -256,10 +264,174 @@ function FullDocumentView() {
     }
 
 
+    function setClassification(ipcr, cpc, usMain, usFurther, ipcMain, ipcFurther) {
+        let classificationArray = [], ipcrLinkout = "", cpcLinkout = "", usMainLinkout = "", usFurtherLinkout = "", usMainObj={};
+       
+        // setClassificationData(classificationArray);
+
+        //US
+        if (usMain && usMain.classCode && usMain.subClassCode) {
+            // uspc435/defs435.htm#C435S320100
+            let isDecimal = usMain.subClassCode.includes('.') ? true : false;
+            let convertedSubClass = usMain.subClassCode > 100
+            let usMainLink = `${usBaseUrl}/uspc${usMain.classCode}/defs${usMain.classCode}.htm#c${usMain.classCode}s${usMain.subClassCode}`;
+            let usMainLabel = `${usMain.text}`;
+            usMainLinkout += `<a class="mr-2" href=${usMainLink} target="_blank" rel="noreferrer">${usMainLabel}</a>`
+            usMainObj = {
+                label: "US",
+                link: ReactHtmlParser(usMainLinkout)
+            }
+        }
+
+        // setClassificationData(classificationArray);
+
+        //usFurther
+        usFurther && usFurther.length > 0 && usFurther.map((item, index) => {
+            // uspc435/defs435.htm#C435S320100
+            let isDecimal = item.subClassCode.includes('.') ? true : false;
+            let convertedSubClass = item.subClassCode > 100
+            let usFurtherLink = `${usBaseUrl}/uspc${item.classCode}/defs${item.classCode}.htm#c${item.classCode}s${item.subClassCode}`;
+            let usFurtherLabel = `${item.text}`;
+            usFurtherLinkout += `<a class="mr-2" href=${usFurtherLink} target="_blank" rel="noreferrer">${usFurtherLabel}</a>`
+        });
+        let usFurtherObj = {
+            label: "US",
+            link: ReactHtmlParser(usMainLinkout + usFurtherLinkout)
+        }
+        console.log('usFurtherObj', usFurtherObj)
+        classificationArray.push(usFurtherObj);
+
+        //ipc
+        // if (ipcMain && ipcMain.classCode && ipcMain.subClassCode) {
+        //     // uspc435/defs435.htm#C435S320100
+        //     let isDecimal = usMain.subClassCode.includes('.') ? true : false;
+        //     let convertedSubClass = usMain.subClassCode > 100
+        //     let usMainLink = `${ipcBaseUrl}/uspc${usMain.classCode}/defs${usMain.classCode}.htm#c${usMain.classCode}s${usMain.subClassCode}`;
+        //     let usMainLabel = `${usMain.text}`;
+        //     usMainLinkout += `<a class="mr-2" href=${usMainLink} target="_blank" rel="noreferrer">${usMainLabel}</a>`
+        //     usMainObj = {
+        //         label: "US",
+        //         link: ReactHtmlParser(usMainLinkout)
+        //     }
+        // }
+
+        //ipcr
+        ipcr && ipcr.length > 0 && ipcr.map((item, index) => {
+            let ipcrLink = `${ipcrBaseUrl}${item.section}${item.classCode}${item.subClassCode}${item.mainGroup}${item.subGroup}`;
+            let ipcrLabel = `${item.section}${item.classCode}${item.subClassCode}${item.mainGroup}/${item.subGroup}`;
+            ipcrLinkout += `<a class="mr-2" href=${ipcrLink} target="_blank" rel="noreferrer">${ipcrLabel}</a>`
+        });
+        let ipcrObj = {
+            label: "IPCR",
+            link: ReactHtmlParser(ipcrLinkout)
+        }
+        classificationArray.push(ipcrObj);
+
+        //cpc
+        cpc && cpc.length > 0 && cpc.map((item, index) => {
+            let cpcLink = `${cpcBaseUrl}${item.section}${item.classCode}${item.subClassCode}${item.mainGroup}/${item.subGroup}`;
+            let cpcLabel = `${item.section}${item.classCode}${item.subClassCode}${item.mainGroup}/${item.subGroup}`;
+            cpcLinkout += `<a class="mr-2" href=${cpcLink} target="_blank" rel="noreferrer">${cpcLabel}</a>`
+        });
+        let cpcObj = {
+            label: "CPC",
+            link: ReactHtmlParser(cpcLinkout)
+        }
+        classificationArray.push(cpcObj);
+        setClassificationData(classificationArray);
+    }
+
+    const classificationColumn = [
+        {
+            // name: "name",
+            selector: "label",
+            sortable: false,
+            center: true,
+            style: {
+                maxWidth: '25%'
+            }
+        },
+        {
+            // name: "name",
+            selector: "link",
+            sortable: false,
+            center: true,
+            style: {
+                width: '75%'
+            }
+        }
+    ];
+
+    const customStyles = {
+        rows: {
+            style: {
+                minHeight: '50px', // override the row height
+                // width: "80%"
+            }
+        },
+        headRow: {
+            style: {
+                border: '0 !important',
+                display: 'none',
+            }
+        },
+        // headCells: {
+        //     style: {
+                // paddingLeft: '8px', // override the cell padding for head cells
+                // paddingRight: '8px',
+                // borderLeft: '1px solid #0606061f',
+                // '&:first-child, &:first-child div': {
+                //     border: 'none !important'
+                // },
+                // '&:last-child ,&:last-child div': {
+                //     border: 'none !important'
+                // },
+                // fontWeight: '700',
+                // color: '#777777',
+                // justifyContent: 'start !important'
+        //     },
+        // },
+        cells: {
+            style: {
+                paddingLeft: '8px', // override the cell padding for data cells
+                paddingRight: '8px',
+                borderLeft: '1px solid #0606061f',
+                borderBottom: '1px solid #0606061f',
+                wordWrap: 'break-word',
+                // borderTop: "0px",
+                '&:first-child,&:first-child div': {
+                    borderLeft: '0',
+                    borderBottom: '0',
+                    whiteSpace: "break-spaces !important",
+                },
+                '&:last-child ,&:last-child div': {
+                    // borderLeft: '0',
+                    borderBottom: '0',
+                    whiteSpace: "break-spaces !important",
+                    wordWrap: "break-word",
+                    overflowWrap: "break-word"
+                },
+                display: 'grid',
+                justifyContent: 'start !important'
+            },
+
+        },
+    };
+
     const handleScroll = (e, id) => {
         document.getElementById(id).scrollIntoView({ behavior: "smooth", inline: "nearest" });
     }
-    const { abstracts } = docContent;
+    const { abstracts, claims, descriptions } = docContent;
+    console.log('abstracts', abstracts)
+
+    function showString(str) {
+        let string = str.trim();
+        string = string.split('.');
+        string = string[1] + ".";
+        return string;
+    }
+
+
     return (
         <div className="mt-4 pl-5 pr-5">
             <div className={classes.parentDiv}>
@@ -276,10 +448,18 @@ function FullDocumentView() {
                                     </p>
                                 </AccordionSummary>
                                 <AccordionDetails className="appTextColor">
-                                    <p>Sample abstract</p>
-                                    {/* {abstracts && abstracts.length >0 && abstracts.forEach(item => {
-                                    // {item.langCode == "en" && <p>{item.</p>}
-                                })} */}
+                                    {/* <p>Sample abstract</p> */}
+                                    {abstracts && abstracts.length > 0 && abstracts.map((item, index) => {
+                                        if (item.langCode == "en" && item.abstractText && item.abstractText.length > 0) {
+                                            return (
+                                                item.abstractText.map((data, subIndex) => {
+                                                    return (
+                                                        <p key={subIndex}>{ReactHtmlParser(data.html)}</p>
+                                                    )
+                                                })
+                                            )
+                                        }
+                                    })}
                                 </AccordionDetails>
                             </Accordion>
                             <Accordion square expanded={isClaimsOpen} onChange={() => setIsClaimsOpen(prevState => !prevState)} id="claims">
@@ -291,7 +471,29 @@ function FullDocumentView() {
                                     </p>
                                 </AccordionSummary>
                                 <AccordionDetails className="appTextColor">
-                                    <p>Sample claims</p>
+                                    {/* <p>Sample claims</p> */}
+                                    {claims && claims.length > 0 && claims.map((item, index) => {
+                                        if (item.langCode == "en" && item.claims && item.claims.length > 0) {
+                                            return (
+                                                item.claims.map((data, subIndex) => {
+                                                    return (
+                                                        <p key={subIndex}>
+                                                            <span className="bold">{data.num + "."}</span>
+                                                            <span>{ReactHtmlParser(showString(data.claimTexts[0].html))}</span>
+                                                            {data.claimTexts && data.claimTexts.length > 1 && data.claimTexts.map((record, recordIndex) => {
+                                                                if (recordIndex > 0) {
+                                                                    return (
+                                                                        <p key={recordIndex}>{ReactHtmlParser(record.html)}</p>
+                                                                    )
+                                                                }
+                                                            })}
+                                                        </p>
+                                                    )
+                                                })
+                                            )
+
+                                        }
+                                    })}
                                 </AccordionDetails>
                             </Accordion>
 
@@ -304,7 +506,18 @@ function FullDocumentView() {
                                     </p>
                                 </AccordionSummary>
                                 <AccordionDetails className="appTextColor">
-                                    <p>Sample deacription</p>
+                                    {/* <p>Sample deacription</p> */}
+                                    {descriptions && descriptions.length > 0 && descriptions.map((item, index) => {
+                                        if (item.langCode == "en" && item.textParts && item.textParts.length > 0) {
+                                            return (
+                                                item.textParts.map((data, subIndex) => {
+                                                    return (
+                                                        <p key={subIndex}>{ReactHtmlParser(data.html)}</p>
+                                                    )
+                                                })
+                                            )
+                                        }
+                                    })}
                                 </AccordionDetails>
                             </Accordion>
 
@@ -317,7 +530,19 @@ function FullDocumentView() {
                                     </p>
                                 </AccordionSummary>
                                 <AccordionDetails className="appTextColor">
-                                    <p>Sample classification</p>
+                                    {/* <p>Sample classification</p> */}
+                                    <DataTable
+                                        columns={classificationColumn}
+                                        data={classificationData}
+                                        // defaultSortField="date"
+                                        // defaultSortAsc={false}
+                                        // sortable={false}
+                                        // sortServer={true}
+                                        noDataComponent="Loading."
+                                        // sortIcon={<SortIcon />}
+                                        customStyles={customStyles}
+                                        noHeader={true}
+                                    />
                                 </AccordionDetails>
                             </Accordion>
 
