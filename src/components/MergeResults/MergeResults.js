@@ -386,7 +386,7 @@ function MergeResults(props) {
                             />
                         </div>
                         <div className="mb-4">
-                            <p><span className={classes.subTitleFont}>Step 2 - </span><span>Put the contributing result sets into one of two groups</span></p>
+                            <p><span className={classes.subTitleFont}>Step 2 - </span><span>Select the result sets to merge. Both Group A and Group B must have at least one selection.</span></p>
                             <DataTable
                                 columns={columns}
                                 data={selectData && selectData.selectedRows}
