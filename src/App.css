@@ -502,14 +502,12 @@ label {
 .opClass {
     font-style: italic;
     font-weight: bold;
-    color: #bdb9b9;
+    color: #777777;
 }
 
 .query {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
-    font-size: 14px;
-    color: #777777;
-    font-weight: 400;
+    color: #000;
+    font: 400 13.3333px Arial, Helvetica, sans-serif;
 }
 
 .autoquery {
