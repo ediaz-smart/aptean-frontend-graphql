@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   loginSubmitButton: {
     backgroundColor: '#db862c',
     borderColor: '#ca751b',
-    border: '2px solid #db862c',
+    border: '1px solid #db862c',
     color: 'white',
     textTransform: 'capitalize',
     marginLeft: '18px',
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
   loginSubmitDis: {
     backgroundColor: '#EEEEEE',
-    border: '2px solid #a2a2a3',
+    border: '1px solid #a2a2a3',
     float: 'right',
     textTransform: 'none',
     margin: '4px',
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   loginSubmitCancel: {
     backgroundColor: '#0182C5',
     borderColor: '#1F4E79',
-    border: '2px solid #1F4E79',
+    border: '1px solid #1F4E79',
     color: 'white',
     textTransform: 'capitalize',
     '&:hover': {

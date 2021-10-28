@@ -10,19 +10,19 @@ import Link from '@material-ui/core/Link';
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'11px',
+		paddingTop: '11px',
 		paddingRight: '4px',
-		marginTop:'-7px',
+		marginTop: '-7px',
 	},
-	footerDiv:{
-		padding:'0 30px',
-		marginTop:'-20px',
-		marginRight: '-31px',	
+	footerDiv: {
+		padding: '0 30px',
+		marginTop: '-20px',
+		marginRight: '-31px',
 	},
-	modalBoxContent :{
+	modalBoxContent: {
 		maxHeight: '675px',
 	},
-	modalClassContent:{
+	modalClassContent: {
 		position: 'absolute',
 		width: '96%',
 		height: '37%',
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 		bottom: 'auto',
 		transform: 'translate(-50%, -50%)'
 	},
-	colorContainer:{
+	colorContainer: {
 		backgroundColor: '#EEEEEE',
 		marginTop: '-38px',
 		// marginLeft: 0px;
@@ -44,28 +44,28 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '5px',
 
 	},
-	buttonStyle:{
-		float:'right',
+	buttonStyle: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
-		backgroundColor:'##DB862D !important',
-        border: '2px solid ##DB862D !important',
+		margin: '4px',
+		backgroundColor: '##DB862D !important',
+		border: '1px solid ##DB862D !important',
 		marginTop: '4px',
 
 	},
-	buttonStyleCancel:{
-		float:'right',
+	buttonStyleCancel: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
-		color:'white',
-		backgroundColor:'#008EC5 !important',
-		border: '2px solid #1F4E79 !important',
-		borderColor:'#1F4E79',
+		margin: '4px',
+		color: 'white',
+		backgroundColor: '#008EC5 !important',
+		border: '1px solid #1F4E79 !important',
+		// borderColor:'#1F4E79',
 
 	},
 }));
 
-function PromptModal({show,modalCallback,hideModal}) {
+function PromptModal({ show, modalCallback, hideModal }) {
 	const classes = useStyles();
 	return (
 		<Modal
@@ -76,19 +76,19 @@ function PromptModal({show,modalCallback,hideModal}) {
 			className={classes.modalBoxContent}
 			show={show}
 		>
-				
-			<Modal.Header  className={classes.modalHeader}>
-				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon className={"float-right"} onClick={hideModal} /></Link>
+
+			<Modal.Header className={classes.modalHeader}>
+				<Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon className={"float-right"} onClick={hideModal} /></Link>
 			</Modal.Header>
 			<Modal.Body className={"text-center "}>
-		   	<div className={classes.colorContainer}>
-			   <br></br> 
-				<h5>Please confirm that you want to log out.</h5>
-				<br></br>  <br></br>  
-				<div className={classes.footerDiv}>
-					<Button onClick={modalCallback} disableRipple={true} className='accountInfo'  variant="contained">Log out</Button>
-					<Button onClick={hideModal} disableRipple={true} className={classes.buttonStyleCancel}   variant="contained">Cancel</Button>
-				</div>
+				<div className={classes.colorContainer}>
+					<br></br>
+					<h5>Please confirm that you want to log out.</h5>
+					<br></br>  <br></br>
+					<div className={classes.footerDiv}>
+						<Button onClick={modalCallback} disableRipple={true} className='accountInfo' variant="contained">Log out</Button>
+						<Button onClick={hideModal} disableRipple={true} className={classes.buttonStyleCancel} variant="contained">Cancel</Button>
+					</div>
 				</div>
 			</Modal.Body>
 			{/* <Modal.Footer>

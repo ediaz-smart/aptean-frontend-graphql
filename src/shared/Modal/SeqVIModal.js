@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 		margin: '4px',
 		color: 'white',
 		backgroundColor: '##DB862D !important',
-		border: '2px solid ##DB862D !important',
+		border: '1px solid ##DB862D !important',
 
 	},
 	bodyPadding: {

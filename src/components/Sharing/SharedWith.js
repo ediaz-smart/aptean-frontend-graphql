@@ -44,7 +44,7 @@ function SharedWith(props) {
         setGqUserId(props.gqUserId);
         if (props.getSharedWithMe) props.getSharedWithMe(props.workflowId);
         getShareableTo(props.workflowId);
-        
+
     }, []);
 
 
@@ -64,6 +64,7 @@ function SharedWith(props) {
 
     const removeSharing = async (usrs) => {
         const results = await ftAccess.removeAccess(workflowId, usrs.user_id);
+        // console.log(results)
         if (results && results.response_status == 0) {
             getShareableTo(workflowId);
             props.getSharedWithMe(workflowId);

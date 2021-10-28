@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
         height: '8%'
     },
     alertSelect: {
-        width: '70%'
+        width: '51%'
     },
     loginSubmitCancel: {
         backgroundColor: '#0182C5',
@@ -163,7 +163,7 @@ const useStyles = makeStyles((theme) => ({
         margin: '4px',
         color: 'white',
         backgroundColor: '##DB862D !important',
-        border: '2px solid ##DB862D !important',
+        border: '1px solid ##DB862D !important',
 
     },
     bodyPadding: {
@@ -341,6 +341,9 @@ function SearchResultSequence(props) {
                 }
 
                 setSeqShare({ 'sharedNames': sharedToNamesString })
+            } else {
+                sharedWithMe.current = 'none';
+                setSeqShare({ 'sharedNames': '' })
             }
         }
     }

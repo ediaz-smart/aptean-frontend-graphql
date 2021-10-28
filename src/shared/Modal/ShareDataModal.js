@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 		margin: '4px',
 		color: 'white',
 		backgroundColor: '#008EC5 !important',
-		border: '2px solid #1F4E79 !important',
+		border: '1px solid #1F4E79 !important',
 		borderColor: '#1F4E79',
 
 	},
@@ -146,39 +146,39 @@ function ShareDataModal(props) {
 						</p>
 					</div>
 
-				<div className={classes.selectorValues + " mx-4"}>
-					<ul className={"list-inline " + classes.scrollList}>
-						{
-							props.data && Object.keys(props.data).map((dta, i) => {
-								return <li key={i}>
-									<span className={"cursorPointer " + (selectData.includes(props.data[dta].user_id) ? classes.projTitleActive : '')} onClick={() => getSelectVal(props.data[dta].user_id)}>{props.data[dta].full_name}</span>
-								</li>
-							})
-						}
-					</ul>
-				</div>
-				<div className={classes.footerDiv + " float-right"}>
+					<div className={classes.selectorValues + " mx-4"}>
+						<ul className={"list-inline " + classes.scrollList}>
+							{
+								props.data && Object.keys(props.data).map((dta, i) => {
+									return <li key={i}>
+										<span className={"cursorPointer " + (selectData.includes(props.data[dta].user_id) ? classes.projTitleActive : '')} onClick={() => getSelectVal(props.data[dta].user_id)}>{props.data[dta].full_name}</span>
+									</li>
+								})
+							}
+						</ul>
+					</div>
+					<div className={classes.footerDiv + " float-right"}>
 
 
-					{/* <Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Share Results</Button>  */}
-					
-					<Button
-						color={selectData.length == 0 ? "default":"secondary"}
-						variant="contained"
-						className={"text-capitalize mr-2 "+ (selectData.length == 0 ? 'cancelButtonDisable' : 'accountInfo')}
-						onClick={shareUserData}
-						disableRipple={true}
-						disabled={selectData.length == 0 ? true:false}
-					>Share Results</Button>
-					<Button
-						onClick={closeModal}
-						className={classes.buttonStyleCancel}
-						color="secondary"
-						disableRipple={true}
-						variant="contained"
-					>Cancel</Button>
-				
-				</div>
+						{/* <Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Share Results</Button>  */}
+
+						<Button
+							color={selectData.length == 0 ? "default" : "secondary"}
+							variant="contained"
+							className={"text-capitalize mr-2 " + (selectData.length == 0 ? 'cancelButtonDisable' : 'accountInfo')}
+							onClick={shareUserData}
+							disableRipple={true}
+							disabled={selectData.length == 0 ? true : false}
+						>Share Results</Button>
+						<Button
+							onClick={closeModal}
+							className={classes.buttonStyleCancel}
+							color="secondary"
+							disableRipple={true}
+							variant="contained"
+						>Cancel</Button>
+
+					</div>
 				</div>
 			</Modal.Body>
 			{/* <Modal.Footer>

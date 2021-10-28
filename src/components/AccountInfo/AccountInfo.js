@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#db862c',
     marginLeft: '-6px',
     borderColor: '#ca751b',
-    border: '2px solid #ca751b',
+    border: '1px solid #ca751b',
     color: 'white',
     textTransform: 'capitalize',
     '&:hover': {
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#EEEEEE',
     marginLeft: '-6px',
     borderColor: '#a2a2a3',
-    border: '2px solid #CCCCCC',
+    border: '1px solid #CCCCCC',
     color: '#777777',
     textTransform: 'capitalize',
     boxShadow: 'none !important',
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   loginSubmitCancel: {
     backgroundColor: '#0182C5',
     borderColor: '#1F4E79',
-    border: '2px solid #1F4E79',
+    border: '1px solid #1F4E79',
     color: 'white',
     textTransform: 'capitalize',
     '&:hover': {

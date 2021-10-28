@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     loginSubmitCancel: {
         backgroundColor: '#0182C5',
         borderColor: '#1F4E79',
-        border: '2px solid #1F4E79',
+        border: '1px solid #1F4E79',
         color: 'white',
         margin: '4px',
         marginRight: '18px',

@@ -11,9 +11,9 @@ import CloseIcon from '@material-ui/icons/Close';
 const useStyles = makeStyles((theme) => ({
 	modalHeader: {
 		borderBottom: 'none !important',
-		paddingTop:'11px',
+		paddingTop: '11px',
 		paddingRight: '4px',
-		marginTop:'-7px',
+		marginTop: '-7px',
 		display: "block !important"
 	},
 	footerDiv: {
@@ -43,24 +43,24 @@ const useStyles = makeStyles((theme) => ({
 		padding: '3px',
 		borderRadius: '3px'
 	},
-	buttonStyleCancel:{
-		float:'right',
+	buttonStyleCancel: {
+		float: 'right',
 		textTransform: 'none',
-		margin:'4px',
-		color:'white',
-		backgroundColor:'#008EC5 !important',
-        border: '2px solid #1F4E79 !important',
-		borderColor:'#1F4E79',
+		margin: '4px',
+		color: 'white',
+		backgroundColor: '#008EC5 !important',
+		border: '1px solid #1F4E79 !important',
+		borderColor: '#1F4E79',
 
 	},
 	scrollList: {
 		height: '300px',
 		overflowX: 'scroll'
 	},
-	modalBoxContent :{
+	modalBoxContent: {
 		maxHeight: '675px',
 	},
-	modalClassContent:{
+	modalClassContent: {
 		position: 'absolute',
 		width: '96%',
 		height: '86%',
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 		bottom: 'auto',
 		transform: 'translate(-50%, -50%)'
 	},
-	colorContainer:{
+	colorContainer: {
 		backgroundColor: '#EEEEEE',
 		marginTop: '-33px',
 		// marginLeft: 0px;
@@ -102,8 +102,8 @@ function ShareResultsModal(props) {
 		}
 
 	}
-	const shareUserData = ()=>{
-		
+	const shareUserData = () => {
+
 		props.shareResult(selectData)
 		setSelectData([]);
 	}
@@ -123,13 +123,13 @@ function ShareResultsModal(props) {
 		>
 			<Modal.Header
 				// closeButton
-				className={classes.modalHeader }
+				className={classes.modalHeader}
 			>
-				<Link href="#" onClick={(e)=>e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={closeModal} /></Link>
+				<Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={closeModal} /></Link>
 				{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
           </Modal.Title> */}
-			
+
 
 			</Modal.Header>
 			{/* <h5>Share these Results.</h5> */}
@@ -137,48 +137,48 @@ function ShareResultsModal(props) {
 				{/* <h5>{props.onMessage}</h5> */}
 
 				<div className={classes.colorContainer}>
-				<h5>
-				  &nbsp;<b>Share these Results</b>
-				</h5>
-				<div className={classes.ModalDesign}>
-					<p className="pl-2 pb-0">
-						Select one or more people to share these results with.
-          </p>
-				</div>
+					<h5>
+						&nbsp;<b>Share these Results</b>
+					</h5>
+					<div className={classes.ModalDesign}>
+						<p className="pl-2 pb-0">
+							Select one or more people to share these results with.
+						</p>
+					</div>
 
-				<div className={classes.selectorValues + " mx-4"}>
-					<ul className={"list-inline " + classes.scrollList}>
-						{
-							props.data && Object.keys(props.data).map((dta, i) => {
-								return <li key={i}>
-									<span className={"cursorPointer " + (selectData.includes(props.data[dta].user_id) ? classes.projTitleActive : '')} onClick={() => getSelectVal(props.data[dta].user_id)}>{props.data[dta].full_name}</span>
-								</li>
-							})
-						}
-					</ul>
-				</div>
-				<div className={classes.footerDiv + " float-right"}>
+					<div className={classes.selectorValues + " mx-4"}>
+						<ul className={"list-inline " + classes.scrollList}>
+							{
+								props.data && Object.keys(props.data).map((dta, i) => {
+									return <li key={i}>
+										<span className={"cursorPointer " + (selectData.includes(props.data[dta].user_id) ? classes.projTitleActive : '')} onClick={() => getSelectVal(props.data[dta].user_id)}>{props.data[dta].full_name}</span>
+									</li>
+								})
+							}
+						</ul>
+					</div>
+					<div className={classes.footerDiv + " float-right"}>
 
 
-					{/* <Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Share Results</Button>  */}
-					
-					<Button
-						color={selectData.length == 0 ? "default":"secondary"}
-						variant="contained"
-						className={"text-capitalize mr-2 "+ (selectData.length == 0 ? 'cancelButtonDisable' : 'accountInfo')}
-						onClick={shareUserData}
-						disableRipple={true}
-						disabled={selectData.length == 0 ? true:false}
-					>Share Results</Button>
-					<Button
-						onClick={closeModal}
-						className={classes.buttonStyleCancel}
-						color="secondary"
-						disableRipple={true}
-						variant="contained"
-					>Cancel</Button>
-				
-				</div>
+						{/* <Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Share Results</Button>  */}
+
+						<Button
+							color={selectData.length == 0 ? "default" : "secondary"}
+							variant="contained"
+							className={"text-capitalize mr-2 " + (selectData.length == 0 ? 'cancelButtonDisable' : 'accountInfo')}
+							onClick={shareUserData}
+							disableRipple={true}
+							disabled={selectData.length == 0 ? true : false}
+						>Share Results</Button>
+						<Button
+							onClick={closeModal}
+							className={classes.buttonStyleCancel}
+							color="secondary"
+							disableRipple={true}
+							variant="contained"
+						>Cancel</Button>
+
+					</div>
 				</div>
 			</Modal.Body>
 			{/* <Modal.Footer>
