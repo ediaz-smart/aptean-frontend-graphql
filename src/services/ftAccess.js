@@ -121,7 +121,7 @@ async function removeAll(postdata) {
     }
 }
 
-async function sharedWithMe(workflowId) {
+async function sharedWith(workflowId) {
 
     try {
 
@@ -156,14 +156,12 @@ function multiIdString(ray) {
     return str;
 }
 
-
 const ftAccess = {
     shareableList,
     addAccess,
     removeAccess,
     removeAll,
-    sharedWithMe,
-
+    sharedWith
 };
 
 export default ftAccess;

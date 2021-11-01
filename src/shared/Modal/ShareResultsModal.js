@@ -103,7 +103,6 @@ function ShareResultsModal(props) {
 
 	}
 	const shareUserData = () => {
-
 		props.shareResult(selectData)
 		setSelectData([]);
 	}
@@ -138,11 +137,11 @@ function ShareResultsModal(props) {
 
 				<div className={classes.colorContainer}>
 					<h5>
-						&nbsp;<b>Share these Results</b>
+						&nbsp;<b>{'Share ' + (props.sharedItem ? props.sharedItem : 'these results')}</b>
 					</h5>
 					<div className={classes.ModalDesign}>
 						<p className="pl-2 pb-0">
-							Select one or more people to share these results with.
+							{'Select one or more people to share ' + (props.sharedItem ? props.sharedItem : 'these results') + ' with.'}
 						</p>
 					</div>
 
@@ -169,7 +168,7 @@ function ShareResultsModal(props) {
 							onClick={shareUserData}
 							disableRipple={true}
 							disabled={selectData.length == 0 ? true : false}
-						>Share Results</Button>
+						>{'Share ' + (props.sharedItem ? props.sharedItem : 'Results')}</Button>
 						<Button
 							onClick={closeModal}
 							className={classes.buttonStyleCancel}

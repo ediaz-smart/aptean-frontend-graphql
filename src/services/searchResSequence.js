@@ -306,7 +306,7 @@ async function removeResultSharing(postdata) {
 // }
 async function getFolderResultData(datas, folderId) {
     try {
-        let apiurl = 'do=gqfolder.get_folder_info&format=json&id=' + folderId;
+        let apiurl = 'do=gqfolder.get_folder_info&format=json&id=' + folderId + '&extra=true';
         const data = {
             id: folderId
         }
@@ -354,6 +354,27 @@ async function getFolderResultData(datas, folderId) {
 //         hideLoader();
 //     }
 // }
+async function renameFolder(folderId, name) {
+    try {
+        let apiurl = 'do=gqfolder.rename&id=' + folderId + '&format=json&text_label=' + name;
+        showLoader();
+        return await get(apiurl)
+            .then((response) => {
+                hideLoader();
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+        hideLoader();
+    }
+}
 const searchResSequence = {
     getSequenceSummary,
     getSequenceShare,
@@ -368,7 +389,8 @@ const searchResSequence = {
     removeResultSharing,
     //getUserList,
     //getSequenceResultShare,
-    getFolderResultData
+    getFolderResultData,
+    renameFolder
 };
 
 export default searchResSequence;

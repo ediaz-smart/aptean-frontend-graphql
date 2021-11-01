@@ -33,7 +33,8 @@ import { useSelector } from 'react-redux';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import SortIcon from "@material-ui/icons/ArrowDownward";
 import RenameContainer from '../../shared/components/RenameContainer'
-import SharedWith from '../Sharing/SharedWith.js';
+import FolderSharedWith from '../Sharing/FolderSharedWith.js';
+import ftAccess from '../../services/ftAccess';
 import { containerWidth } from '../../shared/constants';
 
 const useStyles = makeStyles((theme) => ({
@@ -224,6 +225,9 @@ const columns = [
     selector: "text_label",
     // sortable: true,
     // width:'20%'
+    style: {
+      textAlign: "left !important"
+    }
   },
   {
     name: "",
@@ -304,7 +308,8 @@ function ResultReportFolder() {
   const [folderData, setFolderData] = React.useState([]);
 
   const [userId, setuserId] = useState("");
-  const { folderId } = useParams();
+  const GetFolderId = () => useParams().folderId
+  const [folderId, setFolderId] = useState(GetFolderId());
   const [seqShare, setSeqShare] = useState();
   const userInfo = useSelector(state => state.setUserInfo);
   const [modalResultShow, setModalResultShow] = React.useState(false);
@@ -339,23 +344,47 @@ function ResultReportFolder() {
 
   const [updateTitle, setUpdateTitle] = useState(false);
 
+  // const getFolderHierarchy = (folderData) => {
+  //   let finalData = [...folderData]
+  //   const handleChild = (childrenData) => {
+  //     for (let i = 0; i < childrenData.length; i++) {
+  //       let childFolder = childrenData[i]
+  //       finalData.push(childFolder)
+  //       if (childFolder.children && childFolder.children.length) {
+  //         handleChild(childFolder.children)
+  //       }
+  //     }
+  //   }
+  //   if (folderData[0].children.length) {
+  //     handleChild(folderData[0].children)
+  //   }
+  //   return finalData
+  // }
+  const prepareFolderData = (data) => {
+    if (data[0].children.length) {
+      // console.log(data[0].children[0])
+      for (let i = 0; i < data[0].children.length; i++) {
+        data[0].children[i].text_label = <a onClick={() => setFolderId(data[0].children[i].id)}
+          href={"#/report/folder/" + data[0].children[i].id}>
+          {data[0].children[i].text_label}</a>
+      }
+    }
+  }
+
   useEffect(
     async () => {
       const data = {};
       const result = await searchResSequence.getFolderResultData(data, folderId)
       if (result && result.response_content && result.response_content.numerics) {
-
-        setGqUserId(result.response_content.numerics[0].gq_user_id);
-        setFolderData(result.response_content.numerics);
-
-        setResultSets(result.response_content.numerics[0].resultSets);
-        setSubFolders(result.response_content.numerics[0].subFolders);
-        setFolderSize(result.response_content.numerics[0].thisFolderSize);
-
-        let test = resultSets;
-
+        const numerics = result.response_content.numerics;
+        setGqUserId(numerics[0].gq_user_id);
+        prepareFolderData(numerics)
+        setFolderData(numerics[0].children.length ? [...numerics, ...numerics[0].children] : numerics);
+        folderNameRef.current = numerics[0].text_label
+        setResultSets(numerics[0].subCount)
+        setSubFolders(numerics[0].subFolders)
+        setFolderSize(numerics[0].totalSize)
       }
-      //getUserResp();
 
       document.addEventListener("keydown", escFunction, false);
       let tempAlertArr = [];
@@ -364,7 +393,8 @@ function ResultReportFolder() {
         document.removeEventListener("mousedown", handleClickOutside);
         document.removeEventListener("keydown", escFunction, false);
       };
-    }, []);
+    }, [folderId]);
+
   const escFunction = useCallback((event) => {
     if (event.keyCode === 27) {
       //Do whatever when esc is pressed
@@ -421,18 +451,22 @@ function ResultReportFolder() {
     setModalResultRemoveShow(true);
     setRemoveData(data);
   }
-
+  const folderNameRef = useRef('');
   const [renameFolder, setRenameFolder] = useState(false);
-  const folderNameRef = useRef('User Project Folder');
+
 
 
   const handleRenameClick = () => {
     setRenameFolder(!renameFolder)
   }
 
-  const applyNewNameToFolder = (name) => {
+  const applyNewNameToFolder = async (name) => {
     // Todo: Update the folder name on the server.
-    folderNameRef.current = name
+    const response = await searchResSequence.renameFolder(folderId, name)
+    if (response && response.response_status === 0) {
+      folderNameRef.current = name;
+      handleRenameClick()
+    }
   }
   const searchResult = () => {
     history.push('/searchResult')
@@ -440,6 +474,36 @@ function ResultReportFolder() {
   // const handleCancelButtonClick = () => {
   //   props.setRenameFolderName(false)
   // }
+  const sharedWithMe = useRef('none');
+  const getSharedWith = async (id) => {
+    const results = await ftAccess.sharedWith(id)
+    if (results && results.response_status == 0) {
+      if (results.response_content && results.response_content !== 'none') {
+        sharedWithMe.current = results.response_content;
+        const sharedToNames = Object.keys(results.response_content).map((item) => {
+          return results.response_content[item].full_name
+        })
+        let sharedToNamesString = '';
+        if (Array.isArray(sharedToNames) && (sharedToNames.length > 3)) {
+          sharedToNamesString = sharedToNames[0] + ' et al.'
+        } else {
+          for (let i = 0; i < sharedToNames.length; i++) {
+            if (i === 0) {
+              sharedToNamesString = sharedToNamesString + sharedToNames[i]
+            } else if (i !== (sharedToNames.length - 1)) {
+              sharedToNamesString = sharedToNamesString + ', ' + sharedToNames[i]
+            } else {
+              sharedToNamesString = sharedToNamesString + ' and ' + sharedToNames[i] + ' '
+            }
+          }
+        }
+        setSeqShare({ 'sharedNames': sharedToNamesString })
+      } else {
+        sharedWithMe.current = 'none';
+        setSeqShare({ 'sharedNames': '' })
+      }
+    }
+  }
   return (
     <div className={classes.grow}>
       <Row className="p-3">
@@ -495,9 +559,12 @@ function ResultReportFolder() {
           <hr />
 
           {gqUserId != undefined && folderId != undefined &&
-            <SharedWith
+            <FolderSharedWith
+              content='Folder'
               workflowId={folderId}
               gqUserId={gqUserId}
+              sharedWithMe={sharedWithMe.current}
+              getSharedWithMe={getSharedWith}
             />
           }
           <hr />

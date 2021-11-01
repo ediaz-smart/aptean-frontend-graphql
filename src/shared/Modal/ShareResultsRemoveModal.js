@@ -100,7 +100,7 @@ function ShareResultsRemoveModal(props) {
 				{/* <h5>{props.onMessage}</h5> */}
 				<div className={classes.colorContainer}>
 					<br></br>
-					<p>Are you sure you want to stop sharing this result set with  {props.onMessage ? props.onMessage.full_name : ""}?</p>
+					<p style={{ margin: '0 10px' }}>{'Are you sure you want to stop sharing this ' + (props.removingItem ? props.removingItem : 'result set') + ' with ' + (props.onMessage ? props.onMessage.full_name : "")}?</p>
 					<br></br>
 					<br></br>
 					<div className={classes.footerDiv}>

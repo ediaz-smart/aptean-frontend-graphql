@@ -180,8 +180,10 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             cursor: 'pointer'
         },
+    },
+    highlight: {
+        fontWeight: 'bold'
     }
-
 }));
 const columns = [
     {
@@ -321,8 +323,8 @@ function SearchResultSequence(props) {
     const wrapperRef = useRef(null);
 
     const sharedWithMe = useRef('none');
-    const getSharedWithMe = async (id) => {
-        const results = await ftAccess.sharedWithMe(id);
+    const getSharedWith = async (id) => {
+        const results = await ftAccess.sharedWith(id);
         if (results && results.response_status == 0) {
             if (results.response_content && results.response_content !== 'none') {
                 sharedWithMe.current = results.response_content;
@@ -330,16 +332,20 @@ function SearchResultSequence(props) {
                     return results.response_content[item].full_name
                 })
                 let sharedToNamesString = '';
-                for (let i = 0; i < sharedToNames.length; i++) {
-                    if (i === 0) {
-                        sharedToNamesString = sharedToNamesString + sharedToNames[i]
-                    } else if (i !== (sharedToNames.length - 1)) {
-                        sharedToNamesString = sharedToNamesString + ', ' + sharedToNames[i]
-                    } else {
-                        sharedToNamesString = sharedToNamesString + ' and ' + sharedToNames[i] + ' '
+                if (Array.isArray(sharedToNames) && (sharedToNames.length > 3)) {
+                    sharedToNamesString = <span><b>{sharedToNames[0]}</b> et al.</span>
+                } else {
+                    for (let i = 0; i < sharedToNames.length; i++) {
+                        if (i === 0) {
+                            sharedToNamesString = <>{sharedToNamesString} <b>{sharedToNames[i]}</b></>
+                        } else if (i !== (sharedToNames.length - 1)) {
+                            sharedToNamesString = <>{sharedToNamesString}, <b>{sharedToNames[i]}</b></>
+                        } else {
+                            sharedToNamesString = <>{sharedToNamesString} <span>and</span> <b>{sharedToNames[i]}</b> </>
+                        }
                     }
+                    sharedToNamesString = <span>{sharedToNamesString}</span>
                 }
-
                 setSeqShare({ 'sharedNames': sharedToNamesString })
             } else {
                 sharedWithMe.current = 'none';
@@ -351,7 +357,7 @@ function SearchResultSequence(props) {
     // reset login status
     useEffect(async () => {
         getSummaryResp();
-        getSharedWithMe(workflowId);
+        getSharedWith(workflowId);
 
         getAlertResp();
         getAlertRedoResp();
@@ -410,7 +416,6 @@ function SearchResultSequence(props) {
                 setNotes(getSummaryResponse.response_content.description);
             }
             setSeqSummary(getSummaryResponse.response_content);
-
         }
     }
     const getAlertResp = async () => {
@@ -721,7 +726,7 @@ function SearchResultSequence(props) {
                                 {/* <img className="float-left mx-3" src={seqSearchImg} alt={t('ImmunoglobulinVariationsFor')}/> */}
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /><span>{t('searchLaunchTitle')} {seqSummary && seqSummary.create_time ? format(new Date(seqSummary.create_time), 'dd-MMM-yyyy') : ''} {t('by')} <b>{seqSummary && seqSummary.sdb__owner_full_name}</b>.​</span></Typography>
                             <Typography className={(seqShare && seqShare.sharedNames ? 'd-block' : 'd-none')}>
-                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> <span>{t('sharedWithTitle')} {ReactHtmlParser(seqShare && seqShare.sharedNames)}
+                                <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" /> <span>{t('sharedWithTitle')} {seqShare && seqShare.sharedNames}
                                     <a href="#" onClick={(e) => handleScroll(e, 'resultSharing')}>({t('shareSettings')}).</a></span></Typography>
                             <Typography className={(alarmSetting && alarmSetting.is_created ? 'd-block' : 'd-none')}>
                                 <RadioButtonUncheckedIcon style={{ fontSize: '11px' }} className="mr-2 mt-2 float-left appTextColor" />
@@ -911,7 +916,7 @@ function SearchResultSequence(props) {
                             workflowId={workflowId}
                             gqUserId={gqUserId}
                             sharedWithMe={sharedWithMe.current}
-                            getSharedWithMe={getSharedWithMe}
+                            getSharedWithMe={getSharedWith}
                         />
                     }
 
