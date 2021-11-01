@@ -504,7 +504,6 @@ label {
     font-weight: bold;
     color: #777777;
 }
-
 .query {
     color: #000;
     font: 400 13.3333px Arial, Helvetica, sans-serif;
@@ -514,6 +513,7 @@ label {
     color: #8a6d3b;
     background-color: #fcf8e3;
     border: 1px solid #faebcc;
+    cursor: pointer;
 }
 
 #textareaDiv {
