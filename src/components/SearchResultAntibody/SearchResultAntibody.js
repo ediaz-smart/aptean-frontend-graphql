@@ -88,6 +88,19 @@ const useStyles = makeStyles((theme) => ({
         // borderBottom: '1px solid #cec7c7',
         padding: '23px 16px 14px',
     },
+    loginSubmitCancel: {
+        backgroundColor: '#0182C5',
+        borderColor: '#1F4E79',
+        border: '1px solid #1F4E79',
+        color: 'white',
+        margin: "4px",
+        float: 'right',
+        textTransform: 'capitalize',
+        '&:hover': {
+            backgroundColor: '#0182C5',
+            boxShadow: 'none',
+        },
+    },
     headerPipe: {
         margin: '0 10px'
     },
@@ -698,7 +711,7 @@ function SearchResultAntibody() {
                                         value={formik.values.expectCutoff}
                                         InputProps={{ inputProps: { min: 0, max: 100 } }}
                                         onChange={formik.handleChange}
-                                        onKeyDown={UtilsService.restrictCharacter}
+                                        // onKeyDown={UtilsService.restrictCharacter}
                                         error={formik.touched.expectCutoff && Boolean(formik.errors.expectCutoff)}
                                         helperText={formik.errors.expectCutoff}
                                         disabled={authInfo && authInfo.redo}
@@ -872,8 +885,8 @@ function SearchResultAntibody() {
                     </Col>
 
                     <Col lg="12" md="12" sm='12' xs='12' style={{ display: 'flex', flexDirection: 'row-reverse' }} className="float-right mb-3">
-                        <Button variant="contained" className={" loginSubmitButton " + (!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} type="submit" disabled={!disableSearch}>{t('search')}</Button>&nbsp;
-                        <Button variant="contained" color={'default'} className={" loginSubmitCancel float-right"} onClick={homePage} type="submit">{t('cancel')}</Button>
+                        <Button variant="contained" className={!disableSearch ? 'cancelButtonDisable' : 'accountInfo'} type="submit" disabled={!disableSearch}>{t('Search')}</Button>&nbsp;
+                        <Button variant="contained" color={'default'} className={classes.loginSubmitCancel} onClick={homePage} type="submit">{t('cancel')}</Button>
                     </Col>
                 </Row>
 

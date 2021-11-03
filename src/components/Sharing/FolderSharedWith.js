@@ -65,7 +65,7 @@ const FolderSharedWith = (props) => {
 
     return (
         <>
-            <h6 className={"appTextColor loginTitle"} id="resultSharing">{t('folderSharing')}​</h6>
+            <h6 className={"appTextColor loginTitle"} id="resultSharing">{t('Folder Sharing')}​</h6>
             <Row>
                 {/* <Col lg="1" md="1" sm="12" className="pr-0">
                     

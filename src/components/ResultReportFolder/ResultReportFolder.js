@@ -568,9 +568,7 @@ function ResultReportFolder() {
             />
           }
           <hr />
-
-
-          <h6 className={"appTextColor loginTitle"} id="resultSharing">Folder SearchResultContent</h6>
+          <h6 className={"appTextColor loginTitle"} id="resultSharing">Folder Search Result Content</h6>
           <div>
             <p>  Result sets and data volume are distributed within this folder as shown below. </p>
             <DataTable
@@ -586,15 +584,8 @@ function ResultReportFolder() {
               noHeader={true}
             />
           </div>
-
-
-
-
-
         </Col>
       </Row>
-
-
     </div >
   )
 }
