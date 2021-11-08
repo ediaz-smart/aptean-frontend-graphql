@@ -151,6 +151,7 @@ function SearchResultAntibody() {
     const [formCheck6, setformCheck6] = React.useState(false);
     const [sequenceTypeValue, setSequenceType] = useState("nucleotide");
     const [proDb, setProDb] = useState([]);
+    const [formSubmit, setFromSubmit] = useState(false);
 
     const { workflowId } = useParams();
     const { tempname } = useParams();
@@ -402,6 +403,16 @@ function SearchResultAntibody() {
     function setFormValue() {
         setSaveFormValue(!saveFormValue);
         formik.setFieldValue("formName", '');
+    }
+
+    if (formSubmit && formik && formik.errors && Object.keys(formik.errors).length > 0) {
+        document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({ behavior: "smooth", block: "center", inline: "start" });
+        setFromSubmit(false);
+    }
+
+    function submitForm() {
+        formik.handleSubmit();
+        setFromSubmit(true);
     }
 
     return (
@@ -885,8 +896,8 @@ function SearchResultAntibody() {
                     </Col>
 
                     <Col lg="12" md="12" sm='12' xs='12' style={{ display: 'flex', flexDirection: 'row-reverse' }} className="float-right mb-3">
-                        <Button variant="contained" className={!disableSearch ? 'cancelButtonDisable' : 'accountInfo'} type="submit" disabled={!disableSearch}>{t('Search')}</Button>&nbsp;
-                        <Button variant="contained" color={'default'} className={classes.loginSubmitCancel} onClick={homePage} type="submit">{t('cancel')}</Button>
+                        <Button variant="contained" className={" loginSubmitButton " + (!disableSearch ? 'disableBtnBorder' : 'primaryBtn')} onClick={submitForm} disabled={!disableSearch}>{t('search')}</Button>&nbsp;
+                        <Button variant="contained" color={'default'} className={" loginSubmitCancel float-right"} onClick={homePage} type="submit">{t('cancel')}</Button>
                     </Col>
                 </Row>
 

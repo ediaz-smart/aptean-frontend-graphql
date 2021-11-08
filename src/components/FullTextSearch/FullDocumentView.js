@@ -10,11 +10,12 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { useParams, useHistory } from 'react-router-dom';
 import ReactHtmlParser from 'react-html-parser';
 import DataTable from "react-data-table-component";
+import _ from "lodash";
 
 import Footer from '../../shared/footer';
 import fullTextService from '../../services/fulltextsearch';
 import { property } from 'lodash';
-import {usBaseUrl, ipcBaseUrl, ipcrBaseUrl, cpcBaseUrl } from '../../config';
+import { usBaseUrl, ipcBaseUrl, ipcrBaseUrl, cpcBaseUrl } from '../../config';
 
 const Accordion = withStyles({
     root: {
@@ -158,9 +159,9 @@ function FullDocumentView() {
     useEffect(async () => {
         let getResponse;
         if (patentId) {
-            getResponse = await fullTextService.fullDocViewService(null, patentId);
+            getResponse = await fullTextService.fullDocViewService(history, patentId);
         }
-        if (getResponse && getResponse.response_status == 0) {
+        if (getResponse && getResponse.response_status == 0 && getResponse.response_content) {
             setDocContent(getResponse.response_content);
 
             setLegalEvents(formatLegal(getResponse.response_content.legalEvents));
@@ -170,16 +171,16 @@ function FullDocumentView() {
             setPubDate(getResponse.response_content.publicationDate ? formatDate(getResponse.response_content.publicationDate) : 'Not Available');
             setFilingDate(getResponse.response_content.applicationDate ? formatDate(getResponse.response_content.applicationDate) : 'Not Available');
             setAppNum(getResponse.response_content.applicationDocNum ? getResponse.response_content.applicationCountry + "" + getResponse.response_content.applicationDocNum : 'Not Available');
-            setAppAssignees(getResponse.response_content.applicants ? formatAssignees(getResponse.response_content.applicants)[0] : ['Not Available']);
-            setInventors(getResponse.response_content.inventors ? formatInventors(getResponse.response_content.inventors) : ['Not Available']);
-            setLatestLegal(getResponse.response_content.legalEvents ? formatLatestLgal(getResponse.response_content.legalEvents) : 'Not Available');
+            setAppAssignees(getResponse.response_content.applicants && getResponse.response_content.applicants.length > 0 ? formatAssignees(getResponse.response_content.applicants)[0] : ['Not Available']);
+            setInventors(getResponse.response_content.inventors && getResponse.response_content.inventors.length > 0 ? formatInventors(getResponse.response_content.inventors) : ['Not Available']);
+            setLatestLegal(getResponse.response_content.legalEvents && getResponse.response_content.legalEvents.length > 0  ? formatLatestLgal(getResponse.response_content.legalEvents) : 'Not Available');
             setLinkouts(getResponse.response_content.legalStatus ? getResponse.response_content.legalStatus : 'Not Available');
             setPriorities(getResponse.response_content.priorityClaims ? formatPriorities(getResponse.response_content.priorityClaims) : 'Not Available');
-            setSimFamMembers(getResponse.response_content.patentFamily.simpleFamilyMbrs ? getResponse.response_content.patentFamily.simpleFamilyMbrs : 'None');
+            setSimFamMembers(getResponse.response_content.patentFamily && getResponse.response_content.patentFamily.simpleFamilyMbrs ? getResponse.response_content.patentFamily.simpleFamilyMbrs : 'None');
             setExtenFamMembers(getResponse.response_content.legalStatus ? getResponse.response_content.legalStatus : 'None');
 
-            const { internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses } = getResponse.response_content;
-                setClassification(internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses);
+            const { internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses, nationalClassCountry } = getResponse.response_content;
+            setClassification(internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses, nationalClassCountry);
         }
     }, []);
 
@@ -264,23 +265,24 @@ function FullDocumentView() {
     }
 
 
-    function setClassification(ipcr, cpc, usMain, usFurther, ipcMain, ipcFurther) {
-        let classificationArray = [], ipcrLinkout = "", cpcLinkout = "", usMainLinkout = "", usFurtherLinkout = "", usMainObj={};
-       
+    function setClassification(ipcr, cpc, usMain, usFurther, ipcMain, ipcFurther, nationalClassCountry) {
+        let classificationArray = [], ipcrLinkout = "", cpcLinkout = "", usMainLinkout = "", usFurtherLinkout = "", usMainObj = {}, ipcMainLinkout="", ipcFurtherLinkout = "", ipcMainObj = {};
+
         // setClassificationData(classificationArray);
 
         //US
         if (usMain && usMain.classCode && usMain.subClassCode) {
             // uspc435/defs435.htm#C435S320100
-            let isDecimal = usMain.subClassCode.includes('.') ? true : false;
-            let convertedSubClass = usMain.subClassCode > 100
-            let usMainLink = `${usBaseUrl}/uspc${usMain.classCode}/defs${usMain.classCode}.htm#c${usMain.classCode}s${usMain.subClassCode}`;
+            let formatCode = usMain.text.split(/[.\/]/);
+            let formatCode1 = `00${formatCode[1]}`.substr(-3, 3);
+            let formatCode2 = formatCode && formatCode.length > 2 ? `${formatCode[2]}000`.slice(0,3) : '000';
+            let usMainLink = `${usBaseUrl}uspc${formatCode[0]}/defs${formatCode[0]}.htm#C${formatCode[0]}S${formatCode1}${formatCode2}`;
             let usMainLabel = `${usMain.text}`;
-            usMainLinkout += `<a class="mr-2" href=${usMainLink} target="_blank" rel="noreferrer">${usMainLabel}</a>`
-            usMainObj = {
-                label: "US",
-                link: ReactHtmlParser(usMainLinkout)
-            }
+            usMainLinkout += nationalClassCountry && nationalClassCountry == 'US' ? `<a class="mr-2" href=${usMainLink} target="_blank" rel="noreferrer">${usMainLabel}</a>` : `${usMain.classCode}/${usMain.subClassCode} `;
+            // usMainObj = {
+            //     label: "US",
+            //     link: ReactHtmlParser(usMainLinkout)
+            // }
         }
 
         // setClassificationData(classificationArray);
@@ -288,37 +290,64 @@ function FullDocumentView() {
         //usFurther
         usFurther && usFurther.length > 0 && usFurther.map((item, index) => {
             // uspc435/defs435.htm#C435S320100
-            let isDecimal = item.subClassCode.includes('.') ? true : false;
-            let convertedSubClass = item.subClassCode > 100
-            let usFurtherLink = `${usBaseUrl}/uspc${item.classCode}/defs${item.classCode}.htm#c${item.classCode}s${item.subClassCode}`;
+            let formatCode = item.text.split(/[.\/]/);
+            let formatCode1 = `00${formatCode[1]}`.substr(-3, 3);
+            let formatCode2 = formatCode && formatCode.length > 2 ? `${formatCode[2]}000`.slice(0,3) : '000';
+            let usFurtherLink = `${usBaseUrl}uspc${formatCode[0]}/defs${formatCode[0]}.htm#C${formatCode[0]}S${formatCode1}${formatCode2}`;
             let usFurtherLabel = `${item.text}`;
-            usFurtherLinkout += `<a class="mr-2" href=${usFurtherLink} target="_blank" rel="noreferrer">${usFurtherLabel}</a>`
+            usFurtherLinkout += nationalClassCountry && nationalClassCountry == 'US' ? `<a class="mr-2" href=${usFurtherLink} target="_blank" rel="noreferrer">${usFurtherLabel}</a>` : `${item.classCode}/${item.subClassCode} `;
         });
         let usFurtherObj = {
-            label: "US",
+            label: `${nationalClassCountry} Classifications`,
             link: ReactHtmlParser(usMainLinkout + usFurtherLinkout)
         }
         console.log('usFurtherObj', usFurtherObj)
+        if(_.size(usMain) > 0 || _.size(usFurther) > 0){
         classificationArray.push(usFurtherObj);
+        }
 
         //ipc
-        // if (ipcMain && ipcMain.classCode && ipcMain.subClassCode) {
-        //     // uspc435/defs435.htm#C435S320100
-        //     let isDecimal = usMain.subClassCode.includes('.') ? true : false;
-        //     let convertedSubClass = usMain.subClassCode > 100
-        //     let usMainLink = `${ipcBaseUrl}/uspc${usMain.classCode}/defs${usMain.classCode}.htm#c${usMain.classCode}s${usMain.subClassCode}`;
-        //     let usMainLabel = `${usMain.text}`;
-        //     usMainLinkout += `<a class="mr-2" href=${usMainLink} target="_blank" rel="noreferrer">${usMainLabel}</a>`
-        //     usMainObj = {
-        //         label: "US",
-        //         link: ReactHtmlParser(usMainLinkout)
-        //     }
-        // }
+        if (ipcMain && ipcMain.classCode && ipcMain.subClassCode) {
+            let mainGroupZero = ipcMain.mainGroup ?  `0000${ipcMain.mainGroup}`.substr(-4, 4) : '';
+            let subGroupZero = ipcMain.subGroup  ? `${ipcMain.subGroup}000000`.slice(0, 6) : '';
+            let mGroup = ipcMain.mainGroup ? ipcMain.mainGroup : '';
+            let sGroup = ipcMain.subGroup  ? ipcMain.subGroup : '';
+            let ipcMainLink = `${ipcBaseUrl}${ipcMain.section}${ipcMain.classCode}${ipcMain.subClassCode}${mainGroupZero}${subGroupZero}`;
+            let ipcMainLabel = `${ipcMain.section}${ipcMain.classCode}${ipcMain.subClassCode}${mGroup}/${sGroup}`;
+            ipcMainLinkout += `<a class="mr-2" href=${ipcMainLink} target="_blank" rel="noreferrer">${ipcMainLabel}</a>`
+            // ipcMainObj = {
+            //     label: "IPC",
+            //     link: ReactHtmlParser(ipcMainLinkout)
+            // }
+        }
 
+        //ipcFurther
+        ipcFurther && ipcFurther.length > 0 && ipcFurther.map((item, index) => {
+            // uspc435/defs435.htm#C435S320100
+            let mainGroupZero = item.mainGroup ?  `0000${item.mainGroup}`.substr(-4, 4) : '';
+            let subGroupZero = item.subGroup  ? `${item.subGroup}000000`.slice(0, 6) : '';
+            let mGroup = item.mainGroup ? item.mainGroup : '';
+            let sGroup = item.subGroup  ? item.subGroup : '';
+            let ipcFurtherLink = `${ipcBaseUrl}${item.section}${item.classCode}${item.subClassCode}${mainGroupZero}${subGroupZero}`;
+            let ipcFurtherLabel = `${item.section}${item.classCode}${item.subClassCode}${mGroup
+            }/${sGroup}`;
+            ipcFurtherLinkout += `<a class="mr-2" href=${ipcFurtherLink} target="_blank" rel="noreferrer">${ipcFurtherLabel}</a>`
+        });
+        let ipcFurtherObj = {
+            label: "IPC",
+            link: ReactHtmlParser(ipcMainLinkout + ipcFurtherLinkout)
+        }
+        if(_.size(ipcMain) > 0 || _.size(ipcFurther) > 0 ){
+        classificationArray.push(ipcFurtherObj);
+        }
         //ipcr
         ipcr && ipcr.length > 0 && ipcr.map((item, index) => {
-            let ipcrLink = `${ipcrBaseUrl}${item.section}${item.classCode}${item.subClassCode}${item.mainGroup}${item.subGroup}`;
-            let ipcrLabel = `${item.section}${item.classCode}${item.subClassCode}${item.mainGroup}/${item.subGroup}`;
+            let mainGroupZero = item.mainGroup ?  `0000${item.mainGroup}`.substr(-4, 4) : '';
+            let subGroupZero = item.subGroup  ? `${item.subGroup}000000`.slice(0, 6) : '';
+            let mGroup = item.mainGroup ? item.mainGroup : '';
+            let sGroup = item.subGroup  ? item.subGroup : '';
+            let ipcrLink = `${ipcrBaseUrl}${item.section}${item.classCode}${item.subClassCode}${mainGroupZero}${subGroupZero}`;
+            let ipcrLabel = `${item.section}${item.classCode}${item.subClassCode}${mGroup}/${sGroup}`;
             ipcrLinkout += `<a class="mr-2" href=${ipcrLink} target="_blank" rel="noreferrer">${ipcrLabel}</a>`
         });
         let ipcrObj = {
@@ -329,8 +358,10 @@ function FullDocumentView() {
 
         //cpc
         cpc && cpc.length > 0 && cpc.map((item, index) => {
-            let cpcLink = `${cpcBaseUrl}${item.section}${item.classCode}${item.subClassCode}${item.mainGroup}/${item.subGroup}`;
-            let cpcLabel = `${item.section}${item.classCode}${item.subClassCode}${item.mainGroup}/${item.subGroup}`;
+            let mGroup = item.mainGroup ? item.mainGroup : '';
+            let sGroup = item.subGroup  ? item.subGroup : '';
+            let cpcLink = `${cpcBaseUrl}${item.section}${item.classCode}${item.subClassCode}${mGroup}/${sGroup}`;
+            let cpcLabel = `${item.section}${item.classCode}${item.subClassCode}${mGroup}/${sGroup}`;
             cpcLinkout += `<a class="mr-2" href=${cpcLink} target="_blank" rel="noreferrer">${cpcLabel}</a>`
         });
         let cpcObj = {
@@ -366,7 +397,6 @@ function FullDocumentView() {
         rows: {
             style: {
                 minHeight: '50px', // override the row height
-                // width: "80%"
             }
         },
         headRow: {
@@ -375,22 +405,6 @@ function FullDocumentView() {
                 display: 'none',
             }
         },
-        // headCells: {
-        //     style: {
-                // paddingLeft: '8px', // override the cell padding for head cells
-                // paddingRight: '8px',
-                // borderLeft: '1px solid #0606061f',
-                // '&:first-child, &:first-child div': {
-                //     border: 'none !important'
-                // },
-                // '&:last-child ,&:last-child div': {
-                //     border: 'none !important'
-                // },
-                // fontWeight: '700',
-                // color: '#777777',
-                // justifyContent: 'start !important'
-        //     },
-        // },
         cells: {
             style: {
                 paddingLeft: '8px', // override the cell padding for data cells
@@ -398,14 +412,12 @@ function FullDocumentView() {
                 borderLeft: '1px solid #0606061f',
                 borderBottom: '1px solid #0606061f',
                 wordWrap: 'break-word',
-                // borderTop: "0px",
                 '&:first-child,&:first-child div': {
                     borderLeft: '0',
                     borderBottom: '0',
                     whiteSpace: "break-spaces !important",
                 },
                 '&:last-child ,&:last-child div': {
-                    // borderLeft: '0',
                     borderBottom: '0',
                     whiteSpace: "break-spaces !important",
                     wordWrap: "break-word",
@@ -422,13 +434,14 @@ function FullDocumentView() {
         document.getElementById(id).scrollIntoView({ behavior: "smooth", inline: "nearest" });
     }
     const { abstracts, claims, descriptions } = docContent;
-    console.log('abstracts', abstracts)
 
     function showString(str) {
         let string = str.trim();
         string = string.split('.');
-        string = string[1] + ".";
-        return string;
+        // let newString = (string[0].includes('<b>') || (typeof(parseInt(string[0])) == "number")) ? 'yes' : 'no';
+        console.log('string', string)
+        let newString = (string[0].includes('<b>') || (parseInt(string[0])  && typeof(parseInt(string[0])) == "number")) ? string[1] + "." : string[0]+string[1];
+        return newString;
     }
 
 

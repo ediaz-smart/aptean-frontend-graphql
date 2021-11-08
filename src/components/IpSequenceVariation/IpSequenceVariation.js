@@ -706,6 +706,7 @@ function IpSequenceVariation() {
                 // setNoDbSelected(true);
             } else {
                 setNoDbSelected(true);
+                document.getElementById('noDbSelected').scrollIntoView({ behavior: "smooth", block: "center", inline: "start" });
                 return
             }
 
@@ -1807,7 +1808,7 @@ function IpSequenceVariation() {
                             <a href="https://docs.genomequestlive.com/sections/ip-sequence-searching/#subjectdbselection" target="_blank" className="appTextFont appLink float-right" rel="noreferrer">{t("help")}</a>
                         </Col>
                     </Row>
-                    {noDbSelected && <p className={"ManualError"}>You must select at least one subject database</p>}
+                    {noDbSelected && <p className={"ManualError"} id="noDbSelected">You must select at least one subject database</p>}
                     <Row>
                         <Col md="6" xs="6" sm='6'>
                             {nucPatentData && _.size(nucPatentData) > 0 && <div>
