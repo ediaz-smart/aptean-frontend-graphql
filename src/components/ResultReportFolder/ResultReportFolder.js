@@ -36,6 +36,7 @@ import RenameContainer from '../../shared/components/RenameContainer'
 import FolderSharedWith from '../Sharing/FolderSharedWith.js';
 import ftAccess from '../../services/ftAccess';
 import { containerWidth } from '../../shared/constants';
+import folderIcon from '../../assets/image/folder.png';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -189,20 +190,14 @@ const useStyles = makeStyles((theme) => ({
 const customStyles = {
   rows: {
     style: {
+      width: '80%',
       minHeight: '50px', // override the row height
     }
   },
-  headCells: {
+  head: {
     style: {
-      paddingLeft: '8px', // override the cell padding for head cells
-      paddingRight: '8px',
-      borderLeft: '1px solid #0606061f',
-      '&:first-child': {
-        borderLeft: '0',
-      },
-      fontWeight: '700',
-      color: '#777777'
-    },
+      display: 'none'
+    }
   },
   cells: {
     style: {
@@ -224,7 +219,7 @@ const columns = [
     name: "",
     selector: "text_label",
     // sortable: true,
-    // width:'20%'
+    width: '50%',
     style: {
       textAlign: "left !important"
     }
@@ -241,9 +236,10 @@ const columns = [
     // defaultSortAsc: true,
     left: true,
     // width:'75.3%',
-    // style:{
-    //   marginLeft: '40px'
-    // }
+    style: {
+      textAlign: 'right !important',
+      marginRight: '50px'
+    }
   }
 ];
 
@@ -344,32 +340,44 @@ function ResultReportFolder() {
 
   const [updateTitle, setUpdateTitle] = useState(false);
 
-  // const getFolderHierarchy = (folderData) => {
-  //   let finalData = [...folderData]
-  //   const handleChild = (childrenData) => {
-  //     for (let i = 0; i < childrenData.length; i++) {
-  //       let childFolder = childrenData[i]
-  //       finalData.push(childFolder)
-  //       if (childFolder.children && childFolder.children.length) {
-  //         handleChild(childFolder.children)
-  //       }
-  //     }
-  //   }
-  //   if (folderData[0].children.length) {
-  //     handleChild(folderData[0].children)
-  //   }
-  //   return finalData
-  // }
-  const prepareFolderData = (data) => {
-    if (data[0].children.length) {
-      // console.log(data[0].children[0])
-      for (let i = 0; i < data[0].children.length; i++) {
-        data[0].children[i].text_label = <a onClick={() => setFolderId(data[0].children[i].id)}
-          href={"#/report/folder/" + data[0].children[i].id}>
-          {data[0].children[i].text_label}</a>
+  const getFolderHierarchy = (folderData) => {
+    let generationCount = 1;
+    let finalData = [...folderData]
+    finalData[0].resultSets = finalData[0].resultSets + (finalData[0].resultSets > 1 ? ' Result sets' : ' Result set')
+    finalData[0].thisFolderSize = Math.round(finalData[0].thisFolderSize) != finalData[0].thisFolderSize ? (finalData[0].thisFolderSize.toFixed(2) + ' MB') : (finalData[0].thisFolderSize + ' MB');
+
+    const handleChild = (childrenData, isNextGeneration) => {
+      for (let i = 0; i < childrenData.length; i++) {
+        generationCount = isNextGeneration ? (generationCount + 1) : 1;
+        let childFolder = childrenData[i];
+        childFolder.resultSets = childFolder.resultSets + (childFolder.resultSets > 1 ? ' Result sets' : ' Result set')
+        childFolder.thisFolderSize = Math.round(childFolder.thisFolderSize) != childFolder.thisFolderSize ? (childFolder.thisFolderSize.toFixed(2) + ' MB') : (childFolder.thisFolderSize + ' MB');
+        childFolder.text_label = <a onClick={() => setFolderId(childFolder.id)}
+          href={"#/report/folder/" + childFolder.id}
+          style={{ marginLeft: (generationCount * 30) + 'px' }}><img style={{ marginRight: '5px', width: '20px' }} alt='img' src={folderIcon} />{childFolder.text_label}</a>
+        finalData.push(childFolder)
+        if (childFolder.children && childFolder.children.length) {
+          handleChild(childFolder.children, true)
+        } else {
+          generationCount = generationCount - 1
+        }
       }
     }
+    if (folderData[0].children.length) {
+      handleChild(folderData[0].children)
+    }
+    return finalData
   }
+  // const prepareFolderData = (data) => {
+  //   if (data[0].children.length) {
+  //     // console.log(data[0].children[0])
+  //     for (let i = 0; i < data[0].children.length; i++) {
+  //       data[0].children[i].text_label = <a onClick={() => setFolderId(data[0].children[i].id)}
+  //         href={"#/report/folder/" + data[0].children[i].id}>
+  //         {data[0].children[i].text_label}</a>
+  //     }
+  //   }
+  // }
 
   useEffect(
     async () => {
@@ -378,8 +386,7 @@ function ResultReportFolder() {
       if (result && result.response_content && result.response_content.numerics) {
         const numerics = result.response_content.numerics;
         setGqUserId(numerics[0].gq_user_id);
-        prepareFolderData(numerics)
-        setFolderData(numerics[0].children.length ? [...numerics, ...numerics[0].children] : numerics);
+        setFolderData(getFolderHierarchy(numerics));
         folderNameRef.current = numerics[0].text_label
         setResultSets(numerics[0].subCount)
         setSubFolders(numerics[0].subFolders)
@@ -541,9 +548,9 @@ function ResultReportFolder() {
           <div>
             <p> This folder contains:</p>
             <ul>
-              <li><p>A total of {resultSets} result sets within itself and all its subfolders</p></li>
-              <li><p>A total of {subFolders} subfolders at various levels</p></li>
-              <li><p>A total of {folderSize} MB data</p></li>
+              <li><p style={{ marginBottom: '4px' }}>A total of {resultSets} result sets within itself and all its subfolders</p></li>
+              <li><p style={{ marginBottom: '4px' }}>A total of {subFolders} subfolders at various levels</p></li>
+              <li><p style={{ marginBottom: '4px' }}>A total of {folderSize} MB data</p></li>
             </ul>
             {renameFolder ? <span className={classes.renameFolderText} >Rename this folder</span> :
               <span className={classes.renameFolderLinkText} onClick={handleRenameClick}>Rename this folder</span>}

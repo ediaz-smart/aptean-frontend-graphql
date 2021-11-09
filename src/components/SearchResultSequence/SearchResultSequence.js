@@ -627,13 +627,15 @@ function SearchResultSequence(props) {
         updateSeqData(workflowId, updateParam);
         // }
     }
+    const toastId = useRef(null)
     const updateNotes = async () => {
         if (notes) {
             let updateParam = '&description=' + notes;
             updateSeqData(workflowId, updateParam);
         } else {
-            if (toast) toast.dismiss()
-            toast.error('Please Enter Notes to Save Changes.');
+            if (!toast.isActive(toastId.current)) {
+                toastId.current = toast.error('Please Enter Notes to Save Changes.')
+            }
         }
     }
     const updateSeqData = async (workflowId, updateParam) => {
