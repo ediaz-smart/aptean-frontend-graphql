@@ -523,7 +523,32 @@ label {
     font-weight: 400;
     white-space: inherit;
 }
-
+.popup-content {
+    width: 460px !important;
+}
+.ce-toolbar--opened {
+    display: none !important;
+}
+.acHeading{
+    color: #888;
+}
+.list-inside{
+    list-style: inside;
+}
+.synonymDiv{
+    border: 1px solid rgb(204, 204, 204);
+    resize: vertical;
+    overflow: auto;
+    background-color: #fff;
+    height: 300px;
+}
+.cdx-list{
+    padding-left: 12px !important;
+}
+.cdx-list__item {
+    padding: 0 !important;
+    list-style: none;
+}
 .loginSubmitCancel {
     background-color: #0182C5 !important;
     border-color: #1F4E79 !important;

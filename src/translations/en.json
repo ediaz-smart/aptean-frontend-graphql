@@ -320,5 +320,6 @@
     "legalEventsFooter": "Legal Events",
     "citationsFooter": "Citations",
     "titleFooter": "Title",
-    "passAndConfirmNotSame": "New password and confirm password should be same"
+    "passAndConfirmNotSame": "New password and confirm password should be same",
+    "customWordList":"Custom Word List"
 }

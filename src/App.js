@@ -10,6 +10,7 @@ import LoadingOverlay from 'react-loading-overlay';
 import { useDispatch } from 'react-redux';
 import { getUserServerInfo } from './reducers/slice/userServerDataSlice';
 import { getPageCount } from './reducers/slice/comonSlice';
+import 'reactjs-popup/dist/index.css';
 
 
 const useStyles = makeStyles((theme) => ({

@@ -79,10 +79,59 @@ async function fullDocViewService(history, searchParam) {
     }
 
 }
+async function getACSynonyms(history, selectedTermId) {
+    try {
+        let apiurl = url.autoqueryfindterm;
+        apiurl = apiurl.replace('**', selectedTermId);
+        // showLoader();
+        return await get(apiurl, history)
+            .then((response) => {
+                // hideLoader();
+                return response;
+            })
+            .catch((error) => {
+                // hideLoader();
+                toast.error('A');
+                console.log("error::", error);
+
+                // return dispatch(loginError(error));
+                // dispatch(showMessage({ message: error }));
+            });
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+async function updateACSynonyms(userId, searchTerm,postData) {
+    try {
+        let apiurl = url.updateAutoQueryTerm;
+        apiurl = apiurl.replace(':UID', userId);
+        apiurl = apiurl.replace(':searchTerm', searchTerm);
+        // showLoader();
+        return await post(apiurl, postData)
+            .then((response) => {
+                // hideLoader();
+                return response;
+            })
+            .catch((error) => {
+                // hideLoader();
+                toast.error('A');
+                console.log("error::", error);
+
+                // return dispatch(loginError(error));
+                // dispatch(showMessage({ message: error }));
+            });
+    } catch (error) {
+        console.error(error);
+    }
+
+}
 const fullTextService = {
     getFullTextSearchTerm,
     getFullTextSearchResult,
-    fullDocViewService
+    fullDocViewService,
+    getACSynonyms,
+    updateACSynonyms
 };
 
 export default fullTextService;

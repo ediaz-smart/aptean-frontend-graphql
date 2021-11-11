@@ -11,6 +11,8 @@ import ReactHtmlParser from "react-html-parser";
 import Popover from "@material-ui/core/Popover";
 import Modal from 'react-bootstrap/Modal';
 import CloseIcon from '@material-ui/icons/Close';
+import Popup from 'reactjs-popup';
+import { createReactEditorJS } from "react-editor-js";
 
 import Constant from "../../helpers/constant";
 import lucenequeryparser from "../../assets/lib/lucene-query-parser";
@@ -21,6 +23,12 @@ import CheckBox from '../../shared/Fields/CheckBox';
 import CaretPositioning from './EditCaretPositioning'
 import AuthoritiesData from '../../helpers/authorities';
 import SelectBox from "../../shared/Fields/SelectBox";
+
+
+import { EDITOR_JS_TOOLS } from "../../helpers/editorOption";
+
+const ReactEditorJS = createReactEditorJS();
+
 
 const useStyles = makeStyles((theme) => ({
 	grow: {
@@ -136,6 +144,42 @@ function FullTextSearch() {
 
 	const pageCount = useSelector((state) => state.setCommon["Paging size"]);
 
+	// Auto Complete Suggest Term Popup
+	const [openACPopup, setOpenACPopup] = useState(false);
+	const [openACSynPopup, setOpenACSynPopup] = useState(false);
+	const arrowStyle = { left: '3%',top:'0%' };
+	const editorJS = React.useRef(null);
+	const [selectedTermId, setSelectedTermId] = useState('');
+	const [selectedSearchTerm, setSelectedSearchTerm] = useState('');
+	const [selectedTermSynonyms, setSelectedTermSynonyms] = useState([]);
+
+	const handleInitialize = React.useCallback((instance) => {
+		editorJS.current = instance
+	}, [])
+
+	const saveEditSynonyms = React.useCallback(async() => {
+		// setOpenACSynPopup(false);
+		let userId = userInfo && userInfo.current_user.gq_user_id;
+		console.log(selectedTermId,'SelectedTermId');
+
+		const savedData = await editorJS.current.save();
+		console.log(savedData);
+		let postData = {};
+		if(savedData && savedData.blocks.length > 0)
+		{
+			postData['word_list'] = savedData.blocks[0].data.items;
+		}
+		const updateACSynonyms = await fullTextService.updateACSynonyms(
+			userId,
+			selectedSearchTerm,
+			postData
+		);
+	})
+
+	const closeACModal = () => {
+		console.log('close detect');
+		setOpenACPopup(false);
+	}
 	const openPopup = () => {
 		// setAnchorEl(event.currentTarget);
 		setopen(true);
@@ -159,21 +203,62 @@ function FullTextSearch() {
 			setAuthorities(authorityData);
 		}
 		document.addEventListener("mousedown", handleClickOutside);
+		document.addEventListener('click', detectOutsideClick );
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
+			document.removeEventListener('click', detectOutsideClick );
 		};
-		var elm = document.getElementById("textareaDiv");
-		elm.addEventListener('click', printCaretPosition);
 	}, []);
-	const printCaretPosition= (event) => {
-		var sel = document.getSelection();
-		console.log('sel',sel);
-		console.log('event',event);
-		var pos = sel.toString().length;
-		if (sel.anchorNode != undefined) sel.collapseToEnd();
-	 
-		return pos;
-	 }
+	const detectOutsideClick = async(event) => {
+		console.log(event,'outsideevent');
+		console.log(event.target.className,'event.target.className');
+		let getXYCoordinates = getCaretGlobalPosition();
+		console.log(getXYCoordinates,'getXYCoordinates');
+		if (getXYCoordinates) {
+			let getId = '';
+			if(event.target.className != "")
+			{
+				let splitClass = event.target.className ? event.target.className.split(' '):[];
+				if(splitClass.length >0 && splitClass[0] == "autoquery")
+				{
+					setSelectedTermSynonyms([]);
+					getId = event.target.id ? event.target.id:'';
+					setOpenACPopup(o => !o);
+					setSelectedTermId(getId);
+				}
+			}
+			setTimeout(async() => {
+				var acPopup = document.getElementById('popup-1');
+				if(acPopup)
+				{
+					acPopup.style.left = getXYCoordinates.left-5+"px";
+					acPopup.style.top = getXYCoordinates.top+5+"px";
+					console.log(acPopup,'acPopup');
+					if(getId)
+					{
+						const getACSynonyms = await fullTextService.getACSynonyms(
+							history,
+							getId
+						);
+						if(getACSynonyms && getACSynonyms.response_status == 0){
+							if(getACSynonyms.response_content)
+							{
+								setSelectedSearchTerm(getACSynonyms.response_content.term);
+								setSelectedTermSynonyms(getACSynonyms.response_content.synonyms ? getACSynonyms.response_content.synonyms:[]);
+							}
+							
+						}
+					}
+					
+				}
+				
+			}, 0);
+			
+			
+		}
+		
+		console.log(openACPopup,'OpenACPopup');
+	};
 	const handleClickOutside = (event) => {
 		if (event.target.id != "megamenu") {
 			// Delay some seconds to get popup value before close
@@ -185,6 +270,11 @@ function FullTextSearch() {
 			}, 100);
 		}
 	};
+	const editACSynonyms = async()=>{
+		setOpenACPopup(false);
+		setOpenACSynPopup(o => !o);
+		
+	}
 	const getKeyCode = (e) => {
 		// if (e.type == "keypress") {
 		// 	// For Auto Suggest detect right arrow function
@@ -367,10 +457,14 @@ function FullTextSearch() {
 		// 	/<br>/g,
 		// 	""
 		// );
-
+		// if (value == value.toUpperCase()) {
+        //     console.log('upper case true');
+        // }
+        // if (value == value.toLowerCase()){
+        //     console.log('lower case true');
+        // }
 		value = value.replace(".", "").replace(" ", "");
 		let lastValue = value.slice(-1);
-		let lastPrevValue = value.charAt(value.length - 2);
 		let lastChild = '';
 		let lastPrevChild = '';
 		// let lastChild = htmlElement.children[htmlElement.children.length - 1];
@@ -542,34 +636,45 @@ function FullTextSearch() {
 						opFlag = 1;
 					} else {
 						newSpan.setAttribute("class", "pastequery");
-						newSpan.innerText = data;
+						// data = data.replace("<br>", "");
+						newSpan.innerText = data.trim();
 						opFlag = 0;
 					}
+					// Hardocoded Operator span, we need to append data with InnerHTML.That's why we use opFlag to check. 
 					if (opFlag == 1) {
 						spanArr += newSpan.innerHTML;
 					} else {
 						spanArr += newSpan.outerHTML;
 					}
 				});
-				let getLastIndex = htmlElement.innerHTML.lastIndexOf(pasteContent);
-				if (getLastIndex > -1) {
-					let remPasteContent = htmlElement.innerHTML.substring(
-						0,
-						getLastIndex
-					);
-					htmlElement.innerHTML = remPasteContent;
-					htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
-				} else {
+				if (lastChild && lastChild.attributes.length > 0) {
+
+				}else{
 					if (htmlElement.textContent.length == 0) {
 						htmlElement.innerHTML = spanArr;
 					} else {
 						htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
 					}
-
 				}
+				// let getLastIndex = htmlElement.innerHTML.lastIndexOf(pasteContent);
+				// if (getLastIndex > -1) {
+				// 	let remPasteContent = htmlElement.innerHTML.substring(
+				// 		0,
+				// 		getLastIndex
+				// 	);
+				// 	htmlElement.innerHTML = remPasteContent;
+				// 	htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
+				// } else {
+				// 	if (htmlElement.textContent.length == 0) {
+				// 		htmlElement.innerHTML = spanArr;
+				// 	} else {
+				// 		htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
+				// 	}
+
+				// }
 				setDetectPaste(false); // After Paste, reset false by default
 				setPasteContent('');
-				placeCursor = true;
+				// placeCursor = true;
 			}
 		} else if (keyCode == 32) {
 			// If Space Enters
@@ -1645,9 +1750,6 @@ function FullTextSearch() {
 												}
 											}
 										});
-										console.log(countOpClass,'countOpClass');
-										console.log(htmlElement.textContent,'htmlElement.textContent');
-										console.log(getEndPosition,'getEndPosition');
 									}
 								} else {
 									htmlElement.children[
@@ -2238,18 +2340,38 @@ function FullTextSearch() {
 			// updateHtmlElement(value);
 		}
 		var hiddenElems = htmlElement.getElementsByTagName('*');
-
-		for (var i = 0; i < hiddenElems.length; i++) {
-			if (hiddenElems[i].innerHTML) {
-				hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.trim().replace(/&nbsp;/g, '');
-				hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.replace(/>\s+</g, "");
+		if(hiddenElems && hiddenElems.length > 0)
+		{
+			if(detectPaste && pasteContent != "")
+			{
+				for (var i = 0; i < hiddenElems.length; i++) {
+					if (hiddenElems[i].innerHTML) {
+						hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.trim().replace(/&nbsp;/g, '');
+						hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.replace(/>\s+</g, "");
+					}
+				}
+			}else{
+				for (var i = 0; i < hiddenElems.length; i++) {
+					if (hiddenElems[i].innerHTML) {
+						hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.trim().replace(/&nbsp;/g, '');
+						hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.replace(/>\s+</g, "");
+					}
+				}
 			}
+			
 		}
+		
 
 		if (placeCursor) {
 			// htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "");
 			setCursorPosLast("true");
-			placeCaretAtEnd(htmlElement);
+			if(detectPaste && pasteContent != "")
+			{
+				placeCaretAtEnd(htmlElement);
+			}else{
+				placeCaretAtEnd(htmlElement);
+			}
+			
 			// setCurrentCursorPosition(savedCaretPosition.end);
 		}
 
@@ -2482,21 +2604,24 @@ function FullTextSearch() {
 	}
 
 	function getCaretGlobalPosition() {
-		const r = document.getSelection().getRangeAt(0);
-		const node = r.startContainer;
-		const offset = r.startOffset;
-		const pageOffset = { x: window.pageXOffset, y: window.pageYOffset };
-		let rect, r2;
+		if(document.getSelection().rangeCount > 0)
+		{
+			const r = document.getSelection().getRangeAt(0);
+			const node = r.startContainer;
+			const offset = r.startOffset;
+			const pageOffset = { x: window.pageXOffset, y: window.pageYOffset };
+			let rect, r2;
 
-		if (offset > 0) {
-			r2 = document.createRange();
-			r2.setStart(node, offset - 1);
-			r2.setEnd(node, offset);
-			rect = r2.getBoundingClientRect();
-			return {
-				left: rect.right + pageOffset.x,
-				top: rect.bottom + pageOffset.y,
-			};
+			if (offset > 0) {
+				r2 = document.createRange();
+				r2.setStart(node, offset - 1);
+				r2.setEnd(node, offset);
+				rect = r2.getBoundingClientRect();
+				return {
+					left: rect.right + pageOffset.x,
+					top: rect.bottom + pageOffset.y,
+				};
+			}
 		}
 	}
 	const selectField = (e, obj) => {
@@ -2567,28 +2692,6 @@ function FullTextSearch() {
 		}
 		
 	};
-	function placeCaretAtEndTag(el) {
-		el.focus();
-		if (
-			typeof window.getSelection != "undefined" &&
-			typeof document.createRange != "undefined"
-		) {
-			var range = document.createRange();
-			range.selectNodeContents(el);
-			range.collapse(false);
-			var sel = window.getSelection();
-			sel.removeAllRanges();
-			sel.addRange(range);
-		} else if (typeof document.body.createTextRange != "undefined") {
-			var textRange = document.body.createTextRange();
-			textRange.moveToElementText(el);
-			textRange.collapse(false);
-			textRange.select();
-		}
-	}
-	function getAutoQueryData(){
-		console.log('element');
-	}
 	const selectSearchTerm = async (data) => {
 		let htmlElement = document.getElementById("textareaDiv");
 		let curPos = localStorage.getItem('curPos');
@@ -2909,7 +3012,7 @@ function FullTextSearch() {
 			//api
 		}
 	}
-
+	
 	return (
 		<div className={classes.grow}>
 			<Row>
@@ -2938,6 +3041,76 @@ function FullTextSearch() {
 							onInput={(e) => callParseQuery(e.target.textContent, e, false)}
 							tabIndex="0"
 						></div>
+						<Modal
+							size="md"
+							show={openACSynPopup}
+							// show={true}
+							onHide={!openACSynPopup}
+							aria-labelledby="example-modal-sizes-title-lg"
+						>
+							<Modal.Header className={classes.modalHeader}>
+								<Link href="#" className={"float-right  appTextColor"}><CloseIcon onClick={() => setOpenACSynPopup(false)} /></Link>
+							</Modal.Header>
+							<Modal.Body className={classes.modalBody}>
+								<form name="mergeResultsForm" >
+									<h4 className={"subHeading mb-4 " + classes.titleFont}>{t('customWordList')}</h4>
+									<div className="mb-2">
+										<div className="synonymDiv">
+										
+											<ReactEditorJS
+												onInitialize={handleInitialize}
+												tools={EDITOR_JS_TOOLS}
+												defaultValue={{
+													time: 1635603431943,
+													blocks: [
+													{
+														id: "xnPuiC9Z8M",
+														type: "list",
+														data: {
+														items: selectedTermSynonyms
+														}
+													},
+													
+													
+													]
+												}}
+												/>
+										</div>
+									</div>
+									<div className="clear">
+										<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit"  onClick={saveEditSynonyms}>{t('save')}</Button>
+										<Button className={"cancelButtonClass float-right"} id="mergeCancel" onClick={()=>setOpenACSynPopup(false)}>{t('cancel')}</Button>
+									</div>
+								</form>
+							</Modal.Body>
+						</Modal>
+						<Popup
+							trigger={<span></span>}
+							position="bottom center"
+							nested
+							open={openACPopup}
+							{...{arrowStyle }}
+						>
+							<a className="close" onClick={closeACModal}>
+								&times;
+							</a>
+							<span class="acHeading">
+								<b>Your search will include the following exact phrases :</b>
+							</span>
+							<ul>
+							{selectedTermSynonyms.length >0 && selectedTermSynonyms.map((obj, index) => {
+								return (
+									<li
+										key={index}
+										className="col-md-12 list-inside"
+									><span>{obj}</span></li>
+									)
+								})
+							}
+							</ul>
+							<button className={"submitButtonClass float-right ml-2"} onClick={editACSynonyms}>Edit</button>
+
+						</Popup>
 						<div
 							className={
 								"popup-box " + (searchTermPopup ? "d-block" : "d-none")
