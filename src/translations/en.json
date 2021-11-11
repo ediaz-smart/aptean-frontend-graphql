@@ -319,5 +319,6 @@
     "classificationsFooter": "Classifications",
     "legalEventsFooter": "Legal Events",
     "citationsFooter": "Citations",
-    "titleFooter": "Title"
+    "titleFooter": "Title",
+    "passAndConfirmNotSame": "New password and confirm password should be same"
 }

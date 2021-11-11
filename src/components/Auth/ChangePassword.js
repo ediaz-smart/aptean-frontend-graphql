@@ -137,7 +137,7 @@ function ChangePassword() {
     validationSchema: Validate.ChangePasswordValidate(),
     onSubmit: async (values) => {
 
-      if (values.newPassword == values.confirmPassword) {
+      // if (values.newPassword == values.confirmPassword) {
         const result = await AccountService.updatePass(userId, values.newPassword, values.confirmPassword, values.currentPassword);
         if (result.response_content.message) {
 
@@ -151,12 +151,12 @@ function ChangePassword() {
           setmodalShowSaved(true);
         }
 
-      }
-      else {
-        setModalCheckPass(true);
-        // toast.error("Password MisMatch! Enter Valid Password.");
+      // }
+      // else {
+      //   setModalCheckPass(true);
+      //   // toast.error("Password MisMatch! Enter Valid Password.");
 
-      }
+      // }
 
     },
   });

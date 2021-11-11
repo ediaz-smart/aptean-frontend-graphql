@@ -89,12 +89,13 @@ function ChangePasswordValidate() {
             .matches("^(?=.*[0-9])", 'Password should contain at least one numbers.')
             .required(t('newPasswordReq')),
         confirmPassword: yup
-            .string(t('enterconfirmPassword'))
-            .min(9, 'Password is too short - should be 9 chars minimum.')
-            .matches("^(?=.*[a-z])", 'Password should contain at least one lowercase letter.')
-            .matches("^(?=.*[A-Z])", 'Password should contain at least one uppercase letter.')
-            .matches("^(?=.*[0-9])", 'Password should contain at least one numbers.')
-            .required(t('confirmPasswordReq')),
+            // .string(t('enterconfirmPassword'))
+            // .min(9, 'Password is too short - should be 9 chars minimum.')
+            // .matches("^(?=.*[a-z])", 'Password should contain at least one lowercase letter.')
+            // .matches("^(?=.*[A-Z])", 'Password should contain at least one uppercase letter.')
+            // .matches("^(?=.*[0-9])", 'Password should contain at least one numbers.')
+            // .required(t('confirmPasswordReq'))
+            .string().equalTo(yup.ref('newPassword'), t('passAndConfirmNotSame')),
 
 
     });
@@ -447,5 +448,24 @@ function MergeResultsValidate() {
     });
     return validationSchema;
 }
+
+yup.addMethod(yup.string, 'equalTo', function(ref, msg) {
+    const { t, i18n } = useTranslation('common');
+    // return yup.mixed().test(`validateMismatch`, function (val, ctx) {
+    // const { path, createError } = this;
+
+    // })
+    return this.test({
+		name: 'equalTo',
+		exclusive: false,
+    message: msg ,
+		params: {
+			reference: ref.path
+		},
+		test: function(value) {
+      return value === this.resolve(ref) 
+		}
+	})
+});
 
 export default Validate;
