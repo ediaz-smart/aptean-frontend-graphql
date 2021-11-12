@@ -29,25 +29,33 @@ const useStyles = makeStyles((theme) => ({
 		maxHeight: '675px',
 	},
 	modalClassContent: {
-		position: 'absolute',
+		// position: 'absolute',
 		width: '96%',
-		height: '31%',
-		top: '30%',
-		left: '50%',
-		right: 'auto',
-		bottom: 'auto',
-		transform: 'translate(-50%, -50%)'
+		// height: '31%',
+		// top: '30%',
+		// left: '50%',
+		// right: 'auto',
+		// bottom: 'auto',
+		// transform: 'translate(-50%, -50%)'
+	},
+	closeButton: {
+		position: 'absolute',
+		top: '10px',
+		right: '10px',
+		'&:hover': {
+			cursor: 'pointer'
+		}
 	},
 	colorContainer: {
 		backgroundColor: '#EEEEEE',
-		marginTop: '-32px',
+		// marginTop: '-32px',
 		// marginLeft: 0px;
-		paddingTop: '28px',
+		// paddingTop: '28px',
 		// paddingBottom: '75px',
-		paddingBottom: '34px',
-		marginLeft: '10px',
-		marginRight: '10px',
-		paddingRight: '10px',
+		// paddingBottom: '34px',
+		// marginLeft: '10px',
+		// marginRight: '10px',
+		// paddingRight: '10px',
 		borderRadius: '5px',
 
 	},
@@ -61,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
 
 	},
 	bodyPadding: {
-		padding: "13px"
+		padding: "35px 15px 15px"
 	}
 }));
 
@@ -76,11 +84,11 @@ function SeqVIModal(props) {
 			contentClassName={classes.modalClassContent}
 			className={classes.modalBoxContent}
 		>
-			<Modal.Header className={classes.modalHeader}>
-				<Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}>
-					<CloseIcon onClick={props.saveCallBack} />
-				</Link>
-			</Modal.Header>
+			{/* <Modal.Header className={classes.modalHeader}> */}
+			<Link href="#" onClick={(e) => e.preventDefault()} className={classes.closeButton + " appTextColor"}>
+				<CloseIcon onClick={props.saveCallBack} />
+			</Link>
+			{/* </Modal.Header> */}
 			<Modal.Body className={"text-center " + classes.bodyPadding}>
 				<div className={classes.colorContainer}>
 					<br></br>
@@ -88,11 +96,11 @@ function SeqVIModal(props) {
 
 
 					<br></br>
-					<div className={classes.footerDiv}>
-						{/* <Button onClick={props.onHide} className='accountInfo' color="default"  variant="contained">OK</Button>  */}
+					{/* <div className={classes.footerDiv}> */}
+					{/* <Button onClick={props.onHide} className='accountInfo' color="default"  variant="contained">OK</Button>  */}
 
-						{/* <Button onClick={props.onHide} className={classes.buttonStyle} color="default" variant="contained">OK</Button> */}
-					</div>
+					{/* <Button onClick={props.onHide} className={classes.buttonStyle} color="default" variant="contained">OK</Button> */}
+					{/* </div> */}
 
 				</div>
 

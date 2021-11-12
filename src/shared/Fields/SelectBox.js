@@ -34,6 +34,7 @@ export default function SelectBox(props) {
   const classes = useStyles();
 
   const items = props.items;
+  console.log(items)
   return (
     // <form className={classes.container} noValidate autoComplete="off">
     <TextField

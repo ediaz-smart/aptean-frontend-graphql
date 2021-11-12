@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     modalClassConEF: {
         position: 'absolute',
         width: '96%',
-        height: '55%',
+        // height: '55%',
         top: '30%',
         left: '50%',
         right: 'auto',
@@ -92,12 +92,12 @@ const useStyles = makeStyles((theme) => ({
     },
     colorConDSIEF: {
         backgroundColor: 'gainsboro',
-        marginTop: '-32px',
+        marginTop: '35px',
         padding: '28px',
-        paddingTop: '28px',
+        // paddingTop: '28px',
         paddingBottom: '65px',
-        marginLeft: '7px',
-        marginRight: '7px',
+        marginLeft: '15px',
+        marginRight: '15px',
         paddingRight: '10px',
         borderRadius: '5px',
     },
@@ -142,8 +142,12 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: '4px',
         marginTop: '-7px',
     },
+    modalBody: {
+        paddingBottom: '20px'
+    },
+
     footerDiv: {
-        padding: '0 30px'
+        padding: '0 10px'
     },
     checkBox: {
         transform: "scale(0.9)",
@@ -163,12 +167,13 @@ const useStyles = makeStyles((theme) => ({
     modalClassConDSI: {
         position: 'absolute',
         width: '96%',
-        height: 'auto',
-        top: '30%',
-        left: '50%',
+        padding: '35px 15px 15px',
+        // height: 'auto',
+        // top: '30%',
+        // left: '50%',
         right: 'auto',
         bottom: 'auto',
-        transform: 'translate(-50%, -50%)'
+        // transform: 'translate(-50%, -50%)'
     },
     modalClassConDR: {
         position: 'absolute',
@@ -181,18 +186,19 @@ const useStyles = makeStyles((theme) => ({
         transform: 'translate(-50%, -50%)'
     },
     modaltext: {
-        float: 'right',
-        marginLeft: '724px'
+        position: 'absolute',
+        top: '10px',
+        right: '10px'
     },
 
     colorConDSI: {
         backgroundColor: 'gainsboro',
-        marginTop: '-38px',
+        // marginTop: '-38px',
         padding: '28px',
         paddingTop: '28px',
         paddingBottom: '65px',
-        marginLeft: '7px',
-        marginRight: '7px',
+        // marginLeft: '7px',
+        // marginRight: '7px',
         paddingRight: '10px',
         borderRadius: '5px',
     },
@@ -246,7 +252,6 @@ const useStyles = makeStyles((theme) => ({
         marginRight: '7px',
         paddingRight: '10px',
         borderRadius: '5px',
-
     },
     popupFolderIcon: {
         width: '3% !important'
@@ -1232,13 +1237,15 @@ function SearchManagement(props) {
                 className={classes.modalBoxContent}
 
             >
-                <Modal.Header className={classes.modalHeader}>
+                {/* <Modal.Header className={classes.modalHeader}>
                     <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
                         <CloseIcon onClick={closeModal} />
                     </Link>
-                </Modal.Header>
-
-                <Modal.Body className="appTextColor">
+                </Modal.Header> */}
+                <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
+                    <CloseIcon onClick={closeModal} />
+                </Link>
+                <div className={classes.modal_body_selected + " appTextColor"}>
                     <div className={classes.colorConDSI}>
                         <div className={(confirmContent ? 'd-block' : 'd-none')}>
                             <p className="mb-3"><b>{t('deleteSelItems')}</b></p>
@@ -1272,7 +1279,7 @@ function SearchManagement(props) {
                             </div>
                         </div>
                     </div>
-                </Modal.Body>
+                </div>
             </Modal>
             <Modal
                 show={folderModalShow}
@@ -1281,17 +1288,17 @@ function SearchManagement(props) {
                 centered
                 contentClassName={classes.modalClassConEF}
                 className={classes.modalBoxContent}
-
             >
                 {/* <Modal.Header closeButton className={classes.modalHeader}>
               </Modal.Header> */}
-                <Modal.Header className={classes.modalHeader}>
+
+                {/* <Modal.Header className={classes.modalHeader}>
                     <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
                         <CloseIcon onClick={closeFolderModal} />
                     </Link>
-                </Modal.Header>
-
-                <Modal.Body className="appTextColor">
+                </Modal.Header> */}
+                <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext + "  appTextColor"}><CloseIcon onClick={closeFolderModal} /></Link>
+                <div className={classes.modalBody + " appTextColor"}>
                     <div className={classes.colorConDSIEF}>
                         <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
                             <p className="mb-3"><b>{t('deleteSelFolder')}</b></p>
@@ -1336,7 +1343,7 @@ function SearchManagement(props) {
                             </div>
                         </div>
                     </div>
-                </Modal.Body>
+                </div>
             </Modal>
             <Modal
                 show={moveFolderModalShow}

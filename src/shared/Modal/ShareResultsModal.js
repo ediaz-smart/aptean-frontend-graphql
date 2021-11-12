@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 		display: "block !important"
 	},
 	footerDiv: {
-		padding: "0 30px",
+		padding: "0 10px",
 	},
 	buttonStyle: {
 		float: "right",
@@ -54,16 +54,23 @@ const useStyles = makeStyles((theme) => ({
 
 	},
 	scrollList: {
-		height: '300px',
+		height: '280px',
 		overflowX: 'scroll'
 	},
 	modalBoxContent: {
 		maxHeight: '675px',
+		display: 'flex !important',
+		justifyContent: 'center !important',
 	},
+
+	modalBody: {
+		flex: 'unset',
+		padding: '40px 10px 15px'
+	},
+
 	modalClassContent: {
-		position: 'absolute',
+
 		width: '96%',
-		height: '86%',
 		top: '44%',
 		left: '50%',
 		right: 'auto',
@@ -72,9 +79,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	colorContainer: {
 		backgroundColor: '#EEEEEE',
-		marginTop: '-33px',
+		// marginTop: '-33px',
 		// marginLeft: 0px;
-		paddingTop: '28px',
+		paddingTop: '15px',
 		paddingBottom: '70px',
 		marginLeft: '5px',
 		marginRight: '4px',
@@ -82,6 +89,11 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '5px',
 		paddingLeft: '10px'
 	},
+	closeButton: {
+		position: 'absolute',
+		right: '10px',
+		top: '10px'
+	}
 }));
 
 function ShareResultsModal(props) {
@@ -120,19 +132,21 @@ function ShareResultsModal(props) {
 			contentClassName={classes.modalClassContent}
 			className={classes.modalBoxContent}
 		>
-			<Modal.Header
+			{/* <Modal.Header
 				// closeButton
 				className={classes.modalHeader}
 			>
-				<Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={closeModal} /></Link>
-				{/* <Modal.Title id="contained-modal-title-vcenter">
+				{/* <Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}><CloseIcon onClick={closeModal} /></Link> */}
+
+			{/* <Modal.Title id="contained-modal-title-vcenter">
            Logout
-          </Modal.Title> */}
+          </Modal.Title>
 
 
-			</Modal.Header>
-			{/* <h5>Share these Results.</h5> */}
-			<Modal.Body className="appTextColor">
+		</Modal.Header> * /}
+			{/* <h5>Share these Results.</h5> */ }
+			<Link href="#" onClick={(e) => e.preventDefault()} className={classes.closeButton + "  appTextColor"}><CloseIcon onClick={closeModal} /></Link>
+			<div className={classes.modalBody + " appTextColor"}>
 				{/* <h5>{props.onMessage}</h5> */}
 
 				<div className={classes.colorContainer}>
@@ -157,8 +171,6 @@ function ShareResultsModal(props) {
 						</ul>
 					</div>
 					<div className={classes.footerDiv + " float-right"}>
-
-
 						{/* <Button onClick={props.tryAgain} className={classes.buttonStyle} color="primary" variant="contained">Share Results</Button>  */}
 
 						<Button
@@ -179,11 +191,11 @@ function ShareResultsModal(props) {
 
 					</div>
 				</div>
-			</Modal.Body>
+			</div>
 			{/* <Modal.Footer>
 				<Button onClick={props.onHide}>Close</Button>
 			</Modal.Footer> */}
-		</Modal>
+		</Modal >
 	);
 }
 

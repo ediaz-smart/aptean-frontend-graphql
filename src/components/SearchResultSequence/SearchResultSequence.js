@@ -111,24 +111,25 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: '675px',
     },
     modalClassContentDSI: {
-        position: 'absolute',
+        // position: 'absolute',
         width: '96%',
         height: '41%',
-        top: '30%',
-        left: '50%',
+        // top: '30%',
+        // left: '50%',
         right: 'auto',
         bottom: 'auto',
-        transform: 'translate(-50%, -50%)'
+        padding: '20px 10px'
+        // transform: 'translate(-50%, -50%)'
     },
     colorContainerDSI: {
         backgroundColor: '#EEEEEE',
-        marginTop: '-26px',
+        // marginTop: '-26px',
         // marginLeft: 0px;
         paddingTop: '28px',
         // paddingBottom: '75px',
         paddingBottom: '78px',
-        marginLeft: '10px',
-        marginRight: '10px',
+        // marginLeft: '10px',
+        // marginRight: '10px',
         paddingRight: '10px',
         borderRadius: '5px',
 
@@ -136,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
     modalClassContent: {
         position: 'absolute',
         width: '96%',
-        height: '42%',
+        // height: '42%',
         top: '30%',
         left: '50%',
         right: 'auto',
@@ -145,17 +146,12 @@ const useStyles = makeStyles((theme) => ({
     },
     colorContainer: {
         backgroundColor: '#EEEEEE',
-        marginTop: '-32px',
-        // marginLeft: 0px;
         paddingTop: '28px',
-        // paddingBottom: '75px',
         textAlign: 'left',
         paddingBottom: '53px',
-        marginLeft: '10px',
-        marginRight: '10px',
-        paddingRight: '10px',
+        margin: '20px 10px',
         borderRadius: '5px',
-
+        paddingLeft: '20px'
     },
     buttonStyle: {
         float: 'right',
@@ -167,7 +163,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
     bodyPadding: {
-        padding: "10px !important"
+        padding: "15px 10px 0 !important"
     },
     modalHeaderDSI: {
         borderBottom: 'none !important',
@@ -183,6 +179,11 @@ const useStyles = makeStyles((theme) => ({
     },
     highlight: {
         fontWeight: 'bold'
+    },
+    closeButton: {
+        position: 'absolute',
+        right: '10px',
+        top: '10px'
     }
 }));
 const columns = [
@@ -1086,12 +1087,15 @@ function SearchResultSequence(props) {
                 contentClassName={classes.modalClassContentDSI}
                 className={classes.modalBoxContent}
             >
-                <Modal.Header className={classes.modalHeaderDSI}>
+                {/* <Modal.Header className={classes.modalHeaderDSI}>
                     <Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}>
                         <CloseIcon onClick={() => setAlertSettingModal(!alertSettingModal)} />
                     </Link>
-                </Modal.Header>
-                <Modal.Body className={"text-center appTextColor " + classes.bodyPadding}>
+                </Modal.Header> */}
+                <Link href="#" onClick={(e) => e.preventDefault()} className={classes.closeButton + " appTextColor"}>
+                    <CloseIcon onClick={() => setAlertSettingModal(!alertSettingModal)} />
+                </Link>
+                <div className={"text-center appTextColor " + classes.bodyPadding}>
                     <div className={classes.colorContainerDSI + " pl-5"}>
                         <label className="mb-3 mt-2 float-left">{t('alertSetting')}</label>
                         {/* <div className="mb-5 h-100"> */}
@@ -1116,7 +1120,7 @@ function SearchResultSequence(props) {
                             <Button onClick={() => setAlertSettingModal(!alertSettingModal)} className={classes.loginSubmitCancel} >{t('cancel')}</Button>
                         </div>
                     </div>
-                </Modal.Body>
+                </div>
             </Modal>
             <Modal
                 show={modalShow}
@@ -1126,12 +1130,15 @@ function SearchResultSequence(props) {
                 contentClassName={classes.modalClassContent}
                 className={classes.modalBoxContent}
             >
-                <Modal.Header className={classes.modalHeader}>
+                {/* <Modal.Header className={classes.modalHeader}>
                     <Link href="#" onClick={(e) => e.preventDefault()} className={"float-right  appTextColor"}>
                         <CloseIcon onClick={closeModal} />
                     </Link>
-                </Modal.Header>
-                <Modal.Body className={"text-center appTextColor" + classes.bodyPadding}>
+                </Modal.Header> */}
+                <Link href="#" onClick={(e) => e.preventDefault()} className={classes.closeButton + " appTextColor"}>
+                    <CloseIcon onClick={closeModal} />
+                </Link>
+                <div className={"text-center appTextColor " + classes.bodyPadding}>
                     <div className={classes.colorContainer}>
                         <div className={(confirmContent ? 'd-block' : 'd-none')}>
                             <p className="mb-3"><b>{t('deleteSelItems')}</b></p>
@@ -1164,7 +1171,7 @@ function SearchResultSequence(props) {
                             </div>
                         </div>
                     </div>
-                </Modal.Body>
+                </div>
             </Modal>
         </div>
     )
