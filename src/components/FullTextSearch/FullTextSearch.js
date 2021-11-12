@@ -2792,6 +2792,7 @@ function FullTextSearch() {
 	const clearParser = () => {
 		let htmlElement = document.getElementById("textareaDiv");
 		htmlElement.innerHTML = "";
+		setIsSearch(false);
 	};
 	var countKeys = function (obj, key) {
 		//define the variable count to return later, set it to 0
