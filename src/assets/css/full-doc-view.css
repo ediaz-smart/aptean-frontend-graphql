@@ -1,0 +1,61 @@
+.summaryTables{
+    font-size: 12px;
+    width: 320px 
+}
+
+.summaryTables * td{
+    max-width: 140px;
+    padding-bottom:  5px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.summaryTables * a{
+    font-size: 12px;
+}
+
+.summaryTables * .appTextColor{
+    font-size: 12px !important;
+}
+
+.familyTables{
+    width: 320px;
+    padding-bottom: 10px;
+}
+
+.familyTables * td{
+    width: 140px !important;
+    text-align: left;
+    vertical-align: top;
+}
+
+.familyTables > * .appTextColor{
+    font-size: 12px !important;
+}
+
+.familyTables * th{
+    width: 320px !important;
+    text-align: left;
+    vertical-align: top;
+}
+
+.familyTables p{
+    margin-bottom: 0px;
+}
+
+.familyTables > * > a td{
+    text-align: left;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+.tables > tr > *{
+    height: 45px;
+    font-size: 12px;
+    min-width: 130px;
+    text-align: left;
+    vertical-align: top;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 10px !important;
+}

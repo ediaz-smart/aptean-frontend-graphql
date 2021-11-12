@@ -16,6 +16,7 @@ import Footer from '../../shared/footer';
 import fullTextService from '../../services/fulltextsearch';
 import { property } from 'lodash';
 import { usBaseUrl, ipcBaseUrl, ipcrBaseUrl, cpcBaseUrl } from '../../config';
+import '../../assets/css/full-doc-view.css'
 
 const Accordion = withStyles({
     root: {
@@ -108,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: "400",
         textDecoration: "none",
         cursor: "pointer"
-    }
+    },
 
 }));
 
@@ -148,7 +149,7 @@ function FullDocumentView() {
     const [appAssignees, setAppAssignees] = useState([]);
     const [inventors, setInventors] = useState([]);
     const [latestLegal, setLatestLegal] = useState([]);
-    const [linkouts, setLinkouts] = useState();
+    //const [linkouts, setLinkouts] = useState();
     const [priorities, setPriorities] = useState([]);
     const [simFamMembers, setSimFamMembers] = useState([]);
     const [extenFamMembers, setExtenFamMembers] = useState([]);
@@ -174,15 +175,21 @@ function FullDocumentView() {
             setAppAssignees(getResponse.response_content.applicants && getResponse.response_content.applicants.length > 0 ? formatAssignees(getResponse.response_content.applicants)[0] : ['Not Available']);
             setInventors(getResponse.response_content.inventors && getResponse.response_content.inventors.length > 0 ? formatInventors(getResponse.response_content.inventors) : ['Not Available']);
             setLatestLegal(getResponse.response_content.legalEvents && getResponse.response_content.legalEvents.length > 0  ? formatLatestLgal(getResponse.response_content.legalEvents) : 'Not Available');
-            setLinkouts(getResponse.response_content.legalStatus ? getResponse.response_content.legalStatus : 'Not Available');
-            setPriorities(getResponse.response_content.priorityClaims ? formatPriorities(getResponse.response_content.priorityClaims) : 'Not Available');
-            setSimFamMembers(getResponse.response_content.patentFamily && getResponse.response_content.patentFamily.simpleFamilyMbrs ? getResponse.response_content.patentFamily.simpleFamilyMbrs : 'None');
-            setExtenFamMembers(getResponse.response_content.legalStatus ? getResponse.response_content.legalStatus : 'None');
+            //setLinkouts(getResponse.response_content.legalStatus ? getResponse.response_content.legalStatus : 'Not Available');
+            setPriorities(getResponse.response_content.priorityClaims ? getResponse.response_content.priorityClaims : null);
+            setSimFamMembers(getResponse.response_content.patentFamily && getResponse.response_content.patentFamily.simpleFamilyMbrs ? getResponse.response_content.patentFamily.simpleFamilyMbrs : null);   
+            setExtenFamMembers(getResponse.response_content.patentFamily && getResponse.response_content.patentFamily.completeFamilyMbrs ? getResponse.response_content.patentFamily.completeFamilyMbrs : null);
 
             const { internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses, nationalClassCountry } = getResponse.response_content;
             setClassification(internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses, nationalClassCountry);
         }
     }, []);
+
+
+    function formatDocPath(patentid){
+        let str="#/fulldocview/"+patentid;
+        return str;
+    }
 
     function formatDate(dateString) {
         let options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -568,6 +575,7 @@ function FullDocumentView() {
                                     </p>
                                 </AccordionSummary>
                                 <AccordionDetails className="appTextColor">
+                                    {legalEvents == []?
                                     <table rules="all">
                                         <thead>
                                             <tr>
@@ -592,6 +600,7 @@ function FullDocumentView() {
                                             ))}
                                         </tbody>
                                     </table>
+                                    : <div><p>Not Available</p></div>}
                                 </AccordionDetails>
                             </Accordion>
 
@@ -614,43 +623,43 @@ function FullDocumentView() {
                                             </p>
                                         </AccordionSummary>
                                         <AccordionDetails className="appTextColor">
-                                            <table rules="all">
-                                                <tr>
-                                                    <td>Application Number:</td>
-                                                    <td>{docContent.applicationDocNum ? docContent.applicationDocNum : ""}</td>
-                                                    <td>Status:</td>
-                                                    <td>{docContent.applStatus ? docContent.applStatus : ""}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Filing or 371 (c) Date:</td>
-                                                    <td>{docContent.usPairApplicationDate ? formatDate(docContent.usPairApplicationDate) : ""}</td>
-                                                    <td>Status Date:</td>
-                                                    <td>{docContent.applStatusDate ? docContent.applStatusDate : ""}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Application Type:</td>
-                                                    <td>{docContent.usPairApplicationType ? docContent.usPairApplicationType : ""}</td>
-                                                    <td>Earliest Publication No:</td>
-                                                    <td>{docContent.publicationDocNum ? docContent.publicationDocNum : "Not Available​" /* incorrect */}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Entity Status:</td>
-                                                    <td>{docContent.entityStatus ? docContent.entityStatus : ""}</td>
-                                                    <td>Earliest Publication Date:</td>
-                                                    <td>{docContent.publicationDate ? formatDate(docContent.publicationDate) : "" /* incorrect */}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AIA (First Inventor to File):</td>
-                                                    <td>{inventors[0] ? inventors[0] : ""}</td>
-                                                    <td>Patent Number:</td>
-                                                    <td>{docContent.publicationDocNum ? docContent.publicationDocNum : ""}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>Issue Date of Patent</td>
-                                                    <td>{docContent.publicationDate ? formatDate(docContent.publicationDate) : ""}</td>
-                                                </tr>
+                                        <table rules="all" className="tables">
+                                                    <tr>
+                                                        <td>Application Number:</td>
+                                                        <td>{docContent.applicationDocNum? docContent.applicationDocNum: ""}</td>
+                                                        <td>Status:</td>
+                                                        <td>{docContent.applStatus? docContent.applStatus : "" }</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Filing or 371 (c) Date:</td>
+                                                        <td>{docContent.applicationDate? formatDate(docContent.applicationDate): ""}</td>
+                                                        <td>Status Date:</td>
+                                                        <td>{docContent.applStatusDate? formatDate(docContent.applStatusDate) : ""}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Application Type:</td>
+                                                        <td>{docContent.applicationType? docContent.applicationType: ""}</td>
+                                                        <td>Earliest Publication No:</td>
+                                                        <td>{docContent.appRePublicationNum? docContent.appRePublicationNum : "Not Available​" /* incorrect? */}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Entity Status:</td>
+                                                        <td>{docContent.entityStatus? docContent.entityStatus : ""}</td>
+                                                        <td>Earliest Publication Date:</td>
+                                                        <td>{docContent.modifiedFirstDatePub? formatDate(docContent.modifiedFirstDatePub) : "" /* incorrect? */}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>AIA (First Inventor to File):</td>
+                                                        <td>{inventors[0]? inventors[0]: ""}</td>
+                                                        <td>Patent Number:</td>
+                                                        <td>{docContent.publicationDocNum? docContent.publicationDocNum : ""}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>Issue Date of Patent: </td>
+                                                        <td>{docContent.publicationDate? formatDate(docContent.publicationDate) : ""}</td>
+                                                    </tr>
                                             </table>
                                         </AccordionDetails>
                                     </Accordion>
@@ -665,7 +674,8 @@ function FullDocumentView() {
                                             </p>
                                         </AccordionSummary>
                                         <AccordionDetails className="appTextColor">
-                                            <table rules="all">
+                                            { docContent.usPairTransactionHistory == [] ?
+                                            <table rules="all" className="tables">
                                                 {docContent.usPairTransactionHistory && docContent.usPairTransactionHistory.map((events) => (
                                                     <tr>
                                                         <td>{formatDate(events.tranDate)}</td>
@@ -673,6 +683,7 @@ function FullDocumentView() {
                                                     </tr>
                                                 ))}
                                             </table>
+                                            : <div><p>Not Available</p></div> }
                                         </AccordionDetails>
                                     </Accordion>
 
@@ -685,78 +696,85 @@ function FullDocumentView() {
                                             </p>
                                         </AccordionSummary>
                                         <AccordionDetails className="appTextColor">
-                                            <p>Patent Term Adjustment</p>
-                                            <table rules="all">
-                                                <tr>
-                                                    <td>Filing or 371(c) Date:​</td>
-                                                    <td>{docContent.fileOr371cDate ? docContent.fileOr371cDate : "" /* possibly incorrect*/}</td>
-                                                    <td>Overlapping Days Between &#123; A and B &#125; or &#123; A and C &#125;:​</td>
-                                                    <td>something</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Issue Date of Patent:​</td>
-                                                    <td>{docContent.publicationDate ? docContent.publicationDate : "" /* incorrect*/}</td>
-                                                    <td>Non-Overlapping USPTO Delays:​</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>A Delays:​</td>
-                                                    <td>{docContent.publicationDate ? docContent.publicationDate : "" /* incorrect*/}</td>
-                                                    <td>PTO Manual Adjustments:​</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>B Delays:</td>
-                                                    <td>{docContent.publicationDate ? docContent.publicationDate : "" /* incorrect*/}</td>
-                                                    <td>Applicant Delays:​</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>C Delays:</td>
-                                                    <td>{docContent.publicationDate ? docContent.publicationDate : "" /* incorrect*/}</td>
-                                                    <td>Total PTA Adjustments:​</td>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
+                                            <div>
+                                            <p className="subHeading m-0" style={{paddingTop: 0+"px", paddingBottom: 10+"px"}}>Patent Term Adjustment</p>
+                                            <table rules="all" className="tables">
+                                            <tr>
+                                                <td>Filing or 371(c) Date:​</td>
+                                                <td>{docContent.fileOr371cDate? formatDate(docContent.fileOr371cDate): "Not Available"}</td>
+                                                <td style={{width: 336+"px"}}>Overlapping Days Between &#123;A and B&#125; or &#123;A and C&#125;:​</td>
+                                                <td>{docContent.overlappingDays? docContent.overlappingDays: ""}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Issue Date of Patent:​</td>
+                                                <td>{docContent.patentIssueDate? formatDate(docContent.patentIssueDate): "Not Available"}</td>
+                                                <td>Non-Overlapping USPTO Delays:​</td>
+                                                <td>{docContent.nonOverlying? docContent.nonOverlying: ""}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>A Delays:​</td>
+                                                <td>{docContent.aDelays? docContent.aDelays: ""}</td>
+                                                <td>PTO Manual Adjustments:​</td>
+                                                <td>{docContent.ptoManualAdjs? docContent.ptoManualAdjs: ""}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>B Delays:</td>
+                                                <td>{docContent.bDelays? docContent.bDelays: ""}</td>
+                                                <td>Applicant Delays:​</td>
+                                                <td>{docContent.applicantDelays? docContent.applicantDelays: ""}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>C Delays:</td>
+                                                <td>{docContent.cDelays? docContent.cDelays: ""}</td>
+                                                <td>Total PTA Adjustments:​</td>
+                                                <td>{docContent.totalPtoAdj? docContent.totalPtoAdj: ""}</td>
+                                            </tr>
+                                        </table>
 
-                                            <p>Patent Term Adjustment History</p>
-                                            <table rules="all">
-                                                <thead>
-                                                    <tr>
-                                                        <th>
-                                                            Number
-                                                        </th>
-                                                        <th>
-                                                            Date
-                                                        </th>
-                                                        <th>
-                                                            Contents Description
-                                                        </th>
-                                                        <th>
-                                                            PTO (Days)
-                                                        </th>
-                                                        <th>
-                                                            APPL (days)
-                                                        </th>
-                                                        <th>
-                                                            Start
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {docContent.adjustmentHistory && docContent.adjustmentHistory.map((events) => ( /* incorrect? no test data */
-                                                        <tr>
-                                                            <td>{events.number ? events.number : ""}</td>
-                                                            <td>{events.date ? events.date : ""}</td>
-                                                            <td>{events.desc ? events.desc : ""}</td>
-                                                            <td>{events.pto ? events.pto : ""}</td>
-                                                            <td>{events.appl ? events.appl : ""}</td>
-                                                            <td>{events.start ? events.start : ""}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </AccordionDetails>
+                                    </div>
+                                    
+                                    <div>
+                                    <p className="subHeading m-0" style={{paddingTop: 0+"px", paddingBottom: 10+"px"}}>Patent Term Adjustment History</p>
+                                    { docContent.adjustmentHistory == []?
+                                    <table rules="all" className="tables">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Number
+                                                </th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    Contents Description
+                                                </th>
+                                                <th>
+                                                    PTO (Days)
+                                                </th>
+                                                <th>
+                                                    APPL (days)
+                                                </th>
+                                                <th>
+                                                    Start
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {docContent.adjustmentHistory && docContent.adjustmentHistory.map((events) => (
+                                                <tr>
+                                                    <td>{events.num ? events.num : ""}</td>
+                                                    <td>{events.date ? formatDate(events.date) : ""}</td>
+                                                    <td>{events.text ? events.text : ""}</td>
+                                                    <td>{events.ptoDays ? events.ptoDays : ""}</td>
+                                                    <td>{events.applDays ? events.applDays : ""}</td>
+                                                    <td>{events.start ? events.start : ""}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    : <div><p>Not Available</p></div> }
+                                    </div>
+                                    </AccordionDetails>
                                     </Accordion>
 
                                     <Accordion square expanded={iscontinuityDataOpen} onChange={() => setIsContinuityDataOpen(prevState => !prevState)} id="classifications">
@@ -768,8 +786,10 @@ function FullDocumentView() {
                                             </p>
                                         </AccordionSummary>
                                         <AccordionDetails className="appTextColor">
-                                            <p>Parent Continuity Data​</p>
-                                            <table rules="all">
+                                            <p className="subHeading m-0" style={{paddingTop: 0+"px", paddingBottom: 10+"px"}}>Parent Continuity Data​</p>
+                                            {docContent.parentContinuity == []?
+                                            <div>
+                                            <table rules="all" className="tables">
                                                 <thead>
                                                     <tr>
                                                         <th>
@@ -793,28 +813,33 @@ function FullDocumentView() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {docContent.adjustmentHistory && docContent.adjustmentHistory.map((events) => ( /* incorrect? no test data */
+                                                    {docContent.parentContinuity && docContent.parentContinuity.map((events) => ( /* incorrect? no test data */
                                                         <tr>
-                                                            <td>{events.number ? events.desc : ""}</td>
-                                                            <td>{events.date ? events.number : ""}</td>
-                                                            <td>{events.desc ? events.filing : ""}</td>
-                                                            <td>{events.pto ? events.aia : ""}</td>
-                                                            <td>{events.appl ? events.status : ""}</td>
-                                                            <td>{events.start ? events.pn : ""}</td>
+                                                            <td>{events.text ? events.text : ""}</td>
+                                                            <td>{events.document.docNumber ? events.document.docNumber : ""}</td>
+                                                            <td>{events.document.date ? formatDate(events.document.date) : ""}</td>
+                                                            <td>{events.name ? events.name : ""}</td>
+                                                            <td>{events.status ? events.status : ""}</td>
+                                                            <td>{events.num ? events.num : ""}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
                                             </table>
+                                            </div>
+                                            : <div><p>Not Avaiable</p></div>} 
 
-
-                                            <p>Child Continuity Data​</p>
-                                            <table rules="all">
+                                            <p className="subHeading m-0" style={{paddingTop: 0+"px", paddingBottom: 10+"px"}}>Child Continuity Data​</p>
+                                            {docContent.childContinuity == []?
+                                            <div>
+                                            <table rules="all" className="tables">
                                                 {docContent.childContinuity && docContent.childContinuity.map((events) => (
                                                     <tr>
-                                                        <td>{events}</td>
+                                                        <td>{events.document.docNumber} filed on {formatDate(events.document.date)} which is {events.status} claims the benefit of this document.</td>
                                                     </tr>
                                                 ))}
                                             </table>
+                                            </div>
+                                            : <div><p>Not Avaiable</p></div>}
                                         </AccordionDetails>
                                     </Accordion>
 
@@ -827,30 +852,31 @@ function FullDocumentView() {
                                             </p>
                                         </AccordionSummary>
                                         <AccordionDetails className="appTextColor">
-                                            <p>Patent Term Extension</p>
-                                            <table rules="all">
+                                            <p className="subHeading m-0" style={{paddingTop: 0+"px", paddingBottom: 10+"px"}}>Patent Term Extension</p>
+                                            <table rules="all" className="tables">
                                                 <tr>
                                                     <td>Filing or 371(c) Date:​</td>
-                                                    <td>{docContent.fileOr371cDate ? docContent.fileOr371cDate : "" /* possibly incorrect*/}</td>
+                                                    <td>{docContent.extFiling371cDate ? docContent.extFiling371cDate : "Not Available"}</td>
                                                     <td>USPTO Delay (PTO) Delay (days):​</td>
-                                                    <td>something</td>
+                                                    <td>{docContent.usptoDelayPto ? docContent.usptoDelayPto : ""}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>USPTO Adjustment (days):​</td>
-                                                    <td>{docContent.publicationDate ? docContent.publicationDate : "" /* incorrect*/}</td>
+                                                    <td>{docContent.usptoAdjustment ? docContent.usptoAdjustment : ""}</td>
                                                     <td>Corrections (APPL) Delay (days):​</td>
-                                                    <td></td>
+                                                    <td>{docContent.correctionsDelay ? docContent.correctionsDelay : ""}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Explanation Of Calculations​</td>
-                                                    <td>{docContent.publicationDate ? docContent.publicationDate : "" /* incorrect*/}</td>
-                                                    <td>Total Patent Term Extension (days):​</td>
+                                                    <td><a href="http://www.uspto.gov/ebc/pair/pte_calc_explanation.html">Explanation Of Calculations​</a></td>
                                                     <td></td>
+                                                    <td>Total Patent Term Extension (days):​</td>
+                                                    <td>{docContent.totalPteExtension ? docContent.totalPteExtension : ""}</td>
                                                 </tr>
                                             </table>
 
-                                            <p>Patent Term Extension History</p>
-                                            <table rules="all">
+                                            <p className="subHeading m-0" style={{paddingTop: 0+"px", paddingBottom: 10+"px"}}>Patent Term Extension History</p>
+                                            {docContent.extensionHistory == [] ?
+                                            <table rules="all" className="tables">
                                                 <thead>
                                                     <tr>
                                                         <th>
@@ -883,6 +909,7 @@ function FullDocumentView() {
                                                     ))}
                                                 </tbody>
                                             </table>
+                                        : <p>Not Available</p>}   
                                         </AccordionDetails>
                                     </Accordion>
 
@@ -910,15 +937,17 @@ function FullDocumentView() {
                                             </p>
                                         </AccordionSummary>
                                         <AccordionDetails className="appTextColor">
-                                            <table rules="all">
+                                            {docContent.patentCitations != [] ?
+                                            <table rules="all" className="tables">
                                                 {docContent.patentCitations && docContent.patentCitations.map((events) => (
                                                     <tr>
-                                                        <td>{events.dnum ? events.dnum : ""}</td>
+                                                        <td><a href={formatDocPath(events.docRef.country+""+events.docRef.docNumber+""+events.docRef.kind)}>{events.docRef.country+events.docRef.docNumber+events.docRef.kind}</a></td>
                                                         <td>{events.docRef.name ? events.docRef.name : ""}</td>
                                                         <td>{events.docRef.date ? formatDate(events.docRef.date) : ""}</td>
                                                     </tr>
                                                 ))}
                                             </table>
+                                            : <p> Not Available</p>}
                                         </AccordionDetails>
                                     </Accordion>
 
@@ -931,14 +960,15 @@ function FullDocumentView() {
                                             </p>
                                         </AccordionSummary>
                                         <AccordionDetails className="appTextColor">
-                                            <table rules="all">
+                                            {docContent.nonPatentCitations != []?
+                                            <table rules="all" className="tables">
                                                 {docContent.nonPatentCitations && docContent.nonPatentCitations.map((events) => (
                                                     <tr>
                                                         <td>{events.text ? events.text : ""}</td>
                                                     </tr>
                                                 ))}
                                             </table>
-
+                                            : <p> Not Available</p>}
                                         </AccordionDetails>
                                     </Accordion>
 
@@ -947,18 +977,20 @@ function FullDocumentView() {
                                             <p className="subHeading m-0">
                                                 {isforwardCitationsOpen && <ArrowDropDownIcon className={classes.arrowIcon} />}
                                                 {!isforwardCitationsOpen && <ArrowRightIcon className={classes.arrowIcon} />}
-                                                <span className={classes.arrowIconTitle}>{t("Patent Citations​")}</span>
+                                                <span className={classes.arrowIconTitle}>{t("Forward Citations​")}</span>
                                             </p>
                                         </AccordionSummary>
                                         <AccordionDetails className="appTextColor">
-                                            <table rules="all">
+                                            {docContent.forwardCitations == [] ?
+                                            <table rules="all" className="tables">
                                                 {docContent.forwardCitations && docContent.forwardCitations.map((events) => (
                                                     <tr>
-                                                        <td>{events.docRef.docNumber ? events.docRef.docNumber : ""}</td>
+                                                        <td><a href={formatDocPath(events.docRef.country+""+events.docRef.docNumber+""+events.docRef.kind)}>stuff{events.docRef.country+""+events.docRef.docNumber+""+events.docRef.kind}</a></td>
                                                         <td>{events.docRef.date ? formatDate(events.docRef.date) : ""}</td>
                                                     </tr>
                                                 ))}
                                             </table>
+                                            : <p> Not Available</p>}
                                         </AccordionDetails>
                                     </Accordion>
 
@@ -968,26 +1000,76 @@ function FullDocumentView() {
                             </Accordion>
                         </Col>
                         <Col lg="3">
+                            <div style={{width: 320+'px'}}>
                             <p className="subHeading">{t("fullDocSummary")}</p>
+                            
+                            <div className="summaryTables">
                             <table>
-                                <tr><td>Legeal Status</td>​<td>{legalStatus}</td></tr>
+                                <tr><td className="subHeading">Legal Status</td>​<td className="appTextColor">{legalStatus}</td></tr>
 
-                                <tr><td>Pub. Date​</td><td>{pubDate}</td></tr>
+                                <tr><td className="subHeading">Pub. Date​</td><td className="appTextColor">{formatDate(pubDate)}</td></tr>
 
-                                <tr><td>Filing Date​</td><td>{filingDate}</td></tr>
+                                <tr><td className="subHeading">Filing Date​</td><td className="appTextColor">{formatDate(filingDate)}</td></tr>
 
-                                <tr><td>Application Number​</td><td>{appNum}</td></tr>
+                                <tr><td className="subHeading">Application Number​</td><td className="appTextColor">{appNum}</td></tr>
 
-                                <tr><td>Applicants and Assignees​</td><td>{appAssignees}</td></tr>
+                                <tr><td className="subHeading">Applicants and Assignees​</td><td className="appTextColor">{appAssignees}</td></tr>
 
-                                <tr><td>Inventors​</td><td>{inventors && inventors.map((inven) => (<tr>{inven ? inven : ""}</tr>))}</td></tr>
+                                <tr><td className="subHeading">Inventors​</td><td className="appTextColor">{inventors && inventors.map((inven) => (<tr>{inven ? inven : ""}</tr>))}</td></tr>
 
-                                <tr><td>Latest Legal Event​</td><td>{latestLegal}</td></tr>
+                                <tr><td className="subHeading">Latest Legal Event​</td><td className="appTextColor">{latestLegal}</td></tr>
+                                
+                                <tr><td className="subHeading">Linkouts</td><td className="appTextColor">
+                                    <tr><a>PDF</a></tr>
+                                    <tr><a>Sequences(20)</a></tr>
+                                    <tr><a>USPTO</a></tr>
+                                    <tr><a>WIPO</a></tr>
+                                    <tr><a>Espacenet</a></tr>
+                                </td></tr>
 
-                                <tr><td>Simple Family Members ({simFamMembers.length})​</td><td>{simFamMembers && simFamMembers.map((sfm) => (<tr>{sfm ? sfm : ""}</tr>))}</td></tr>
-
-                                <tr><td>Simple Family Members ({simFamMembers.length})​</td><td>{simFamMembers && simFamMembers.map((sfm) => (<tr>{sfm ? sfm : ""}</tr>))}</td></tr>
                             </table>
+                            </div>
+
+                            <div className="familyTables">
+                            <p className="subHeading">Priorities</p>
+                            <table>
+                                <tbody>
+                                <tr><td className="appTextColor">{priorities == null ? priorities[priorities.length - 1].docNum : "Not Available"}</td><td className="appTextColor">{priorities == null ? formatDate(docContent.priorityClaims[docContent.priorityClaims.length - 1].date): "Not Available"}</td></tr>
+                                </tbody>
+                            </table>
+                            </div>
+
+
+                            
+                            <div className="familyTables">
+                            <p className="subHeading">Simple Family Members ({simFamMembers.length + 1 })​</p>
+                            <table>      
+                                <tbody>
+                                <tr><td><a href={formatDocPath(patentId)}>{docContent.publicationCountry+" "+docContent.publicationDocNum+" "+docContent.publicationKind}</a></td><td className="appTextColor">{formatDate(docContent.publicationDate)}</td></tr>
+                                {simFamMembers == [] ? simFamMembers.map((sfm) => (<tr><td>
+                                    <a href={formatDocPath(sfm.docRefs[0].country+""+sfm.docRefs[0].docNumber+""+sfm.docRefs[0].kind)}>
+                                    {sfm.docRefs[0].country+" "+sfm.docRefs[0].docNumber+" "+sfm.docRefs[0].kind}
+                                    </a>
+                                    </td><td className="appTextColor">{formatDate(sfm.docRefs[0].date)}</td></tr>)) : null}
+                                </tbody>
+                            </table>
+                            </div>
+                            
+                            <div className="familyTables">
+                            <p className="subHeading">Extended Family Members ({extenFamMembers.length + 1 })​</p>
+                            <table>
+                                <tbody>
+                                <tr><td><a href={formatDocPath(patentId)}>{docContent.publicationCountry+" "+docContent.publicationDocNum+" "+docContent.publicationKind}</a></td><td className="appTextColor">{formatDate(docContent.publicationDate)}</td></tr>
+                                {extenFamMembers == [] ? extenFamMembers.map((xfm) => (<tr><td>
+                                    <a href={formatDocPath(xfm.docRefs[0].country+""+xfm.docRefs[0].docNumber+""+xfm.docRefs[0].kind)}>
+                                    {xfm.docRefs[0].country+" "+xfm.docRefs[0].docNumber+" "+xfm.docRefs[0].kind}
+                                    </a>
+                                    </td><td className="appTextColor">{formatDate(xfm.docRefs[0].date)}</td></tr>)) : null}
+                                </tbody>
+                            </table>
+                            </div>
+                            
+                            </div>
                         </Col>
                     </Row>
                 </div>
