@@ -105,8 +105,9 @@ async function getACSynonyms(history, selectedTermId) {
 async function updateACSynonyms(userId, searchTerm,postData) {
     try {
         let apiurl = url.updateAutoQueryTerm;
+        apiurl = apiurl.replace(':TERMID', searchTerm ? searchTerm.id:'');
         apiurl = apiurl.replace(':UID', userId);
-        apiurl = apiurl.replace(':searchTerm', searchTerm);
+        apiurl = apiurl.replace(':searchTerm', searchTerm ? searchTerm.term:'');
         // showLoader();
         return await post(apiurl, postData)
             .then((response) => {

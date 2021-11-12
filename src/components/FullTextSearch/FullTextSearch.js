@@ -86,6 +86,7 @@ function FullTextSearch() {
 	const [queryParser, setQueryParser] = useState({});
 	const [pasteContent, setPasteContent] = React.useState(null);
 	const [caretPosition, setCaretPosition] = React.useState();
+	const [isSearch, setIsSearch] = useState(false);
 
 	// For Popup
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -150,7 +151,7 @@ function FullTextSearch() {
 	const arrowStyle = { left: '3%',top:'0%' };
 	const editorJS = React.useRef(null);
 	const [selectedTermId, setSelectedTermId] = useState('');
-	const [selectedSearchTerm, setSelectedSearchTerm] = useState('');
+	const [selectedSearchTermData, setSelectedSearchTermData] = useState('');
 	const [selectedTermSynonyms, setSelectedTermSynonyms] = useState([]);
 
 	const handleInitialize = React.useCallback((instance) => {
@@ -167,13 +168,19 @@ function FullTextSearch() {
 		let postData = {};
 		if(savedData && savedData.blocks.length > 0)
 		{
-			postData['word_list'] = savedData.blocks[0].data.items;
+			postData['word_list'] = savedData.blocks[0].data.items.join(" \n");
+			postData['word_list'] = postData['word_list'].replace('<br>','');
 		}
 		const updateACSynonyms = await fullTextService.updateACSynonyms(
 			userId,
-			selectedSearchTerm,
+			selectedSearchTermData,
 			postData
 		);
+		if(updateACSynonyms && updateACSynonyms.response_status == 0)
+		{
+			setOpenACSynPopup(false);
+		}
+		
 	})
 
 	const closeACModal = () => {
@@ -216,9 +223,13 @@ function FullTextSearch() {
 		console.log(getXYCoordinates,'getXYCoordinates');
 		if (getXYCoordinates) {
 			let getId = '';
+			let splitClass = [];
 			if(event.target.className != "")
 			{
-				let splitClass = event.target.className ? event.target.className.split(' '):[];
+				if(typeof event.target.className != "object")
+				{
+					splitClass = (event.target.classList && event.target.classList.length > 0) ? event.target.className.split(' '):[];
+				}
 				if(splitClass.length >0 && splitClass[0] == "autoquery")
 				{
 					setSelectedTermSynonyms([]);
@@ -243,7 +254,7 @@ function FullTextSearch() {
 						if(getACSynonyms && getACSynonyms.response_status == 0){
 							if(getACSynonyms.response_content)
 							{
-								setSelectedSearchTerm(getACSynonyms.response_content.term);
+								setSelectedSearchTermData(getACSynonyms.response_content);
 								setSelectedTermSynonyms(getACSynonyms.response_content.synonyms ? getACSynonyms.response_content.synonyms:[]);
 							}
 							
@@ -449,6 +460,24 @@ function FullTextSearch() {
 			return htmlElement;
 		}
 	}
+	async function generatePasteArr(splitPasteArr){
+		let splitData = [];
+		let totLen = splitPasteArr.length;
+		splitPasteArr.map((data, i) => {
+			if(data.includes('(AND') || data.includes('(OR') || data.includes('(NOT'))
+			{
+				splitData = data.split('(');
+				delete splitPasteArr[i];
+				splitPasteArr.splice(i, 0, splitData[1]);
+				splitPasteArr.splice(i, 0, "(");
+				generatePasteArr(splitPasteArr);
+			}
+			if(totLen == (i+1))
+			{
+				return splitPasteArr;
+			}
+		});
+	}
 	async function replaceStringHtml(value, keyCode, isArrowRight, savedCaretPosition, getCurrentSel1) {
 		let getCurrentSel = window.getSelection();
 		
@@ -554,7 +583,7 @@ function FullTextSearch() {
 		let convertLowerPublTxt = searchPublicationTxt.toLowerCase();
 		getChildText = getChildText.toLowerCase();
 		if (isArrowRight) {
-			
+
 		}
 		// if (isArrowRight) {
 
@@ -620,6 +649,8 @@ function FullTextSearch() {
 
 			let splitPasteTxt = pasteContent ? pasteContent.split(" ") : [];
 			if (splitPasteTxt && splitPasteTxt.length > 0) {
+				let getSplitArr = await generatePasteArr(splitPasteTxt);
+				console.log(getSplitArr,'getSplitArr');
 				let opFlag = 0;
 				let getSplitLen = splitPasteTxt.length;
 				splitPasteTxt.map((data, i) => {
@@ -778,8 +809,6 @@ function FullTextSearch() {
 						getCurrDataId = PrevElSibling ? PrevElSibling.getAttribute("dataid") : '';
 					}
 						if (checkANDValues.includes(getChildText)) {
-							// htmlElement.children[htmlElement.children.length - 1].outerHTML =
-							// 	ANDString;
 							Object.keys(htmlElement.children).forEach(function (key) {
 								getClassId = htmlElement.children[key].getAttribute("dataid");
 								if (getClassId == getCurrDataId) {
@@ -797,10 +826,6 @@ function FullTextSearch() {
 								NOTString;
 							placeCursor = true;
 						} else {
-							// htmlElement.innerHTML = htmlElement.innerHTML.replace(
-							// 	/<br>/g,
-							// 	""
-							// );
 							var newSpan = document.createElement("span");
 							newSpan.setAttribute("class", "space");
 							newSpan.innerHTML = ".";
@@ -833,34 +858,9 @@ function FullTextSearch() {
 									// getEndPosition = savedCaretPosition.end;
 								}
 							});
-							// if (
-							// 	getCurrentSel &&
-							// 	getCurrentSel.focusNode && getCurrentSel.focusNode.parentElement
-							// ) {
-							// 	// let currDataId = '';
-							// 	if (getCurrentSel.focusNode.previousElementSibling) {
-							// 		getCurrDataId = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid");
-							// 	} else {
-							// 		getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid");
-							// 	}
-
-							// 	Object.keys(htmlElement.children).forEach(function (key) {
-							// 		getClassId = htmlElement.children[key].getAttribute("dataid");
-							// 		if (getClassId == getCurrDataId) {
-							// 			htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
-							// 		}
-							// 	});
-							// } else {
-							// 	htmlElement.innerHTML = htmlElement.innerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
-							// }
 
 							placeCursor = false;
 							placeCursorPos = true;
-
-							// getEndPosition = savedCaretPosition.end;
-							// setTimeout(() => {
-							// 	setCurrentCursorPosition(getEndPosition);
-							// }, 0);
 
 						}
 				} else if (getChildClassName == "space") {
@@ -935,14 +935,6 @@ function FullTextSearch() {
 						});
 						// lastChildEl.innerHTML = ORString;
 					} else if (checkANDValues.includes(getChildText)) {
-						// htmlElement.children[htmlElement.children.length - 1].outerHTML =
-						// 	ANDString + newSpan.outerHTML;
-						// Object.keys(htmlElement.children).forEach(function (key) {
-						// 	getClassId = htmlElement.children[key].getAttribute("dataid");
-						// 	if (getClassId == getCurrDataId) {
-						// 		htmlElement.children[key].outerHTML = ANDString + newSpan.outerHTML;
-						// 	}
-						// });
 						Object.keys(htmlElement.children).forEach(function (key) {
 							getClassId = htmlElement.children[key].getAttribute("dataid");
 							if (getClassId == getCurrDataId) {
@@ -953,14 +945,6 @@ function FullTextSearch() {
 							}
 						});
 					} else if (checkNOTValues.includes(getChildText)) {
-						// htmlElement.children[htmlElement.children.length - 1].outerHTML =
-						// 	NOTString + newSpan.outerHTML;
-						// Object.keys(htmlElement.children).forEach(function (key) {
-						// 	getClassId = htmlElement.children[key].getAttribute("dataid");
-						// 	if (getClassId == getCurrDataId) {
-						// 		htmlElement.children[key].outerHTML = NOTString + newSpan.outerHTML;
-						// 	}
-						// });
 						Object.keys(htmlElement.children).forEach(function (key) {
 							getClassId = htmlElement.children[key].getAttribute("dataid");
 							if (getClassId == getCurrDataId) {
@@ -972,7 +956,6 @@ function FullTextSearch() {
 						});
 					} else {
 						// // Adding AND operator if space enters
-						// htmlElement.innerHTML = htmlElement.innerHTML.slice(0,-1);
 						//create the DOM object
 						var newSpan = document.createElement("span");
 						// add the class to the 'span'
@@ -2334,10 +2317,6 @@ function FullTextSearch() {
 				}
 
 			}
-
-			// trimText = htmlElement.textContent.toString();
-
-			// updateHtmlElement(value);
 		}
 		var hiddenElems = htmlElement.getElementsByTagName('*');
 		if(hiddenElems && hiddenElems.length > 0)
@@ -2488,8 +2467,11 @@ function FullTextSearch() {
 			}
 			if (htmlElement.textContent.trim().length == 0) {
 				clearParser();
+				setIsSearch(false);
+			}else{
+				setIsSearch(true);
 			}
-
+			console.log(isSearch,'isSearch');
 			// htmlElement.children = htmlElement.children.trim();
 			setTimeout(() => {
 				if (htmlElement.children && htmlElement.children.length > 0) {
@@ -3103,7 +3085,7 @@ function FullTextSearch() {
 									<li
 										key={index}
 										className="col-md-12 list-inside"
-									><span>{obj}</span></li>
+									><span>{obj.trim()}</span></li>
 									)
 								})
 							}
@@ -3189,8 +3171,9 @@ function FullTextSearch() {
 						<Button
 							variant="contained"
 							disableRipple={true}
-							className={"loginSubmitButton float-right"}
+							className={"float-right "+(isSearch ? 'loginSubmitButton' : '')}
 							onClick={() => searchResult(null, null)}
+							color={(!isSearch ? 'default' : 'secondary')} disabled={!isSearch} 
 						>
 							{t("submit")}
 						</Button>
@@ -3551,7 +3534,7 @@ function FullTextSearch() {
 							/>
 						</div>
 						<div className="clear">
-							<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit" onClick={() => searchResult(null, null, 'closeModal')}>{t('apply')}</Button>
+							<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit"  onClick={() => searchResult(null, null, 'closeModal')}>{t('apply')}</Button>
 							<Button className={"cancelButtonClass float-right"} id="mergeCancel" onClick={() => setIsConfigureActive(!isConfigureActive)}>{t('cancel')}</Button>
 						</div>
 					</form>
