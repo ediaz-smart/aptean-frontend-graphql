@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     top: '150px'
   },
   smallBox: {
-    width: '69px',
+    width: '14%',
     padding: '10px 0px',
     margin: '-8px 0 0 -5px'
   },

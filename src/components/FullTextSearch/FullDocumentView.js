@@ -128,6 +128,10 @@ function FullDocumentView() {
     const [isCitationsOpen, setIsCitationsOpen] = useState(true);
     const [docContent, setDocContent] = useState({});
     const [classificationData, setClassificationData] = useState([]);
+    const [summaryParts, setSummaryParts] = useState([]);
+    const [detailedDesc, setDetailedDesc] = useState([]);
+    const [descDrawings, setDescDrawings] = useState([]);
+    const [textParts, setTextParts] = useState([]);
 
     //substate
     //usPair
@@ -180,8 +184,14 @@ function FullDocumentView() {
             setSimFamMembers(getResponse.response_content.patentFamily && getResponse.response_content.patentFamily.simpleFamilyMbrs ? getResponse.response_content.patentFamily.simpleFamilyMbrs : null);   
             setExtenFamMembers(getResponse.response_content.patentFamily && getResponse.response_content.patentFamily.completeFamilyMbrs ? getResponse.response_content.patentFamily.completeFamilyMbrs : null);
 
-            const { internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses, nationalClassCountry } = getResponse.response_content;
+            const { internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses, nationalClassCountry, descriptions } = getResponse.response_content;
             setClassification(internationalClasses, cooperativeClasses, nationalMainClass, nationalFurtherClasses, ipcMainClass, ipcFurtherClasses, nationalClassCountry);
+
+            const descriptionData = descriptions && descriptions.length > 0 ? descriptions.find(data => data.langCode == "en") : {};
+            setSummaryParts(descriptionData && descriptionData.summaryParts ? descriptionData.summaryParts : []);
+            setDetailedDesc( descriptionData && descriptionData.detailedDesc ? descriptionData.detailedDesc : []);
+            setDescDrawings(descriptionData && descriptionData.descDrawings ? descriptionData.descDrawings : []);
+            setTextParts(descriptionData && descriptionData.textParts ? descriptionData.textParts : []);
         }
     }, []);
 
@@ -446,7 +456,6 @@ function FullDocumentView() {
         let string = str.trim();
         string = string.split('.');
         // let newString = (string[0].includes('<b>') || (typeof(parseInt(string[0])) == "number")) ? 'yes' : 'no';
-        console.log('string', string)
         let newString = (string[0].includes('<b>') || (parseInt(string[0])  && typeof(parseInt(string[0])) == "number")) ? string[1] + "." : string[0]+string[1];
         return newString;
     }
@@ -527,17 +536,34 @@ function FullDocumentView() {
                                 </AccordionSummary>
                                 <AccordionDetails className="appTextColor">
                                     {/* <p>Sample deacription</p> */}
-                                    {descriptions && descriptions.length > 0 && descriptions.map((item, index) => {
-                                        if (item.langCode == "en" && item.textParts && item.textParts.length > 0) {
-                                            return (
-                                                item.textParts.map((data, subIndex) => {
+                                    {/* {descriptions && descriptions.length > 0 && descriptions.map((item, index) => {
+                                    if (item.langCode == "en"){ */}
+                                       {summaryParts && summaryParts.length > 0 && summaryParts[0].textParts && summaryParts[0].textParts.length > 0 && summaryParts[0].textParts.map((data, summaryIndex) => {
+                                                return (
+                                                    <p key={summaryIndex}>{ReactHtmlParser(data.html)}</p>
+                                                )
+                                            })
+                                       } 
+                                       {detailedDesc && detailedDesc.length > 0 && detailedDesc[0] && detailedDesc[0].textParts && detailedDesc[0].textParts.length > 0 && detailedDesc[0].textParts.map((detailedItem, detailedDescIndex) => {
+                                                return (
+                                                    <p key={detailedDescIndex}>{ReactHtmlParser(detailedItem.html)}</p>
+                                                )
+                                            })
+                                       }
+                                        {descDrawings && descDrawings.length > 0 && descDrawings[0] && descDrawings[0].textParts && descDrawings[0].textParts.length > 0 &&descDrawings[0].textParts.map((descDrawingsItem, descDrawingsIndex) => {
+                                                return (
+                                                    <p key={descDrawingsIndex}>{ReactHtmlParser(descDrawingsItem.html)}</p>
+                                                )
+                                            })
+                                       } 
+                                       {textParts && textParts.length > 0 && textParts.map((data, subIndex) => {
                                                     return (
                                                         <p key={subIndex}>{ReactHtmlParser(data.html)}</p>
                                                     )
                                                 })
-                                            )
                                         }
-                                    })}
+                                    {/* })
+                                    } */}
                                 </AccordionDetails>
                             </Accordion>
 

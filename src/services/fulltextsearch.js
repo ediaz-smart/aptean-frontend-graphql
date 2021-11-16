@@ -41,6 +41,9 @@ async function getFullTextSearchResult(history, searchParam) {
         return await get(apiurl, history)
             .then((response) => {
                 hideLoader();
+                if(response && response.response_status == 0 && response.response_content && response.response_content.status == 500){
+                    toast.error('Something went wrong');
+                }
                 return response;
             })
             .catch((error) => {

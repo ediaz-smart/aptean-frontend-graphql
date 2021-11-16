@@ -206,6 +206,7 @@ function FullTextSearch() {
 	useEffect(async () => {
 		//dispatch(userActions.logout());
 		let authorityData = AuthoritiesData();
+		console.log('authorityData', authorityData)
 		if (authorityData) {
 			setAuthorities(authorityData);
 		}
@@ -2976,15 +2977,24 @@ function FullTextSearch() {
 				searchParam += `&Date_sorting_field=${dateSortingField}`
 				searchParam += `&Date_sorting_dir=${dateSortingDirection}`
 			}
+			const getLocalFT = localStorage.getItem('FTSearchParam');
+			if(getLocalFT) {
+				localStorage.removeItem('FTSearchParam');
+			}
 
 			const searchQueryRes = await fullTextService.getFullTextSearchResult(
 				history,
 				searchParam
 			);
-			searchQueryRes &&
-				searchQueryRes.response_status == 0 &&
-				searchQueryRes.response_content &&
+			if(searchQueryRes) {
 				setDocSearchResult(searchQueryRes.response_content);
+			}
+			if(searchQueryRes &&
+				searchQueryRes.response_status == 0 &&
+				searchQueryRes.response_content && searchQueryRes.response_content.status == 200){
+					// setDocSearchResult(searchQueryRes.response_content);
+					localStorage.setItem('FTSearchParam', searchParam);
+				} 
 		}, 1000);
 	};
 
