@@ -339,14 +339,17 @@
     background-color: -moz-field;
     border: 1px solid darkgray;
     box-shadow: 1px 1px 1px 0 lightgray inset;
-    font: -moz-field;
-    font: -webkit-small-control;
     margin-top: 5px;
     padding: 2px 3px;
     width: 100%;
     min-height: 100px;
     border-radius: 3px;
     position: relative;
+    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-size: 14px;
+    color: #777777;
+    font-weight: 400;
+    white-space: inherit;
 }
 
 #searchDiv {
@@ -504,9 +507,8 @@ label {
     font-weight: bold;
     color: #777777;
 }
-.query,.pastequery {
+.query,.pastequery,.space{
     color: #000;
-    font: 400 13.3333px Arial, Helvetica, sans-serif;
 }
 
 .autoquery {
@@ -516,13 +518,7 @@ label {
     cursor: pointer;
 }
 
-#textareaDiv {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
-    font-size: 14px;
-    color: #777777;
-    font-weight: 400;
-    white-space: inherit;
-}
+
 .popup-content {
     width: 460px !important;
 }
