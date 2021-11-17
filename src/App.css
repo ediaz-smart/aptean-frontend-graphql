@@ -21,7 +21,7 @@
 }
 
 .appLink {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: #337AB7;
     font-weight: 400;
@@ -56,7 +56,7 @@
 
 .MuiOutlinedInput-input {
     padding: 12px 14px !important;
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue" !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
     font-size: 14px !important;
     color: #777777 !important;
     font-weight: 400 !important;
@@ -93,7 +93,7 @@
 
 .loginTitle {
     margin: 0px 0 15px !important;
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px !important;
     color: #777777 !important;
     font-weight: 700 !important;
@@ -101,7 +101,7 @@
 
 .loginFailedTitle {
     margin: 0px 0 15px !important;
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px !important;
     color: #db862c !important;
     font-weight: 700 !important;
@@ -345,7 +345,7 @@
     min-height: 100px;
     border-radius: 3px;
     position: relative;
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: #777777;
     font-weight: 400;
@@ -417,21 +417,21 @@
 /*new styling */
 
 .bodyText {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: #777777;
     font-weight: 400;
 }
 
 .pageTitle {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
     font-size: 22px;
     color: #777777;
     font-weight: 700;
 }
 
 .subHeading {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue" !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, !important;
     font-size: 14px !important;
     color: #777777 !important;
     font-weight: 700 !important;
@@ -442,7 +442,7 @@
 }
 
 .placeholderText {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
     font-size: 14px;
     color: #D3D3D3;
     font-weight: 400;
@@ -450,7 +450,7 @@
 }
 
 a {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
     font-size: 14px;
     color: #337AB7 !important;
     font-weight: 400;
@@ -464,14 +464,14 @@ a:hover {
 
 .ManualError {
     color: #f44336;
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-style: italic;
     font-size: 13px;
 }
 
 .ManualErrorBox {
     color: #f44336;
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-style: italic;
     font-size: 13px;
     border-color: #f44336;
@@ -479,7 +479,7 @@ a:hover {
 
 .MuiFormControlLabel-label,
 .MuiTypography-body1 {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue" !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
     font-size: 14px !important;
     color: #777777;
     font-weight: 400 !important;
@@ -487,7 +487,7 @@ a:hover {
 
 p,
 label {
-    font-family: Arial, Helvetica, sans-serif, "Helvetica Neue";
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: #777777;
     font-weight: 400;
@@ -507,7 +507,10 @@ label {
     font-weight: bold;
     color: #777777;
 }
-.query,.pastequery,.space{
+
+.query,
+.pastequery,
+.space {
     color: #000;
 }
 
@@ -518,33 +521,39 @@ label {
     cursor: pointer;
 }
 
-
 .popup-content {
     width: 460px !important;
 }
+
 .ce-toolbar--opened {
     display: none !important;
 }
-.acHeading{
+
+.acHeading {
     color: #888;
 }
-.list-inside{
+
+.list-inside {
     list-style: inside;
 }
-.synonymDiv{
+
+.synonymDiv {
     border: 1px solid rgb(204, 204, 204);
     resize: vertical;
     overflow: auto;
     background-color: #fff;
     height: 300px;
 }
-.cdx-list{
+
+.cdx-list {
     padding-left: 12px !important;
 }
+
 .cdx-list__item {
     padding: 0 !important;
     list-style: none;
 }
+
 .loginSubmitCancel {
     background-color: #0182C5 !important;
     border-color: #1F4E79 !important;
