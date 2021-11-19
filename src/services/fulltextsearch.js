@@ -111,14 +111,14 @@ async function updateACSynonyms(userId, searchTerm,postData) {
         apiurl = apiurl.replace(':TERMID', searchTerm ? searchTerm.id:'');
         apiurl = apiurl.replace(':UID', userId);
         apiurl = apiurl.replace(':searchTerm', searchTerm ? searchTerm.term:'');
-        // showLoader();
+        showLoader();
         return await post(apiurl, postData)
             .then((response) => {
-                // hideLoader();
+                hideLoader();
                 return response;
             })
             .catch((error) => {
-                // hideLoader();
+                hideLoader();
                 toast.error('A');
                 console.log("error::", error);
 
