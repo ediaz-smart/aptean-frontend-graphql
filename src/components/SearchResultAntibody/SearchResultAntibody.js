@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import { toast } from 'react-toastify';
 import _ from "lodash";
+import moment from 'moment';
 
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -288,7 +289,7 @@ function SearchResultAntibody() {
     let initialData = {};
     if (formdata && formdata.savedRedo) {
         initialData = {
-            searchName: formdata && formdata.searchName ? formdata.searchName : '',
+            searchName: formdata && formdata.searchName ? formdata.searchName : `AB ${moment().format('YYYY-MM-DD h:mm:ss')}`,
             cdrhcseq1: formdata && formdata.hc_cdr1 ? formdata.hc_cdr1 : '',
             cdrhcseq2: formdata && formdata.hc_cdr2 ? formdata.hc_cdr2 : '',
             cdrhcseq3: formdata && formdata.hc_cdr3 ? formdata.hc_cdr3 : '',
@@ -311,7 +312,7 @@ function SearchResultAntibody() {
         }
     } else {
         initialData = {
-            searchName: formdata && formdata.searchName ? formdata.searchName : '',
+            searchName: formdata && formdata.searchName ? formdata.searchName : `AB ${moment().format('YYYY-MM-DD h:mm:ss')}`,
             cdrhcseq1: formdata && formdata.cdrhcseq1 ? formdata.cdrhcseq1 : '',
             cdrhcseq2: formdata && formdata.cdrhcseq2 ? formdata.cdrhcseq2 : '',
             cdrhcseq3: formdata && formdata.cdrhcseq3 ? formdata.cdrhcseq3 : '',
@@ -651,7 +652,7 @@ function SearchResultAntibody() {
                                         variant="outlined"
                                         name="strategy"
                                         id="strategy"
-                                        items={Constant['strategies']}
+                                        items={Constant['strategiesAB']}
                                         value={formik.values.strategy}
                                         onChange={formik.handleChange}
                                         className={"float-left ml-3"}

@@ -21,6 +21,12 @@ const Constant = {
         {value: "fragment",label: "Fragment Search",val:"fragment"},
         {value: "motif",label: "MOTIF Search",val: "motif"}
     ],
+    strategiesAB:[
+        {value: "genepast", label: "GenePAST Search",val:"kerr"},
+        {value: "blast", label: "BLAST Search", val:"blast"}
+        //{value: "fragment",label: "Fragment Search",val:"fragment"},
+        //{value: "motif",label: "MOTIF Search",val: "motif"}
+    ],
     patientSearchDatabases:[
         {value: "GQPAT_PRT", label: "GQ-Pat Gold+ Protein", ticked: true, selected: true},
         {value: "GQPAT_PREMIUM_PRT", label: "GQ-Pat Platinum Protein", ticked: true, selected: true},
