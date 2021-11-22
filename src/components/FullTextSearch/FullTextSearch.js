@@ -274,7 +274,6 @@ function FullTextSearch() {
 			
 		}
 		
-		console.log(openACPopup,'OpenACPopup');
 	};
 	const handleClickOutside = (event) => {
 		if (event.target.id != "megamenu") {
@@ -1081,7 +1080,7 @@ function FullTextSearch() {
 				}
 				let currDataId = 0;
 				getCurrDataId = parseInt(getCurrDataId);
-				if(currentEl && (currentEl.textContent.length == 0 || currClass[0] == "autoquery"))
+				if(currentEl && (currentEl.textContent.length == 0 || currClass[0] == "autoquery" || currClass[0] == "fieldquery"))
 				{
 					Object.keys(htmlElement.children).forEach(function (key, val) {
 						if(htmlElement.children[key])
@@ -1100,7 +1099,7 @@ function FullTextSearch() {
 									getEndPosition = getEndPosition - 1;
 									htmlElement.removeChild(htmlElement.children[key]);
 								}
-								else if(currClass[0] == "autoquery"){
+								else if(currClass[0] == "autoquery" || currClass[0] == "fieldquery"){
 									getEndPosition = getEndPosition - htmlElement.children[key].textContent.length;
 									htmlElement.removeChild(htmlElement.children[key]);
 								}
