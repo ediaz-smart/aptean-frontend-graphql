@@ -428,11 +428,11 @@ function FullTextSearch() {
 		let checkLastChar = value.slice(-1);
 
 		// let htmlElement = document.getElementById("textareaDiv");
-		// let htmlElement = document.getElementById("textareaDiv");
-		// if (htmlElement.children.length > 0) {
-		// 	// var htmlChildEl = htmlElement.children;
-		// 	let htmlEl = await removePasteHtml(htmlElement);
-		// }
+		let htmlElement = document.getElementById("textareaDiv");
+		if (htmlElement.children.length > 0) {
+			// var htmlChildEl = htmlElement.children;
+			let htmlEl = await removePasteHtml(htmlElement);
+		}
 		// If Space Enters without any string
 		if (keyCode == 32) {
 			if (value.length > 1) {
@@ -465,7 +465,7 @@ function FullTextSearch() {
 		}
 	};
 	async function removePasteHtml(htmlElement) {
-		let parserClass = ["query", "andClass", "orClass", "notClass", "autoquery", "opClass", "space", "pubClass", "publicationClass", "pastequery"]
+		let parserClass = ["query", "andClass", "orClass", "notClass", "autoquery", "opClass", "space", "pubClass", "publicationClass", "pastequery",'termquery','fieldCol']
 		if (htmlElement.children.length > 0) {
 			let htmlChildEl = htmlElement.children;
 			let childLen = htmlChildEl.length;
@@ -738,22 +738,7 @@ function FullTextSearch() {
 						htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
 					}
 				}
-				// let getLastIndex = htmlElement.innerHTML.lastIndexOf(pasteContent);
-				// if (getLastIndex > -1) {
-				// 	let remPasteContent = htmlElement.innerHTML.substring(
-				// 		0,
-				// 		getLastIndex
-				// 	);
-				// 	htmlElement.innerHTML = remPasteContent;
-				// 	htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
-				// } else {
-				// 	if (htmlElement.textContent.length == 0) {
-				// 		htmlElement.innerHTML = spanArr;
-				// 	} else {
-				// 		htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
-				// 	}
-
-				// }
+				
 				setDetectPaste(false); // After Paste, reset false by default
 				setPasteContent('');
 				// placeCursor = true;
@@ -2349,7 +2334,7 @@ function FullTextSearch() {
 			}
 			setSearchTermPopup(false);
 		}
-		if (checkCharLen > 2 && keyCode != 32) {
+		if ((checkCharLen > 2 && keyCode != 32)) {
 			// Search value not in operator
 			if (!checkORValues.includes(getSearchVal) && !checkANDValues.includes(getSearchVal) && !checkNOTValues.includes(getSearchVal)) {
 				if (placeCursorPos) {
