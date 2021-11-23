@@ -465,7 +465,7 @@ function FullTextSearch() {
 		}
 	};
 	async function removePasteHtml(htmlElement) {
-		let parserClass = ["query", "andClass", "orClass", "notClass", "autoquery", "opClass", "space", "pubClass", "publicationClass", "pastequery",'termquery','fieldCol']
+		let parserClass = ["query", "andClass", "orClass", "notClass", "autoquery", "opClass", "space", "pubClass", "publicationClass", "pastequery",'fieldquery','fieldCol','termquery']
 		if (htmlElement.children.length > 0) {
 			let htmlChildEl = htmlElement.children;
 			let childLen = htmlChildEl.length;
