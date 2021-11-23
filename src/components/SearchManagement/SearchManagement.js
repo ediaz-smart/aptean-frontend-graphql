@@ -724,7 +724,7 @@ function SearchManagement(props) {
                 tempObj["info"] = <Fragment>
 
                     {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, null)}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
-                    {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
+                    {datas.type !== "Folder" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
                     {datas.type === "Folder" && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
 
                     {datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}

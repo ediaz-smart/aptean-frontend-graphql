@@ -304,7 +304,7 @@
     "representativeDocument": "Representative Document in Patent Families",
     "apply": "Apply",
     "applyPreferredAuthority": "Apply this preferred authority order",
-    "selectDocumentsWith": "Select Documents with",
+    "selectDocumentsWith": "Select documents with",
     "fullDocViewTitle": "Method for selecting compounds for inhibition of neoplastic lesions",
     "description": "DESCRIPTION",
     "classifications": "CLASSIFICATIONS",
@@ -321,5 +321,6 @@
     "citationsFooter": "Citations",
     "titleFooter": "Title",
     "passAndConfirmNotSame": "New password and confirm password should be same",
-    "customWordList":"Custom Word List"
+    "customWordList":"Custom Word List",
+    "patentFullTextSearch": "Patent Full-Text Search"
 }

@@ -10,7 +10,8 @@ const Constant = {
         "DlVirtualSeqdb": "Sequence Database",
         "DlWorkflow": "Sequence",
         "DlFolder": "Folder",
-        "GqWfMerge": "Merge Result"
+        "GqWfMerge": "Merge Result",
+        "GqWfSearchFT": "Document"
         //"GqWfSeqSearch": "Blast Search"
     },
     folderRestrictNames:["Recent Search Results","My Data",'Reference Data','Data Shared With Me','Raw Uploaded Files','Search Folders'],
@@ -19,6 +20,12 @@ const Constant = {
         {value: "blast", label: "BLAST Search", val:"blast"},
         {value: "fragment",label: "Fragment Search",val:"fragment"},
         {value: "motif",label: "MOTIF Search",val: "motif"}
+    ],
+    strategiesAB:[
+        {value: "genepast", label: "GenePAST Search",val:"kerr"},
+        {value: "blast", label: "BLAST Search", val:"blast"}
+        //{value: "fragment",label: "Fragment Search",val:"fragment"},
+        //{value: "motif",label: "MOTIF Search",val: "motif"}
     ],
     patientSearchDatabases:[
         {value: "GQPAT_PRT", label: "GQ-Pat Gold+ Protein", ticked: true, selected: true},

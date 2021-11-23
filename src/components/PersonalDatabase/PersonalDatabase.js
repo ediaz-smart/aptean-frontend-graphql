@@ -1,25 +1,54 @@
-import ReactDOM from "react-dom";
-import DataTable from "react-data-table-component";
-import Card from "@material-ui/core/Card";
-import Checkbox from "@material-ui/core/Checkbox";
-import SortIcon from "@material-ui/icons/ArrowDownward";
-import { makeStyles } from '@material-ui/core/styles';
-import { Link, useHistory } from 'react-router-dom';
-import React, { useState, useMemo, useCallback, useEffect, Fragment } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import Button from '@material-ui/core/Button';
-import { toast } from 'react-toastify';
-import Header from '../../shared/header';
-import Footer from '../../shared/footer';
-import PersonalDB from '../../services/personaldb';
-import PersonalDBModal from '../../shared/Modal/PersonalDBModal';
-import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
+import { useTranslation } from "react-i18next";
+import { makeStyles } from "@material-ui/core/styles";
+import { Link, useHistory, useParams } from 'react-router-dom';
+import _ from "lodash";
+import DataTable from "react-data-table-component";
+import AccountService from '../../services/accountInfo';
+import TextInput from '../../shared/Fields/TextInput';
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
-import Radio from '@material-ui/core/Radio';
-import UploadPersonalDBModal from "../../shared/Modal/UploadPersonalDBModal";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import TextField from "@material-ui/core/TextField";
+import { Button } from "@material-ui/core";
+import { useFormik } from 'formik';
+import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel } from '@material-ui/core';
+import Validate from '../../helpers/validate';
+import { toast } from 'react-toastify';
+import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
+import SaveContentModal from '../../shared/Modal/SaveContentModal'
+import searchResSequence from '../../services/searchResSequence';
+import Typography from '@material-ui/core/Typography';
+import resultshareImg from '../../assets/image/resultshare.png';
+import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
+import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
+import { useSelector } from 'react-redux';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import SortIcon from "@material-ui/icons/ArrowDownward";
+import RenameContainer from '../../shared/components/RenameContainer'
+import SharedWith from '../Sharing/SharedWith.js';
+import { containerWidth } from '../../shared/constants';
+import personaldb from '../../services/personaldb';
+import Checkbox from "@material-ui/core/Checkbox";
+import CustomPagination from '../../shared/CustomPagination';
 
 
 const useStyles = makeStyles((theme) => ({
+    grow: {
+        flexGrow: 1,
+        width: '96%',
+        maxWidth: containerWidth,
+        margin: '0 auto',
+        minHeight: '260px',
+        padding: '23px 0 5px'
+    },
     loginDiv: {
         border: '2px solid #bfb4b4',
         borderRadius: '6px',
@@ -32,6 +61,18 @@ const useStyles = makeStyles((theme) => ({
             color: '#008EC5'
         }
     },
+    loginSubmitCancel: {
+        backgroundColor: '#0182C5',
+        borderColor: '#1F4E79',
+        border: '1px solid #1F4E79',
+        color: 'white',
+        margin: '4px',
+        textTransform: 'capitalize',
+        '&:hover': {
+            backgroundColor: '#0182C5',
+            boxShadow: 'none',
+        },
+    },
     textHeading: {
         fontWeight: "700 !important",
         color: "#5A6868",
@@ -39,56 +80,30 @@ const useStyles = makeStyles((theme) => ({
         // marginBottom: "400px",
 
     },
-    buttonStyle: {
-        float: 'right',
-        textTransform: 'none',
-        margin: '4px',
-        backgroundColor: '##DB862D !important',
-        border: '1px solid ##DB862D !important',
-        marginTop: '4px',
-        boxShadow: 'none',
-        '&:hover': {
-            boxShadow: 'none',
-        }
-
+    modalClassConEF: {
+        position: 'absolute',
+        width: '96%',
+        // height: '55%',
+        top: '30%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        transform: 'translate(-50%, -50%)'
     },
-    buttonStyleS: {
-        float: 'right',
-        textTransform: 'none',
-        margin: '4px',
-        textTransform: 'none',
-        boxShadow: 'none',
-        backgroundColor: '#db862c !important',
-        border: ' 2px solid #ca751b !important',
-        color: 'white',
-        '&:hover': {
-            boxShadow: 'none',
-        }
-
-    },
-    footerDiv: {
-        padding: '0 30px',
-        marginTop: '-20px',
-        marginRight: '65px',
-    },
-    buttonStyleCancel: {
-        float: 'right',
-        textTransform: 'none',
-        margin: '4px',
-        color: 'white',
-        backgroundColor: '#008EC5 !important',
-        border: '1px solid #1F4E79 !important',
-        boxShadow: 'none',
-        '&:hover': {
-            boxShadow: 'none',
-        }
-
+    colorConDSIEF: {
+        backgroundColor: 'gainsboro',
+        marginTop: '35px',
+        padding: '28px',
+        // paddingTop: '28px',
+        paddingBottom: '65px',
+        marginLeft: '15px',
+        marginRight: '15px',
+        paddingRight: '10px',
+        borderRadius: '5px',
     },
     columnPadding: {
-        // paddingTop: '20px',
-        // paddingLeft: '20px'
-        marginTop: '-30px',
-        marginRight: '82px',
+        paddingTop: '20px',
+        paddingLeft: '20px'
     },
     columnPaddings: {
         paddingTop: '5px',
@@ -99,10 +114,150 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: '20px',
     },
     columnPad: {
-        padding: '80px',
-        marginTop: '-30px',
+        paddingTop: '45px',
+    },
+    projectTitle: {
+        margin: '0px 4px',
+        position: 'relative',
+        top: '2px',
+        fontSize: '15px',
+        padding: '0'
+    },
+    projectListItem: {
+        padding: '0.2rem 0.25rem !important',
+        border: 'none !important'
+    },
+    projTitleActive: {
+        backgroundColor: '#008EC5',
+        color: '#fff',
+        padding: '3px',
+        borderRadius: '3px'
+    },
+    folderIcon: {
+        width: '8%'
+    },
+    modalHeader: {
+        borderBottom: 'none !important',
+        paddingTop: '11px',
+        paddingRight: '4px',
+        marginTop: '-7px',
+    },
+    modalBody: {
+        paddingBottom: '20px'
+    },
+
+    footerDiv: {
+        padding: '0 10px'
+    },
+    checkBox: {
+        transform: "scale(0.9)",
+    },
+    addNewLabel: {
+        marginTop: '-20px',
+        marginLeft: '31px'
+    },
+    addNewText: {
+        marginTop: '-6px',
+        marginLeft: '30px',
+        height: '65px'
+    },
+    modalBoxContent: {
+        maxHeight: '675px',
+    },
+    modalClassConDSI: {
+        position: 'absolute',
+        width: '96%',
+        padding: '35px 15px 15px',
+        // height: 'auto',
+        // top: '30%',
+        // left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        // transform: 'translate(-50%, -50%)'
+    },
+    modalClassConDR: {
+        position: 'absolute',
+        width: '96%',
+        height: '46%',
+        top: '30%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        transform: 'translate(-50%, -50%)'
+    },
+    modaltext: {
+        position: 'absolute',
+        top: '10px',
+        right: '10px'
+    },
+
+    colorConDSI: {
+        backgroundColor: 'gainsboro',
+        // marginTop: '-38px',
+        padding: '28px',
+        paddingTop: '28px',
+        paddingBottom: '65px',
+        // marginLeft: '7px',
+        // marginRight: '7px',
+        paddingRight: '10px',
+        borderRadius: '5px',
+    },
+    footerDivDSI: {
+        marginTop: '-26px',
+        marginRight: ' -30px',
+    },
+
+    modalClassConMTF: {
+        position: 'absolute',
+        width: '96%',
+        height: 'auto',
+        top: '30%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        transform: 'translate(-50%, -50%)'
+    },
+    colorConMTF: {
+        backgroundColor: 'gainsboro',
+        marginTop: '-31px',
+        padding: '26px',
+        paddingTop: '28px',
+        paddingBottom: '65px',
+        marginLeft: '7px',
+        marginRight: '7px',
+        paddingRight: '10px',
+        borderRadius: '5px',
+    },
+    footerDivMTF: {
+        padding: '0 30px',
+        marginTop: '-8px',
+    },
+    modalClassContent: {
+        position: 'absolute',
+        width: '96%',
+        height: 'auto',
+        top: '30%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        transform: 'translate(-50%, -50%)'
+    },
+    colorContainer: {
+        backgroundColor: 'gainsboro',
+        marginTop: '-38px',
+        // marginLeft: 0px;
+        paddingTop: '28px',
+        paddingBottom: '65px',
+        marginLeft: '7px',
+        marginRight: '7px',
+        paddingRight: '10px',
+        borderRadius: '5px',
+    },
+    popupFolderIcon: {
+        width: '3% !important'
     }
 }));
+
 const customStyles = {
     rows: {
         style: {
@@ -113,343 +268,142 @@ const customStyles = {
         style: {
             paddingLeft: '8px', // override the cell padding for head cells
             paddingRight: '8px',
-            // borderLeft:'1px solid #0606061f',
-            borderRight: '1px solid #0606061f',
+            borderLeft: '1px solid #0606061f',
             '&:first-child': {
                 borderLeft: '0',
-                borderRight: '0'
-            },
-            '&:last-child': {
-                borderRight: '0',
-                paddingLeft: '20px',
             },
             fontWeight: 'bold',
-            color: '#4a5050'
+            color: '#4a5050',
+            justifyContent: 'start !important'
         },
     },
     cells: {
         style: {
             paddingLeft: '8px', // override the cell padding for data cells
             paddingRight: '8px',
-            // borderLeft:'1px solid #0606061f',
-            borderRight: '1px solid #0606061f',
-            borderBottom: '1px solid #0606061f',
+            borderLeft: '1px solid #0606061f',
+            // borderBottom: '1px solid #0606061f',
             '&:first-child': {
                 borderLeft: '0',
-                borderRight: '0'
             },
-            '&:last-child': {
-                borderRight: '0',
-                paddingLeft: '20px',
-            },
-            '&:second-child': {
-                borderLeft: '0',
-            },
-
-            display: 'grid'
+            display: 'grid',
+            // textAlign: 'center',
+            justifyContent: 'start !important'
         },
 
     },
 };
-const conditionalRowStyles = [
-    {
-        when: row => row.director < 300,
-        style: {
-            backgroundColor: 'green',
-            color: 'white',
-            '&:hover': {
-                cursor: 'pointer',
-            },
-        },
-    },
-    // You can also pass a callback to style for additional customization
-    {
-        when: row => row.director < 300,
-        style: row => ({
-            backgroundColor: row.isSpecia ? 'pink' : 'inerit',
-        }),
-    },
-];
 
 const columns = [
     {
         name: "Type",
-        selector: "typeContent",
-        // sortable: true,
-        width: '20%'
+        selector: "Type",
+        center: true
     },
     {
-        name: "Name",
-        selector: "nameContent",
-        defaultSortAsc: true,
-        left: true,
-        width: '75.3%',
-        // style:{
-        //   marginLeft: '40px'
-        // }
+        name: "",
+        selector: "Name",
+        cell: row => <div data-tag="allowRowEvents"><a>{row.info}</a></div>,
+
     }
 ];
 
+function PersonalDatabases() {
 
-const isIndeterminate = indeterminate => indeterminate;
-const selectableRowsComponentProps = { indeterminate: isIndeterminate };
-function homePage() {
+    //userInfo
+    const userInfo = useSelector(state => state.setUserInfo);
+    const { folderId } = useParams();
 
-}
-function PersonalDatabase() {
+    //page defaults
+    const [defaultTitle, setDefaultTitle] = useState('Personal Datases');
+    const [disableCancel, setDisableCancel] = useState(true);
+    const [disableUpload, setDisableUpload] = useState(true);
+    const [disableDelete, setDisableDelete] = useState(true);
+    const { t, i18n } = useTranslation('common');
+
+    //databases
+    const [searchResultData, setSearchResultData] = useState([]);
+    const [clearCheckedRow, setClearCheckedRow] = useState(false);
+
+    const isIndeterminate = indeterminate => indeterminate;
+    const selectableRowsComponentProps = { indeterminate: isIndeterminate, color: 'primary' };
+    const [selectData, setSelectData] = useState();
+
+    //paging
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageCount = useSelector(state => state.setCommon["Paging size"]);
+    const [folderResultCount, setFolderResultCount] = useState();
+
+
+    //css
     const classes = useStyles();
-    const [thing, setThing] = useState([]);
-    const handleAction = value => setThing(value);
-    const [modalShow, setModalShow] = React.useState(false);
-    const [dbmodalShow, setDbmodalShow] = React.useState(false);
 
+    useEffect(
+        async () => {
+            const data = {};
+            const result = await personaldb.getPersonalData(folderId)
+            if (result && result.response_content && result.status == 0) {
 
-    const [errorMessage, setErrorMessage] = useState('');
-    const [checkValue, setCheckValue] = React.useState(false);
+            }
+            
 
-    const history = useHistory();
+        }, []
+    );
 
-    const [searchPersonalData, setSearchFormsData] = useState([]);
-    const [selectedTemplateData, setSelectedTemplateData] = useState(false);
-    // unlike class methods updateState will be re-created on each render pass, therefore, make sure that callbacks passed to onSelectedRowsChange are memoized using useCallback
-    const updateState = useCallback(state => setThing(state));
+    const changePage = async (e, page) => {
+        let start, stop;
+        if (page) {
+            start = ((page - 1) * pageCount) + 1;
+            stop = page * pageCount;
+            setCurrentPage(page)
+        }
+        setClearCheckedRow(!clearCheckedRow);
+    }
+
+    const getRowData = (event) => {
+    };
+
     function updateVal(state) {
-        setThing(state);
-        if (state.selectedCount >= 1) {
-            setCheckValue(true);
-        }
-        else if (state.selectedCount == 1) {
-            setCheckValue(true);
-        }
-        else {
-            setCheckValue(false);
-        }
-
-    }
-
-    function chechBoxFunction() {
-        const TableContainer = styled.div`
-      table {
-          margin-left: 70px;
-          margin-top: 37px;
-          width:80%;
-        tr {
-          border-bottom: 2px solid #dee2e6;
-          :first-child {
-            border-top: 2px solid #dee2e6;
-          }
-        }
-        td {
-          color: 'black';
-          :first-child {
-            border-right: 2px solid #dee2e6;
-            width: 180px;
-          }
-          :last-child {
-            padding-left: 20px;
-
-          }
-        }
-      }
-    `;
-    }
-    useEffect(() => {
-        (async () => {
-
-            getPersonalData();
-        })()
-    }, []);
-
-    async function getPersonalData() {
-        const userInfo = await PersonalDB.getUserInfo();
-        if (userInfo && userInfo.response_content && userInfo.response_content.home_folder_id) {
-            const homeId = userInfo.response_content.home_folder_id;
-            const result = await PersonalDB.getPersonalData(homeId);
-            if (result && result.response_content) {
-                const resultCon = result.response_content.results;
-                // await constrainTemplateData(resultCon);
-                //setSearchFormsData(resultCon);
-                const list = []
-                result.response_content.results.forEach((product) => {
-                    if (product.type == 'DlPhysicalSeqdb' || product.type == 'DlVirtualSeqdb') {
-                        list.push(product);
-                    }
-
-                })
-                list.sort((a, b) => a.description > b.description ? 1 : -1)
-                await constrainTemplateData(list);
-                setSearchFormsData(list);
-
-            }
-        }
-    }
-    async function constrainTemplateData(resultCon) {
-        resultCon.map(datas => {
-
-            if (datas.type == 'GqWfVMIpSearch') {
-                datas.typeContent = 'Variation';
-                datas.nameContent = <Fragment>
-                    <Link  >{datas.description}</Link>
-                </Fragment>
-
-            }
-            else if (datas.type == 'GqWfIpSearch') {
-                datas.typeContent = 'IP Sequence';
-                datas.nameContent = <Fragment>
-                    <Link  >{datas.description}</Link>
-                </Fragment>
-            }
-            else if (datas.type == 'GqWfABIpSearch') {
-                datas.typeContent = 'Antibody';
-                datas.nameContent = <Fragment>
-                    <Link  >{datas.description}</Link>
-                </Fragment>
-            }
-            else if (datas.type == 'GqWfFTIpSearch') {
-                datas.typeContent = 'Fulltext Search';
-                datas.nameContent = <Fragment>
-                    <Link >{datas.description}</Link>
-                </Fragment>
-            }
-            else if (datas.type == 'DlPhysicalSeqdb') {
-                datas.typeContent = 'Physical Sequence Database';
-                datas.nameContent = <Fragment>
-                    <Link >{datas.description}</Link>
-                </Fragment>
-            }
-            else if (datas.type == 'DlVirtualSeqdb') {
-                datas.typeContent = 'Virtual Sequence Database';
-                datas.nameContent = <Fragment>
-                    <Link >{datas.description}</Link>
-                </Fragment>
-            }
-            else {
-                datas.typeContent = datas.type;
-                datas.nameContent = <Fragment>
-                    <Link >{datas.description}</Link>
-                </Fragment>
-            }
-        });
-    }
-    async function routeToTemplateForm(e, tempObj) {
-        e.preventDefault();
-    }
-    async function deleteTemplate() {
-        const data = [];
-        const dataValues = thing && thing.selectedRows && data.push(thing.selectedRows[0]);
-        if (thing && thing.selectedCount >= 1 && data && data.length > 0) {
-            // setSelectedTemplateData();
-            setModalShow(true);
-            // const result = await SavedSearch.deleteSavedTemplate(thing.selectedRows,thing.selectedCount);
-
-            // toast.error("Under Construction!");
-        }
-        else {
-            toast.error("Select Any One Item");
-        }
-    }
-    async function uploadTemplate() {
-        const data = [];
-
-        setDbmodalShow(true);
-        // const result = await SavedSearch.deleteSavedTemplate(thing.selectedRows,thing.selectedCount);
-
-        // toast.error("Under Construction!");
-    }
-    function cancelForm() {
-        history.push('/home');
-
-    }
-    function cancelForms() {
-        setModalShow(false);
-        setDbmodalShow(false);
-
-    }
-    async function deleteForm() {
-        const data = [];
-        const dataValues = thing && thing.selectedRows && data.push(thing.selectedRows[0]);
-        if (thing && thing.selectedCount >= 1 && data && data.length > 0) {
-            const personaldata = thing.selectedRows;
-            const personalId = [];
-            await personaldata && personaldata.length > 0 && personaldata.forEach(res => {
-                personalId.push(res.id)
-            });
-            const result = await PersonalDB.deletePerData(personalId, thing.selectedCount);
-            getPersonalData();
-            setModalShow(false);
-            setCheckValue(false);
-            setThing([]);
-
-        }
-        else {
-            toast.error("Select Any One Item");
-        }
-        // setModalShow(true);
+        setSelectData(state)
     }
 
     return (
-        <div >
-            <Row className={classes.columnPad} >
-                <Col>
-                    <DataTable
-                        className='search-table'
-                        columns={columns}
-                        data={searchPersonalData}
-                        defaultSortField="title"
-                        sortIcon={<SortIcon />}
-                        onSelectedRowsChange={updateVal}
-                        customStyles={customStyles}
-                        noHeader={true}
-                        noDataComponent='No items were found.'
-                        //   pagination
-                        // conditionalRowStyles={conditionalRowStyles}
-                        selectableRows
-                        selectableRowsComponent={Radio}
-                        selectableRowsComponentProps={selectableRowsComponentProps}
-                    />
-                </Col>
-            </Row>
-            <Row className="float-right">
-                {/* <Col  className={classes.columnPadding}>
-    <Button variant="contained" className={classes.buttonStyleCancel} onClick={homePage}>Cancel</Button>
-     &nbsp;&nbsp;&nbsp;
-    <Button color="primary" className='accountinfo' variant="contained" onClick={()=>deleteTemplate()} className="float-right loginSubmit text-capitalize" type="submit">Delete Selected Saved Search Forms</Button>   
-  
-      </Col> */}
-                <div className={classes.footerDiv}>
-                    {searchPersonalData && searchPersonalData.length != 0 ?
-                        <Fragment>
-                            {checkValue && thing.selectedCount >= 1 ?
-                                <Button className='accountInfo' color="default" disableRipple={true} onClick={() => deleteTemplate()} variant="contained">Delete Selected Database</Button>
-                                : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">Delete Selected Database</Button>
+        <div>
+            <DataTable
+                columns={columns}
+                // columns={columns}
+                data={searchResultData}
+                defaultSortField="date"
+                defaultSortAsc={false}
+                sortable={false}
+                sortServer={true}
+                // sortIcon={<SortIcon />}
+                onSelectedRowsChange={updateVal}
+                noDataComponent={t('noUploads')}
+                customStyles={customStyles}
+                selectableRowsNoSelectAll
+                selectableRowsComponent={Checkbox}
+                selectableRowsComponentProps={selectableRowsComponentProps}
+                selectableRows
+                noHeader={true}
+                // onRowClicked={getRowData}
+                onRowClicked={getRowData}
+                clearSelectedRows={clearCheckedRow}
 
-                            }
-                            <Button className={classes.buttonStyleS} disableRipple={true} onClick={() => uploadTemplate()} >Upload New Database</Button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <Button className={classes.buttonStyleCancel} onClick={() => cancelForm()} disableRipple={true} color="default" variant="contained">Cancel</Button>
-                            <PersonalDBModal
-                                show={modalShow}
-                                onHide={() => cancelForms()}
-                                tryAgain={() => deleteForm()}
-                            // onMessage={errorMessage}
-                            />
-                            <UploadPersonalDBModal
-                                show={dbmodalShow}
-                                onHide={() => cancelForms()}
-                                tryAgain={() => deleteForm()}
-                            // onMessage={errorMessage}
-                            />
+            />
+            {/* {defaultTitle && defaultTitle != "Recent Search Results" && searchResultData.length > 0 && <Row> */}
+            <Col className={'d-flex justify-content-center' + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="12">
+                <CustomPagination className={"float-right mt-2"} count={folderResultCount ? folderResultCount : 0} changePage={changePage} recordPerPage={pageCount} showFirstButton showLastButton defaultPage={1} page={currentPage} />
+            </Col>
+            {/* </Row> } */}
 
-                        </Fragment>
-                        : <p></p>
-                    }
-                </div>
-            </Row>
-
+            <Col className={"float-right" + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
+                <Button color={(disableCancel ? 'default' : 'secondary')} disabled={disableCancel} variant="contained" /*onClick={}*/ className={"text-capitalize mr-2 float-left" + ' ' + (disableCancel ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('cancel')}</Button>
+                <Button color={(disableUpload ? 'default' : 'secondary')} disabled={disableUpload} variant="contained" /*onClick={}*/ className={"text-capitalize mr-2 float-left" + ' ' + (disableUpload ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('uploadNewDb')}</Button>
+                <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" /*onClick={}*/ className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteDatabses')}</Button>
+            </Col>
         </div>
-
-    );
+    )
 }
 
-
-export default PersonalDatabase;
+export default PersonalDatabases;

@@ -77,7 +77,7 @@ class Routes extends React.Component {
                         <Route exact path="/ipseqvariation/:parentId" title="ipseqvariation" component={IpSequenceVariation} />
                         <Route exact path="/ipseqvariation/template/:tempname" title="ipseqvariation" component={IpSequenceVariation} />
                         <Route exact path="/report/folder/:folderId" title='foldermoduletitle' component={ResultReportFolder} />
-                        <Route exact path="/fulltextsearch" title="fulltextsearch" component={FullTextSearch} />
+                        <Route exact path="/fulltextsearch" title="patentFullTextSearch" component={FullTextSearch} />
                         <Route exact path="/convertsequence" title="Sequence format Conversion" component={ConvertSequence} />
                         <Route exact path="/parsedxml" title="Sequence format Conversion" component={ParsedXml} />
                         <Route exact path="/personaldb" title="Personal Databases" component={PersonalDatabase} />

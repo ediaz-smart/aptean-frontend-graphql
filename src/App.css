@@ -369,7 +369,9 @@
 .space::after,
 .query::after,
 .autoquery::after,
-.pastequery::after {
+.pastequery::after,
+.fieldCol::after,
+.termquery::after {
     content: ' ';
 }
 
@@ -378,6 +380,13 @@
 .notClass {
     text-transform: uppercase;
     pointer-events: none;
+}
+
+.fieldquery {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+    transition: all 0.5s ease-in-out;
 }
 
 .pub,
@@ -508,9 +517,7 @@ label {
     color: #777777;
 }
 
-.query,
-.pastequery,
-.space {
+.query {
     color: #000;
 }
 
