@@ -207,14 +207,12 @@ async function mergeResults(groupA, groupB, title, mergeType) {
 }
 
 async function getItemsSharedWithMe(history) {
-    const sharedWithMeUrl = url.itemsSharedWithMe;
-    // sharedWithMeUrl.replace(':parent:', 4106931);
+    const sharedWithMeUrl = url.foldersSharedWithMe;
     try {
         showLoader();
         return await get(sharedWithMeUrl, history)
             .then((response) => {
                 hideLoader();
-                console.log(response)
                 return response;
             })
             .catch((error) => {
