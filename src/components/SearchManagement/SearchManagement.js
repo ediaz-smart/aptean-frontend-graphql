@@ -255,6 +255,12 @@ const useStyles = makeStyles((theme) => ({
     },
     popupFolderIcon: {
         width: '3% !important'
+    },
+    sharedFolderText: {
+        fontSize: '14px',
+        '&:hover': {
+            cursor: 'default'
+        }
     }
 }));
 
@@ -1065,40 +1071,36 @@ function SearchManagement(props) {
             updateDefaultValue('Recent Search Results');
         }
     }
-    // async function getItemsSharedWithMeInfo() {
-    //     const sharedWithMeData = await SearchManagementService.getItemsSharedWithMe(history)
-    // }
+    const [sharedFolderInfo, setSharedFolderInfo] = useState([]);
+    async function getItemsSharedWithMeInfo() {
+        const sharedWithMeData = await SearchManagementService.getItemsSharedWithMe(history)
+        setSharedFolderInfo(sharedWithMeData.response_content)
+    }
 
     useEffect(() => {
         // (async () => {
         // const result = dispatch(getSearchResult());
         getFolderResultData();
-        // getItemsSharedWithMeInfo()
+        getItemsSharedWithMeInfo()
         getDefaultSearchResult('defaultText', '');
 
         document.addEventListener("keydown", escFunction, false);
-        // var elements = document.getElementsByClassName("infoIcon");
-        // for (var i = 0; i < elements.length; i++) {
-        //  elements[i].addEventListener('click', getInfoIconData);
-        // }
-        // setTimeout(() => {
-        // document.querySelectorAll('.infoIcon').forEach(item => {
-        //  item.addEventListener('click', event => {
-        //      // setDefaultTitle(event.target.title);
-
-        //      // getInfoIconData(event)
-        //      // getDefaultSearchResult('folder', defaultTitleId);
-        //  })
-        // })
-        // }, 2000);
 
         return () => {
             document.removeEventListener("keydown", escFunction, false);
 
         };
-        // })();
     }, []);
-
+    const folderItem = (data, margin) => {
+        if (data) {
+            return <ListGroup.Item className={classes.projectListItem} key={data.id} >
+                <div className={classes.sharedFolderText + " appTextColor"} style={{ marginLeft: margin }}>
+                    <img src={FolderIcon} className={classes.folderIcon} />
+                    <span style={{ marginLeft: '5px' }}>{data.text_label}</span>
+                </div>
+            </ListGroup.Item>
+        }
+    }
     return (
         <div className={classes.grow}>
             <Row>
@@ -1156,26 +1158,35 @@ function SearchManagement(props) {
                             <ListGroup.Item className={classes.projectListItem + " " + classes.addNewLabel + ' ' + (defaultTitle !== 'Recent Search Results' ? 'd-block' : 'd-none')} key="createNewFolder">
                                 <img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLink " + classes.projectTitle + (!addFolderText ? ' disabled' : '')}>{t('addFolder')}</a>
                             </ListGroup.Item>
-
                         </ListGroup>
-                        {/* <p><a className="cursorPointer text-decoration-none appTextColor" onClick={() => changeTitle('Recent Search Results1')}><FolderOpenIcon /><span className={classes.projectTitle}>test1</span></a></p> */}
                         <h6 className="mt-4"><b>{t('resSharedWithMe')}</b></h6>
                         <ListGroup defaultActiveKey="#link1" className={"projectList"}>
-                            {/* <ListGroup.Item className={classes.projectListItem} key="search1">
-                                <a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Search1')}>
+                            <ListGroup.Item className={classes.projectListItem} key={'shared results'}>
+                                <div className={classes.sharedFolderText + " appTextColor"} >
                                     <img src={FolderIcon} className={classes.folderIcon} />
-                                    <span className={classes.projectTitle + ' ' + (defaultTitle === 'Search1' ? classes.projTitleActive : '')}>Search1</span></a>
+                                    <span style={{ marginLeft: '5px' }}>Shared Results</span>
+                                </div>
                             </ListGroup.Item>
-                            <ListGroup.Item className={classes.projectListItem} key="search2">
-                                <a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Search2')}>
-                                    <img src={FolderIcon} className={classes.folderIcon} />
-                                    <span className={classes.projectTitle + ' ' + (defaultTitle === 'Search2' ? classes.projTitleActive : '')}>Search2</span></a>
-                            </ListGroup.Item> */}
-                            <FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} selectedTitleId={defaultTitleId} type="selectFolder" parentCallback={changeTitle} />
+                            {sharedFolderInfo.children ? sharedFolderInfo.children.map(sharedFolder => {
+                                let folderData;
+                                if (sharedFolder.data) {
+                                    folderData = <>{folderData}{folderItem(sharedFolder.data, 20)}</>
+                                }
+                                if (sharedFolder.children?.length) {
+                                    sharedFolder.children.map(sharedFirstGenChildFolder => {
+                                        if (sharedFirstGenChildFolder.data) {
+                                            folderData = <>{folderData}{folderItem(sharedFirstGenChildFolder.data, 40)}</>
+                                        }
+                                        if (sharedFirstGenChildFolder.children?.length) {
+                                            sharedFirstGenChildFolder.children.map(shared2ndGenChildFolder => {
+                                                folderData = <>{folderData}{folderItem(shared2ndGenChildFolder.data, 60)}</>
+                                            })
+                                        }
+                                    })
+                                }
+                                return folderData
+                            }) : null}
                         </ListGroup>
-
-
-
                     </Col>
                 </Col>
                 <Col md="9" sm="9" xs="9">
@@ -1200,7 +1211,6 @@ function SearchManagement(props) {
                         // onRowClicked={getRowData}
                         onRowClicked={getRowData}
                         clearSelectedRows={clearCheckedRow}
-
                     />
                     {/* {defaultTitle && defaultTitle != "Recent Search Results" && searchResultData.length > 0 && <Row> */}
                     <Col className={'d-flex justify-content-center' + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="12">
@@ -1415,8 +1425,4 @@ function SearchManagement(props) {
 
     );
 }
-
-
 export default SearchManagement;
-
-

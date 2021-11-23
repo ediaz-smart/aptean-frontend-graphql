@@ -66,8 +66,8 @@ export const url = {
     removeAll: "do=gqAccessFt.remove_all&id=:id:&format=json",
     sharedWith: "do=gqAccessFt.get_shared_with&id=:id:&format=json",
     itemsSharedWithMe: "do=gqAccessFt.shared_with_me&parent=:parent:&format=json", //based on folder
-    foldersSharedWithMe: "do=gqAccessFt.folders_shared_with_me&parent=:parent:&format=json",
-    autoqueryfindterm:"do=gqft.find_term&format=json&term_id=**",
-    updateAutoQueryTerm:"json_query=:searchTerm&format=json&do=gqft.update_term&user_id=:UID&term_id=:TERMID",
+    foldersSharedWithMe: "do=gqAccessFt.folders_shared_with_me&format=json",
+    autoqueryfindterm: "do=gqft.find_term&format=json&term_id=**",
+    updateAutoQueryTerm: "json_query=:searchTerm&format=json&do=gqft.update_term&user_id=:UID&term_id=:TERMID",
     saveFTDocument: "do=gqft.save_ftdoc&workflow_type=GqWfSearchFT&format=json"
 }

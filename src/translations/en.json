@@ -131,7 +131,7 @@
     "cprule3": "has one or more uppercase letters",
     "cprule4": "has one or more numbers",
     "selFolderToMove": "Select a folder to move the selected item(s) to.​",
-    "resSharedWithMe": "Results Shared with me",
+    "resSharedWithMe": "Results Shared With Me",
     "newFolder": "New Folder Name",
     "moveResult": "Move Results",
     "folderNameNotAllowed": "Your new folder name is not allowed.​",
@@ -321,6 +321,6 @@
     "citationsFooter": "Citations",
     "titleFooter": "Title",
     "passAndConfirmNotSame": "New password and confirm password should be same",
-    "customWordList":"Custom Word List",
+    "customWordList": "Custom Word List",
     "patentFullTextSearch": "Patent Full-Text Search"
 }
