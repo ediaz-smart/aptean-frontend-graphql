@@ -206,6 +206,27 @@ async function mergeResults(groupA, groupB, title, mergeType) {
     }
 }
 
+async function getMoveSelection(id, history) {
+    try {
+        let moveSelection = url.moveSelection
+        moveSelection = moveSelection.replace(':ids:', id);
+        showLoader();
+        return await get(moveSelection, history)
+            .then((response) => {
+                hideLoader();
+                return response;
+            })
+            .catch((error) => {
+                console.log("error::", error);
+                hideLoader();
+            });
+    } catch (error) {
+        hideLoader();
+        console.error(error);
+    }
+
+}
+
 async function getItemsSharedWithMe(history) {
     const sharedWithMeUrl = url.foldersSharedWithMe;
     try {
@@ -234,7 +255,8 @@ const SearchManagementService = {
     addFolder,
     getSearchResultSet,
     getItemsSharedWithMe,
-    mergeResults
+    mergeResults,
+    getMoveSelection
 };
 
 export default SearchManagementService;

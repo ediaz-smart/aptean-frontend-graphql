@@ -12,7 +12,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import ListGroup from 'react-bootstrap/ListGroup'
 import Modal from 'react-bootstrap/Modal'
-import _ from "lodash";
+import _, { get } from "lodash";
 import InfoIcon from '@material-ui/icons/Info';
 import RedoIcon from '@material-ui/icons/Redo';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
@@ -393,6 +393,7 @@ function SearchManagement(props) {
     const pageCount = useSelector(state => state.setCommon["Paging size"]);
     const [selectData, setSelectData] = useState();
     const [folderDetail, setFolderDetail] = useState([]);
+    const [moveSelection, setMoveSelection] = useState();
     const [disableDelete, setDisableDelete] = useState(true);
     const [disableMergeBtn, setDisableMergeBtn] = useState(true);
     const [searchResultData, setSearchResultData] = useState([]);
@@ -730,7 +731,7 @@ function SearchManagement(props) {
                 tempObj["info"] = <Fragment>
 
                     {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, null)}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
-                    {datas.type !== "Folder" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
+                    {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
                     {datas.type === "Folder" && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
 
                     {datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
@@ -858,7 +859,14 @@ function SearchManagement(props) {
         setFolderDelLoaderContent(false);
         setFolderErrorContent(false);
     }
-    const openMoveFolderModal = () => {
+
+    async function getSelection() {
+        var getIds = selectData.selectedRows.map(function (a) { return a.id; }).join(',');
+        var moveableTo = await SearchManagementService.getMoveSelection(getIds, history);
+        setMoveSelection(moveableTo.response_content.selection);
+        openMoveFolderModal()
+    }
+    function openMoveFolderModal() {
         setMoveFolderId('');
         setMoveFolderModalShow(true);
     }
@@ -1221,7 +1229,7 @@ function SearchManagement(props) {
                     <Col className={"float-left px-0 " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
 
                         <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
-                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openMoveFolderModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('moveToFolder')}</Button>
+                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={getSelection} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('moveToFolder')}</Button>
                         <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>
                     </Col>
 
@@ -1378,7 +1386,7 @@ function SearchManagement(props) {
                             <div className='scrollMoveItem'>
                                 <p className="mb-3">{t('selFolderToMove')}</p>
                                 <div className="mb-5 h-100">
-                                    <FolderTreeMenu items={folderDetail} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
+                                    <FolderTreeMenu items={moveSelection} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
                                 </div>
                             </div>
 

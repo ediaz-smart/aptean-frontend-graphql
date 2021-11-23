@@ -154,10 +154,63 @@ function SearchResultAntibody() {
     const [proDb, setProDb] = useState([]);
     const [formSubmit, setFromSubmit] = useState(false);
 
+    const [initialData, setInitialData] = useState({});
+
     const { workflowId } = useParams();
     const { tempname } = useParams();
 
     useEffect(async () => {
+        let initialData = {};
+        if (formdata && formdata.savedRedo) {
+            initialData = {
+                searchName: formdata && formdata.searchName ? formdata.searchName : `AB ${moment().format('YYYY-MM-DD h:mm:ss')}`,
+                cdrhcseq1: formdata && formdata.hc_cdr1 ? formdata.hc_cdr1 : '',
+                cdrhcseq2: formdata && formdata.hc_cdr2 ? formdata.hc_cdr2 : '',
+                cdrhcseq3: formdata && formdata.hc_cdr3 ? formdata.hc_cdr3 : '',
+                cdrlcseq1: formdata && formdata.lc_cdr1 ? formdata.lc_cdr1 : '',
+                cdrlcseq2: formdata && formdata.lc_cdr2 ? formdata.lc_cdr2 : '',
+                cdrlcseq3: formdata && formdata.lc_cdr3 ? formdata.lc_cdr3 : '',
+                hcOption1: formdata && formdata.hc_cdr1_mismatches ? formdata.hc_cdr1_mismatches : 0,
+                hcOption2: formdata && formdata.hc_cdr2_mismatches ? formdata.hc_cdr2_mismatches : 0,
+                hcOption3: formdata && formdata.hc_cdr3_mismatches ? formdata.hc_cdr3_mismatches : 0,
+                lcOption1: formdata && formdata.lc_cdr1_mismatches ? formdata.lc_cdr1_mismatches : 0,
+                lcOption2: formdata && formdata.lc_cdr2_mismatches ? formdata.lc_cdr2_mismatches : 0,
+                lcOption3: formdata && formdata.lc_cdr3_mismatches ? formdata.lc_cdr3_mismatches : 0,
+                strategy: formdata && formdata.strat_name ? formdata.strat_name : 'genepast',
+                percId: formdata && formdata.strat_genepast_perc_id ? formdata.strat_genepast_perc_id : 80,
+                expectCutoff: formdata && formdata.strat_blast_eval_cutoff ? formdata.strat_blast_eval_cutoff : 10,
+                wordSize: formdata && formdata.strat_blast_word_size_pro ? formdata.strat_blast_word_size_pro : 3,
+                hcFullSeq: formdata && formdata.qdb_seq_hc ? formdata.qdb_seq_hc : '',
+                lcFullSeq: formdata && formdata.qdb_seq_lc ? formdata.qdb_seq_lc : '',
+                formName: formdata && formdata.formName ? formdata.formName : '',
+            }
+        } else {
+            initialData = {
+                searchName: formdata && formdata.searchName ? formdata.searchName : `AB ${moment().format('YYYY-MM-DD h:mm:ss')}`,
+                cdrhcseq1: formdata && formdata.cdrhcseq1 ? formdata.cdrhcseq1 : '',
+                cdrhcseq2: formdata && formdata.cdrhcseq2 ? formdata.cdrhcseq2 : '',
+                cdrhcseq3: formdata && formdata.cdrhcseq3 ? formdata.cdrhcseq3 : '',
+                cdrlcseq1: formdata && formdata.cdrlcseq1 ? formdata.cdrlcseq1 : '',
+                cdrlcseq2: formdata && formdata.cdrlcseq2 ? formdata.cdrlcseq2 : '',
+                cdrlcseq3: formdata && formdata.cdrlcseq3 ? formdata.cdrlcseq3 : '',
+                hcOption1: formdata && formdata.hcOption1 ? formdata.hcOption1 : 0,
+                hcOption2: formdata && formdata.hcOption2 ? formdata.hcOption2 : 0,
+                hcOption3: formdata && formdata.hcOption3 ? formdata.hcOption3 : 0,
+                lcOption1: formdata && formdata.lcOption1 ? formdata.lcOption1 : 0,
+                lcOption2: formdata && formdata.lcOption2 ? formdata.lcOption2 : 0,
+                lcOption3: formdata && formdata.lcOption3 ? formdata.lcOption3 : 0,
+                strategy: formdata && formdata.strategy ? formdata.strategy : 'genepast',
+                percId: formdata && formdata.percId ? formdata.percId : 80,
+                expectCutoff: formdata && formdata.expectCutoff ? formdata.expectCutoff : 10,
+                wordSize: formdata && formdata.wordSize ? formdata.wordSize : 3,
+                hcFullSeq: formdata && formdata.hcFullSeq ? formdata.hcFullSeq : '',
+                lcFullSeq: formdata && formdata.lcFullSeq ? formdata.lcFullSeq : '',
+                formName: formdata && formdata.formName ? formdata.formName : '',
+            }
+        }
+        setInitialData(initialData);
+
+
         const getResponse = await searchResAntibody.getAuthInfoAB(workflowId);
         if (getResponse && getResponse.response_status == 0) {
             setAuthInfo(getResponse.response_content);
@@ -229,6 +282,101 @@ function SearchResultAntibody() {
         }
         //dispatch(userActions.logout()); 
     }, []);
+
+    const formik = useFormik({
+        initialValues: initialData,
+        enableReinitialize: true,
+        validationSchema: Validate.AntibodySearchValidation(saveFormValue),
+        onSubmit: async (values) => {
+            let { searchName, cdrhcseq1, cdrhcseq2, cdrhcseq3, cdrlcseq1, cdrlcseq2, cdrlcseq3, hcOption1, hcOption2, hcOption3, lcOption1, lcOption2, lcOption3, strategy, percId, expectCutoff, wordSize, hcFullSeq, lcFullSeq, formName } = values;
+            if (cdrhcseq1 == '' && cdrhcseq2 == '' && cdrhcseq3 == '' && cdrlcseq1 == '' && cdrlcseq2 == '' && cdrlcseq3 == '') {
+                toast.error(t('CDRSeqValidation'));
+                return false;
+            }
+            // let selectDB = _.filter(patientDBData, function(user) {
+            //     return user.selected;
+            // });
+            let selectDB = [];
+            selectDB = _.filter(patientDBData, { selected: true }).map(v => "p:" + v.value);
+            if (selectDB.length == 0) {
+                setShowDBRequiredError(true)
+                return false;
+            }
+
+            proDb.forEach(element => {
+                //console.log(element);
+                selectDB.push(element);
+            });
+
+            let strategyItem = _.find(Constant['strategies'], function (obj) {
+                return obj.value == strategy;
+            });
+            setSearchModal(true);
+            let parentId = '';
+            let postData = {
+                qdb_seq_type: 'protein',
+                hc_cdr1: cdrhcseq1,
+                hc_cdr1_mismatches: hcOption1,
+                hc_cdr2: cdrhcseq2,
+                hc_cdr2_mismatches: hcOption2,
+                hc_cdr3: cdrhcseq3,
+                hc_cdr3_mismatches: hcOption3,
+                lc_cdr1: cdrlcseq1,
+                lc_cdr1_mismatches: lcOption1,
+                lc_cdr2: cdrlcseq2,
+                lc_cdr2_mismatches: lcOption2,
+                lc_cdr3: cdrlcseq3,
+                lc_cdr3_mismatches: lcOption3,
+                qdb_seq_hc: hcFullSeq,
+                qdb_seq_lc: lcFullSeq,
+                searchtype: 'FTO',
+                title: searchName,
+                strat_name: strategyItem['val'],
+                strat_genepast_perc_id: percId,
+                strat_genepast_perc_id_over: 'QUERY',
+                strat_blast_word_size_pro: wordSize,
+                strat_blast_eval_cutoff: expectCutoff,
+                strat_blast_scoring_matrix_pro: 'BLOSUM62',
+                protdbs: selectDB,
+                protdb_type: 'multiple',
+                parent_id: parentId,
+                template_name: saveFormValue ? (formName).trim() : '', // Set this value when selecting "Save this form for later use as"
+
+            }
+            const getResponse = await searchResAntibody.submitAnitbodySearch(postData, history, t);
+            setSearchModal(false);
+            if (getResponse && getResponse.response_status == 0) {
+                history.push('/home');
+            } else {
+                toast.error('Error in Search');
+            }
+        },
+    });
+
+    function handleDbChange(id) {
+        if (proDb.includes(id)) {
+            setProDb(proDb.filter(dbName => dbName !== id));
+        } else {
+            proDb.push(id.toString());
+            setProDb([...proDb]);
+        }
+    }
+
+    function setFormValue() {
+        setSaveFormValue(!saveFormValue);
+        formik.setFieldValue("formName", '');
+    }
+
+    if (formSubmit && formik && formik.errors && Object.keys(formik.errors).length > 0) {
+        document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({ behavior: "smooth", block: "center", inline: "start" });
+        setFromSubmit(false);
+    }
+
+    function submitForm() {
+        formik.handleSubmit();
+        setFromSubmit(true);
+    }
+
     function updateFormData(data) {
         if (data.redo || data.savedRedo) {
             if (data.formData) {
@@ -285,133 +433,6 @@ function SearchResultAntibody() {
     function closeSaveModal() {
         setSearchModal(false);
         homePage();
-    }
-    let initialData = {};
-    if (formdata && formdata.savedRedo) {
-        initialData = {
-            searchName: formdata && formdata.searchName ? formdata.searchName : `AB ${moment().format('YYYY-MM-DD h:mm:ss')}`,
-            cdrhcseq1: formdata && formdata.hc_cdr1 ? formdata.hc_cdr1 : '',
-            cdrhcseq2: formdata && formdata.hc_cdr2 ? formdata.hc_cdr2 : '',
-            cdrhcseq3: formdata && formdata.hc_cdr3 ? formdata.hc_cdr3 : '',
-            cdrlcseq1: formdata && formdata.lc_cdr1 ? formdata.lc_cdr1 : '',
-            cdrlcseq2: formdata && formdata.lc_cdr2 ? formdata.lc_cdr2 : '',
-            cdrlcseq3: formdata && formdata.lc_cdr3 ? formdata.lc_cdr3 : '',
-            hcOption1: formdata && formdata.hc_cdr1_mismatches ? formdata.hc_cdr1_mismatches : 0,
-            hcOption2: formdata && formdata.hc_cdr2_mismatches ? formdata.hc_cdr2_mismatches : 0,
-            hcOption3: formdata && formdata.hc_cdr3_mismatches ? formdata.hc_cdr3_mismatches : 0,
-            lcOption1: formdata && formdata.lc_cdr1_mismatches ? formdata.lc_cdr1_mismatches : 0,
-            lcOption2: formdata && formdata.lc_cdr2_mismatches ? formdata.lc_cdr2_mismatches : 0,
-            lcOption3: formdata && formdata.lc_cdr3_mismatches ? formdata.lc_cdr3_mismatches : 0,
-            strategy: formdata && formdata.strat_name ? formdata.strat_name : 'genepast',
-            percId: formdata && formdata.strat_genepast_perc_id ? formdata.strat_genepast_perc_id : 80,
-            expectCutoff: formdata && formdata.strat_blast_eval_cutoff ? formdata.strat_blast_eval_cutoff : 10,
-            wordSize: formdata && formdata.strat_blast_word_size_pro ? formdata.strat_blast_word_size_pro : 3,
-            hcFullSeq: formdata && formdata.qdb_seq_hc ? formdata.qdb_seq_hc : '',
-            lcFullSeq: formdata && formdata.qdb_seq_lc ? formdata.qdb_seq_lc : '',
-            formName: formdata && formdata.formName ? formdata.formName : '',
-        }
-    } else {
-        initialData = {
-            searchName: formdata && formdata.searchName ? formdata.searchName : `AB ${moment().format('YYYY-MM-DD h:mm:ss')}`,
-            cdrhcseq1: formdata && formdata.cdrhcseq1 ? formdata.cdrhcseq1 : '',
-            cdrhcseq2: formdata && formdata.cdrhcseq2 ? formdata.cdrhcseq2 : '',
-            cdrhcseq3: formdata && formdata.cdrhcseq3 ? formdata.cdrhcseq3 : '',
-            cdrlcseq1: formdata && formdata.cdrlcseq1 ? formdata.cdrlcseq1 : '',
-            cdrlcseq2: formdata && formdata.cdrlcseq2 ? formdata.cdrlcseq2 : '',
-            cdrlcseq3: formdata && formdata.cdrlcseq3 ? formdata.cdrlcseq3 : '',
-            hcOption1: formdata && formdata.hcOption1 ? formdata.hcOption1 : 0,
-            hcOption2: formdata && formdata.hcOption2 ? formdata.hcOption2 : 0,
-            hcOption3: formdata && formdata.hcOption3 ? formdata.hcOption3 : 0,
-            lcOption1: formdata && formdata.lcOption1 ? formdata.lcOption1 : 0,
-            lcOption2: formdata && formdata.lcOption2 ? formdata.lcOption2 : 0,
-            lcOption3: formdata && formdata.lcOption3 ? formdata.lcOption3 : 0,
-            strategy: formdata && formdata.strategy ? formdata.strategy : 'genepast',
-            percId: formdata && formdata.percId ? formdata.percId : 80,
-            expectCutoff: formdata && formdata.expectCutoff ? formdata.expectCutoff : 10,
-            wordSize: formdata && formdata.wordSize ? formdata.wordSize : 3,
-            hcFullSeq: formdata && formdata.hcFullSeq ? formdata.hcFullSeq : '',
-            lcFullSeq: formdata && formdata.lcFullSeq ? formdata.lcFullSeq : '',
-            formName: formdata && formdata.formName ? formdata.formName : '',
-        }
-    }
-
-    const formik = useFormik({
-        initialValues: initialData,
-        enableReinitialize: true,
-        validationSchema: Validate.AntibodySearchValidation(saveFormValue),
-        onSubmit: async (values) => {
-            let { searchName, cdrhcseq1, cdrhcseq2, cdrhcseq3, cdrlcseq1, cdrlcseq2, cdrlcseq3, hcOption1, hcOption2, hcOption3, lcOption1, lcOption2, lcOption3, strategy, percId, expectCutoff, wordSize, hcFullSeq, lcFullSeq, formName } = values;
-            if (cdrhcseq1 == '' && cdrhcseq2 == '' && cdrhcseq3 == '' && cdrlcseq1 == '' && cdrlcseq2 == '' && cdrlcseq3 == '') {
-                toast.error(t('CDRSeqValidation'));
-                return false;
-            }
-            // let selectDB = _.filter(patientDBData, function(user) {
-            //     return user.selected;
-            // });
-            let selectDB = [];
-            selectDB = _.filter(patientDBData, { selected: true }).map(v => "p:" + v.value);
-            if (selectDB.length == 0) {
-                setShowDBRequiredError(true)
-                return false;
-            }
-            let strategyItem = _.find(Constant['strategies'], function (obj) {
-                return obj.value == strategy;
-            });
-            setSearchModal(true);
-            let parentId = '';
-            let postData = {
-                qdb_seq_type: 'protein',
-                hc_cdr1: cdrhcseq1,
-                hc_cdr1_mismatches: hcOption1,
-                hc_cdr2: cdrhcseq2,
-                hc_cdr2_mismatches: hcOption2,
-                hc_cdr3: cdrhcseq3,
-                hc_cdr3_mismatches: hcOption3,
-                lc_cdr1: cdrlcseq1,
-                lc_cdr1_mismatches: lcOption1,
-                lc_cdr2: cdrlcseq2,
-                lc_cdr2_mismatches: lcOption2,
-                lc_cdr3: cdrlcseq3,
-                lc_cdr3_mismatches: lcOption3,
-                qdb_seq_hc: hcFullSeq,
-                qdb_seq_lc: lcFullSeq,
-                searchtype: 'FTO',
-                title: searchName,
-                strat_name: strategyItem['val'],
-                strat_genepast_perc_id: percId,
-                strat_genepast_perc_id_over: 'QUERY',
-                strat_blast_word_size_pro: wordSize,
-                strat_blast_eval_cutoff: expectCutoff,
-                strat_blast_scoring_matrix_pro: 'BLOSUM62',
-                protdbs: selectDB,
-                protdb_type: 'multiple',
-                parent_id: parentId,
-                template_name: saveFormValue ? (formName).trim() : '', // Set this value when selecting "Save this form for later use as"
-
-            }
-            const getResponse = await searchResAntibody.submitAnitbodySearch(postData, history, t);
-            setSearchModal(false);
-            if (getResponse && getResponse.response_status == 0) {
-                history.push('/home');
-            } else {
-                toast.error('Error in Search');
-            }
-        },
-    });
-
-    function setFormValue() {
-        setSaveFormValue(!saveFormValue);
-        formik.setFieldValue("formName", '');
-    }
-
-    if (formSubmit && formik && formik.errors && Object.keys(formik.errors).length > 0) {
-        document.getElementById(Object.keys(formik.errors)[0]).scrollIntoView({ behavior: "smooth", block: "center", inline: "start" });
-        setFromSubmit(false);
-    }
-
-    function submitForm() {
-        formik.handleSubmit();
-        setFromSubmit(true);
     }
 
     return (
@@ -791,7 +812,7 @@ function SearchResultAntibody() {
                                     </p>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <FolderTreeStructure treeData={proPersonalData} dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq" />
+                                    <FolderTreeStructure treeData={proPersonalData} parentCallBack={handleDbChange} dataArray={proDb} seQValue={sequenceTypeValue == "nucleotide" ? "nuc" : "pro"} pageType="ipseq" />
                                 </AccordionDetails>
                             </Accordion>
                         </div>
