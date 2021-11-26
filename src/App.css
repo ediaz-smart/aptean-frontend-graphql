@@ -361,9 +361,6 @@
     font-style: italic;
 }
 
-.space {
-    /* visibility: hidden; */
-}
 
 .opClass::after,
 .space::after,
@@ -517,9 +514,10 @@ label {
     color: #777777;
 }
 
-.query {
+.query, .termquery, .space, .pastequery {
     color: #000;
 }
+
 
 .autoquery {
     color: #8a6d3b;

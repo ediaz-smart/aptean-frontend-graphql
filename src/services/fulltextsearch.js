@@ -15,14 +15,14 @@ function hideLoader() {
 async function getFullTextSearchTerm(history, searchParam) {
     try {
         let apiurl = url.fullTextSearchTerm + searchParam;
-        // showLoader();
+        showLoader();
         return await get(apiurl, history)
             .then((response) => {
-                // hideLoader();
+                hideLoader();
                 return response;
             })
             .catch((error) => {
-                // hideLoader();
+                hideLoader();
                 toast.error('A');
                 console.log("error::", error);
 
@@ -86,14 +86,14 @@ async function getACSynonyms(history, selectedTermId) {
     try {
         let apiurl = url.autoqueryfindterm;
         apiurl = apiurl.replace('**', selectedTermId);
-        // showLoader();
+        showLoader();
         return await get(apiurl, history)
             .then((response) => {
-                // hideLoader();
+                hideLoader();
                 return response;
             })
             .catch((error) => {
-                // hideLoader();
+                hideLoader();
                 toast.error('A');
                 console.log("error::", error);
 
