@@ -2633,9 +2633,7 @@ function FullTextSearch() {
 					: (searchParam += `&start=${searchStartPage}`);
 				searchParam += `&rows=${pageCount}`;
 
-				groupingType && groupingType != ('Family' || 'Document')
-					? (searchParam += `&grouping=${groupingType}`)
-					: (searchParam += `&grouping=${grouping}`);
+				groupingType ? (searchParam += `&grouping=${groupingType}`): (searchParam += `&grouping=${grouping}`);
 				if (formName) {
 					searchParam += `&template_name=${formName}`
 				}
@@ -2663,13 +2661,13 @@ function FullTextSearch() {
 					history,
 					searchParam
 				);
-				if(searchQueryRes) {
-					setDocSearchResult(searchQueryRes.response_content);
-				}
+				// if(searchQueryRes) {
+				// 	setDocSearchResult(searchQueryRes.response_content);
+				// }
 				if(searchQueryRes &&
 					searchQueryRes.response_status == 0 &&
 					searchQueryRes.response_content && searchQueryRes.response_content.status == 200){
-						// setDocSearchResult(searchQueryRes.response_content);
+						setDocSearchResult(searchQueryRes.response_content);
 						localStorage.setItem('FTSearchParam', searchParam);
 				} 
 			}, 1000);
@@ -2712,12 +2710,30 @@ function FullTextSearch() {
 		value ? setSaveResultAsError(false) : setSaveResultAsError(true);
 	}
 
-	const submitSaveResultAs = () => {
+	const submitSaveResultAs = async() => {
 		if (!saveResultAs) {
 			setSaveResultAsError(true);
 		} else {
 			//api
+			let localQuery = localStorage.getItem('FTSearchParam');
+			if(localQuery){
+				localQuery += `&workflow_type=GqWfSearchFT&title=${saveResultAs}`;
+			const saveDoc = await fullTextService.saveFTDocument(history, localQuery);
+			if(saveDoc && saveDoc.response_status == 0 && saveDoc.response_content && saveDoc.response_content.status == 200){
+					history.push('/searchResult')
+				} 
 		}
+		}
+	}
+
+	const modalApplyFunction = () =>{
+		if(isAuthoritySorting && (configure1 === '' && configure2 === '' && configure3 === '' && configure4 === '' && configure5 === '')){
+			setIsAuthoritySorting(false);
+			setConfigure1('US');
+			setConfigure2('EP');
+			setConfigure3('WO');
+		}
+		searchResult(null, 0, 'closeModal');
 	}
 	
 	return (
@@ -2861,7 +2877,7 @@ function FullTextSearch() {
 							</div>
 						</div>
 					</div>
-					<Row>
+					{/* <Row>
 						<Col md='4'>
 							<CheckBox
 								// defaultChecked
@@ -2888,16 +2904,15 @@ function FullTextSearch() {
 								error={saveFormError}
 								helperText={saveFormError ? t('required') : ""}
 							/>
-							{/* {saveFormError && <p className={"ManualError"}>{t('required')}</p>} */}
 						</Col>
-					</Row>
+					</Row> */}
 
 					<div className="form-group">
 						<Button
 							variant="contained"
 							disableRipple={true}
 							className={"float-right "+(isSearch ? 'loginSubmitButton' : '')}
-							onClick={() => searchResult(null, null)}
+							onClick={() => searchResult(null, 0)}
 							color={(!isSearch ? 'default' : 'secondary')} disabled={!isSearch} 
 						>
 							{t("submit")}
@@ -3143,7 +3158,7 @@ function FullTextSearch() {
 							<CheckBox
 								// defaultChecked
 								color="primary"
-								className={"float-left ml-2"}
+								className={"float-left ml-2 mt-1"}
 								name="applyPreferredAuthority"
 								id="applyPreferredAuthority"
 								onChange={() => setIsAuthoritySorting(!isAuthoritySorting)}
@@ -3228,7 +3243,7 @@ function FullTextSearch() {
 							<CheckBox
 								// defaultChecked
 								color="primary"
-								className={"float-left ml-2 mb-5"}
+								className={"float-left ml-2 mb-5 mt-1"}
 								name="selectDocWith"
 								id="selectDocWith"
 								onChange={() => setIsDateSorting(!isDateSorting)}
@@ -3259,7 +3274,7 @@ function FullTextSearch() {
 							/>
 						</div>
 						<div className="clear">
-							<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit"  onClick={() => searchResult(null, null, 'closeModal')}>{t('apply')}</Button>
+							<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit"  onClick={modalApplyFunction}>{t('apply')}</Button>
 							<Button className={"cancelButtonClass float-right"} id="mergeCancel" onClick={() => setIsConfigureActive(!isConfigureActive)}>{t('cancel')}</Button>
 						</div>
 					</form>

@@ -291,7 +291,7 @@ const data3 = [
 ];
 
 
-function IpSequenceVariation() {
+function IpSequenceVariation(props) {
     const { t, i18n } = useTranslation('common');
     const history = useHistory();
 
@@ -567,6 +567,12 @@ function IpSequenceVariation() {
                 let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [], nucDefaultPatentDb = [], nucMyData = [];
                 let nucFormattedData = await list_to_tree(nucData);
                 let getNucChild = [];
+                if(typeof(props.location.state) !== 'undefined' && props.location.state !== null)
+                {
+                    console.log(props.location.state,"userrr");
+                    formik.setFieldValue("querySequence", props.location.state.seq);
+                    setSequenceType(props.location.state.type);
+                }
                 if (nucFormattedData && nucFormattedData.length > 0) {
                     getNucChild = nucFormattedData[0].children;
                 }

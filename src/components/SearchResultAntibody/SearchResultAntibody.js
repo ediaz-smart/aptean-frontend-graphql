@@ -846,7 +846,7 @@ function SearchResultAntibody() {
 
                         <hr />
                     </Col>
-                    <Col lg="12" md="12" className="p-0">
+                    {/* <Col lg="12" md="12" className="p-0">
                         <Row>
                             <Col md='4' sm="4" xs="4" className="">
                                 <CheckBox
@@ -876,7 +876,7 @@ function SearchResultAntibody() {
                             </Col>
                         </Row>
                         <hr />
-                    </Col>
+                    </Col> */}
 
                     <Col lg="12" md="12" sm='12' xs='12' style={{ display: 'flex', flexDirection: 'row-reverse' }} className="float-right mb-3">
                         <Button variant="contained" className={!disableSearch ? 'cancelButtonDisable' : 'accountInfo'} type="submit" disabled={!disableSearch}>{t('Search')}</Button>&nbsp;

@@ -25,7 +25,10 @@ const useStyles = makeStyles((theme) => ({
   smallBox: {
     width: '14%',
     padding: '10px 0px',
-    margin: '-8px 0 0 -5px'
+    margin: '-8px 0 0 -5px',
+    '& .MuiSelect-iconOutlined': {
+      right: '0px'
+    }
   },
 
 }));
