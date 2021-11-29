@@ -1141,11 +1141,11 @@ function FullTextSearch() {
 				placeCursorPos = true;
 			} 
 		} else {
-			// Normally if we type this code will execute
+			// If backspace and space not entered this code will execute
 			if (value != "") {
 				let checkOperatorText = ["and", "AND", "or", "OR", "not", "NOT"];
 				if (lastChild && lastChild.attributes.length > 0) {
-
+					// Based on the last classname, we are appending the values to the element.
 					if (getChildClassName == "autoquery") {
 
 						// To Check Prev Element values has operator or not, if not we place operator dynamically
@@ -2139,19 +2139,32 @@ function FullTextSearch() {
 				// htmlElement.children[key].innerHTML = htmlElement.children[key].innerHTML.replace(/<br>/g, "");
 			});
 			if (document.getElementsByClassName('space') && document.getElementsByClassName('space').length > 0) {
+				// document.getElementsByClassName('space').map((data, i) => {
+				// 	console.log(data,'data');
+				// });
+				var elements = document.querySelectorAll('.space');
+				
 				if (spaceOpacity) {
-					document.getElementsByClassName('space')[0].style = 'opacity: 0';
+					elements.forEach((element) => {
+						// console.log(element,'element');
+						element.style = 'opacity: 0';
+					});
+					// document.getElementsByClassName('space')[0].style = 'opacity: 0';
 				} else {
-					document.getElementsByClassName('space')[0].style = 'opacity: 1';
+					elements.forEach((element) => {
+						// console.log(element,'element');
+						element.style = 'opacity: 1';
+					});
+					// document.getElementsByClassName('space')[0].style = 'opacity: 1';
 				}
 			}
 		}
 		queryTxt.replace(/[()]/g, "");
 		// queryTxt = queryTxt.replace('(', ' ').replace(')', '')
 		queryTxt = queryTxt.trim();
-		console.log(queryTxt,'queryTxt');
+		// console.log(queryTxt,'queryTxt');
 		var results = lucenequeryparser.parse(queryTxt);
-		console.log(results,'results');
+		// console.log(results,'results');
 		setQueryParser(JSON.stringify(results));
 		results = JSON.stringify(results, undefined, 2);
 		results = results.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
@@ -2526,30 +2539,6 @@ function FullTextSearch() {
 		return count;
 	};
 	const parseCustomObj = async (parseData, checkRightCount) => {
-		// await Promise.all(Object.keys(parseData).forEach(key => {
-		//     if(key == 'left' && (parseData[key].quoted_term && parseData[key].quoted_term != ''))
-		//     {
-		//         let splitTerm = parseData[key].quoted_term.split('-');
-		//         parseData[key]['term'] = {
-		//             quoted_term:splitTerm[0]
-		//         }
-		//         parseData[key]['decoration'] = splitTerm[1];
-		//     }else if(key == 'right')
-		//     {
-		//         if(parseData[key].hasOwnProperty('right'))
-		//         {
-		//             parseCustomObj(parseData[key]['right']);
-		//         }
-		//         if(parseData[key].hasOwnProperty('left') && (parseData[key].quoted_term && parseData[key].quoted_term != '')){
-		//             let splitTerm = parseData[key].quoted_term.split('-');
-		//             parseData[key]['term'] = {
-		//                 quoted_term:splitTerm[0]
-		//             }
-		//             parseData[key]['decoration'] = splitTerm[1];
-		//         }
-		//     }
-		// }));
-
 		Object.keys(parseData).forEach(async (key) => {
 			if (
 				key == "left" &&
