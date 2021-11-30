@@ -101,11 +101,141 @@ async function getUserInfo() {
 
 }
 
+async function checkDbName(dbname) {
+    try {
+        let apiurl = "do=gqfetch.physical_seqdb_exists&seqdb_locale=L&text_label=" + dbname + "&format=json";
+        return await get(apiurl)
+            .then((response) => {
+                // hideLoader();
+                return response;
+            })
+            .catch((error) => {
+                //   hideLoader();
+                // toast.error('Failed to change password');
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+    }
+
+}
+
+async function postfile(urlParam, formData) {
+    try {
+
+        return await post(urlParam, formData, null)              //post files services
+            .then((response) => {
+                console.log("postresponse :", response);
+                return response;
+            })
+            .catch((error) => {
+                console.log("error::", error);
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+    }
+
+}
+
+async function uploadRecieve(file, files, dbname, frmt, seqType) {
+    try {
+
+
+        let apiurl = "do=gqupload.receive&file=" + file + "&files=" + files +
+            "&next_step=gqfetch.create_channel&desc=Upload%2520Annotated%2520Sequences&seq_type=" + seqType + "&seq_format=" + frmt +
+            "&file_type=ANNOTATED_SEQUENCES&text_label=" + dbname + "&format=json";
+
+        apiurl = encodeURI(apiurl);
+        if (frmt == "embl+") {
+            apiurl = apiurl.replace("embl+", "embl%2B");
+
+        }
+
+
+        showLoader();
+
+        console.log(apiurl, "recvurl");
+        return await get(apiurl)
+            .then((response) => {
+                console.log("reciveresponse :", response);
+                hideLoader();
+                return response;
+            })
+            .catch((error) => {
+
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+    }
+
+}
+
+async function channelCreate(file, dbname) {
+    try {
+        let apiurl = "do=gqfetch.create_channel&file=" + file + "&text_label=" + dbname + "&format=json";
+        apiurl = encodeURI(apiurl);
+
+        console.log(apiurl, "createchannelurl");
+        return await get(apiurl)
+            .then((response) => {
+                console.log("channelcreate :", response);
+                return response;
+            })
+            .catch((error) => {
+
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+    }
+
+}
+
+async function channelStatus(file, content) {
+    try {
+        let apiurl = "do=gqfetch.check_channel_creation_status&file=" + file + "&content_channel=" + content + "&format=json";
+        showLoader();
+
+        apiurl = encodeURI(apiurl);
+
+        console.log(apiurl, "ststusurl");
+        return await get(apiurl)
+            .then((response) => {
+
+                console.log("statusresponse :", response);
+                hideLoader();
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                console.log("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+    }
+
+}
+
 
 const personaldb = {
     getPersonalData,
     getUserInfo,
-    deletePerData
+    deletePerData,
+    checkDbName,
+    postfile,
+    uploadRecieve,
+    channelCreate,
+    channelStatus
 
 };
 

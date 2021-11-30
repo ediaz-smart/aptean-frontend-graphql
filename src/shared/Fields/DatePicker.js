@@ -47,6 +47,9 @@ export default function DatePicker(props) {
           name={props.name}
           format={props.format}
           showWeekNumbers
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select"
           className={classes.root + ' ' + props.className}
           disabled={props.disabled}
           onChange={props.onChange}

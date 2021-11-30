@@ -66,8 +66,8 @@ function ParsedXml(props) {
     const [disableSearch, setDisableSearch] = React.useState(false);
     const [formdata, setFormData] = useState({});
     const { workflowId } = useParams();
-    const [searchSeqValue, setSeqType] = useState(props.location.state[1]);
-    const [seq, setSeq] = useState();
+    const [searchSeqValue, setSeqType] = useState("nucleotide");
+    const [seqValue, setSeq] = useState(props.location.state[1]);
     const userInfo = useSelector(state => state.setUserInfo);
     const [userData, setUserData] = useState();
 
@@ -101,8 +101,35 @@ function ParsedXml(props) {
         history.push('/convertsequence');
     }
 
+    function ipseq() {
+
+        const seqval = document.getElementById("st26input").value;
+        console.log(searchSeqValue, "type");
+        history.push({
+            pathname: '/ipseqsearch',
+            state: {
+                seq: seqval,
+                type: searchSeqValue
+            }
+        });
+    }
+
+    function ipseqvar() {
+
+        const seqval = document.getElementById("st26input").value;
+        console.log(searchSeqValue, "type");
+        history.push({
+            pathname: '/ipseqvariation',
+            state: {
+                seq: seqval,
+                type: searchSeqValue
+
+            }
+        });
+    }
+
     const handleChangee = (event) => {
-        setSeqType(event.target.value);
+        setSeq(event.target.value);
 
     }
 
@@ -113,17 +140,25 @@ function ParsedXml(props) {
 
     const searchSeqItems = [
         {
-            value: props.location.state[0],
+            value: "protein",
             label: "Work with: Protein sequences"
         },
         {
-            value: props.location.state[1],
+            value: "nucleotide",
             label: "Work with: Nucleotide sequences"
         }
     ];
 
     const handleSeqType = (event) => {
+
         setSeqType(event.target.value);
+
+        if (event.target.value == "nucleotide") {
+            setSeq(props.location.state[1]);
+        }
+        if (event.target.value == "protein") {
+            setSeq(props.location.state[0]);
+        }
 
     };
 
@@ -163,7 +198,7 @@ function ParsedXml(props) {
                     <Col lg="12" md="12" className="mb-2">
 
                         <Row className="mb-2">
-                            <h6 className={"appTextColor loginTitle"}>CONVERTED XML</h6>
+                            <h6 className={"appTextColor loginTitle"}>ST.26 Sequence Input</h6>
                         </Row>
                         <Row className="mb-2">
                             <h6>
@@ -192,7 +227,7 @@ function ParsedXml(props) {
                                     id="st26input"
                                     name="st26input"
                                     variant="outlined"
-                                    value={searchSeqValue}
+                                    value={seqValue}
                                     //defaultValue={props.location.state[1]}
                                     onChange={handleChangee}
                                     error={formik.touched.st26input && Boolean(formik.errors.st26input)}
@@ -210,9 +245,13 @@ function ParsedXml(props) {
 
 
                     <Col lg="12" md="12" className="float-right mb-3">
-                        {userData && userData.vmAccess && <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('ipseqvariation')}</Button>}&nbsp;&nbsp;&nbsp;
-                        <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('ipseqsearch')}</Button>&nbsp;&nbsp;&nbsp;
-                        <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={cncl}>{t('cancel')}</Button>
+
+                        {userData && userData.vmAccess ?
+                            <Button className='accountInfo' color="default" disableRipple={true} onClick={ipseqvar} variant="contained">{t('ipseqvariation')}</Button>
+                            : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">{t('ipseqvariation')}</Button>
+                        }
+                        <Button className='accountInfo' color="default" disableRipple={true} onClick={ipseq} style={{ marginRight: '5px' }} variant="contained" >{t('ipseqsearch')}</Button>&nbsp;&nbsp;&nbsp;
+                        <Button variant="contained" color="primary" className={"text-capitalize mr-2 float-right primaryBtn "} style={{ marginTop: '5px' }} onClick={cncl}>{t('cancel')}</Button>
                     </Col>
                 </Row>
 

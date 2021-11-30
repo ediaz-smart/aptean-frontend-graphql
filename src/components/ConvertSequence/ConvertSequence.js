@@ -131,7 +131,7 @@ function ConvertSequence() {
                     </Col>
 
                     <Col lg="12" md="12" className="mb-2">
-                        <h6 className={"appTextColor loginTitle"}>ST.26 Sequences Input</h6>
+                        <h6 className={"appTextColor loginTitle"}>ST.26 Sequence Input</h6>
                         <Row className="mb-3">
 
                             <Col lg="12" md="12" className="p-0 content float-left">
@@ -161,7 +161,7 @@ function ConvertSequence() {
 
                     <Col lg="12" md="12" className="float-right mb-3">
                         <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('Next')}</Button>&nbsp;&nbsp;&nbsp;
-                        <Button variant="contained" color={'default'} className={"text-capitalize mr-2 disableBtnBorder float-right"} onClick={cncl}>{t('cancel')}</Button>
+                        <Button variant="contained" color="primary" className={"text-capitalize mr-2 float-right primaryBtn "} onClick={cncl}>{t('cancel')}</Button>
                     </Col>
                 </Row>
 
