@@ -62,6 +62,7 @@ export const submitSeqSearch = (data, history, t) => {
             .catch((error) => {
                 hideLoader();
                 toast.error('failed');
+                return error
             });
     } catch (error) {
         hideLoader();

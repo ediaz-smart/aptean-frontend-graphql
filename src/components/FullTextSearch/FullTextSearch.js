@@ -148,7 +148,7 @@ function FullTextSearch() {
 	// Auto Complete Suggest Term Popup
 	const [openACPopup, setOpenACPopup] = useState(false);
 	const [openACSynPopup, setOpenACSynPopup] = useState(false);
-	const arrowStyle = { left: '3%',top:'0%' };
+	const arrowStyle = { left: '3%', top: '0%' };
 	const editorJS = React.useRef(null);
 	const [selectedTermId, setSelectedTermId] = useState('');
 	const [selectedSearchTermData, setSelectedSearchTermData] = useState('');
@@ -158,29 +158,27 @@ function FullTextSearch() {
 		editorJS.current = instance
 	}, [])
 
-	const saveEditSynonyms = React.useCallback(async() => {
+	const saveEditSynonyms = React.useCallback(async () => {
 		// setOpenACSynPopup(false);
 		let userId = userInfo && userInfo.current_user.gq_user_id;
-		console.log(selectedTermId,'SelectedTermId');
+		console.log(selectedTermId, 'SelectedTermId');
 
 		const savedData = await editorJS.current.save();
 		console.log(savedData);
 		let postData = {};
-		if(savedData && savedData.blocks.length > 0)
-		{
+		if (savedData && savedData.blocks.length > 0) {
 			postData['word_list'] = savedData.blocks[0].data.items.join(" \n");
-			postData['word_list'] = postData['word_list'].replace('<br>','');
+			postData['word_list'] = postData['word_list'].replace('<br>', '');
 		}
 		const updateACSynonyms = await fullTextService.updateACSynonyms(
 			userId,
 			selectedSearchTermData,
 			postData
 		);
-		if(updateACSynonyms && updateACSynonyms.response_status == 0)
-		{
+		if (updateACSynonyms && updateACSynonyms.response_status == 0) {
 			setOpenACSynPopup(false);
 		}
-		
+
 	})
 
 	const closeACModal = () => {
@@ -211,69 +209,63 @@ function FullTextSearch() {
 			setAuthorities(authorityData);
 		}
 		document.addEventListener("mousedown", handleClickOutside);
-		document.addEventListener('click', detectOutsideClick );
-		document.addEventListener('paste', detectPasteEvt );
+		document.addEventListener('click', detectOutsideClick);
+		document.addEventListener('paste', detectPasteEvt);
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 			document.removeEventListener('click', detectOutsideClick);
 			document.removeEventListener('paste', detectPasteEvt);
 		};
 	}, []);
-	const detectPasteEvt = async(e)=>{
-		console.log(e,'detectPasteEvt');
+	const detectPasteEvt = async (e) => {
+		console.log(e, 'detectPasteEvt');
 	}
-	const detectOutsideClick = async(event) => {
-		console.log(event,'outsideevent');
-		console.log(event.target.className,'event.target.className');
+	const detectOutsideClick = async (event) => {
+		console.log(event, 'outsideevent');
+		console.log(event.target.className, 'event.target.className');
 		let getXYCoordinates = getCaretGlobalPosition();
-		console.log(getXYCoordinates,'getXYCoordinates');
+		console.log(getXYCoordinates, 'getXYCoordinates');
 		if (getXYCoordinates) {
 			let getId = '';
 			let splitClass = [];
-			if(event.target.className != "")
-			{
-				if(typeof event.target.className != "object")
-				{
-					splitClass = (event.target.classList && event.target.classList.length > 0) ? event.target.className.split(' '):[];
+			if (event.target.className != "") {
+				if (typeof event.target.className != "object") {
+					splitClass = (event.target.classList && event.target.classList.length > 0) ? event.target.className.split(' ') : [];
 				}
-				if(splitClass.length >0 && splitClass[0] == "autoquery")
-				{
+				if (splitClass.length > 0 && splitClass[0] == "autoquery") {
 					setSelectedTermSynonyms([]);
-					getId = event.target.id ? event.target.id:'';
+					getId = event.target.id ? event.target.id : '';
 					setOpenACPopup(o => !o);
 					setSelectedTermId(getId);
 				}
 			}
-			setTimeout(async() => {
+			setTimeout(async () => {
 				var acPopup = document.getElementById('popup-1');
-				if(acPopup)
-				{
-					acPopup.style.left = getXYCoordinates.left-5+"px";
-					acPopup.style.top = getXYCoordinates.top+5+"px";
-					console.log(acPopup,'acPopup');
-					if(getId)
-					{
+				if (acPopup) {
+					acPopup.style.left = getXYCoordinates.left - 5 + "px";
+					acPopup.style.top = getXYCoordinates.top + 5 + "px";
+					console.log(acPopup, 'acPopup');
+					if (getId) {
 						const getACSynonyms = await fullTextService.getACSynonyms(
 							history,
 							getId
 						);
-						if(getACSynonyms && getACSynonyms.response_status == 0){
-							if(getACSynonyms.response_content)
-							{
+						if (getACSynonyms && getACSynonyms.response_status == 0) {
+							if (getACSynonyms.response_content) {
 								setSelectedSearchTermData(getACSynonyms.response_content);
-								setSelectedTermSynonyms(getACSynonyms.response_content.synonyms ? getACSynonyms.response_content.synonyms:[]);
+								setSelectedTermSynonyms(getACSynonyms.response_content.synonyms ? getACSynonyms.response_content.synonyms : []);
 							}
-							
+
 						}
 					}
-					
+
 				}
-				
+
 			}, 0);
-			
-			
+
+
 		}
-		
+
 	};
 	const handleClickOutside = (event) => {
 		if (event.target.id != "megamenu") {
@@ -286,10 +278,10 @@ function FullTextSearch() {
 			}, 100);
 		}
 	};
-	const editACSynonyms = async()=>{
+	const editACSynonyms = async () => {
 		setOpenACPopup(false);
 		setOpenACSynPopup(o => !o);
-		
+
 	}
 	const getKeyCode = (e) => {
 		// if (e.type == "keypress") {
@@ -335,12 +327,11 @@ function FullTextSearch() {
 		let htmlElement = document.getElementById("textareaDiv");
 		if (e.keyCode == 8) {
 			let totalLen = htmlElement.children && htmlElement.children.length ? htmlElement.children.length : 0;
-			if(totalLen > 0)
-			{
-				if(htmlElement.children[totalLen-1].attributes && htmlElement.children[totalLen-1].attributes.class){
-					let getLastClass = htmlElement.children[totalLen-1].attributes.class.value.split(' ');
+			if (totalLen > 0) {
+				if (htmlElement.children[totalLen - 1].attributes && htmlElement.children[totalLen - 1].attributes.class) {
+					let getLastClass = htmlElement.children[totalLen - 1].attributes.class.value.split(' ');
 					if (removeClassArray.includes(getLastClass[0])) {
-						htmlElement.removeChild(htmlElement.children[totalLen-1]);
+						htmlElement.removeChild(htmlElement.children[totalLen - 1]);
 						e.preventDefault();
 					}
 				}
@@ -396,26 +387,26 @@ function FullTextSearch() {
 	};
 	const callParseQuery = (value, element, isArrowRight) => {
 		// setTimeout(() => {
-		console.log(keyCode,'keyCode');
+		console.log(keyCode, 'keyCode');
 		// if(keyCode != 86)
 		// {
-			let savedCaretPosition = CaretPositioning.saveSelection(element.currentTarget);
-			setCaretPosition(savedCaretPosition);
-			let getCurrentSel = window.getSelection();
-			// parseQuery(value, element, isArrowRight);
-			let postObj = {
-				value: value,
-				element,
-				isRightArrow: false,
-				pasteContent: '',
-				savedCaretPosition,
-				getCurrentSel
-			}
-			parseQuery(postObj);
+		let savedCaretPosition = CaretPositioning.saveSelection(element.currentTarget);
+		setCaretPosition(savedCaretPosition);
+		let getCurrentSel = window.getSelection();
+		// parseQuery(value, element, isArrowRight);
+		let postObj = {
+			value: value,
+			element,
+			isRightArrow: false,
+			pasteContent: '',
+			savedCaretPosition,
+			getCurrentSel
+		}
+		parseQuery(postObj);
 		// }else{
 		// 	// element.preventDefault();
 		// }
-		
+
 
 		// }, 50);
 	};
@@ -444,19 +435,18 @@ function FullTextSearch() {
 			setSearchTermPopup(false);
 		} else {
 			// 191 represent ? 
-			if(keyCode != 191)
-			{	
+			if (keyCode != 191) {
 				replaceStringHtml(value, keyCode, isRightArrow, savedCaretPosition, getCurrentSel);
 			}
-			
+
 			// replaceStringHtml(value,keyCode);
 		}
 
 		// For Popup open on current pointer position
-		console.log(checkLastChar,'checkLastChar');
+		console.log(checkLastChar, 'checkLastChar');
 		if (keyCode == 191) {
 			let getXYCoordinates = getCaretGlobalPosition();
-			console.log(getXYCoordinates,'getXYCoordinates');
+			console.log(getXYCoordinates, 'getXYCoordinates');
 			if (getXYCoordinates) {
 				setTopPosition(getXYCoordinates.top);
 				setLeftPosition(getXYCoordinates.left);
@@ -465,15 +455,14 @@ function FullTextSearch() {
 		}
 	};
 	async function removePasteHtml(htmlElement) {
-		let parserClass = ["query", "andClass", "orClass", "notClass", "autoquery", "opClass", "space", "pubClass", "publicationClass", "pastequery",'fieldquery','fieldCol','termquery']
+		let parserClass = ["query", "andClass", "orClass", "notClass", "autoquery", "opClass", "space", "pubClass", "publicationClass", "pastequery", 'fieldquery', 'fieldCol', 'termquery']
 		if (htmlElement.childNodes.length > 0) {
 			let htmlChildEl = htmlElement.children;
 			let childLen = htmlChildEl.length;
 			let checkClass = '';
 			let splitClass = [];
 			Object.keys(htmlElement.childNodes).forEach(function (key) {
-				if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == 'SPAN')
-				{
+				if (htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == 'SPAN') {
 					if (htmlElement.childNodes[key] && htmlElement.childNodes[key].attributes && htmlElement.childNodes[key].attributes.class != undefined) {
 						checkClass = htmlElement.childNodes[key] ? htmlElement.childNodes[key].attributes.class.value : "";
 						splitClass = checkClass ? checkClass.split(" ") : [];
@@ -488,16 +477,15 @@ function FullTextSearch() {
 						}
 						removePasteHtml(htmlElement);
 					}
-				}else{
-					if(htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == '#text')
-					{
+				} else {
+					if (htmlElement.childNodes[key] && htmlElement.childNodes[key].nodeName == '#text') {
 						htmlElement.removeChild(htmlElement.childNodes[key]);
-					}else if (htmlElement.childNodes[key]) {
+					} else if (htmlElement.childNodes[key]) {
 						htmlElement.childNodes[key].outerHTML = "";
 					}
 					removePasteHtml(htmlElement);
 				}
-				
+
 				if (childLen == key + 1) {
 					return htmlElement;
 				}
@@ -506,59 +494,52 @@ function FullTextSearch() {
 			return htmlElement;
 		}
 	}
-	async function generatePasteArr(splitPasteArr){
+	async function generatePasteArr(splitPasteArr) {
 		let splitData = [];
 		let totLen = splitPasteArr.length;
 		splitPasteArr.map((data, i) => {
-			if(data.includes('(AND') || data.includes('(OR') || data.includes('(NOT'))
-			{
+			if (data.includes('(AND') || data.includes('(OR') || data.includes('(NOT')) {
 				splitData = data.split('(');
 				delete splitPasteArr[i];
 				splitPasteArr.splice(i, 0, splitData[1]);
 				splitPasteArr.splice(i, 0, "(");
 				generatePasteArr(splitPasteArr);
 			}
-			if(totLen == (i+1))
-			{
+			if (totLen == (i + 1)) {
 				return splitPasteArr;
 			}
 		});
 	}
-	async function getCurSelData(){
+	async function getCurSelData() {
 		let selectionData = {
-			getCurrDataId:'',
-			splitPrevClass:[],
-			currClass:[],
-			PrevElSibling:''
+			getCurrDataId: '',
+			splitPrevClass: [],
+			currClass: [],
+			PrevElSibling: ''
 		};
 		let PrevElSibling = '';
 		let getCurrentSel = window.getSelection();
 		if (getCurrentSel.focusNode.nodeName == "#text") {
-			if(getCurrentSel.focusNode.previousElementSibling)
-			{
+			if (getCurrentSel.focusNode.previousElementSibling) {
 				selectionData['PrevElSibling'] = getCurrentSel.focusNode.previousElementSibling.previousElementSibling;
-				if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
-				{
+				if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
 					selectionData['getCurrDataId'] = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") ? getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") : '';
-					selectionData['currClass'] = getCurrentSel.focusNode.previousElementSibling.attributes.class ? getCurrentSel.focusNode.previousElementSibling.attributes.class.value.split(" "):[];
+					selectionData['currClass'] = getCurrentSel.focusNode.previousElementSibling.attributes.class ? getCurrentSel.focusNode.previousElementSibling.attributes.class.value.split(" ") : [];
 
-				}else{
+				} else {
 					selectionData['getCurrDataId'] = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
-					selectionData['currClass'] = getCurrentSel.focusNode.parentElement.attributes.class ? getCurrentSel.focusNode.parentElement.attributes.class.value.split(" "):[];
+					selectionData['currClass'] = getCurrentSel.focusNode.parentElement.attributes.class ? getCurrentSel.focusNode.parentElement.attributes.class.value.split(" ") : [];
 				}
-			}else if(getCurrentSel.focusNode.parentElement.previousElementSibling){
+			} else if (getCurrentSel.focusNode.parentElement.previousElementSibling) {
 				PrevElSibling = getCurrentSel.focusNode.parentElement.previousElementSibling;
 				selectionData['getCurrDataId'] = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
 				selectionData['currClass'] = getCurrentSel.focusNode.parentElement.attributes.class ? getCurrentSel.focusNode.parentElement.attributes.class.value.split(" ") : [];
-			}else{
-				if(getCurrentSel.focusNode.parentElement.getAttribute("dataid"))
-				{
+			} else {
+				if (getCurrentSel.focusNode.parentElement.getAttribute("dataid")) {
 					selectionData['getCurrDataId'] = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
 					selectionData['currClass'] = getCurrentSel.focusNode.parentElement.attributes.class ? getCurrentSel.focusNode.parentElement.attributes.class.value.split(" ") : [];
-				}else if(getCurrentSel.focusNode.parentElement.parentElement)
-				{
-					if(getCurrentSel.focusNode.parentElement.parentElement.getAttribute("dataid"))
-					{
+				} else if (getCurrentSel.focusNode.parentElement.parentElement) {
+					if (getCurrentSel.focusNode.parentElement.parentElement.getAttribute("dataid")) {
 						selectionData['getCurrDataId'] = getCurrentSel.focusNode.parentElement.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.parentElement.getAttribute("dataid") : '';
 						selectionData['currClass'] = getCurrentSel.focusNode.parentElement.parentElement.attributes.class ? getCurrentSel.focusNode.parentElement.parentElement.attributes.class.value.split(" ") : [];
 					}
@@ -573,14 +554,14 @@ function FullTextSearch() {
 			PrevElSibling = getCurrentSel.focusNode.previousElementSibling;
 			selectionData['splitPrevClass'] = (PrevElSibling && PrevElSibling.attributes.class) ? PrevElSibling.attributes.class.value.split(' ') : [];
 			selectionData['getCurrDataId'] = getCurrentSel.focusNode.getAttribute("dataid") ? getCurrentSel.focusNode.getAttribute("dataid") : '';
-			selectionData['currClass'] = getCurrentSel.focusNode.attributes.class ? getCurrentSel.focusNode.attributes.class.value.split(" "):[];
+			selectionData['currClass'] = getCurrentSel.focusNode.attributes.class ? getCurrentSel.focusNode.attributes.class.value.split(" ") : [];
 			selectionData['PrevElSibling'] = PrevElSibling;
 		}
 		else {
 			PrevElSibling = getCurrentSel.focusNode;
 			selectionData['splitPrevClass'] = (PrevElSibling && PrevElSibling.attributes.class) ? PrevElSibling.attributes.class.value.split(' ') : [];
 			selectionData['getCurrDataId'] = (PrevElSibling && PrevElSibling.getAttribute("dataid")) ? PrevElSibling.getAttribute("dataid") : '';
-			selectionData['currClass'] = PrevElSibling.attributes.class ? PrevElSibling.attributes.class.value.split(" "):[];
+			selectionData['currClass'] = PrevElSibling.attributes.class ? PrevElSibling.attributes.class.value.split(" ") : [];
 			selectionData['PrevElSibling'] = PrevElSibling;
 		}
 		return selectionData;
@@ -593,11 +574,11 @@ function FullTextSearch() {
 		// 	""
 		// );
 		// if (value == value.toUpperCase()) {
-        //     console.log('upper case true');
-        // }
-        // if (value == value.toLowerCase()){
-        //     console.log('lower case true');
-        // }
+		//     console.log('upper case true');
+		// }
+		// if (value == value.toLowerCase()){
+		//     console.log('lower case true');
+		// }
 		value = value.replace(".", "").replace(" ", "");
 		let lastValue = value.slice(-1);
 		let lastChild = '';
@@ -608,15 +589,14 @@ function FullTextSearch() {
 		}
 		else if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
 			lastChild = getCurrentSel.focusNode.previousElementSibling;
-		}else if (getCurrentSel.focusNode.nodeName == "#text") {
-			if(getCurrentSel.focusNode.parentElement.nodeName == "SPAN")
-			{
+		} else if (getCurrentSel.focusNode.nodeName == "#text") {
+			if (getCurrentSel.focusNode.parentElement.nodeName == "SPAN") {
 				lastChild = getCurrentSel.focusNode.parentElement;
-			}else{
+			} else {
 				lastChild = getCurrentSel.focusNode.previousElementSibling;
 			}
-			
-		}else {
+
+		} else {
 			lastChild = getCurrentSel.focusNode.parentElement;
 		}
 
@@ -632,7 +612,7 @@ function FullTextSearch() {
 		let countOpClass = 0;
 		let isStopCheck = false;
 		let getClassId;
-		let checkElClass=[];
+		let checkElClass = [];
 		let getChildEl = '';
 
 		// Getting Current Selection Element and Data for data append
@@ -641,8 +621,8 @@ function FullTextSearch() {
 		let splitPrevClass = getCurSelectionData['splitPrevClass'];
 		let currClass = getCurSelectionData['currClass'];
 		let PrevElSibling = getCurSelectionData['PrevElSibling'];
-		console.log(getCurSelectionData,'getCurSelectionData');
-		
+		console.log(getCurSelectionData, 'getCurSelectionData');
+
 		// Getting last element text to append current text
 		if (lastChild && lastChild.attributes.length > 0) {
 			getChildClass = lastChild.attributes.class
@@ -655,7 +635,7 @@ function FullTextSearch() {
 
 		// For Auto Complete send current typed text
 		let getSearchVal = getChildText.trim();
-		
+
 		// Removing Common CSS class for functionality
 		getChildClassName = getChildClassName.split(" ")[0];
 		let checkORValues = ["OR ", "or ", "or", "OR"];
@@ -758,7 +738,7 @@ function FullTextSearch() {
 			let splitPasteTxt = pasteContent ? pasteContent.split(" ") : [];
 			if (splitPasteTxt && splitPasteTxt.length > 0) {
 				let getSplitArr = await generatePasteArr(splitPasteTxt);
-				console.log(getSplitArr,'getSplitArr');
+				console.log(getSplitArr, 'getSplitArr');
 				let opFlag = 0;
 				let getSplitLen = splitPasteTxt.length;
 				splitPasteTxt.map((data, i) => {
@@ -793,26 +773,25 @@ function FullTextSearch() {
 							0,
 							getLastIndex
 						);
-						if(remPasteContent == ""){
+						if (remPasteContent == "") {
 							htmlElement.innerHTML = spanArr;
-						}else{
+						} else {
 							htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
 						}
 					}
-					if(htmlElement.textContent.toLowerCase() == pasteContent.toLowerCase())
-					{
+					if (htmlElement.textContent.toLowerCase() == pasteContent.toLowerCase()) {
 						console.log('text match');
-					}else{
+					} else {
 						console.log('text not match');
 					}
-				}else{
+				} else {
 					if (htmlElement.textContent.length == 0) {
 						htmlElement.innerHTML = spanArr;
 					} else {
 						htmlElement.innerHTML = htmlElement.innerHTML + ANDString + spanArr;
 					}
 				}
-				
+
 				setDetectPaste(false); // After Paste, reset false by default
 				setPasteContent('');
 				// placeCursor = true;
@@ -848,73 +827,73 @@ function FullTextSearch() {
 			lastValue = getChildText.slice(-1).replace('.', '');
 			// if (lastPrevValue.trim().length > 0) {
 			if (lastChild && lastChild.attributes.length > 0) {
-				if (getChildClassName == "query" || getChildClassName == "termquery" || getChildClassName == "fieldCol" || 
-				getChildClassName == "pastequery" || getChildClassName == "autoquery") {
+				if (getChildClassName == "query" || getChildClassName == "termquery" || getChildClassName == "fieldCol" ||
+					getChildClassName == "pastequery" || getChildClassName == "autoquery") {
 					if (checkANDValues.includes(getChildText)) {
-							Object.keys(htmlElement.children).forEach(function (key) {
-								getClassId = htmlElement.children[key].getAttribute("dataid");
-								if (getClassId == getCurrDataId) {
-									htmlElement.children[key].outerHTML = ANDString;
+						Object.keys(htmlElement.children).forEach(function (key) {
+							getClassId = htmlElement.children[key].getAttribute("dataid");
+							if (getClassId == getCurrDataId) {
+								htmlElement.children[key].outerHTML = ANDString;
+							}
+						});
+						// placeCursor = true;
+					} else if (checkORValues.includes(getChildText)) {
+						Object.keys(htmlElement.children).forEach(function (key) {
+							getClassId = htmlElement.children[key].getAttribute("dataid");
+							if (getClassId == getCurrDataId) {
+								htmlElement.children[key].outerHTML = ORString;
+							}
+						});
+					} else if (checkNOTValues.includes(getChildText)) {
+						Object.keys(htmlElement.children).forEach(function (key) {
+							getClassId = htmlElement.children[key].getAttribute("dataid");
+							if (getClassId == getCurrDataId) {
+								htmlElement.children[key].outerHTML = NOTString;
+							}
+						});
+					} else {
+						var newSpan = document.createElement("span");
+						newSpan.setAttribute("class", "space");
+						newSpan.innerHTML = ".";
+						getEndPosition = savedCaretPosition.end
+						Object.keys(htmlElement.children).forEach(function (key) {
+							getClassId = htmlElement.children[key].getAttribute("dataid");
+							if (getClassId == getCurrDataId) {
+								if (htmlElement.children[key].textContent.includes('(') && htmlElement.children[key].textContent.includes(')')) {
+									let splitContent = htmlElement.children[key].textContent.split(' ');
+									let combineSpan = '';
+									let checkKey = 0;
+									splitContent.forEach(function (value, key) {
+										checkKey = checkKey + 1;
+										var textSpan = document.createElement("span");
+										textSpan.setAttribute("class", "query");
+										textSpan.innerHTML = value;
+										if ((checkKey % 2) != 1) {
+											combineSpan += newSpan.outerHTML + textSpan.outerHTML;
+										}
+										else {
+											combineSpan += textSpan.outerHTML;
+										}
+									});
+									htmlElement.children[key].outerHTML = combineSpan;
+								} else {
+									htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML.replace(/<br>/g, "") + newSpan.outerHTML;
 								}
-							});
-							// placeCursor = true;
-						} else if (checkORValues.includes(getChildText)) {
-							Object.keys(htmlElement.children).forEach(function (key) {
-								getClassId = htmlElement.children[key].getAttribute("dataid");
-								if (getClassId == getCurrDataId) {
-									htmlElement.children[key].outerHTML = ORString;
-								}
-							});
-						} else if (checkNOTValues.includes(getChildText)) {
-							Object.keys(htmlElement.children).forEach(function (key) {
-								getClassId = htmlElement.children[key].getAttribute("dataid");
-								if (getClassId == getCurrDataId) {
-									htmlElement.children[key].outerHTML = NOTString;
-								}
-							});
-						} else {
-							var newSpan = document.createElement("span");
-							newSpan.setAttribute("class", "space");
-							newSpan.innerHTML = ".";
-							getEndPosition = savedCaretPosition.end
-							Object.keys(htmlElement.children).forEach(function (key) {
-								getClassId = htmlElement.children[key].getAttribute("dataid");
-								if (getClassId == getCurrDataId) {
-									if(htmlElement.children[key].textContent.includes('(') && htmlElement.children[key].textContent.includes(')'))
-									{
-										let splitContent = htmlElement.children[key].textContent.split(' ');
-										let combineSpan = '';
-										let checkKey = 0;
-										splitContent.forEach(function(value,key){
-											checkKey = checkKey + 1;
-											var textSpan = document.createElement("span");
-											textSpan.setAttribute("class", "query");
-											textSpan.innerHTML = value;
-											if ((checkKey % 2) != 1) {
-												combineSpan += newSpan.outerHTML+textSpan.outerHTML;
-											}
-											else {
-												combineSpan += textSpan.outerHTML;
-											}
-										});
-										htmlElement.children[key].outerHTML = combineSpan;
-									}else{
-										htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML.replace(/<br>/g, "")  + newSpan.outerHTML;
-									}
-									// getEndPosition = savedCaretPosition.end;
-								}
-							});
+								// getEndPosition = savedCaretPosition.end;
+							}
+							// getEndPosition = savedCaretPosition.end;
+						});
 
-							placeCursor = false;
-							placeCursorPos = true;
+						placeCursor = false;
+						placeCursorPos = true;
 
-						}
+					}
 				} else if (getChildClassName == "space") {
 					getChildText = getChildText.trim();
 					var newSpan = document.createElement("span");
 					newSpan.setAttribute("class", "space");
 					newSpan.innerHTML = ".";
-					
+
 					if (checkORValues.includes(getChildText)) {
 						// htmlElement.children[htmlElement.children.length - 1].outerHTML =
 						// 	ORString + newSpan.outerHTML;
@@ -984,33 +963,31 @@ function FullTextSearch() {
 				htmlElement.innerHTML = htmlElement.innerHTML.replaceAll("<br>", "");
 				// }
 			}
-			
+
 		} else if (keyCode == 8) {// 8 represent backspace
 
 			if (lastChild && lastChild.attributes.length > 0) {
 				var prevKey = 0;
 				let currDataId = 0;
 				getCurrDataId = parseInt(getCurrDataId);
-				if(PrevElSibling && (PrevElSibling.textContent.length == 0 || currClass[0] == "autoquery" || currClass[0] == "fieldquery"))
-				{
+				if (PrevElSibling && (PrevElSibling.textContent.length == 0 || currClass[0] == "autoquery" || currClass[0] == "fieldquery")) {
 					Object.keys(htmlElement.children).forEach(function (key, val) {
-						if(htmlElement.children[key])
-						{
+						if (htmlElement.children[key]) {
 							getClassId = htmlElement.children[key].getAttribute("dataid");
-							if(key > 0){
+							if (key > 0) {
 								prevKey = key - 1;
 								getCurrClass = htmlElement.children[prevKey].attributes.class.value.split(" ");
 							}
 							currDataId = parseInt(getClassId);
-							
+
 							if (getCurrDataId == currDataId) {
-								
+
 								getEndPosition = savedCaretPosition.end;
-								if(currClass[0] == "space"){
+								if (currClass[0] == "space") {
 									getEndPosition = getEndPosition - 1;
 									htmlElement.removeChild(htmlElement.children[key]);
 								}
-								else if(currClass[0] == "autoquery" || currClass[0] == "fieldquery"){
+								else if (currClass[0] == "autoquery" || currClass[0] == "fieldquery") {
 									getEndPosition = getEndPosition - htmlElement.children[key].textContent.length;
 									htmlElement.removeChild(htmlElement.children[key]);
 								}
@@ -1018,7 +995,7 @@ function FullTextSearch() {
 									// Checking and Removing Operator before text there
 									getEndPosition = getEndPosition - 4;
 									htmlElement.removeChild(htmlElement.children[prevKey]);
-								}else{
+								} else {
 									htmlElement.removeChild(htmlElement.children[key]);
 								}
 								placeCursor = false;
@@ -1026,22 +1003,19 @@ function FullTextSearch() {
 							}
 						}
 					});
-					if(htmlElement.textContent.trim().length == 0)
-					{
+					if (htmlElement.textContent.trim().length == 0) {
 						placeCursor = false;
 						clearParser();
 					}
-				}else{
-					if(htmlElement.children.length > 1)
-					{
+				} else {
+					if (htmlElement.children.length > 1) {
 						getEndPosition = savedCaretPosition.end;
 						placeCursor = false;
 						placeCursorPos = true;
-					}else if(htmlElement.textContent.trim().length == 0)
-					{
+					} else if (htmlElement.textContent.trim().length == 0) {
 						placeCursor = false;
 						clearParser();
-					}else{
+					} else {
 						getEndPosition = savedCaretPosition.end;
 						placeCursor = false;
 						placeCursorPos = true;
@@ -1135,11 +1109,11 @@ function FullTextSearch() {
 				// 	// 	setCurrentCursorPosition(getEndPosition);
 				// 	// }, 50);
 				// }
-			}else{
+			} else {
 				getEndPosition = savedCaretPosition.end;
 				placeCursor = false;
 				placeCursorPos = true;
-			} 
+			}
 		} else {
 			// If backspace and space not entered this code will execute
 			if (value != "") {
@@ -1150,8 +1124,7 @@ function FullTextSearch() {
 
 						// To Check Prev Element values has operator or not, if not we place operator dynamically
 						let isLastValEmpty = false;
-						if(lastValue == " " || lastValue == "")
-						{
+						if (lastValue == " " || lastValue == "") {
 							lastValue = getChildText.slice(-1);
 							isLastValEmpty = true;
 						}
@@ -1159,7 +1132,7 @@ function FullTextSearch() {
 						var newSpan = document.createElement("span");
 						newSpan.setAttribute("class", "query");
 						newSpan.innerHTML = lastValue;
-						
+
 						if (
 							lastValue == "o" ||
 							lastValue == "O" ||
@@ -1171,11 +1144,9 @@ function FullTextSearch() {
 							Object.keys(htmlElement.children).forEach(function (key) {
 								getClassId = htmlElement.children[key].getAttribute("dataid");
 								checkElClass = htmlElement.children[key].attributes.class.value.split(' ');
-								if(getClassId == getCurrDataId)
-								{
-									if(isLastValEmpty)
-									{
-										htmlElement.children[key].textContent = htmlElement.children[key].textContent.slice(0,-1)
+								if (getClassId == getCurrDataId) {
+									if (isLastValEmpty) {
+										htmlElement.children[key].textContent = htmlElement.children[key].textContent.slice(0, -1)
 									}
 									htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML + newSpan.outerHTML;
 									getEndPosition = savedCaretPosition.end + 1;
@@ -1187,13 +1158,11 @@ function FullTextSearch() {
 							Object.keys(htmlElement.children).forEach(function (key) {
 								getClassId = htmlElement.children[key].getAttribute("dataid");
 								checkElClass = htmlElement.children[key].attributes.class.value.split(' ');
-								if(getClassId == getCurrDataId)
-								{
-									if(isLastValEmpty)
-									{
-										htmlElement.children[key].textContent = htmlElement.children[key].textContent.slice(0,-1)
+								if (getClassId == getCurrDataId) {
+									if (isLastValEmpty) {
+										htmlElement.children[key].textContent = htmlElement.children[key].textContent.slice(0, -1)
 									}
-									htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML +ANDString+" "+ newSpan.outerHTML;
+									htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML + ANDString + " " + newSpan.outerHTML;
 									getEndPosition = savedCaretPosition.end + 4;
 									placeCursor = false;
 									placeCursorPos = true;
@@ -1210,12 +1179,11 @@ function FullTextSearch() {
 						Object.keys(htmlElement.children).forEach(function (key) {
 							getClassId = htmlElement.children[key].getAttribute("dataid");
 							checkElClass = htmlElement.children[key].attributes.class.value.split(' ');
-							if(getClassId == getCurrDataId)
-							{
+							if (getClassId == getCurrDataId) {
 								var newSpan = document.createElement("span");
 								newSpan.setAttribute("class", "pastequery");
-								newSpan.innerHTML = htmlElement.children[key].textContent+lastValue;
-								console.log(htmlElement.children[key].outerHTML,'htmlElement.children[key].outerHTML');
+								newSpan.innerHTML = htmlElement.children[key].textContent + lastValue;
+								console.log(htmlElement.children[key].outerHTML, 'htmlElement.children[key].outerHTML');
 								if (htmlElement.innerHTML.slice(-1) != ">") {
 									htmlElement.children[key].outerHTML = newSpan.outerHTML;
 									htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
@@ -1255,7 +1223,7 @@ function FullTextSearch() {
 						lastValue = getChildText.slice(-1).replace('.', '');
 
 						// To Check Prev Element values has operator or not, if not we place operator dynamically
-						
+
 						if (
 							lastValue == "o" ||
 							lastValue == "O" ||
@@ -1272,7 +1240,7 @@ function FullTextSearch() {
 							} else {
 								replaceDot = getCurrentSel.focusNode.parentElement.textContent.replace('.', '');
 							}
-							
+
 							spaceOpacity = false;
 							// htmlElement.children[htmlElement.children.length - 1].style = 'opacity:1';
 
@@ -1282,40 +1250,35 @@ function FullTextSearch() {
 									htmlElement.children.length - 1
 								].textContent = lastValue;
 							} else {
-									Object.keys(htmlElement.children).forEach(function (key) {
-										if(htmlElement.children[key])
-										{
-											getClassId = htmlElement.children[key].getAttribute("dataid") ? htmlElement.children[key].getAttribute("dataid"):"";
-											checkElClass = htmlElement.children[key].attributes.class ? htmlElement.children[key].attributes.class.value.split(' '):[];
-											if(getClassId == getCurrDataId)
-											{
-												htmlElement.children[key].textContent = replaceDot;
-												if(replaceDot.length == 1)
-												{
-													getEndPosition = savedCaretPosition.end - 1;
-												}else{
-													getEndPosition = savedCaretPosition.end;
-												}
-												placeCursor = false;
-												placeCursorPos = true;
-												
-													// getEndPosition = savedCaretPosition.end + 3;
-													// placeCursor = false;
-													// placeCursorPos = true;
-													
-													isStopCheck = true;
+								Object.keys(htmlElement.children).forEach(function (key) {
+									if (htmlElement.children[key]) {
+										getClassId = htmlElement.children[key].getAttribute("dataid") ? htmlElement.children[key].getAttribute("dataid") : "";
+										checkElClass = htmlElement.children[key].attributes.class ? htmlElement.children[key].attributes.class.value.split(' ') : [];
+										if (getClassId == getCurrDataId) {
+											htmlElement.children[key].textContent = replaceDot;
+											if (replaceDot.length == 1) {
+												getEndPosition = savedCaretPosition.end - 1;
+											} else {
+												getEndPosition = savedCaretPosition.end;
 											}
-											if(!isStopCheck)
-											{
-												if(removeClassArray.includes(checkElClass[0]))
-												{
-													countOpClass = countOpClass + 1;
-												}
+											placeCursor = false;
+											placeCursorPos = true;
+
+											// getEndPosition = savedCaretPosition.end + 3;
+											// placeCursor = false;
+											// placeCursorPos = true;
+
+											isStopCheck = true;
+										}
+										if (!isStopCheck) {
+											if (removeClassArray.includes(checkElClass[0])) {
+												countOpClass = countOpClass + 1;
 											}
 										}
-										
-									});
-								
+									}
+
+								});
+
 								if (htmlElement.innerHTML.slice(-1) != ">") {
 									htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								}
@@ -1337,20 +1300,18 @@ function FullTextSearch() {
 							// htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 							// htmlElement.children[htmlElement.children.length - 1].textContent = getChildText;
 							Object.keys(htmlElement.children).forEach(function (key) {
-								if(htmlElement.children[key])
-								{
-									getClassId = htmlElement.children[key].getAttribute("dataid") ? htmlElement.children[key].getAttribute("dataid"):"";
-									checkElClass = htmlElement.children[key].attributes.class ? htmlElement.children[key].attributes.class.value.split(' '):[];
+								if (htmlElement.children[key]) {
+									getClassId = htmlElement.children[key].getAttribute("dataid") ? htmlElement.children[key].getAttribute("dataid") : "";
+									checkElClass = htmlElement.children[key].attributes.class ? htmlElement.children[key].attributes.class.value.split(' ') : [];
 									// console.log(checkElClass,'checkElClass');
-									if(getClassId == getCurrDataId)
-									{
+									if (getClassId == getCurrDataId) {
 										htmlElement.children[key].textContent = getChildText;
 										getEndPosition = savedCaretPosition.end;
 										placeCursor = false;
 										placeCursorPos = true;
 									}
 								}
-								
+
 							});
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
@@ -1388,34 +1349,27 @@ function FullTextSearch() {
 										splitPrevClass = htmlElement.children[curPrevKey].attributes.class.value.split(' ')
 									}
 								});
-								if(splitPrevClass && splitPrevClass.length > 0)
-								{
-									if(removeClassArray.includes(splitPrevClass[0]))
-									{
+								if (splitPrevClass && splitPrevClass.length > 0) {
+									if (removeClassArray.includes(splitPrevClass[0])) {
 										Object.keys(htmlElement.children).forEach(function (key) {
-											if(htmlElement.children[key])
-											{
-												getClassId = htmlElement.children[key].getAttribute("dataid") ? htmlElement.children[key].getAttribute("dataid"):"";
-												checkElClass = htmlElement.children[key].attributes.class ? htmlElement.children[key].attributes.class.value.split(' '):[];
-												if(getClassId == getCurrDataId)
-												{
-													
-													if(htmlElement.children[key].textContent.includes('.'))
-													{
+											if (htmlElement.children[key]) {
+												getClassId = htmlElement.children[key].getAttribute("dataid") ? htmlElement.children[key].getAttribute("dataid") : "";
+												checkElClass = htmlElement.children[key].attributes.class ? htmlElement.children[key].attributes.class.value.split(' ') : [];
+												if (getClassId == getCurrDataId) {
+
+													if (htmlElement.children[key].textContent.includes('.')) {
 														getEndPosition = savedCaretPosition.end - 1;
-													}else{
+													} else {
 														getEndPosition = savedCaretPosition.end - countOpClass;
 													}
 													htmlElement.children[key].outerHTML = newSpan.outerHTML;
-													
+
 													placeCursor = false;
 													placeCursorPos = true;
 													isStopCheck = true;
 												}
-												if(!isStopCheck)
-												{
-													if(removeClassArray.includes(checkElClass[0]))
-													{
+												if (!isStopCheck) {
+													if (removeClassArray.includes(checkElClass[0])) {
 														countOpClass = countOpClass + 1;
 													}
 												}
@@ -1424,23 +1378,23 @@ function FullTextSearch() {
 									} else {
 										Object.keys(htmlElement.children).forEach(function (key) {
 											getClassId = htmlElement.children[key].getAttribute("dataid");
-											checkElClass = htmlElement.children[key].attributes.class ? htmlElement.children[key].attributes.class.value.split(' '):[];
-											if(getClassId == getCurrDataId)
-											{
+											checkElClass = htmlElement.children[key].attributes.class ? htmlElement.children[key].attributes.class.value.split(' ') : [];
+											// console.log(checkElClass,'checkElClass');
+											if (getClassId == getCurrDataId) {
 												if (
 													newSpan.textContent == "o" ||
-													newSpan.textContent  == "O" ||
-													newSpan.textContent  == "a" ||
-													newSpan.textContent  == "A" ||
-													newSpan.textContent  == "n" ||
-													newSpan.textContent  == "N"
+													newSpan.textContent == "O" ||
+													newSpan.textContent == "a" ||
+													newSpan.textContent == "A" ||
+													newSpan.textContent == "n" ||
+													newSpan.textContent == "N"
 												) {
 													htmlElement.children[key].outerHTML = newSpan.outerHTML;
 													getEndPosition = savedCaretPosition.end - countOpClass;
-												}else{
-													if(htmlElement.children[key].textContent.includes('.')){
+												} else {
+													if (htmlElement.children[key].textContent.includes('.')) {
 														getEndPosition = savedCaretPosition.end + 3;
-													}else{
+													} else {
 														getEndPosition = savedCaretPosition.end + 4;
 													}
 													htmlElement.children[key].outerHTML = ANDString + " " + newSpan.outerHTML;
@@ -1449,10 +1403,8 @@ function FullTextSearch() {
 												placeCursorPos = true;
 												isStopCheck = true;
 											}
-											if(!isStopCheck)
-											{
-												if(removeClassArray.includes(checkElClass[0]))
-												{
+											if (!isStopCheck) {
+												if (removeClassArray.includes(checkElClass[0])) {
 													countOpClass = countOpClass + 1;
 												}
 											}
@@ -1499,9 +1451,8 @@ function FullTextSearch() {
 							getClassId = htmlElement.children[key].getAttribute("dataid");
 							checkElClass = htmlElement.children[key].attributes.class.value.split(' ');
 							// console.log(checkElClass,'checkElClass');
-							if(getClassId == getCurrDataId)
-							{
-								htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML +" "+newSpan.outerHTML;
+							if (getClassId == getCurrDataId) {
+								htmlElement.children[key].outerHTML = htmlElement.children[key].outerHTML + " " + newSpan.outerHTML;
 								getEndPosition = savedCaretPosition.end + 1;
 								placeCursor = false;
 								placeCursorPos = true;
@@ -1583,12 +1534,12 @@ function FullTextSearch() {
 						}
 					} else if (getChildClassName == "publicationClass") {
 						var getCurrentSelectChild = getCurrentSel.focusNode.parentNode;
-						
+
 
 					} else if (getChildClassName == "query" || getChildClassName == "fieldCol" || getChildClassName == "termquery") {
 						let childElId = getCurrentSel.focusNode.parentNode.getAttribute("dataid");
-						
-						
+
+
 						let removedText = '';
 						let childLen = htmlElement.childNodes.length;
 						let inc = 0;
@@ -1620,14 +1571,14 @@ function FullTextSearch() {
 						if (removedText != "") {
 							// if(getChildText == "")
 							// {
-								getSelectedNodeText = getChildText + removedText;
+							getSelectedNodeText = getChildText + removedText;
 							// }
 
 						}
 						getChildText = getSelectedNodeText;
 						lastValue = getSelectedNodeText.slice(-1).replace('.', '');
 
-						
+
 						if (htmlElement.children.length == 1) {
 							placeCursor = true;
 						} else if (
@@ -1642,7 +1593,7 @@ function FullTextSearch() {
 							getEndPosition = savedCaretPosition.end;
 							placeCursor = false;
 							placeCursorPos = true;
-						}else {
+						} else {
 							placeCursor = true;
 						}
 						// If Current Selection not render, then getting value from current children
@@ -1650,12 +1601,11 @@ function FullTextSearch() {
 						// 	getSelectedNodeText =
 						// 		getCurrentSel.focusNode.parentNode.textContent;
 						// } else {
-							currOffsetTop = htmlElement.children[htmlElement.children.length - 1].offsetTop - 2;
-							currOffsetLeft = htmlElement.children[htmlElement.children.length - 1].offsetLeft;
-							styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
+						currOffsetTop = htmlElement.children[htmlElement.children.length - 1].offsetTop - 2;
+						currOffsetLeft = htmlElement.children[htmlElement.children.length - 1].offsetLeft;
+						styleAttr = `position:absolute;top:${currOffsetTop}px;left:${currOffsetLeft}px;`;
 						// }
-						if(getChildClassName == "query")
-						{
+						if (getChildClassName == "query") {
 							// Checking If Pub Text matching in the current selection node
 							if (
 								getSelectedNodeText &&
@@ -1793,35 +1743,31 @@ function FullTextSearch() {
 										});
 									} else {
 										let htmlLength = htmlElement.children.length;
-										if(splitPrevClass && splitPrevClass.length > 0)
-										{
-											if(removeClassArray.includes(splitPrevClass[0]))
-											{
+										if (splitPrevClass && splitPrevClass.length > 0) {
+											if (removeClassArray.includes(splitPrevClass[0])) {
 												Object.keys(htmlElement.children).forEach(function (key) {
 													getClassId = htmlElement.children[key].getAttribute("dataid");
-													if(getClassId == getCurrDataId)
-													{
+													if (getClassId == getCurrDataId) {
 														htmlElement.children[key].outerHTML = newSpan.outerHTML;
 														// getEndPosition = savedCaretPosition.end + 3;
 														// placeCursor = false;
 														// placeCursorPos = true;
 													}
 												});
-											}else{
+											} else {
 												Object.keys(htmlElement.children).forEach(function (key) {
 													getClassId = htmlElement.children[key].getAttribute("dataid");
 													if (getClassId == getCurrDataId && htmlLength > 1) {
-														if(getCurrDataId == "1")
-														{
+														if (getCurrDataId == "1") {
 															htmlElement.children[key].outerHTML = newSpan.outerHTML;
 															getEndPosition = savedCaretPosition.end;
-														}else{
+														} else {
 															htmlElement.children[key].outerHTML = ANDString + " " + newSpan.outerHTML;
 															getEndPosition = savedCaretPosition.end + 4;
 														}
 														placeCursor = false;
 														placeCursorPos = true;
-													} else if (getClassId == getCurrDataId){
+													} else if (getClassId == getCurrDataId) {
 														htmlElement.children[key].outerHTML = newSpan.outerHTML;
 														getEndPosition = savedCaretPosition.end;
 														placeCursor = false;
@@ -1846,8 +1792,8 @@ function FullTextSearch() {
 									htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 								}
 							}
-						}else if(getChildClassName == "fieldCol"){
-							
+						} else if (getChildClassName == "fieldCol") {
+
 							//create the DOM object
 							var newSpan = document.createElement("span");
 							// add the class to the 'span'
@@ -1863,14 +1809,14 @@ function FullTextSearch() {
 							Object.keys(htmlElement.children).forEach(function (key) {
 								getClassId = htmlElement.children[key].getAttribute("dataid");
 								if (getClassId == getCurrDataId) {
-									htmlElement.children[key].outerHTML = colSpan.outerHTML+newSpan.outerHTML;
+									htmlElement.children[key].outerHTML = colSpan.outerHTML + newSpan.outerHTML;
 								}
 							});
 							if (htmlElement.innerHTML.slice(-1) != ">") {
 								htmlElement.innerHTML = htmlElement.innerHTML.slice(0, -1);
 							}
-						}else if(getChildClassName == "termquery"){
-							console.log(getSelectedNodeText,'termquery');
+						} else if (getChildClassName == "termquery") {
+							console.log(getSelectedNodeText, 'termquery');
 							//create the DOM object
 							var newSpan = document.createElement("span");
 							// add the class to the 'span'
@@ -1951,13 +1897,12 @@ function FullTextSearch() {
 
 		// Removing unwanted space when dynamically append to the element
 		await removeSpaceEl(hiddenElems);
-		
+
 		if (placeCursor) {
 			setCursorPosLast("true");
-			if(detectPaste && pasteContent != "")
-			{
+			if (detectPaste && pasteContent != "") {
 				placeCaretAtEnd(htmlElement);
-			}else{
+			} else {
 				placeCaretAtEnd(htmlElement);
 			}
 		}
@@ -1969,9 +1914,9 @@ function FullTextSearch() {
 
 		if (keyCode == 32) {
 			if (placeCursorPos) {
-				searchTerm(null, keyCode,getEndPosition);
-			}else{
-				searchTerm(null, keyCode,savedCaretPosition.end);
+				searchTerm(null, keyCode, getEndPosition);
+			} else {
+				searchTerm(null, keyCode, savedCaretPosition.end);
 			}
 			setSearchTermPopup(false);
 		}
@@ -1979,9 +1924,9 @@ function FullTextSearch() {
 			// Search value not in operator
 			if (!checkORValues.includes(getSearchVal) && !checkANDValues.includes(getSearchVal) && !checkNOTValues.includes(getSearchVal)) {
 				if (placeCursorPos) {
-					searchTerm(getSearchVal, keyCode,getEndPosition);
-				}else{
-					searchTerm(getSearchVal, keyCode,savedCaretPosition.end);
+					searchTerm(getSearchVal, keyCode, getEndPosition);
+				} else {
+					searchTerm(getSearchVal, keyCode, savedCaretPosition.end);
 				}
 			}
 
@@ -2002,45 +1947,42 @@ function FullTextSearch() {
 			if (htmlElement.textContent.trim().length == 0) {
 				clearParser();
 				setIsSearch(false);
-			}else{
+			} else {
 				setIsSearch(true);
 			}
-			console.log(isSearch,'isSearch');
+			console.log(isSearch, 'isSearch');
 			// htmlElement.children = htmlElement.children.trim();
-			setTimeout(async() => {
-				await addDataIdToElement(htmlElement,spaceOpacity);
+			setTimeout(async () => {
+				await addDataIdToElement(htmlElement, spaceOpacity);
 			}, 0);
 
-			
+
 		} catch (err) {
 			// error handling
-			console.log(err,'errorr');
+			console.log(err, 'errorr');
 		}
 		// Place Curstor at Last in Textarea
 		// placeCaretAtEnd(htmlElement);
 	}
-	async function removeBRTag(htmlElement){
+	async function removeBRTag(htmlElement) {
 		// Removing unwanted breaktag when dynamically append to the element
 		var brs = htmlElement.querySelectorAll('br');
-		if(brs && brs.length > 0)
-		{
+		if (brs && brs.length > 0) {
 			for (var i = 0; i < brs.length; i++) {
 				brs[i].parentNode.removeChild(brs[i]);
 			}
 		}
 	}
-	async function removeSpaceEl(hiddenElems){
-		if(hiddenElems && hiddenElems.length > 0)
-		{
-			if(detectPaste && pasteContent != "")
-			{
+	async function removeSpaceEl(hiddenElems) {
+		if (hiddenElems && hiddenElems.length > 0) {
+			if (detectPaste && pasteContent != "") {
 				for (var i = 0; i < hiddenElems.length; i++) {
 					if (hiddenElems[i].innerHTML) {
 						hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.trim().replace(/&nbsp;/g, '');
 						hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.replace(/>\s+</g, "");
 					}
 				}
-			}else{
+			} else {
 				for (var i = 0; i < hiddenElems.length; i++) {
 					if (hiddenElems[i].innerHTML) {
 						hiddenElems[i].innerHTML = hiddenElems[i].innerHTML.trim().replace(/&nbsp;/g, '');
@@ -2050,7 +1992,7 @@ function FullTextSearch() {
 			}
 		}
 	}
-	async function addDataIdToElement(htmlElement,spaceOpacity){
+	async function addDataIdToElement(htmlElement, spaceOpacity) {
 		let queryTxt = "";
 		let prevClass = "";
 		let prevClassData = "";
@@ -2072,29 +2014,26 @@ function FullTextSearch() {
 					if (key > 0) {
 						prevKey = parseInt(key) - 1;
 						nextKey = parseInt(key) + 1;
-						if(htmlElement.children[prevKey])
-						{
+						if (htmlElement.children[prevKey]) {
 							prevClassData = htmlElement.children[prevKey].attributes.class
-							? htmlElement.children[prevKey].attributes.class.value
-							: "";
+								? htmlElement.children[prevKey].attributes.class.value
+								: "";
 							prevClass = prevClassData ? prevClassData.split(" ") : [];
 						}
-						
-						if(htmlElement.children[nextKey])
-						{
+
+						if (htmlElement.children[nextKey]) {
 							nextClassData = htmlElement.children[nextKey].attributes.class
-							? htmlElement.children[nextKey].attributes.class.value
-							: "";
+								? htmlElement.children[nextKey].attributes.class.value
+								: "";
 						}
-						
+
 						nextClass = nextClassData ? nextClassData.split(" ") : [];
 					}
 					if (
 						htmlElement.children[key] &&
 						htmlElement.children[key].textContent != ""
 					) {
-						if(getCurrClass != "fieldCol")
-						{
+						if (getCurrClass != "fieldCol") {
 							if (getCurrClass == "autoquery") {
 								queryTxt +=
 									'"' +
@@ -2103,14 +2042,14 @@ function FullTextSearch() {
 									htmlElement.children[key].textContent.trim() +
 									'"' +
 									" ";
-							}else if (getCurrClass == "fieldquery") {
+							} else if (getCurrClass == "fieldquery") {
 								queryTxt += htmlElement.children[key].textContent.trim() + ":";
-							}else {
+							} else {
 								queryTxt += htmlElement.children[key].textContent.trim() + " ";
 							}
 						}
-						
-						
+
+
 						htmlElement.children[currKey].setAttribute(
 							"dataId",
 							parseInt(currKey) + 1
@@ -2143,7 +2082,7 @@ function FullTextSearch() {
 				// 	console.log(data,'data');
 				// });
 				var elements = document.querySelectorAll('.space');
-				
+
 				if (spaceOpacity) {
 					elements.forEach((element) => {
 						// console.log(element,'element');
@@ -2247,12 +2186,11 @@ function FullTextSearch() {
 		range.collapse(false);
 		selection.addRange(range);
 		el.focus();
-		
+
 	}
 
 	function getCaretGlobalPosition() {
-		if(document.getSelection().rangeCount > 0)
-		{
+		if (document.getSelection().rangeCount > 0) {
 			const r = document.getSelection().getRangeAt(0);
 			const node = r.startContainer;
 			const offset = r.startOffset;
@@ -2283,28 +2221,25 @@ function FullTextSearch() {
 		}
 		else if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
 			lastChild = getCurrentSel.focusNode.previousElementSibling;
-		}else if (getCurrentSel.focusNode.nodeName == "#text") {
-			if(getCurrentSel.focusNode.parentElement.nodeName == "SPAN")
-			{
+		} else if (getCurrentSel.focusNode.nodeName == "#text") {
+			if (getCurrentSel.focusNode.parentElement.nodeName == "SPAN") {
 				lastChild = getCurrentSel.focusNode.parentElement;
-			}else{
+			} else {
 				lastChild = getCurrentSel.focusNode.previousElementSibling;
 			}
-			
-		}else {
+
+		} else {
 			lastChild = getCurrentSel.focusNode.parentElement;
 		}
 		if (getCurrentSel.focusNode.nodeName == "#text") {
-			if(getCurrentSel.focusNode.previousElementSibling)
-			{
-				if(getCurrentSel.focusNode.parentElement.nodeName == "DIV")
-				{
+			if (getCurrentSel.focusNode.previousElementSibling) {
+				if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
 					getCurrDataId = getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") ? getCurrentSel.focusNode.previousElementSibling.getAttribute("dataid") : '';
-				}else{
+				} else {
 					getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
 				}
-				
-			}else if(getCurrentSel.focusNode.parentElement.previousElementSibling){
+
+			} else if (getCurrentSel.focusNode.parentElement.previousElementSibling) {
 				getCurrDataId = getCurrentSel.focusNode.parentElement.getAttribute("dataid") ? getCurrentSel.focusNode.parentElement.getAttribute("dataid") : '';
 			}
 		}
@@ -2314,24 +2249,24 @@ function FullTextSearch() {
 		else if (getCurrentSel.focusNode.parentElement.nodeName == "DIV") {
 			getCurrDataId = getCurrentSel.focusNode ? getCurrentSel.focusNode.getAttribute("dataid") : '';
 		}
-		console.log(getCurrDataId,'getCurrDataId');
+		console.log(getCurrDataId, 'getCurrDataId');
 		let getText = htmlElement.textContent || htmlElement.innerText;
 		let getLength = getText.length;
 		closePopup();
-		
+
 		var newSpan = document.createElement("span");
 		var querySpan = document.createElement("span");
 		newSpan.setAttribute("class", "fieldquery");
-		querySpan.setAttribute("class","fieldCol");
+		querySpan.setAttribute("class", "fieldCol");
 		newSpan.innerText = obj.key
 		querySpan.innerText = ":";
 		if (htmlElement.children && htmlElement.children.length == 0) {
-			htmlElement.innerHTML = newSpan.outerHTML+querySpan.outerHTML;
+			htmlElement.innerHTML = newSpan.outerHTML + querySpan.outerHTML;
 		} else {
 			Object.keys(htmlElement.children).forEach(function (key) {
 				getClassId = htmlElement.children[key].getAttribute("dataid");
 				if (getClassId == getCurrDataId) {
-					htmlElement.children[key].outerHTML = ANDString + " " +newSpan.outerHTML+querySpan.outerHTML;
+					htmlElement.children[key].outerHTML = ANDString + " " + newSpan.outerHTML + querySpan.outerHTML;
 				}
 			});
 		}
@@ -2343,21 +2278,19 @@ function FullTextSearch() {
 		}
 		placeCaretAtEnd(htmlElement);
 	};
-	const searchTerm = async (value, keyEvt,curPos) => {
+	const searchTerm = async (value, keyEvt, curPos) => {
 		// setTimeout(() => {
 		// }, 500);
-		console.log(curPos,'curPos');
-		if(keyEvt != 32)
-		{
-			localStorage.setItem('curPos',curPos);
+		console.log(curPos, 'curPos');
+		if (keyEvt != 32) {
+			localStorage.setItem('curPos', curPos);
 		}
 		setSearchTermPopup(false);
-		console.log(keyEvt,'keyEvt');
+		console.log(keyEvt, 'keyEvt');
 		let userId = userInfo && userInfo.current_user.gq_user_id;
 
 		let searchParam = `&json_query=${value}&rows=25&ontologies=${ontology}&user_id=${userId}`;
-		if(value != "" && value != null)
-		{
+		if (value != "" && value != null) {
 			const searchRes = await fullTextService.getFullTextSearchTerm(
 				history,
 				searchParam
@@ -2366,23 +2299,23 @@ function FullTextSearch() {
 				if (searchRes.response_content.length > 0) {
 					setSearchTermData(searchRes.response_content);
 					let getXYCoordinates = getCaretGlobalPosition();
-	
+
 					if (getXYCoordinates) {
 						setTopPosition(getXYCoordinates.top);
 						setLeftPosition(getXYCoordinates.left);
 					}
-					console.log(keyCode,'keyCode');
-					
+					console.log(keyCode, 'keyCode');
+
 					if (keyCode == 32) {
 						setSearchTermPopup(false);
-					}else{
+					} else {
 						setSearchTermPopup(true);
 					}
-	
+
 					// setTimeout(() => {
 					let htmlElement = document.getElementById("textareaDiv");
 					// htmlElement.focus();
-	
+
 					placeCaretAtEnd(htmlElement);
 					// placeCaretAtEnd(htmlElement);
 					// htmlElement.innerHTML.focus();
@@ -2390,20 +2323,19 @@ function FullTextSearch() {
 				} else {
 					setSearchTermPopup(false);
 				}
-			}else if(keyEvt == 32)
-			{
+			} else if (keyEvt == 32) {
 				setSearchTermPopup(false);
 			}
-		}else{
+		} else {
 			setSearchTermPopup(false);
 		}
-		
+
 	};
 	const selectSearchTerm = async (data) => {
 		let htmlElement = document.getElementById("textareaDiv");
 		let curPos = localStorage.getItem('curPos');
 		var getEl = await getCurrentCursorPositionEl(curPos);
-		console.log(getEl,'getEl');
+		console.log(getEl, 'getEl');
 		let dataId = '';
 		let getClassId = '';
 		var newSpan = document.createElement("span");
@@ -2416,36 +2348,34 @@ function FullTextSearch() {
 		newSpan.innerHTML = data.term;
 
 		// var newSpan = '<span onclick="getAutoQueryData()" class="autoquery" id='+data.id+'>'+data.term+'</span>';
-		console.log(newSpan,'newSpan');
+		console.log(newSpan, 'newSpan');
 		var spaceSpan = document.createElement("span");
 		// add the class to the 'span'
 		spaceSpan.setAttribute("class", "space");
 		spaceSpan.innerHTML = ".";
-		if(getEl && getEl.endContainer){
-			if(getEl.endContainer.parentElement)
-			{
-				if(getEl.endContainer.parentElement.getAttribute('dataid'))
-				{
+		if (getEl && getEl.endContainer) {
+			if (getEl.endContainer.parentElement) {
+				if (getEl.endContainer.parentElement.getAttribute('dataid')) {
 					dataId = getEl.endContainer.parentElement.getAttribute('dataid');
-				}else{
+				} else {
 					dataId = getEl.endContainer.parentElement.parentElement.getAttribute('dataid');
 				}
-				
+
 				Object.keys(htmlElement.children).forEach(function (key) {
 					getClassId = htmlElement.children[key].getAttribute("dataid");
 					if (getClassId == dataId) {
-						htmlElement.children[key].outerHTML = newSpan.outerHTML+" "+spaceSpan.outerHTML;
+						htmlElement.children[key].outerHTML = newSpan.outerHTML + " " + spaceSpan.outerHTML;
 					}
 				});
 				Object.keys(htmlElement.children).forEach(function (key) {
 					htmlElement.children[key].setAttribute("dataId", parseInt(key) + 1);
-						// htmlElement.children[key].innerHTML = htmlElement.children[key].innerHTML.replace(/<br>/g, "");
+					// htmlElement.children[key].innerHTML = htmlElement.children[key].innerHTML.replace(/<br>/g, "");
 				});
 				if (document.getElementsByClassName('space') && document.getElementsByClassName('space').length > 0) {
 					document.getElementsByClassName('space')[0].style = 'opacity: 0';
 				}
 			}
-		}else{
+		} else {
 			let lastChild = htmlElement.children[htmlElement.children.length - 1];
 			let lastPrevChild = htmlElement.children[htmlElement.children.length - 2];
 			let getChildClass = "",
@@ -2466,7 +2396,7 @@ function FullTextSearch() {
 				getChildText = lastPrevChild.textContent;
 			}
 
-			
+
 			if (lastChild && lastChild.attributes.length > 0) {
 				htmlElement.children[htmlElement.children.length - 1].outerHTML =
 					newSpan.outerHTML + '&nbsp;';
@@ -2475,7 +2405,7 @@ function FullTextSearch() {
 					newSpan.outerHTML + '&nbsp;';
 			}
 		}
-		
+
 		let queryText = htmlElement.textContent;
 		let queryTxt = "";
 		Object.keys(htmlElement.children).forEach(function (key) {
@@ -2607,8 +2537,7 @@ function FullTextSearch() {
 			setSaveFormError(true);
 			return;
 		}
-		if(queryParser)
-		{
+		if (queryParser) {
 			let parseData = JSON.parse(queryParser);
 			let checkRightCount = await countKeys(parseData, "right");
 			// Parsing Object for Autocomplete search
@@ -2622,7 +2551,7 @@ function FullTextSearch() {
 					: (searchParam += `&start=${searchStartPage}`);
 				searchParam += `&rows=${pageCount}`;
 
-				groupingType ? (searchParam += `&grouping=${groupingType}`): (searchParam += `&grouping=${grouping}`);
+				groupingType ? (searchParam += `&grouping=${groupingType}`) : (searchParam += `&grouping=${grouping}`);
 				if (formName) {
 					searchParam += `&template_name=${formName}`
 				}
@@ -2642,7 +2571,7 @@ function FullTextSearch() {
 					searchParam += `&Date_sorting_dir=${dateSortingDirection}`
 				}
 				const getLocalFT = localStorage.getItem('FTSearchParam');
-				if(getLocalFT) {
+				if (getLocalFT) {
 					localStorage.removeItem('FTSearchParam');
 				}
 
@@ -2653,14 +2582,14 @@ function FullTextSearch() {
 				// if(searchQueryRes) {
 				// 	setDocSearchResult(searchQueryRes.response_content);
 				// }
-				if(searchQueryRes &&
+				if (searchQueryRes &&
 					searchQueryRes.response_status == 0 &&
-					searchQueryRes.response_content && searchQueryRes.response_content.status == 200){
-						setDocSearchResult(searchQueryRes.response_content);
-						localStorage.setItem('FTSearchParam', searchParam);
-				} 
+					searchQueryRes.response_content && searchQueryRes.response_content.status == 200) {
+					setDocSearchResult(searchQueryRes.response_content);
+					localStorage.setItem('FTSearchParam', searchParam);
+				}
 			}, 1000);
-		}	
+		}
 	}
 
 	function changeGroup(groupingType) {
@@ -2699,24 +2628,24 @@ function FullTextSearch() {
 		value ? setSaveResultAsError(false) : setSaveResultAsError(true);
 	}
 
-	const submitSaveResultAs = async() => {
+	const submitSaveResultAs = async () => {
 		if (!saveResultAs) {
 			setSaveResultAsError(true);
 		} else {
 			//api
 			let localQuery = localStorage.getItem('FTSearchParam');
-			if(localQuery){
+			if (localQuery) {
 				localQuery += `&workflow_type=GqWfSearchFT&title=${saveResultAs}`;
-			const saveDoc = await fullTextService.saveFTDocument(history, localQuery);
-			if(saveDoc && saveDoc.response_status == 0 && saveDoc.response_content && saveDoc.response_content.status == 200){
+				const saveDoc = await fullTextService.saveFTDocument(history, localQuery);
+				if (saveDoc && saveDoc.response_status == 0 && saveDoc.response_content && saveDoc.response_content.status == 200) {
 					history.push('/searchResult')
-				} 
-		}
+				}
+			}
 		}
 	}
 
-	const modalApplyFunction = () =>{
-		if(isAuthoritySorting && (configure1 === '' && configure2 === '' && configure3 === '' && configure4 === '' && configure5 === '')){
+	const modalApplyFunction = () => {
+		if (isAuthoritySorting && (configure1 === '' && configure2 === '' && configure3 === '' && configure4 === '' && configure5 === '')) {
 			setIsAuthoritySorting(false);
 			setConfigure1('US');
 			setConfigure2('EP');
@@ -2724,11 +2653,11 @@ function FullTextSearch() {
 		}
 		searchResult(null, 0, 'closeModal');
 	}
-	
+
 	return (
 		<div className={classes.grow}>
 			<Row>
-				<Col md="10" lg="10">
+				<Col xs='12' sm='12' md="12" lg="12">
 					<p className="loginTitle">{t("fulltext")}</p>
 					<div className="form-group" id="searchDiv">
 						{/* <TextInput
@@ -2768,30 +2697,30 @@ function FullTextSearch() {
 									<h4 className={"subHeading mb-4 " + classes.titleFont}>{t('customWordList')}</h4>
 									<div className="mb-2">
 										<div className="synonymDiv">
-										
+
 											<ReactEditorJS
 												onInitialize={handleInitialize}
 												tools={EDITOR_JS_TOOLS}
 												defaultValue={{
 													time: 1635603431943,
 													blocks: [
-													{
-														id: "xnPuiC9Z8M",
-														type: "list",
-														data: {
-														items: selectedTermSynonyms
-														}
-													},
-													
-													
+														{
+															id: "xnPuiC9Z8M",
+															type: "list",
+															data: {
+																items: selectedTermSynonyms
+															}
+														},
+
+
 													]
 												}}
-												/>
+											/>
 										</div>
 									</div>
 									<div className="clear">
-										<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit"  onClick={saveEditSynonyms}>{t('save')}</Button>
-										<Button className={"cancelButtonClass float-right"} id="mergeCancel" onClick={()=>setOpenACSynPopup(false)}>{t('cancel')}</Button>
+										<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit" onClick={saveEditSynonyms}>{t('save')}</Button>
+										<Button className={"cancelButtonClass float-right"} id="mergeCancel" onClick={() => setOpenACSynPopup(false)}>{t('cancel')}</Button>
 									</div>
 								</form>
 							</Modal.Body>
@@ -2801,7 +2730,7 @@ function FullTextSearch() {
 							position="bottom center"
 							nested
 							open={openACPopup}
-							{...{arrowStyle }}
+							{...{ arrowStyle }}
 						>
 							<a className="close" onClick={closeACModal}>
 								&times;
@@ -2810,15 +2739,15 @@ function FullTextSearch() {
 								<b>Your search will include the following exact phrases :</b>
 							</span>
 							<ul>
-							{selectedTermSynonyms.length >0 && selectedTermSynonyms.map((obj, index) => {
-								return (
-									<li
-										key={index}
-										className="col-md-12 list-inside"
-									><span>{obj.trim()}</span></li>
+								{selectedTermSynonyms.length > 0 && selectedTermSynonyms.map((obj, index) => {
+									return (
+										<li
+											key={index}
+											className="col-md-12 list-inside"
+										><span>{obj.trim()}</span></li>
 									)
 								})
-							}
+								}
 							</ul>
 							<button className={"submitButtonClass float-right ml-2"} onClick={editACSynonyms}>Edit</button>
 
@@ -2866,8 +2795,8 @@ function FullTextSearch() {
 							</div>
 						</div>
 					</div>
-					{/* <Row>
-						<Col md='4'>
+					<Row sm='12' md='12' xs='12'>
+						<Col sm='3' md='3' xs='3' style={{ display: 'flex', alignItems: 'center', padding: '0' }}>
 							<CheckBox
 								// defaultChecked
 								color="primary"
@@ -2877,9 +2806,9 @@ function FullTextSearch() {
 								onChange={setFormValue}
 								checked={saveFormValue}
 							/>
-							<label className={"checkBoxContent bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm">{t("SaveFormForlaterUse")}</label>
+							<label className={"checkBoxContent bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm" style={{ margin: 0 }}>{t("SaveFormForlaterUse")}</label>
 						</Col>
-						<Col md='6'>
+						<Col xs='6' sm='6' md='6'>
 							<TextInput
 								id="formName"
 								name="formName"
@@ -2894,15 +2823,34 @@ function FullTextSearch() {
 								helperText={saveFormError ? t('required') : ""}
 							/>
 						</Col>
-					</Row> */}
+						<Col sm='3' md='3' xs='3' style={{ display: 'flex', justifyContent: 'flex-end' }} >
+							<Button
+								variant="contained"
+								disableRipple={true}
+								className={"loginSubmitCancel float-right mx-2"}
+								onClick={clearParser}
+							>
+								{t("clear")}
+							</Button>
+							<Button
+								variant="contained"
+								disableRipple={true}
+								className={"float-right " + (isSearch ? 'loginSubmitButton' : '')}
+								onClick={() => searchResult(null, null)}
+								color={(!isSearch ? 'default' : 'secondary')} disabled={!isSearch}
+							>
+								{t("submit")}
+							</Button>
+						</Col>
+					</Row>
 
 					<div className="form-group">
-						<Button
+						{/* <Button
 							variant="contained"
 							disableRipple={true}
-							className={"float-right "+(isSearch ? 'loginSubmitButton' : '')}
-							onClick={() => searchResult(null, 0)}
-							color={(!isSearch ? 'default' : 'secondary')} disabled={!isSearch} 
+							className={"float-right " + (isSearch ? 'loginSubmitButton' : '')}
+							onClick={() => searchResult(null, null)}
+							color={(!isSearch ? 'default' : 'secondary')} disabled={!isSearch}
 						>
 							{t("submit")}
 						</Button>
@@ -2913,7 +2861,7 @@ function FullTextSearch() {
 							onClick={clearParser}
 						>
 							{t("clear")}
-						</Button>
+						</Button> */}
 						{/* <div>{ReactHtmlParser(testOutput)}</div> */}
 						<Popover
 							id={"simple-popover"}
@@ -3263,7 +3211,7 @@ function FullTextSearch() {
 							/>
 						</div>
 						<div className="clear">
-							<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit"  onClick={modalApplyFunction}>{t('apply')}</Button>
+							<Button className={"submitButtonClass float-right ml-2"} id="mergeSubmit" onClick={modalApplyFunction}>{t('apply')}</Button>
 							<Button className={"cancelButtonClass float-right"} id="mergeCancel" onClick={() => setIsConfigureActive(!isConfigureActive)}>{t('cancel')}</Button>
 						</div>
 					</form>

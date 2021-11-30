@@ -570,9 +570,8 @@ function IpSeqSearch(props) {
                 let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [], nucDefaultPatentDb = [], nucMyData = [];
                 let nucFormattedData = await list_to_tree(nucData);
                 let getNucChild = [];
-                if(typeof(props.location.state) !== 'undefined' && props.location.state !== null)
-                {
-                    console.log(props.location.state,"userrr");
+                if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
+                    console.log(props.location.state, "userrr");
                     formik.setFieldValue("querySequence", props.location.state.seq);
                     setSequenceType(props.location.state.type);
                 }
@@ -816,25 +815,30 @@ function IpSeqSearch(props) {
             if (resp && resp.response_status == 0) {
                 setShowSuccessModal(true);
                 closeSuccessModal();
-            } else if (resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
+            } else if (resp && resp.response_status == 2 && resp.response_content.qdb && resp.response_content.qdb.msg && resp.response_content.qdb.msg.includes("wrong query sequence type")) {
                 // setWarningMsg("Warning: "+resp.response_content.qdb.msg);
                 setIsWarningReturned(true);
                 setShowErrorModal(true);
                 setErrorMsg("Warning: " + resp.response_content.qdb.msg);
                 setErrorHeading('Please notice the warnings below and either fix it or submit as is.')
                 // window.scrollTo(0,0);
-            } else if (resp.response_status == 1 && resp.response_content.qdb && resp.response_content.qdb.msg) {
+            } else if (resp && resp.response_status == 1 && resp.response_content.qdb && resp.response_content.qdb.msg) {
                 // setWarningMsg("Warning: "+resp.response_content.qdb.msg);
                 setShowErrorModal(true);
                 setErrorMsg(resp.response_content.qdb.msg);
                 setErrorHeading(t("seqSearchErrorOccured"))
                 // window.scrollTo(0,0);
             } else {
-                let setMessage = resp && resp.response_content && resp.response_content.message ? resp.response_content.message : "Unknown";
+                let setMessage = resp && resp.response_content && resp.response_content.message ? resp.response_content.message : (resp == 'Error: Network Error') ? 'Network connection failed' : "Unknown";
                 // setMessage = resp && resp.response_content && resp.response_content.qdb && resp && resp.response_content && resp.response_content.qdb.msg ? resp.response_content.qdb.msg : "Unknown";
                 setShowErrorModal(true);
                 setErrorMsg(setMessage);
                 setErrorHeading(t("seqSearchErrorOccured"))
+                if (resp == 'Error: Network Error') {
+                    setTimeout(() => {
+                        history.push('/home')
+                    }, 5000)
+                }
             }
         },
     });
@@ -887,7 +891,6 @@ function IpSeqSearch(props) {
         if (event.target.value == "motif") {
             setIsBothDbSelected(false);
         }
-
     };
 
     const handleSequenceType = (event) => {
@@ -1292,8 +1295,6 @@ function IpSeqSearch(props) {
             setIsPublished(prevState => !prevState);
         }
     }
-
-    console.log('formik', formik.errors)
 
 
     return (
