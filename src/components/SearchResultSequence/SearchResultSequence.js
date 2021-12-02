@@ -1047,7 +1047,7 @@ function SearchResultSequence(props) {
                                 <Col lg="10" md="10" sm="10" xs='10' className="pr-0 content">
                                     <img className="float-left mx-3" src={notesImg} alt={t('notes')} />
                                     <Typography >
-                                        You can leave notes in the box below. Press “Save Changes” to remember them. Notes are visible to and editable by people you share this result with.
+                                    You can leave notes in the box below. Press “Save Notes” to remember them. Notes are visible to and editable by people you share this result with.
                                     </Typography>
                                 </Col>
                             </Row>
@@ -1072,7 +1072,7 @@ function SearchResultSequence(props) {
                             </Row>
                             <Row>
                                 <Col lg="10" md="10" sm="10" className="pr-0 content float-right">
-                                    <Button className="mr-2 accountInfo" type="submit" onClick={updateNotes}>{t('saveChanges')}</Button>
+                                <Button className="mr-2 accountInfo" type="submit" onClick={updateNotes}>{t('saveNotes')}</Button>
                                 </Col>
                             </Row>
                         </Col>
