@@ -469,9 +469,10 @@ function SearchManagement(props) {
         });
         const isMergeEqual = mergeType.every(i => i === mergeType[0]);
         const isFolderOrAntiBody = mergeType.includes("Folder") || mergeType.includes("Antibody") ? true : false;
+        const isIpAndDoc = mergeType.length >= 2 && mergeType.includes("IP Sequence") && mergeType.includes("Document") && !mergeType.includes('Variation') && !mergeType.includes('Sequence') && !mergeType.includes('Merge Result') ? true : false;
         if (state.selectedCount > 0) {
             setDisableDelete(false);
-            if (state.selectedCount >= 2 && mergeType.length >= 2 && isMergeEqual && !isFolderOrAntiBody) {
+            if (state.selectedCount >= 2 && mergeType.length >= 2 && (isMergeEqual || isIpAndDoc) && !isFolderOrAntiBody) {
                 setDisableMergeBtn(false);
             } else {
                 setDisableMergeBtn(true);
@@ -731,12 +732,12 @@ function SearchManagement(props) {
                 tempObj["info"] = <Fragment>
 
                     {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, null)}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
-                    {datas.type !== "Folder" && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
-                    {datas.type === "Folder" && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
+                    {datas.type !== "Folder" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') &&  <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
+                    {datas.type === "Folder" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
 
-                    {datas.type === "IP Sequence" && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
-                    {datas.type === "Variation" && <Link to={"/ipseqvariation/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>}
-                    {datas.type === "Antibody" && <Link to={"/searchresantibody/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>}
+                    {datas.type === "IP Sequence" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
+                    {datas.type === "Variation" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/ipseqvariation/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>}
+                    {datas.type === "Antibody" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/searchresantibody/" + datas.id}><RedoIcon className="mr-2 appLink" /></Link>}
 
                     {/* {datas.type === "IP Sequence" && <Link  ><RedoIcon className="mr-2 appLink" /></Link>}
                     {datas.type === "Variation" && <Link ><RedoIcon className="mr-2 appLink" /></Link>} */}

@@ -879,7 +879,7 @@ function SearchResultAntibody() {
                     </Col> */}
 
                     <Col lg="12" md="12" sm='12' xs='12' style={{ display: 'flex', flexDirection: 'row-reverse' }} className="float-right mb-3">
-                        <Button variant="contained" className={!disableSearch ? 'cancelButtonDisable' : 'accountInfo'} type="submit" disabled={!disableSearch}>{t('Search')}</Button>&nbsp;
+                        <Button variant="contained" className={!disableSearch ? 'cancelButtonDisable' : 'accountInfo'} disabled={!disableSearch} onClick={submitForm}>{t('Search')}</Button>&nbsp;
                         <Button variant="contained" color={'default'} className={classes.loginSubmitCancel} onClick={homePage} type="submit">{t('cancel')}</Button>
                     </Col>
                 </Row>
