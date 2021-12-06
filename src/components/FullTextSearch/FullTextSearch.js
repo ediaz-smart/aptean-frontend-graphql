@@ -66,6 +66,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	titleFont: {
 		fontSize: "20px !important"
+	},
+	submitDisabled: {
+		border: '1px solid #e0e0e0 !important',
+		textTransform: 'none'
 	}
 }));
 let ANDString = '<span class="andClass opClass" contenteditable="false">AND</span>';
@@ -2806,7 +2810,7 @@ function FullTextSearch() {
 								onChange={setFormValue}
 								checked={saveFormValue}
 							/>
-							<label className={"checkBoxContent bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm" style={{ margin: 0 }}>{t("SaveFormForlaterUse")}</label>
+							<label className={"bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm" style={{ margin: 0 }}>{t("SaveFormForlaterUse")}</label>
 						</Col>
 						<Col xs='6' sm='6' md='6'>
 							<TextInput
@@ -2835,7 +2839,7 @@ function FullTextSearch() {
 							<Button
 								variant="contained"
 								disableRipple={true}
-								className={"float-right " + (isSearch ? 'loginSubmitButton' : '')}
+								className={"float-right " + (isSearch ? 'loginSubmitButton' : classes.submitDisabled)}
 								onClick={() => searchResult(null, null)}
 								color={(!isSearch ? 'default' : 'secondary')} disabled={!isSearch}
 							>

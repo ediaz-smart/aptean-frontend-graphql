@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
         width: '96%',
-        maxWidth: containerWidth,
+        maxWidth: '1200px',
         margin: '0 auto',
         minHeight: '260px',
         padding: '23px 0 5px'
@@ -258,9 +258,6 @@ const useStyles = makeStyles((theme) => ({
     },
     sharedFolderText: {
         fontSize: '14px',
-        '&:hover': {
-            cursor: 'default'
-        }
     }
 }));
 
@@ -436,6 +433,7 @@ function SearchManagement(props) {
     const [isSearchDone, setIsSearchDone] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [showMergeModal, setShowMergeModal] = useState(false);
+    const [isShared, setIsShared] = useState(false);
 
     //Pagination
 
@@ -592,7 +590,6 @@ function SearchManagement(props) {
                 // tempArr = await UtilsService.mostRecentResCalculation(result, 'searchmanagement');
                 tempArr = await getSearchDataArr(result, 'searchmanagement');
                 // tempArr = _.orderBy(tempArr, [(obj) => new Date(obj.date)], ['desc']);
-
             }
         } else {
             if (id && !isSearchDone) {
@@ -1081,16 +1078,14 @@ function SearchManagement(props) {
         }
     }
     const [sharedFolderInfo, setSharedFolderInfo] = useState([]);
-    async function getItemsSharedWithMeInfo() {
-        const sharedWithMeData = await SearchManagementService.getItemsSharedWithMe(history)
-        setSharedFolderInfo(sharedWithMeData.response_content)
+    async function getFoldersSharedWithMeInfo() {
+        const sharedWithMeData = await SearchManagementService.getFoldersSharedWithMe(history)
+        setSharedFolderInfo(sharedWithMeData.response_content?.children ? sharedWithMeData.response_content : [])
     }
 
     useEffect(() => {
-        // (async () => {
-        // const result = dispatch(getSearchResult());
         getFolderResultData();
-        getItemsSharedWithMeInfo()
+        getFoldersSharedWithMeInfo()
         getDefaultSearchResult('defaultText', '');
 
         document.addEventListener("keydown", escFunction, false);
@@ -1100,16 +1095,32 @@ function SearchManagement(props) {
 
         };
     }, []);
+    const handleSharedFolderClick = e => {
+        setIsShared(true)
+        changeTitle(e)
+    }
+    const handleFolderClick = e => {
+        setIsShared(false)
+        changeTitle(e)
+    }
+
+
     const folderItem = (data, margin) => {
         if (data) {
             return <ListGroup.Item className={classes.projectListItem} key={data.id} >
-                <div className={classes.sharedFolderText + " appTextColor"} style={{ marginLeft: margin }}>
+                <a className={(defaultTitle === data.text_label) ? classes.selectedTitle : "appTextColor"} style={{ marginLeft: margin }}
+                    onClick={() => handleSharedFolderClick(data)}>
                     <img src={FolderIcon} className={classes.folderIcon} />
                     <span style={{ marginLeft: '5px' }}>{data.text_label}</span>
-                </div>
+                </a>
             </ListGroup.Item>
         }
     }
+    const handleSharedResultsClick = async e => {
+        const sharedResults = await SearchManagementService.getResultsSharedWithMe(history)
+        console.log(sharedResults)
+    }
+
     return (
         <div className={classes.grow}>
             <Row>
@@ -1140,7 +1151,7 @@ function SearchManagement(props) {
                     </Col>
                     <Col md="12" className="appTextColor">
                         <h6><b>Projects</b></h6>
-                        <ListGroup defaultActiveKey="#link1" className={"projectList"}>
+                        <ListGroup defaultActiveKey="#link1" className={"projectList"} style={{ maxHeight: '44%', overflow: 'auto' }}>
                             <ListGroup.Item className={classes.projectListItem} key="RecentSearch">
                                 <a className="cursorPointer text-decoration-none appTextColor" onClick={() => updateDefaultValue('Recent Search Results')}>
                                     <img src={FolderIcon} className={classes.folderIcon} />
@@ -1149,7 +1160,7 @@ function SearchManagement(props) {
 
                             {/* {folderDetail.map((value, index) => { */}
                             <ListGroup.Item key={123} className={classes.projectListItem}>
-                                <FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} selectedTitleId={defaultTitleId} type="selectFolder" parentCallback={changeTitle} />
+                                <FolderTreeMenu items={folderDetail} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} selectedTitleId={defaultTitleId} type="selectFolder" parentCallback={handleFolderClick} />
                             </ListGroup.Item>
 
                             {/* })} */}
@@ -1169,32 +1180,35 @@ function SearchManagement(props) {
                             </ListGroup.Item>
                         </ListGroup>
                         <h6 className="mt-4"><b>{t('resSharedWithMe')}</b></h6>
-                        <ListGroup defaultActiveKey="#link1" className={"projectList"}>
+                        <ListGroup defaultActiveKey="#link1" className={"projectList"} style={{ maxHeight: '44%', overflow: 'auto' }}>
                             <ListGroup.Item className={classes.projectListItem} key={'shared results'}>
-                                <div className={classes.sharedFolderText + " appTextColor"} >
+                                <a className={classes.sharedFolderText + " appTextColor"} onClick={handleSharedResultsClick} >
                                     <img src={FolderIcon} className={classes.folderIcon} />
                                     <span style={{ marginLeft: '5px' }}>Shared Results</span>
-                                </div>
+                                </a>
                             </ListGroup.Item>
                             {sharedFolderInfo.children ? sharedFolderInfo.children.map(sharedFolder => {
                                 let folderData;
                                 if (sharedFolder.data) {
-                                    folderData = <>{folderData}{folderItem(sharedFolder.data, 20)}</>
+                                    folderData = <>{folderData}{folderItem(sharedFolder.data, 30)}</>
                                 }
                                 if (sharedFolder.children?.length) {
                                     sharedFolder.children.map(sharedFirstGenChildFolder => {
                                         if (sharedFirstGenChildFolder.data) {
-                                            folderData = <>{folderData}{folderItem(sharedFirstGenChildFolder.data, 40)}</>
+                                            folderData = <>{folderData}{folderItem(sharedFirstGenChildFolder.data, 60)}</>
                                         }
                                         if (sharedFirstGenChildFolder.children?.length) {
                                             sharedFirstGenChildFolder.children.map(shared2ndGenChildFolder => {
-                                                folderData = <>{folderData}{folderItem(shared2ndGenChildFolder.data, 60)}</>
+                                                folderData = <>{folderData}{folderItem(shared2ndGenChildFolder.data, 90)}</>
                                             })
                                         }
                                     })
                                 }
                                 return folderData
                             }) : null}
+                            {/* <ListGroup.Item key={123} className={classes.projectListItem}>
+                                <FolderTreeMenu items={sharedFolderInfo.children ? sharedFolderInfo.children : []} isSharedFolder={true} infoFolderIds={infoFolderIds} selectedTitle={defaultTitle} selectedTitleId={defaultTitleId} type="selectFolder" parentCallback={handleSharedFolderClick} />
+                            </ListGroup.Item> */}
                         </ListGroup>
                     </Col>
                 </Col>
@@ -1227,14 +1241,14 @@ function SearchManagement(props) {
                     </Col>
                     {/* </Row> } */}
 
-                    <Col className={"float-left px-0 " + classes.columnPadding + (searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
+                    <Col className={"float-left px-0 " + classes.columnPadding + (!isShared && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
 
                         <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
                         <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={getSelection} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('moveToFolder')}</Button>
                         <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>
                     </Col>
 
-                    <Col className={"float-right " + classes.columnPadding + ((defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
+                    <Col className={"float-right " + classes.columnPadding + (!isShared && (defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
                         <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
                         <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={"accountInfo mr-2 " + (defaultTitle == 'My Searches' ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;

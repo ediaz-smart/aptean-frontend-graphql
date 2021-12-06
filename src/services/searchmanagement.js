@@ -226,8 +226,26 @@ async function getMoveSelection(id, history) {
     }
 
 }
-
-async function getItemsSharedWithMe(history) {
+async function getResultsSharedWithMe(history) {
+    const sharedWithMeUrl = url.itemsSharedWithMe;
+    try {
+        showLoader();
+        return await get(sharedWithMeUrl, history)
+            .then((response) => {
+                hideLoader();
+                return response;
+            })
+            .catch((error) => {
+                hideLoader();
+                //toast.error('A');
+                console.log("error::", error);
+            });
+    } catch (error) {
+        hideLoader();
+        console.error(error);
+    }
+}
+async function getFoldersSharedWithMe(history) {
     const sharedWithMeUrl = url.foldersSharedWithMe;
     try {
         showLoader();
@@ -254,7 +272,8 @@ const SearchManagementService = {
     moveToFolder,
     addFolder,
     getSearchResultSet,
-    getItemsSharedWithMe,
+    getFoldersSharedWithMe,
+    getResultsSharedWithMe,
     mergeResults,
     getMoveSelection
 };
