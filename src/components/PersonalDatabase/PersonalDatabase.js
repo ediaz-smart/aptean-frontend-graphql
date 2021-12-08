@@ -271,7 +271,7 @@ function PersonalDatabase() {
                 // await constrainTemplateData(resultCon);
                 //setSearchFormsData(resultCon);
                 const list = []
-                console.log(result.response_content.results, "rrrr");
+                //console.log(result.response_content.results,"rrrr");
                 result.response_content.results.forEach((product) => {
                     if (product.type == 'DlPhysicalSeqdb' || product.type == 'DlVirtualSeqdb') {
                         list.push(product);
@@ -343,15 +343,9 @@ function PersonalDatabase() {
 
     }
     async function uploadTemplate() {
-        // console.log(updateState,"SAMple Data that enters")
-        // console.log(thing,"SAMple");
         const data = [];
 
         setDbmodalShow(true);
-        // const result = await SavedSearch.deleteSavedTemplate(thing.selectedRows,thing.selectedCount);
-
-        // toast.error("Under Construction!");
-        // console.log("Hi there, user!",result);
 
     }
     function cancelForm() {
@@ -451,7 +445,23 @@ function PersonalDatabase() {
                             />
 
                         </Fragment>
-                        : <p></p>
+                        :
+                        <p>
+                            <Button className={classes.buttonStyleS} disableRipple={true} onClick={() => uploadTemplate()} >Upload New Database</Button>
+
+                            <UploadPersonalDBModal
+                                show={dbmodalShow}
+                                onHide={() => cancelFormsUpload()}
+                            //tryAgain={() => deleteForm()}
+                            // onMessage={errorMessage}
+                            />
+                            <PersonalDBModal
+                                show={modalShow}
+                                onHide={() => cancelForms()}
+                                tryAgain={() => deleteForm()}
+                            // onMessage={errorMessage}
+                            />
+                        </p>
                     }
                 </div>
             </Row>

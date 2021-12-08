@@ -197,7 +197,7 @@ function UploadPersonalDBModal(props) {
 
         }
         if (status && status.response_content && status.response_content.status == "FINISHED") {
-            toast("Database created successfully");
+            toast.success("Database created successfully");
 
 
         }
@@ -223,6 +223,12 @@ function UploadPersonalDBModal(props) {
         //console.log(acceptedFiles,"accepted");
         let urlParam = 'do=gqupload.post&format=json';
         const dbname = document.getElementById("dbName").value;
+        const createFolder = await PersonalDB.createUploadfolder();
+        if (createFolder && createFolder.response_content.uniqdir) {
+        }
+        else {
+            toast.error("Database : Unique folder error");
+        }
         const checkdb = await PersonalDB.checkDbName(dbname);
 
         if (checkdb && checkdb.response_content && !checkdb.response_content.exist) {
@@ -258,6 +264,7 @@ function UploadPersonalDBModal(props) {
 
         }
 
+        acceptedFiles.length = 0;
 
 
 
@@ -269,7 +276,7 @@ function UploadPersonalDBModal(props) {
 
     }
 
-    console.log(props, "props");
+    //console.log(props, "props");
     console.log(acceptedFiles, "acceptfil");
 
     return (

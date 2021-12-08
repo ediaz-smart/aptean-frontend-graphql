@@ -39,6 +39,19 @@ const useStyles = makeStyles((theme) => ({
     searchInput: {
         width: '30%'
     },
+    buttonStyleCancel: {
+        float: 'right',
+        textTransform: 'none',
+        margin: '4px',
+        color: 'white',
+        backgroundColor: '#008EC5 !important',
+        border: '1px solid #1F4E79 !important',
+        boxShadow: 'none',
+        '&:hover': {
+            boxShadow: 'none',
+        }
+    },
+
     antibodyNumInput: {
         width: '8%'
     }
@@ -160,8 +173,12 @@ function ConvertSequence() {
                     </Col>
 
                     <Col lg="12" md="12" className="float-right mb-3">
-                        <Button color="primary" variant="contained" className={" text-capitalize mr-2 float-right primaryBtn"} type="submit" >{t('Next')}</Button>&nbsp;&nbsp;&nbsp;
-                        <Button variant="contained" color="primary" className={"text-capitalize mr-2 float-right primaryBtn "} onClick={cncl}>{t('cancel')}</Button>
+
+                        {!formik.values.st26input ?
+                            <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">{t('Next')}</Button>
+                            : <Button className='accountInfo' color="default" disableRipple={true} type="submit" variant="contained">{t('Next')}</Button>
+                        }
+                        <Button variant="contained" disableRipple={true} color="default" className={classes.buttonStyleCancel} onClick={cncl}>{t('cancel')}</Button>
                     </Col>
                 </Row>
 

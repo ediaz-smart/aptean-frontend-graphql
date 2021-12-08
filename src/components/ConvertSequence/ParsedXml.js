@@ -50,7 +50,15 @@ const useStyles = makeStyles((theme) => ({
     },
     antibodyNumInput: {
         width: '8%'
-    }
+    },
+    searchbutton: {
+        margin: '4px 0',
+        float: 'right',
+        textTransform: 'none',
+        backgroundColor: '#db862c !important',
+        border: '1px solid #ca751b !important',
+        color: 'white !important'
+    },
 }));
 
 function ParsedXml(props) {
@@ -247,10 +255,10 @@ function ParsedXml(props) {
                     <Col lg="12" md="12" className="float-right mb-3">
 
                         {userData && userData.vmAccess ?
-                            <Button className='accountInfo' color="default" disableRipple={true} onClick={ipseqvar} variant="contained">{t('ipseqvariation')}</Button>
+                            <Button className={classes.searchbutton} color="default" disableRipple={true} onClick={ipseqvar} variant="contained">{t('ipseqvariation')}</Button>
                             : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">{t('ipseqvariation')}</Button>
                         }
-                        <Button className='accountInfo' color="default" disableRipple={true} onClick={ipseq} style={{ marginRight: '5px' }} variant="contained" >{t('ipseqsearch')}</Button>&nbsp;&nbsp;&nbsp;
+                        <Button className={classes.searchbutton} color="default" disableRipple={true} onClick={ipseq} style={{ marginRight: '5px' }} variant="contained" >{t('ipseqsearch')}</Button>&nbsp;&nbsp;&nbsp;
                         <Button variant="contained" color="primary" className={"text-capitalize mr-2 float-right primaryBtn "} style={{ marginTop: '5px' }} onClick={cncl}>{t('cancel')}</Button>
                     </Col>
                 </Row>

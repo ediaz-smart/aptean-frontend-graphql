@@ -101,6 +101,25 @@ async function getUserInfo() {
 
 }
 
+
+async function createUploadfolder() {
+    try {
+        let apiurl = "do=gqupload&filetype=ANNOTATED_SEQUENCES&format=json";
+        return await get(apiurl)
+            .then((response) => {
+                return response;
+            })
+            .catch((error) => {
+                toast.error("error::", error);
+
+            });
+    } catch (error) {
+        toast.error(error.response_content.message);
+        console.error(error, "errors");
+    }
+
+}
+
 async function checkDbName(dbname) {
     try {
         let apiurl = "do=gqfetch.physical_seqdb_exists&seqdb_locale=L&text_label=" + dbname + "&format=json";
@@ -231,6 +250,7 @@ const personaldb = {
     getPersonalData,
     getUserInfo,
     deletePerData,
+    createUploadfolder,
     checkDbName,
     postfile,
     uploadRecieve,
