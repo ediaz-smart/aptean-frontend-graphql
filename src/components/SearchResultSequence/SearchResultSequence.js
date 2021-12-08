@@ -319,6 +319,7 @@ function SearchResultSequence(props) {
 
     // To disable shared user ids in add share popup
     const [sharedIds, setSharedIds] = useState([]);
+    const [resultWritable, setResultWritable] = useState(true);
 
     // To detect outside click
     const wrapperRef = useRef(null);
@@ -411,6 +412,7 @@ function SearchResultSequence(props) {
             }
             titleNameRef.current = getSummaryResponse.response_content.text_label;
             setGqUserId(getSummaryResponse.response_content.gq_user_id);
+            setResultWritable(getSummaryResponse.response_content._is_writable)
             // setSharedIds(getSummaryResponse.response_content.gq_user_id);
             getSummaryResponse.response_content['usedSpace'] = usedSpace;
             if (getSummaryResponse.response_content.description) {
@@ -713,7 +715,7 @@ function SearchResultSequence(props) {
                             helperText={titleNameErr && t('188OnlyAllowed')}
                         />
                     </div> */}
-                    {updateTitle ?
+                    {resultWritable && updateTitle ?
                         <RenameContainer applyNewName={updateNewTitle}
                             nameRef={titleNameRef}
                             placeHolderText={'Title'}
@@ -1047,7 +1049,7 @@ function SearchResultSequence(props) {
                                 <Col lg="10" md="10" sm="10" xs='10' className="pr-0 content">
                                     <img className="float-left mx-3" src={notesImg} alt={t('notes')} />
                                     <Typography >
-                                    You can leave notes in the box below. Press “Save Notes” to remember them. Notes are visible to and editable by people you share this result with.
+                                        You can leave notes in the box below. Press “Save Notes” to remember them. Notes are visible to and editable by people you share this result with.
                                     </Typography>
                                 </Col>
                             </Row>
@@ -1072,7 +1074,7 @@ function SearchResultSequence(props) {
                             </Row>
                             <Row>
                                 <Col lg="10" md="10" sm="10" className="pr-0 content float-right">
-                                <Button className="mr-2 accountInfo" type="submit" onClick={updateNotes}>{t('saveNotes')}</Button>
+                                    <Button className="mr-2 accountInfo" type="submit" onClick={updateNotes}>{t('saveNotes')}</Button>
                                 </Col>
                             </Row>
                         </Col>

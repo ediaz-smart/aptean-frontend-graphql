@@ -258,6 +258,12 @@ const useStyles = makeStyles((theme) => ({
     },
     sharedFolderText: {
         fontSize: '14px',
+    },
+    selectedTitle: {
+        backgroundColor: '#337ab7',
+        color: '#fff',
+        padding: '3px',
+        borderRadius: '3px'
     }
 }));
 
@@ -613,8 +619,14 @@ function SearchManagement(props) {
                     // setDefaultTitle(`All data which contains: "${searchResSet}"`);
                     // setDefaultTitleId('searchResult');
                 }
+            } else if (type === 'shared results') {
+                const sharedResults = await SearchManagementService.getResultsSharedWithMe(history);
+                setIsShared(true)
+                setDefaultTitle('Shared Results')
+                setDefaultTitleId('sharedResults')
+                tempArr = await getSearchDataArr(sharedResults, 'sharedResults');
+                setFolderResultCount(sharedResults.response_content.length ? sharedResults.response_content.length : 0)
             }
-
         }
         setSearchResultData(tempArr);
     }
@@ -627,8 +639,8 @@ function SearchManagement(props) {
     async function getSearchDataArr(data, pagetype) {
         let tempArr = [];
         let resultData;
-        if (pagetype == 'searchfolder') {
-            resultData = data.response_content.results;
+        if (pagetype == 'searchfolder' || pagetype === 'sharedResults') {
+            resultData = data.response_content.results ? data.response_content.results : [];
         } else {
             resultData = data.response_content;
         }
@@ -638,7 +650,7 @@ function SearchManagement(props) {
             tempObj['date'] = datas.date ? format(new Date(datas.date), 'dd-MMM-yyyy') : null;
             const regex = /Fulltext/i;
             let type = 'Alignments';
-            if (datas.type !== null && datas.type !== '') {
+            if (datas.type !== null && datas.type !== '' && datas.type) {
                 const found = datas.type.match(regex);
                 if (found && found.length > 0) {
                     type = 'Documents';
@@ -725,11 +737,11 @@ function SearchManagement(props) {
                 }
             }
             tempObj['type'] = Constant['searchType'][datas.type] ? Constant['searchType'][datas.type] : datas.type;
-            if (pagetype === "searchmanagement" || pagetype === "searchfolder") {
+            if (pagetype === "searchmanagement" || pagetype === "searchfolder" || pagetype === 'sharedResults') {
                 tempObj["info"] = <Fragment>
 
                     {/* {datas.type === "Folder" && <a href="#" className="infoIcon" onClick={(e) => getInfoIconData(e, tempObj, null)}><InfoIcon className={"mr-2 appLink pe-none " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></a>} */}
-                    {datas.type !== "Folder" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') &&  <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
+                    {datas.type !== "Folder" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/searchresseq/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
                     {datas.type === "Folder" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/report/folder/" + datas.id} className="infoIcon appLink"><InfoIcon className={"mr-2 appLink " + (datas.status == 'FAILED' ? 'failedIconColor' : '')} /></Link>}
 
                     {datas.type === "IP Sequence" && (datas.status != 'STILL_RUNNING' && datas.status != 'CANCELLED') && <Link to={"/ipseqsearch/" + datas.id} ><RedoIcon className="mr-2 appLink" /></Link>}
@@ -1108,19 +1120,17 @@ function SearchManagement(props) {
     const folderItem = (data, margin) => {
         if (data) {
             return <ListGroup.Item className={classes.projectListItem} key={data.id} >
-                <a className={(defaultTitle === data.text_label) ? classes.selectedTitle : "appTextColor"} style={{ marginLeft: margin }}
+                <a className={"appTextColor"} style={{ marginLeft: margin }}
                     onClick={() => handleSharedFolderClick(data)}>
                     <img src={FolderIcon} className={classes.folderIcon} />
-                    <span style={{ marginLeft: '5px' }}>{data.text_label}</span>
+                    <span className={(defaultTitle === data.text_label) ? classes.selectedTitle : ''} style={{ marginLeft: '5px' }}>{data.text_label}</span>
                 </a>
             </ListGroup.Item>
         }
     }
     const handleSharedResultsClick = async e => {
-        const sharedResults = await SearchManagementService.getResultsSharedWithMe(history)
-        console.log(sharedResults)
+        getDefaultSearchResult('shared results', '', 0, 20)
     }
-
     return (
         <div className={classes.grow}>
             <Row>
@@ -1175,7 +1185,7 @@ function SearchManagement(props) {
                                     onKeyDown={getFolderName}
                                 />
                             </ListGroup.Item>
-                            <ListGroup.Item className={classes.projectListItem + " " + classes.addNewLabel + ' ' + (defaultTitle !== 'Recent Search Results' ? 'd-block' : 'd-none')} key="createNewFolder">
+                            <ListGroup.Item className={classes.projectListItem + " " + classes.addNewLabel + ' ' + (!isShared && (defaultTitle !== 'Recent Search Results') ? 'd-block' : 'd-none')} key="createNewFolder">
                                 <img src={FolderPlusIcon} className={classes.folderIcon} /> <a href="" onClick={addNewFolder} className={"appLink " + classes.projectTitle + (!addFolderText ? ' disabled' : '')}>{t('addFolder')}</a>
                             </ListGroup.Item>
                         </ListGroup>
@@ -1184,7 +1194,7 @@ function SearchManagement(props) {
                             <ListGroup.Item className={classes.projectListItem} key={'shared results'}>
                                 <a className={classes.sharedFolderText + " appTextColor"} onClick={handleSharedResultsClick} >
                                     <img src={FolderIcon} className={classes.folderIcon} />
-                                    <span style={{ marginLeft: '5px' }}>Shared Results</span>
+                                    <span className={(defaultTitle === 'Shared Results') ? classes.selectedTitle : ''} style={{ marginLeft: '5px' }}>Shared Results</span>
                                 </a>
                             </ListGroup.Item>
                             {sharedFolderInfo.children ? sharedFolderInfo.children.map(sharedFolder => {
@@ -1224,7 +1234,7 @@ function SearchManagement(props) {
                         sortServer={true}
                         // sortIcon={<SortIcon />}
                         onSelectedRowsChange={updateVal}
-                        noDataComponent={t('noSearchSubmit')}
+                        noDataComponent={isShared ? t('noResultShared') : t('noSearchSubmit')}
                         customStyles={customStyles}
                         selectableRowsNoSelectAll
                         selectableRowsComponent={Checkbox}
@@ -1243,15 +1253,15 @@ function SearchManagement(props) {
 
                     <Col className={"float-left px-0 " + classes.columnPadding + (!isShared && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
 
-                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteSelected')}</Button>
-                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={getSelection} className={"text-capitalize mr-2 float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block')} type="submit">{t('moveToFolder')}</Button>
-                        <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize mr-2 float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>
+                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize float-left" + ' ' + (disableDelete ? 'cancelButtonDisable ' : 'accountInfo ') + ' mr-2'} type="submit">{t('deleteSelected')}</Button>
+                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={getSelection} className={"text-capitalize float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block') + ' mr-2'} type="submit">{t('moveToFolder')}</Button>
+                        <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block') + ' mr-2'} type="submit">{t('mergeResult')}</Button>
                     </Col>
 
                     <Col className={"float-right " + classes.columnPadding + (!isShared && (defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
-                        <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize mr-2 " + (!addFolderText ? ' cancelButtonDisable' : 'accountInfo')} type="submit">{t('createSubFolder')}</Button>
-                        <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={"accountInfo mr-2 " + (defaultTitle == 'My Searches' ? 'cancelButtonDisable' : 'accountInfo')} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
+                        <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize " + (!addFolderText ? ' cancelButtonDisable ' : 'accountInfo ') + ' mr-2'} type="submit">{t('createSubFolder')}</Button>
+                        <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={"accountInfo " + (defaultTitle == 'My Searches' ? 'cancelButtonDisable' : 'accountInfo') + ' mr-2'} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
 
 
                     </Col>

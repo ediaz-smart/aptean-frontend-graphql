@@ -339,6 +339,7 @@ function ResultReportFolder() {
   }
 
   const [updateTitle, setUpdateTitle] = useState(false);
+  const [folderWritable, setFolderWritable] = useState(true);
 
   const getFolderHierarchy = (folderData) => {
     let generationCount = 1;
@@ -391,6 +392,7 @@ function ResultReportFolder() {
         setResultSets(numerics[0].subCount)
         setSubFolders(numerics[0].subFolders)
         setFolderSize(numerics[0].totalSize)
+        setFolderWritable(numerics[0]._is_writable)
       }
 
       document.addEventListener("keydown", escFunction, false);
@@ -538,7 +540,7 @@ function ResultReportFolder() {
               <input maxlength={200} className={classes.folderNameInput} />
               <Button variant="contained" disableRipple={true} onClick={handleRenameClick} className={classes.loginSubmitCancel}>{t('cancel')}</Button>
           </div>  */}
-          {renameFolder ?
+          {folderWritable && renameFolder ?
             <RenameContainer applyNewName={applyNewNameToFolder}
               nameRef={folderNameRef}
               placeHolderText={'Folder Name'}
@@ -552,8 +554,8 @@ function ResultReportFolder() {
               <li><p style={{ marginBottom: '4px' }}>A total of {subFolders} subfolders at various levels</p></li>
               <li><p style={{ marginBottom: '4px' }}>A total of {folderSize} MB data</p></li>
             </ul>
-            {renameFolder ? <span className={classes.renameFolderText} >Rename this folder</span> :
-              <span className={classes.renameFolderLinkText} onClick={handleRenameClick}>Rename this folder</span>}
+            {folderWritable ? renameFolder ? <span className={classes.renameFolderText} >Rename this folder</span> :
+              <span className={classes.renameFolderLinkText} onClick={handleRenameClick}>Rename this folder</span> : null}
           </div>
 
 
