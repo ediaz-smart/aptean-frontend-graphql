@@ -185,7 +185,7 @@ function UploadPersonalDBModal(props) {
 
     const handleSequenceType = (event) => {
         setSequenceType(event.target.value);
-    }
+    };
 
 
 
@@ -193,24 +193,28 @@ function UploadPersonalDBModal(props) {
 
         let status = await PersonalDB.channelStatus(id, channel_id);
         if (status && status.response_content && status.response_content.status == "FAILED") {
-            toast.error("Database creation failed");
+            toast.error("Database creation failed", { autoClose: false });
 
         }
         if (status && status.response_content && status.response_content.status == "FINISHED") {
-            toast.success("Database created successfully");
+            toast.success("Database created successfully", { autoClose: false });
+            setTimeout(function () {
+                window.location.reload(1);
+            }, 2000);  //reload screen after 2 seconds of success display message
 
 
         }
         if (status && status.response_content && status.response_content.status == "STILL_RUNNING") {
             console.log(" running");
             closeModal();
+            toast.info("Please wait.Database is being created", { autoClose: false });
             console.log("still running");
-            setTimeout(chckstat(id, channel_id), 8000);
+            setTimeout(function () { chckstat(id, channel_id) }, 8000);
 
         }
 
 
-    }
+    };
 
     async function uploadDatabase() {
 
@@ -220,7 +224,6 @@ function UploadPersonalDBModal(props) {
             formData.append('file[' + i + ']', afile);
             i++;
         });
-        //console.log(acceptedFiles,"accepted");
         let urlParam = 'do=gqupload.post&format=json';
         const dbname = document.getElementById("dbName").value;
         const createFolder = await PersonalDB.createUploadfolder();
@@ -228,53 +231,91 @@ function UploadPersonalDBModal(props) {
         }
         else {
             toast.error("Database : Unique folder error");
+            closeModal();
         }
-        const checkdb = await PersonalDB.checkDbName(dbname);
+        if (dbname == '') {
+            toast.error("You must provide a name for the database");
+            const input = document.getElementById('dbName');
+            input.focus();
+            input.select();
+        }
 
-        if (checkdb && checkdb.response_content && !checkdb.response_content.exist) {
+        else {
 
-            const pfile = await PersonalDB.postfile(urlParam, formData);
-            console.log(pfile, "pfile");
-            if (pfile && pfile.response_status == 0 && pfile.response_content) {
+            const checkdb = await PersonalDB.checkDbName(dbname);
 
-                var response_array = pfile.response_content.split('&');
-                const file = response_array[1].substring(5);
-                const files = response_array[2].substring(6);
-                const frmt = formatTypeValue;
-                const seqType = sequenceTypeValue;
-                const recieve = await PersonalDB.uploadRecieve(file, files, dbname, frmt, seqType);
-                if (recieve && recieve.response_content && recieve.response_content.content_error_seqtype == false) {
+            if (checkdb && checkdb.response_content && !checkdb.response_content.exist) {
 
-                    const createChannel = await PersonalDB.channelCreate(recieve.response_content.upload_file, dbname);
-                    if (createChannel && createChannel.response_content) {
-                        chckstat(createChannel.response_content.id, createChannel.response_content.channel_id);
+                const pfile = await PersonalDB.postfile(urlParam, formData);
+                console.log(pfile, "pfile");
+                if (pfile && pfile.response_status == 0 && pfile.response_content) {
+
+                    var response_array = pfile.response_content.split('&');
+                    const file = response_array[1].substring(5);
+                    const files = response_array[2].substring(6);
+                    const frmt = formatTypeValue;
+                    const seqType = sequenceTypeValue;
+                    const recieve = await PersonalDB.uploadRecieve(file, files, dbname, frmt, seqType);
+
+                    console.log(recieve, "recresp");
+                    if (recieve && recieve.response_content &&
+                        (recieve.response_content.seq_format == 'fasta' && recieve.response_content.detected_format == "embl+") ||
+                        (recieve.response_content.seq_format == 'embl+' && recieve.response_content.detected_format == "fasta")
+                    ) {
+                        toast.error("Detected wrong or mixed sequence format files.Please select correct format.",
+                            { autoClose: false });
+
+                        //closeModal();
                     }
+                    else {
 
+                        if (recieve && recieve.response_content &&
+                            recieve.response_content.content_error_seqtype == false ||
+                            (recieve.response_content.content_error_seqtype != false &&
+                                recieve.response_content.can_proceed == true)
+                        ) {
+
+                            const createChannel = await PersonalDB.channelCreate(recieve.response_content.upload_file, dbname);
+                            if (createChannel && createChannel.response_content) {
+                                chckstat(createChannel.response_content.id, createChannel.response_content.channel_id);
+                            }
+                            else {
+                                toast.error("Channel creation failed");
+                                closeModal();
+                            }
+
+                        }
+                        else {
+                            toast.error("Some sequences do not look like type specified or are of mixed types. Please correct the sequence type.");
+
+                        }
+                    }
                 }
                 else {
-                    toast.error("Some sequences do not look like type specified. Please correct the sequence type");
+                    toast.error("Post file error");
+                    closeModal();
                 }
 
             }
+            else {
+                toast.error("Database name already exists");
+                const input = document.getElementById('dbName');
+                input.focus();
+                input.select();
 
+            }
         }
-        else {
-            toast.error("Database name already exists");
-            //closeModal();
 
-        }
-
-        acceptedFiles.length = 0;
-
-
+        //acceptedFiles.length = 0;
 
     }
 
     const closeModal = () => {
+        acceptedFiles.length = 0;
         props.onHide();
         //document.getElementById("selectedfiles").reset();
 
-    }
+    };
 
     //console.log(props, "props");
     console.log(acceptedFiles, "acceptfil");

@@ -31,7 +31,6 @@ async function getPersonalData(homeId) {
         toast.error(error.response_content.message);
         console.error(error, "errors");
     }
-    // do= gqshareable.delete & format= json & id=871 % 2C879 % 2C702 & is_recursive=true
 }
 async function deletePerData(data, count) {
     let apiurl = '';
@@ -45,10 +44,8 @@ async function deletePerData(data, count) {
 
                 let apiurls = 'do=gqshareable.delete&is_recursive=true&format=json&id=';
                 let dataMapping = [];
-                // do=gqshareable.delete&format=json&id=' + data[0] + '%2c&is_recursive=true
                 data.forEach(item => {
                     ;
-                    //const tempNameCheckVal = item.map.workflow_type && item.map.workflow_type == 'GqWfIpSearch' ? 'GqWfIpSearch_launch' : 'GqWfVMIpSearch_launch';
                     const renamedUrl = item + '%2C';
                     dataMapping.push(renamedUrl);
 
@@ -56,22 +53,16 @@ async function deletePerData(data, count) {
                 let combineUrl = dataMapping.join('');
                 apiurl = apiurls + combineUrl;
 
-                // template_name[Sequences Search]=GqWfIpSearch_launch
             }
 
 
         }
-        // apiurl = 'do=gqshareable.delete&format=json&id=' + idData + '&is_recursive=true';
-        // let apiurl = 'do=gqtemplate.deletemulti&template_name[hi]=GqWfIpSearch_launch&format=json'
         return await get(apiurl)
 
             .then((response) => {
-                // hideLoader();
                 return response;
             })
             .catch((error) => {
-                //   hideLoader();
-                // toast.error('Failed to change password');
                 console.log("error::", error);
 
             });
@@ -85,12 +76,9 @@ async function getUserInfo() {
         let apiurl = "do=gquser.get_info&format=json";
         return await get(apiurl)
             .then((response) => {
-                // hideLoader();
                 return response;
             })
             .catch((error) => {
-                //   hideLoader();
-                // toast.error('Failed to change password');
                 console.log("error::", error);
 
             });
@@ -125,12 +113,9 @@ async function checkDbName(dbname) {
         let apiurl = "do=gqfetch.physical_seqdb_exists&seqdb_locale=L&text_label=" + dbname + "&format=json";
         return await get(apiurl)
             .then((response) => {
-                // hideLoader();
                 return response;
             })
             .catch((error) => {
-                //   hideLoader();
-                // toast.error('Failed to change password');
                 console.log("error::", error);
 
             });
@@ -172,8 +157,6 @@ async function uploadRecieve(file, files, dbname, frmt, seqType) {
             apiurl = apiurl.replace("embl+", "embl%2B");
 
         }
-
-
         showLoader();
 
         console.log(apiurl, "recvurl");
@@ -230,7 +213,7 @@ async function channelStatus(file, content) {
             .then((response) => {
 
                 console.log("statusresponse :", response);
-                hideLoader();
+                hideLoader(); ////////------>>>>>>
                 return response;
             })
             .catch((error) => {
