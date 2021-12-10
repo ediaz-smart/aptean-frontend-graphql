@@ -37,7 +37,7 @@ import ProgressBar from '../../shared/ProgressBar/Progress';
 import { url } from '../../reducers/url';
 import CustomPagination from '../../shared/CustomPagination';
 import MergeResults from '../MergeResults/MergeResults';
-import { containerWidth } from '../../shared/constants'
+import FolderNameAlertModal from '../../shared/Modal/FolderNameAlertModal'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -138,14 +138,13 @@ const useStyles = makeStyles((theme) => ({
     },
     modalHeader: {
         borderBottom: 'none !important',
-        paddingTop: '11px',
-        paddingRight: '4px',
-        marginTop: '-7px',
     },
     modalBody: {
         paddingBottom: '20px'
     },
-
+    modal_body: {
+        padding: '10px 0 0 0'
+    },
     footerDiv: {
         padding: '0 10px'
     },
@@ -206,30 +205,26 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '-26px',
         marginRight: ' -30px',
     },
+    modalHeaderConMTF: {
+        borderBottom: 'none !important',
+        position: 'absolute',
+        right: '0px',
+        top: '0px',
+        zIndex: '1'
+    },
 
     modalClassConMTF: {
-        position: 'absolute',
+        position: 'relative',
         width: '96%',
         height: 'auto',
-        top: '30%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        transform: 'translate(-50%, -50%)'
     },
     colorConMTF: {
         backgroundColor: 'gainsboro',
-        marginTop: '-31px',
-        padding: '26px',
-        paddingTop: '28px',
-        paddingBottom: '65px',
-        marginLeft: '7px',
-        marginRight: '7px',
-        paddingRight: '10px',
+        padding: '15px 10px 50px 15px',
+        margin: '30px 15px 15px',
         borderRadius: '5px',
     },
     footerDivMTF: {
-        padding: '0 30px',
         marginTop: '-8px',
     },
     modalClassContent: {
@@ -264,6 +259,15 @@ const useStyles = makeStyles((theme) => ({
         color: '#fff',
         padding: '3px',
         borderRadius: '3px'
+    },
+    buttonStyle: {
+        backgroundColor: '#EEEEEE !important',
+        border: '1px solid #a2a2a3 !important',
+        float: 'right',
+        textTransform: 'none !important',
+        marginTop: '4px !important',
+        color: '#777777!important',
+        boxShadow: 'none !important'
     }
 }));
 
@@ -536,7 +540,6 @@ function SearchManagement(props) {
                 setFolderErrorContent(false);
             }
 
-
             if (defaultTitle === 'Recent Search Results') {
                 getDefaultSearchResult('defaultText', '');
             } else {
@@ -548,11 +551,10 @@ function SearchManagement(props) {
                 }
                 getFolderResultData();
             }
+            setDisableDelete(true)
             setTimeout(() => {
                 toast.success('Deleted Successfully');
             }, 3000);
-
-
         } else {
             if (type === "record") {
                 setModalShow(true);
@@ -850,6 +852,7 @@ function SearchManagement(props) {
     }
     const closeFolderModal = () => {
         setFolderModalShow(false);
+        setAddFolderModalShow(false)
         setTermsDisable(false);
         setConfirmFolderContent(true);
     }
@@ -1002,7 +1005,6 @@ function SearchManagement(props) {
                     toast.error(addResp.response_content.message);
                 }
             }
-
         }
     }
     async function getInfoIconData(e, data, textLabel) {
@@ -1015,19 +1017,14 @@ function SearchManagement(props) {
                 infoFolderIds.push(parentFolderId);
             }
             infoFolderIds.push(data.id)
-
             setInfoFolderIds([...infoFolderIds]);
-
-
-
             getDefaultSearchResult('folder', data.id);
             setIsSearchDone(false);
             // getFolderResultData();
         }
-
     };
 
-    const getsearchResultSet = async (e) => {
+    const getSearchResultSet = async (e) => {
         // Enter or Click
         if (e.keyCode == 13 || e.type == "click") {
             let tempArr = [];
@@ -1048,23 +1045,6 @@ function SearchManagement(props) {
                     setCurrentPage(1);
                 }
             }
-
-            // if(addResp.response_status == 0)
-            // {
-            //  // if (getResponse && getResponse.response_content && getResponse.response_content.success.length > 0) { 
-            //      getDefaultSearchResult('folder', defaultTitleId);
-            //      getFolderResultData();
-            //      e.target.value = '';
-            //      setShowNewFolder(false);
-            //      setAddFolderText(true);
-            //      toast.success('Folder Added Successfully');
-            //  // }
-            // }else {
-            //  // getDefaultSearchResult('folder', defaultTitleId);
-            //  toast.error(addResp.response_content.message);
-            // }
-
-
         }
     }
     const changePage = async (e, page) => {
@@ -1104,7 +1084,6 @@ function SearchManagement(props) {
 
         return () => {
             document.removeEventListener("keydown", escFunction, false);
-
         };
     }, []);
     const handleSharedFolderClick = e => {
@@ -1146,7 +1125,7 @@ function SearchManagement(props) {
                                 type="text"
                                 InputProps={{
                                     endAdornment: (
-                                        <InputAdornment onClick={getsearchResultSet}>
+                                        <InputAdornment onClick={getSearchResultSet}>
                                             <IconButton>
                                                 <SearchIcon />
                                             </IconButton>
@@ -1154,7 +1133,7 @@ function SearchManagement(props) {
                                     )
                                 }}
                                 onChange={(e) => setSearchResSet(e.target.value)}
-                                onKeyDown={getsearchResultSet}
+                                onKeyDown={getSearchResultSet}
                                 value={searchResSet}
                             />
                         </div>
@@ -1253,15 +1232,15 @@ function SearchManagement(props) {
 
                     <Col className={"float-left px-0 " + classes.columnPadding + (!isShared && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
 
-                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize float-left" + ' ' + (disableDelete ? 'cancelButtonDisable ' : 'accountInfo ') + ' mr-2'} type="submit">{t('deleteSelected')}</Button>
-                        <Button color={(disableDelete ? 'default' : 'secondary')} disabled={disableDelete} variant="contained" onClick={getSelection} className={"text-capitalize float-left" + ' ' + (disableDelete ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block') + ' mr-2'} type="submit">{t('moveToFolder')}</Button>
-                        <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize float-left" + ' ' + (disableMergeBtn ? 'cancelButtonDisable' : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block') + ' mr-2'} type="submit">{t('mergeResult')}</Button>
+                        <Button color={(disableDelete ? 'default' : 'secondary')} style={{ margin: '4px 10px 4px 0 !important' }} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize float-left" + ' ' + (disableDelete ? classes.buttonStyle : 'accountInfo ') + ' mr-2'} type="submit">{t('deleteSelected')}</Button>
+                        <Button color={(disableDelete ? 'default' : 'secondary')} style={{ margin: '4px 10px 4px 0 !important' }} disabled={disableDelete} variant="contained" onClick={getSelection} className={"text-capitalize float-left" + ' ' + (disableDelete ? classes.buttonStyle : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block') + ' mr-2'} type="submit">{t('moveToFolder')}</Button>
+                        <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize float-left" + ' ' + (disableMergeBtn ? classes.buttonStyle : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>
                     </Col>
 
                     <Col className={"float-right " + classes.columnPadding + (!isShared && (defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
-                        <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize " + (!addFolderText ? ' cancelButtonDisable ' : 'accountInfo ') + ' mr-2'} type="submit">{t('createSubFolder')}</Button>
-                        <Button color="primary" variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={"accountInfo " + (defaultTitle == 'My Searches' ? 'cancelButtonDisable' : 'accountInfo') + ' mr-2'} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
+                        <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize " + (!addFolderText ? classes.buttonStyle : 'accountInfo ') + ' mr-2'} type="submit">{t('createSubFolder')}</Button>
+                        <Button color="primary" style={{ margin: '4px 10px 4px 0 !important' }} variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={(defaultTitle == 'My Searches' ? classes.buttonStyle : 'accountInfo') + ' mr-2'} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
 
 
                     </Col>
@@ -1317,7 +1296,7 @@ function SearchManagement(props) {
                         <div className={(errorContent ? 'd-block' : 'd-none')}>
                             <p className="mb-3">{t('errorDeletTitle')}</p>
                             <p className="mb-3">{t('contactText1')} <a href="support@gqlifesciences.com" onClick={(e) => e.preventDefault()}>support@gqlifesciences.com</a> {t('contactText2')}</p>
-                            <div className={classes.footerDivDSI + " float-right"}>
+                            <div className={" float-right"}>
                                 <Button onClick={closeModal} className="text-capitalize float-right mr-2 primaryBtn" color="secondary" variant="contained">{t('close')}</Button>
                             </div>
                         </div>
@@ -1395,22 +1374,21 @@ function SearchManagement(props) {
                 centered
                 contentClassName={classes.modalClassConMTF}
                 className={classes.modalBoxContent}
-
             >
-                <Modal.Header className={classes.modalHeader}>
-                    <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
+                <div className={classes.modalHeaderConMTF}>
+                    <a href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
                         <CloseIcon onClick={closeMoveFolderModal} />
-                    </Link>
-                </Modal.Header>
+                    </a>
+                </div>
 
-                <Modal.Body className="appTextColor">
+                <Modal.Body className={classes.modal_body}>
                     <div className={classes.colorConMTF}>
                         <div className={(confirmFolderContent ? 'd-block' : 'd-none')}>
                             <p className="mb-3"><b>{t('moveToFolder')}</b></p>
 
                             <div className='scrollMoveItem'>
                                 <p className="mb-3">{t('selFolderToMove')}</p>
-                                <div className="mb-5 h-100">
+                                <div className="mb-3 h-100">
                                     <FolderTreeMenu items={moveSelection} expandedIds={folderIds} moveFolderId={moveFolderId} moveFolderCallback={selectedFolder} type="moveFolder" />
                                 </div>
                             </div>
@@ -1424,32 +1402,7 @@ function SearchManagement(props) {
                     </div>
                 </Modal.Body>
             </Modal>
-            <Modal
-                show={addFolderModalShow}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcente"
-                centered
-                contentClassName={classes.modalClassContent}
-                className={classes.modalBoxContent}
-
-            >
-                <Modal.Header className={classes.modalHeader}>
-                    <Link href="#" onClick={(e) => e.preventDefault()} className={classes.modaltext}>
-                        <CloseIcon onClick={closeFolderModal} />
-                    </Link>
-                </Modal.Header>
-                <Modal.Body className="appTextColor text-center">
-                    <div className={classes.colorContainer}>
-                        <div>
-                            <p className="mb-3">{t('folderNameNotAllowed')}</p>
-                            <p className="mb-3">{t('plsTryAgain')}</p>
-                        </div>
-                        <div className={classes.footerDiv + " align-center"}>
-                            <Button onClick={() => setAddFolderModalShow(false)} className="mr-2 accountInfo" color="primary" variant="contained">{t('ok')}</Button>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
+            <FolderNameAlertModal showModal={addFolderModalShow} closeModal={closeFolderModal} />
             <MergeResults
                 show={showMergeModal}
                 selectData={selectData}

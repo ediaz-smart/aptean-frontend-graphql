@@ -1,50 +1,26 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link, useHistory, useParams } from 'react-router-dom';
-import _ from "lodash";
 import DataTable from "react-data-table-component";
-import AccountService from '../../services/accountInfo';
-import TextInput from '../../shared/Fields/TextInput';
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import styled from "styled-components";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import TextField from "@material-ui/core/TextField";
-import { Button } from "@material-ui/core";
-import { useFormik } from 'formik';
-import { RadioGroup, FormControlLabel, FormLabel, FormControl, MenuItem, InputLabel } from '@material-ui/core';
-import Validate from '../../helpers/validate';
-import { toast } from 'react-toastify';
-import AccountInfoModal from '../../shared/Modal/AccountInfoModal'
-import SaveContentModal from '../../shared/Modal/SaveContentModal'
 import searchResSequence from '../../services/searchResSequence';
 import Typography from '@material-ui/core/Typography';
-import resultshareImg from '../../assets/image/resultshare.png';
-import ShareResultsModal from '../../shared/Modal/ShareResultsModal';
-import ShareResultsRemoveModal from '../../shared/Modal/ShareResultsRemoveModal';
-import { useSelector } from 'react-redux';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import SortIcon from "@material-ui/icons/ArrowDownward";
 import RenameContainer from '../../shared/components/RenameContainer'
 import FolderSharedWith from '../Sharing/FolderSharedWith.js';
 import ftAccess from '../../services/ftAccess';
 import { containerWidth } from '../../shared/constants';
 import folderIcon from '../../assets/image/folder.png';
+import Constant from '../../helpers/constant';
+import FolderNameAlertModal from '../../shared/Modal/FolderNameAlertModal'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   grow: {
     flexGrow: 1,
     width: '96%',
     margin: '4px auto 28px',
     minHeight: '260px',
-    // borderBottom: '1px solid #cec7c7',
     padding: '23px 16px 14px',
     border: '1px solid #cec7c7',
     borderRadius: '3px',
@@ -53,23 +29,10 @@ const useStyles = makeStyles((theme) => ({
   headerPipe: {
     margin: '0 10px'
   },
-  listStyle: {
-    listStyleType: 'none',
-    padding: '0 10px'
-  },
-  failedTextColor: {
-    color: '#e17a47 !important'
-  },
   content: {
     fontSize: '14px !important',
     lineHeight: '25px',
     color: '#4a5050'
-  },
-  rowHeight: {
-    height: '8%'
-  },
-  alertSelect: {
-    width: '70%'
   },
   loginSubmitCancel: {
     backgroundColor: '#0182C5',
@@ -84,95 +47,6 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: '#0182C5',
       boxShadow: 'none',
     },
-  },
-  cancelButtonModal: {
-    backgroundColor: '#0182C5',
-    border: '1px solid #1F4E79',
-    float: 'left',
-    padding: '6px 16px',
-    textTransform: 'none',
-    margin: '4px',
-    textTransform: 'none',
-    marginTop: '4px',
-    color: '#777777',
-    boxShadow: 'none'
-  },
-  modalHeader: {
-    borderBottom: 'none !important',
-    paddingTop: '14px',
-    paddingRight: '1px',
-    marginTop: '-7px',
-    display: "block !important"
-  },
-  footerDiv: {
-    padding: '0 30px',
-    marginTop: '-5px',
-    marginRight: '-10px',
-  },
-  contentPadding: {
-    padding: "45px !important"
-  },
-  modalBoxContent: {
-    maxHeight: '675px',
-  },
-  modalClassContentDSI: {
-    position: 'absolute',
-    width: '96%',
-    height: '42%',
-    top: '30%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    transform: 'translate(-50%, -50%)'
-  },
-  colorContainerDSI: {
-    backgroundColor: '#EEEEEE',
-    marginTop: '-32px',
-    // marginLeft: 0px;
-    paddingTop: '28px',
-    // paddingBottom: '75px',
-    paddingBottom: '75px',
-    marginLeft: '10px',
-    marginRight: '10px',
-    paddingRight: '10px',
-    borderRadius: '5px',
-
-  },
-  modalClassContent: {
-    position: 'absolute',
-    width: '96%',
-    height: '42%',
-    top: '30%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    transform: 'translate(-50%, -50%)'
-  },
-  colorContainer: {
-    backgroundColor: '#EEEEEE',
-    marginTop: '-32px',
-    // marginLeft: 0px;
-    paddingTop: '28px',
-    // paddingBottom: '75px',
-    textAlign: 'left',
-    paddingBottom: '53px',
-    marginLeft: '10px',
-    marginRight: '10px',
-    paddingRight: '10px',
-    borderRadius: '5px',
-
-  },
-  buttonStyle: {
-    float: 'right',
-    textTransform: 'none',
-    margin: '4px',
-    color: 'white',
-    backgroundColor: '#DB862D !important',
-    border: '1px solid #DB862D !important',
-
-  },
-  bodyPadding: {
-    padding: "13px"
   },
   renameFolderLinkText: {
     fontSize: '14px',
@@ -204,7 +78,6 @@ const customStyles = {
       paddingLeft: '8px', // override the cell padding for data cells
       paddingRight: '8px',
       borderLeft: '1px solid #0606061f',
-      // borderBottom:'1px solid #0606061f',
       '&:first-child': {
         borderLeft: '0',
       },
@@ -218,7 +91,6 @@ const columns = [
   {
     name: "",
     selector: "text_label",
-    // sortable: true,
     width: '50%',
     style: {
       textAlign: "left !important"
@@ -227,15 +99,11 @@ const columns = [
   {
     name: "",
     selector: "resultSets",
-    // sortable: true,
-    // width:'20%'
   },
   {
     name: "",
     selector: "thisFolderSize",
-    // defaultSortAsc: true,
     left: true,
-    // width:'75.3%',
     style: {
       textAlign: 'right !important',
       marginRight: '50px'
@@ -243,72 +111,13 @@ const columns = [
   }
 ];
 
-// const useStyles = makeStyles((theme) => ({
-//     grow: {
-//     flexGrow: 1,
-//     width: '96%',
-//     margin: '30px auto',
-//     minHeight: '260px',
-//     marginTop: '130px',
-//   },
-//   titleContent :{
-//     float:'right',
-//     marginTop: '-80px',
-//     position: 'sticky'
-
-//     // padding: '10px'
-//   },
-//   rootButton:{
-//     marginLeft:'-14px',
-//       '& > *': {
-//         margin: theme.spacing(2),
-//         textTransform:"capitalize",
-//       },
-//   },
-//     root: {
-
-//       '& > *': {
-//         margin: theme.spacing(2),
-//         textTransform:"capitalize",
-//       },
-//     },
-//     textBox :{
-//         width: '28%'
-//     },
-//     containerStyle : {
-//         marginBottom : '30px',
-//     },
-//     headerTitle :{
-//       marginBottom : '30px',
-//     },
-//     containerDiv :{
-//       marginLeft: '25px'
-
-//      }
-//   }));
-
-const textStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
 function ResultReportFolder() {
-  const [accountInfoData, setAccountInfoData] = useState([]);
-  const [errorMessage, seterrorMessage] = useState("");
   const history = useHistory();
-  const { t, i18n } = useTranslation('common');
-  const [modalShow, setModalShow] = React.useState(false);
-  const [modalShowSaved, setmodalShowSaved] = React.useState(false);
+  const { t } = useTranslation('common');
   const [folderData, setFolderData] = React.useState([]);
-
-  const [userId, setuserId] = useState("");
   const GetFolderId = () => useParams().folderId
   const [folderId, setFolderId] = useState(GetFolderId());
   const [seqShare, setSeqShare] = useState();
-  const userInfo = useSelector(state => state.setUserInfo);
-  const [modalResultShow, setModalResultShow] = React.useState(false);
   const [gqUserId, setGqUserId] = useState();
 
   const [resultSets, setResultSets] = useState();
@@ -318,24 +127,9 @@ function ResultReportFolder() {
 
   const classes = useStyles();
 
-  const GreyText = {
-    marginTop: "30px",
-    marginLeft: '36px',
-    color: "black",
-    textAlign: "left"
-  };
-  function successMessage() {
-    setmodalShowSaved(false);
-    history.push('/home')
-  }
   const handleScroll = (e, id) => {
     document.getElementById(id).scrollIntoView();
-    // const item = ReactDOM.findDOMNode(id);
-    // var element = document.querySelector("#"+id);
-    // element.scrollIntoView();
-    // element.scrollIntoView({ behavior: 'smooth', block: 'start'});
     e.preventDefault();
-    // window.scrollTo(myElement);
   }
 
   const [updateTitle, setUpdateTitle] = useState(false);
@@ -369,16 +163,6 @@ function ResultReportFolder() {
     }
     return finalData
   }
-  // const prepareFolderData = (data) => {
-  //   if (data[0].children.length) {
-  //     // console.log(data[0].children[0])
-  //     for (let i = 0; i < data[0].children.length; i++) {
-  //       data[0].children[i].text_label = <a onClick={() => setFolderId(data[0].children[i].id)}
-  //         href={"#/report/folder/" + data[0].children[i].id}>
-  //         {data[0].children[i].text_label}</a>
-  //     }
-  //   }
-  // }
 
   useEffect(
     async () => {
@@ -396,7 +180,6 @@ function ResultReportFolder() {
       }
 
       document.addEventListener("keydown", escFunction, false);
-      let tempAlertArr = [];
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
@@ -419,70 +202,33 @@ function ResultReportFolder() {
     setUpdateTitle(false);
   };
 
-
-
-  const TableContainer = styled.div`
-      table {
-          margin-left: 70px;
-          margin-top: 37px;
-          width:80%;
-        tr {
-          border-bottom: 2px solid #dee2e6;
-          :first-child {
-            border-top: 2px solid #dee2e6;
-          }
-        }
-        td {
-          color: 'black';
-          :first-child {
-            border-right: 2px solid #dee2e6;
-            width: 180px;
-          }
-          :last-child {
-            padding-left: 20px;
-
-          }
-        }
-      }
-    `;
-  const TextLeft = {
-    textAlign: "left",
-    marginLeft: "70px"
-  };
-  const [modalResultRemoveShow, setModalResultRemoveShow] = React.useState(false);
-  const [removeData, setRemoveData] = useState([]);
-  const [userList, setUserList] = useState();
-
-  function homePage() {
-    history.push('/home');
-  }
-  function viewRemoveModal(data) {
-    setModalResultRemoveShow(true);
-    setRemoveData(data);
-  }
   const folderNameRef = useRef('');
   const [renameFolder, setRenameFolder] = useState(false);
-
-
+  const [addFolderModalShow, setAddFolderModalShow] = useState(false);
 
   const handleRenameClick = () => {
     setRenameFolder(!renameFolder)
   }
-
   const applyNewNameToFolder = async (name) => {
-    // Todo: Update the folder name on the server.
-    const response = await searchResSequence.renameFolder(folderId, name)
-    if (response && response.response_status === 0) {
-      folderNameRef.current = name;
-      handleRenameClick()
+    var regex = new RegExp(Constant.folderRestrictNames.join("|"), "i");
+    var isAvailable = regex.test(name);
+    if (isAvailable) {
+      setAddFolderModalShow(true);
+    } else if (name.length > 188) {
+      setAddFolderModalShow(true);
+    } else {
+      // Todo: Update the folder name on the server.
+      const response = await searchResSequence.renameFolder(folderId, name)
+      if (response && response.response_status === 0) {
+        folderNameRef.current = name;
+        handleRenameClick()
+      }
     }
   }
   const searchResult = () => {
     history.push('/searchResult')
   }
-  // const handleCancelButtonClick = () => {
-  //   props.setRenameFolderName(false)
-  // }
+
   const sharedWithMe = useRef('none');
   const getSharedWith = async (id) => {
     const results = await ftAccess.sharedWith(id)
@@ -513,6 +259,9 @@ function ResultReportFolder() {
       }
     }
   }
+  const closeFolderModal = () => {
+    setAddFolderModalShow(false)
+  }
   return (
     <div className={classes.grow}>
       <Row className="p-3">
@@ -536,10 +285,6 @@ function ResultReportFolder() {
           </Typography>
         </Col>
         <Col lg="12" md="12" sm="12">
-          {/* <div className={classes.renameFolderContainer}>
-              <input maxlength={200} className={classes.folderNameInput} />
-              <Button variant="contained" disableRipple={true} onClick={handleRenameClick} className={classes.loginSubmitCancel}>{t('cancel')}</Button>
-          </div>  */}
           {folderWritable && renameFolder ?
             <RenameContainer applyNewName={applyNewNameToFolder}
               nameRef={folderNameRef}
@@ -557,14 +302,6 @@ function ResultReportFolder() {
             {folderWritable ? renameFolder ? <span className={classes.renameFolderText} >Rename this folder</span> :
               <span className={classes.renameFolderLinkText} onClick={handleRenameClick}>Rename this folder</span> : null}
           </div>
-
-
-          {/* <Col lg="1" md="1" sm="12" className="pr-0">
-                          <img src={resultshareImg} alt={t('resSharing')} />
-                      </Col>
-                      <Col lg="8" md="9" sm="12" className="p-0 content">
-
-                      </Col> */}
           <hr />
 
           {gqUserId != undefined && folderId != undefined &&
@@ -595,7 +332,8 @@ function ResultReportFolder() {
           </div>
         </Col>
       </Row>
-    </div >
+      <FolderNameAlertModal showModal={addFolderModalShow} closeModal={closeFolderModal} />
+    </div>
   )
 }
 
