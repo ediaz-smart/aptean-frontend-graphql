@@ -2801,7 +2801,7 @@ function FullTextSearch() {
 					</div>
 					<Row sm='12' md='12' xs='12'>
 						<Col sm='3' md='3' xs='3' style={{ display: 'flex', alignItems: 'center', padding: '0' }}>
-							<CheckBox
+							{/* <CheckBox
 								// defaultChecked
 								color="primary"
 								className={"float-left ml-2"}
@@ -2810,10 +2810,10 @@ function FullTextSearch() {
 								onChange={setFormValue}
 								checked={saveFormValue}
 							/>
-							<label className={"bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm" style={{ margin: 0 }}>{t("SaveFormForlaterUse")}</label>
+							<label className={"bodyText cursorPointer float-left ml-0 mr-3"} for="saveForm" style={{ margin: 0 }}>{t("SaveFormForlaterUse")}</label> */}
 						</Col>
 						<Col xs='6' sm='6' md='6'>
-							<TextInput
+							{/* <TextInput
 								id="formName"
 								name="formName"
 								label='Name the form'
@@ -2825,7 +2825,7 @@ function FullTextSearch() {
 								// manualError={saveFormError}
 								error={saveFormError}
 								helperText={saveFormError ? t('required') : ""}
-							/>
+							/> */}
 						</Col>
 						<Col sm='3' md='3' xs='3' style={{ display: 'flex', justifyContent: 'flex-end' }} >
 							<Button
