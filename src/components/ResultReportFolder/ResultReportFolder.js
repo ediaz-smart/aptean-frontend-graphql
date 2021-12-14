@@ -210,9 +210,15 @@ function ResultReportFolder() {
     setRenameFolder(!renameFolder)
   }
   const applyNewNameToFolder = async (name) => {
-    var regex = new RegExp(Constant.folderRestrictNames.join("|"), "i");
-    var isAvailable = regex.test(name);
-    if (isAvailable) {
+    let restrictedNames = Constant.folderRestrictNames
+    let isRestrictedName = false;
+    for (let i = 0; i < restrictedNames.length; i++) {
+      if (restrictedNames[i].toLowerCase() === name.toLowerCase()) {
+        isRestrictedName = true;
+        break;
+      }
+    }
+    if (isRestrictedName) {
       setAddFolderModalShow(true);
     } else if (name.length > 188) {
       setAddFolderModalShow(true);

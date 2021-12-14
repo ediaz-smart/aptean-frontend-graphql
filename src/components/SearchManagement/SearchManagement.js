@@ -268,6 +268,14 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '4px !important',
         color: '#777777!important',
         boxShadow: 'none !important'
+    },
+    disabledButtonStyle: {
+        float: 'right',
+        textTransform: 'none !important',
+        marginTop: '4px !important',
+        backgroundColor: '#db862c!important',
+        border: '1px solid #ca751b!important',
+        color: 'white !important'
     }
 }));
 
@@ -983,11 +991,17 @@ function SearchManagement(props) {
     }
     const getFolderName = async (e) => {
         if (e.keyCode == 13) {
-            var regex = new RegExp(Constant.folderRestrictNames.join("|"), "i");
-            var isAvailable = regex.test(e.target.value);
-            if (isAvailable) {
+            let restrictedNamesArray = Constant.folderRestrictNames
+            let isRestrictedName = false;
+            for (let i = 0; i < restrictedNamesArray.length; i++) {
+                if (restrictedNamesArray[i].toLowerCase() === e.target.value.toLowerCase()) {
+                    isRestrictedName = true;
+                    break;
+                }
+            }
+            if (isRestrictedName) {
                 setAddFolderModalShow(true);
-            } else if (e.target.value.length > 200) {
+            } else if (e.target.value.length > 188) {
                 setAddFolderModalShow(true);
             } else {
                 const addResp = await SearchManagementService.addFolder(parentFolderId, e.target.value, history);
@@ -1232,15 +1246,15 @@ function SearchManagement(props) {
 
                     <Col className={"float-left px-0 " + classes.columnPadding + (!isShared && searchResultData.length > 0 ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
 
-                        <Button color={(disableDelete ? 'default' : 'secondary')} style={{ margin: '4px 10px 4px 0 !important' }} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize float-left" + ' ' + (disableDelete ? classes.buttonStyle : 'accountInfo ') + ' mr-2'} type="submit">{t('deleteSelected')}</Button>
-                        <Button color={(disableDelete ? 'default' : 'secondary')} style={{ margin: '4px 10px 4px 0 !important' }} disabled={disableDelete} variant="contained" onClick={getSelection} className={"text-capitalize float-left" + ' ' + (disableDelete ? classes.buttonStyle : 'accountInfo') + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block') + ' mr-2'} type="submit">{t('moveToFolder')}</Button>
-                        <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize float-left" + ' ' + (disableMergeBtn ? classes.buttonStyle : 'accountInfo') + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>
+                        <Button color={(disableDelete ? 'default' : 'secondary')} style={{ margin: '4px 10px 4px 0 !important' }} disabled={disableDelete} variant="contained" onClick={openModal} className={"text-capitalize float-left" + ' ' + (disableDelete ? classes.buttonStyle : classes.disabledButtonStyle) + ' mr-2'} type="submit">{t('deleteSelected')}</Button>
+                        <Button color={(disableDelete ? 'default' : 'secondary')} style={{ margin: '4px 10px 4px 0 !important' }} disabled={disableDelete} variant="contained" onClick={getSelection} className={"text-capitalize float-left" + ' ' + (disableDelete ? classes.buttonStyle : classes.disabledButtonStyle) + ((defaultTitle == 'Recent Search Results') ? ' d-none' : ' d-block') + ' mr-2'} type="submit">{t('moveToFolder')}</Button>
+                        <Button color={(disableMergeBtn ? 'default' : 'secondary')} disabled={disableMergeBtn} variant="contained" onClick={() => { setShowMergeModal(!showMergeModal) }} className={"text-capitalize float-left" + ' ' + (disableMergeBtn ? classes.buttonStyle : classes.disabledButtonStyle) + ((defaultTitle == 'Recent Search Results' || isSearchDone) ? ' d-none' : ' d-block')} type="submit">{t('mergeResult')}</Button>
                     </Col>
 
                     <Col className={"float-right " + classes.columnPadding + (!isShared && (defaultTitle !== 'Recent Search Results' && !isSearchDone) ? ' d-block' : ' d-none')} md="6" sm="6" xs="6">
                         {/* <Button color="primary" variant="contained" onClick={openFolderModal} className="loginSubmit text-capitalize mr-2" type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp; */}
-                        <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize " + (!addFolderText ? classes.buttonStyle : 'accountInfo ') + ' mr-2'} type="submit">{t('createSubFolder')}</Button>
-                        <Button color="primary" style={{ margin: '4px 10px 4px 0 !important' }} variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={(defaultTitle == 'My Searches' ? classes.buttonStyle : 'accountInfo') + ' mr-2'} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
+                        <Button variant="contained" onClick={addNewFolder} color={(!addFolderText ? 'default' : 'primary')} disabled={!addFolderText} className={"text-capitalize " + (!addFolderText ? classes.buttonStyle : classes.disabledButtonStyle) + ' mr-2'} type="submit">{t('createSubFolder')}</Button>
+                        <Button color="primary" style={{ margin: '4px 10px 4px 0 !important' }} variant="contained" disabled={disableFolderDelete} onClick={openFolderModal} className={(defaultTitle == 'My Searches' ? classes.buttonStyle : classes.disabledButtonStyle) + ' mr-2'} type="submit">{t('deleteEntireFolder')}</Button>&nbsp;&nbsp;&nbsp;
 
 
                     </Col>

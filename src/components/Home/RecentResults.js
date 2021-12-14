@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, Fragment } from "react";
 import { Link, useLocation, useHistory } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
 import { makeStyles } from "@material-ui/core/styles";
@@ -154,6 +155,7 @@ function RecentResults() {
 	const history = useHistory();
 	const classes = useStyles();
 	const dispatch = useDispatch();
+	const { t } = useTranslation('common');
 	useEffect(() => {
 		(async () => {
 			// const result = dispatch(getSearchResult());
@@ -304,7 +306,7 @@ function RecentResults() {
 						defaultSortAsc={false}
 						sortable={false}
 						sortServer={true}
-						noDataComponent="No Searches have been submitted."
+						noDataComponent={t("noSearchSubmit")}
 						sortIcon={<SortIcon />}
 						customStyles={customStyles}
 						noHeader={true}
