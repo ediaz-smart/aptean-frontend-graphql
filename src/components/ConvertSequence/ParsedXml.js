@@ -210,7 +210,7 @@ function ParsedXml(props) {
                         </Row>
                         <Row className="mb-2">
                             <h6>
-                                {props.location.state[3]} Nucleotide Sequenceee and {props.location.state[2]} Protein sequences were found in the ST.26 input</h6>
+                                {props.location.state[3]} Nucleotide Sequence and {props.location.state[2]} Protein sequences were found in the ST.26 input</h6>
                         </Row>
                         <Row className="mb-3">
                             <SelectBox
@@ -254,7 +254,7 @@ function ParsedXml(props) {
 
                     <Col lg="12" md="12" className="float-right mb-3">
 
-                        {userData && userData.vmAccess ?
+                        {userData && userData.vmAccess && (props.location.state[3] > 0 || props.location.state[2] > 0) ?
                             <Button className={classes.searchbutton} color="default" disableRipple={true} onClick={ipseqvar} variant="contained">{t('ipseqvariation')}</Button>
                             : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">{t('ipseqvariation')}</Button>
                         }
