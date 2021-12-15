@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, Fragment } from 'react';
+import React, { useState, useCallback, useEffect, Fragment, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
@@ -71,6 +71,7 @@ function ConvertSequence() {
     const [disableSearch, setDisableSearch] = React.useState(false);
     const [formdata, setFormData] = useState({});
     const { workflowId } = useParams();
+    const toastRef = useRef(null)
 
 
     useEffect(async () => {
@@ -97,6 +98,11 @@ function ConvertSequence() {
     function cncl() {
         history.push('/home');
     }
+    const showToast = (errorInfo) => {
+        if (!toast.isActive(toastRef.current)) {
+            toastRef.current = toast.error(errorInfo);
+        }
+    }
 
     const formik = useFormik({
         initialValues: {
@@ -114,19 +120,18 @@ function ConvertSequence() {
 
             var getResponse = await st26service.convertXml(postData, history, t);
             if (getResponse == 'parsererror') {
-                toast.error('The ST.26 data is not correctly structured.\nPlease correct the XML and try again.');
+                showToast('The ST.26 data is not correctly structured.\nPlease correct the XML and try again.')
             } else if (getResponse == 'missing') {
-                toast.error('The ST.26 data is not correctly structured.\nEither the moltype or Sequence data  is missing.');
+                showToast('The ST.26 data is not correctly structured.\nEither the moltype or Sequence data  is missing.');
             }
             else if (getResponse == 'empty') {
-                toast.error('The ST.26 xml has no sequence data to be parsed.');
+                showToast('The ST.26 xml has no sequence data to be parsed.')
             }
             else {
                 history.push({
                     pathname: '/parsedxml',
                     state: getResponse
                 });
-
             }
 
         },

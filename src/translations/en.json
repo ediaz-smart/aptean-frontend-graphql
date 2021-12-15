@@ -71,6 +71,7 @@
     "expectCutoffNotNumber": "Please specify a valid required expect cutoff for your search. A useful default value is 10.",
     "fragmentStretchRequired": "Please specify the required number of residues to match in your search. A useful default is 50 nucleotides or 20 amino acids .",
     "fragmentStretchNotNumber": "Please specify a valid number of required residues to match in your search. A useful default is 50 nucleotides or 20 amino acids.",
+    "fragmentPercentageReq": "Please specify the required % identity for your search. A useful default value is 91.",
     "searchResSet": "Search for a Result Set",
     "noSearchSubmit": "No searches have been submitted.",
     "noResultShared": "No results have been shared.",

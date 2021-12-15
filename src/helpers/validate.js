@@ -184,7 +184,7 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm, isPatientD
             validationShape.fragmentAminoAcid = yup
                 .number()
                 .integer(t('valueMustBeInteger'))
-                .required(t('genePastPercentageReq'))
+                .required(t('fragmentPercentageReq'))
                 .min(91, t('fragmentNucPerError'))
                 .max(100, t('fragmentNucPerError'))
                 .typeError(t('fragmentNucPerError'))
@@ -199,7 +199,7 @@ function IpSeqSearchValidate(seqType, saveFormValue, searchAlgorithm, isPatientD
             validationShape.fragmentAminoAcid = yup
                 .number()
                 .integer(t('valueMustBeInteger'))
-                .required(t('genePastPercentageReq'))
+                .required(t('fragmentPercentageReq'))
                 .min(81, t('fragmentProPerError'))
                 .max(100, t('fragmentProPerError'))
                 .typeError(t('fragmentProPerError'))
@@ -449,23 +449,23 @@ function MergeResultsValidate() {
     return validationSchema;
 }
 
-yup.addMethod(yup.string, 'equalTo', function(ref, msg) {
+yup.addMethod(yup.string, 'equalTo', function (ref, msg) {
     const { t, i18n } = useTranslation('common');
     // return yup.mixed().test(`validateMismatch`, function (val, ctx) {
     // const { path, createError } = this;
 
     // })
     return this.test({
-		name: 'equalTo',
-		exclusive: false,
-    message: msg ,
-		params: {
-			reference: ref.path
-		},
-		test: function(value) {
-      return value === this.resolve(ref) 
-		}
-	})
+        name: 'equalTo',
+        exclusive: false,
+        message: msg,
+        params: {
+            reference: ref.path
+        },
+        test: function (value) {
+            return value === this.resolve(ref)
+        }
+    })
 });
 
 export default Validate;

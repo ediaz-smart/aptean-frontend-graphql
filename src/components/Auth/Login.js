@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
@@ -83,6 +83,7 @@ function Login(props) {
     const [errorMsgText, setErrorMsgText] = useState(t('loginFailure1'));
     const [loginTry, setLoginTry] = useState();
     const dispatch = useDispatch();
+    const toastRef = useRef(null)
 
     const formik = useFormik({
         initialValues: {
@@ -91,7 +92,7 @@ function Login(props) {
         },
         validationSchema: Validate.LoginValidate(),
         onSubmit: async (values) => {
-            let resp = await dispatch(submitLogin({ GQUSERID: values.userName, GQPASSWORD: values.password }, history, t));
+            let resp = await dispatch(submitLogin({ GQUSERID: values.userName, GQPASSWORD: values.password }, history, t, toastRef));
             if (resp && resp.response_status > 0) {
                 if (resp.response_content.triesLeft > 3) {
                     setErrorMsgText(t('loginFailure1'));
@@ -113,7 +114,6 @@ function Login(props) {
                 setLoginTry(resp.response_content.triesLeft)
                 setErrorMsg(true);
             }
-            // history.push('/home');
         },
     });
 

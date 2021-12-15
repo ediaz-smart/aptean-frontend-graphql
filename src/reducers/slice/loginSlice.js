@@ -7,8 +7,7 @@ import { getPageCount } from '../../reducers/slice/comonSlice';
 
 const initialState = { isLoggedIn: false }
 
-
-export const submitLogin = (data, history, t) => async (dispatch) => {
+export const submitLogin = (data, history, t, toastRef) => async (dispatch) => {
     // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
     // const history = useHistory();
     const postdata = new FormData();
@@ -38,7 +37,12 @@ export const submitLogin = (data, history, t) => async (dispatch) => {
             }
         })
         .catch((error) => {
-            toast.error('loginFailed');
+            if (!toast.isActive(toastRef.current)) {
+                toastRef.current = toast.error('loginFailed');
+                setTimeout(() => {
+                    toast.current = null
+                }, 5000);
+            }
             console.log("error::", error);
 
             // return dispatch(loginError(error));

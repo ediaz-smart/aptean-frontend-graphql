@@ -133,7 +133,7 @@ function ResultReportFolder() {
   }
 
   const [updateTitle, setUpdateTitle] = useState(false);
-  const [folderWritable, setFolderWritable] = useState(true);
+  const [folderWritable, setFolderWritable] = useState(false);
 
   const getFolderHierarchy = (folderData) => {
     let generationCount = 1;

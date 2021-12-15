@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DataTable from "react-data-table-component";
 import { useDropzone } from 'react-dropzone';
 import Modal from 'react-bootstrap/Modal'
@@ -165,6 +165,11 @@ const formatTypeItems = [
     }
 ];
 
+const TOAST_TYPE = {
+    ERROR: 0,
+    SUCCESS: 1,
+    INFO: 2
+}
 
 function UploadPersonalDBModal(props) {
     const classes = useStyles();
@@ -172,6 +177,7 @@ function UploadPersonalDBModal(props) {
     let mailUrl = "mailto:" + supportMail + "?subject=" + props.subjectText;
     const [formatTypeValue, setFormatType] = useState("fasta");
     const [sequenceTypeValue, setSequenceType] = useState("nucleotide");
+    const toastRef = useRef(null)
 
     const { getRootProps, getInputProps, open, acceptedFiles } = useDropzone({
         // Disable click and keydown behavior
@@ -180,44 +186,43 @@ function UploadPersonalDBModal(props) {
     });
     const handleFormatType = (event) => {
         setFormatType(event.target.value);
-
     };
 
     const handleSequenceType = (event) => {
         setSequenceType(event.target.value);
     };
 
-
+    const showToast = (toastType, data, autoCloseObject) => {
+        if (!toast.isActive(toastRef.current)) {
+            toastRef.current = (toastType === TOAST_TYPE.ERROR) ? toast.error(data, autoCloseObject)
+                : (toastType === TOAST_TYPE.INFO) ? toast.info(data, autoCloseObject)
+                    : (toastType === TOAST_TYPE.SUCCESS) ? toast.success(data, autoCloseObject) : null;
+        }
+    }
 
     async function chckstat(id, channel_id) {
 
         let status = await PersonalDB.channelStatus(id, channel_id);
         if (status && status.response_content && status.response_content.status == "FAILED") {
-            toast.error("Database creation failed", { autoClose: false });
-
+            showToast(TOAST_TYPE.ERROR, "Database creation failed", { autoClose: false })
+            // toast.error("Database creation failed", { autoClose: false });
         }
         if (status && status.response_content && status.response_content.status == "FINISHED") {
-            toast.success("Database created successfully", { autoClose: false });
+            showToast(TOAST_TYPE.SUCCESS, "Database created successfully", { autoClose: false })
+            // toast.success("Database created successfully", { autoClose: false });
             setTimeout(function () {
                 window.location.reload(1);
             }, 2000);  //reload screen after 2 seconds of success display message
-
-
         }
         if (status && status.response_content && status.response_content.status == "STILL_RUNNING") {
-            console.log(" running");
             closeModal();
-            toast.info("Please wait.Database is being created", { autoClose: false });
-            console.log("still running");
+            showToast(TOAST_TYPE.INFO, "Please wait. Database is being created", { autoClose: false })
+            // toast.info("Please wait. Database is being created", { autoClose: false });
             setTimeout(function () { chckstat(id, channel_id) }, 8000);
-
         }
-
-
     };
 
     async function uploadDatabase() {
-
         var i = 0;
         var formData = new FormData();
         acceptedFiles.forEach(afile => {
@@ -230,11 +235,13 @@ function UploadPersonalDBModal(props) {
         if (createFolder && createFolder.response_content.uniqdir) {
         }
         else {
-            toast.error("Database : Unique folder error");
+            showToast(TOAST_TYPE.ERROR, "Database : Unique folder error")
+            // toast.error("Database : Unique folder error");
             closeModal();
         }
         if (dbname == '') {
-            toast.error("You must provide a name for the database");
+            showToast(TOAST_TYPE.ERROR, "You must provide a name for the database")
+            // toast.error("You must provide a name for the database");
             const input = document.getElementById('dbName');
             input.focus();
             input.select();
@@ -247,7 +254,6 @@ function UploadPersonalDBModal(props) {
             if (checkdb && checkdb.response_content && !checkdb.response_content.exist) {
 
                 const pfile = await PersonalDB.postfile(urlParam, formData);
-                console.log(pfile, "pfile");
                 if (pfile && pfile.response_status == 0 && pfile.response_content) {
 
                     var response_array = pfile.response_content.split('&');
@@ -257,13 +263,13 @@ function UploadPersonalDBModal(props) {
                     const seqType = sequenceTypeValue;
                     const recieve = await PersonalDB.uploadRecieve(file, files, dbname, frmt, seqType);
 
-                    console.log(recieve, "recresp");
                     if (recieve && recieve.response_content &&
                         (recieve.response_content.seq_format == 'fasta' && recieve.response_content.detected_format == "embl+") ||
                         (recieve.response_content.seq_format == 'embl+' && recieve.response_content.detected_format == "fasta")
                     ) {
-                        toast.error("Detected wrong or mixed sequence format files.Please select correct format.",
-                            { autoClose: false });
+                        showToast(TOAST_TYPE.ERROR, "Detected wrong or mixed sequence format files.Please select correct format.", { autoClose: false });
+                        // toast.error("Detected wrong or mixed sequence format files.Please select correct format.",
+                        // { autoClose: false });
 
                         //closeModal();
                     }
@@ -280,25 +286,29 @@ function UploadPersonalDBModal(props) {
                                 chckstat(createChannel.response_content.id, createChannel.response_content.channel_id);
                             }
                             else {
-                                toast.error("Channel creation failed");
+                                showToast(TOAST_TYPE.ERROR, "Channel creation failed")
+                                // toast.error("Channel creation failed");
                                 closeModal();
                             }
 
                         }
                         else {
-                            toast.error("Some sequences do not look like type specified or are of mixed types. Please correct the sequence type.");
+                            showToast(TOAST_TYPE.ERROR, "Some sequences do not look like type specified or are of mixed types. Please correct the sequence type.")
+                            // toast.error("Some sequences do not look like type specified or are of mixed types. Please correct the sequence type.");
 
                         }
                     }
                 }
                 else {
-                    toast.error("Post file error");
+                    showToast(TOAST_TYPE.ERROR, "Post file error")
+                    // toast.error("Post file error");
                     closeModal();
                 }
 
             }
             else {
-                toast.error("Database name already exists");
+                showToast(TOAST_TYPE.ERROR, "Database name already exists")
+                // toast.error("Database name already exists");
                 const input = document.getElementById('dbName');
                 input.focus();
                 input.select();
@@ -316,9 +326,6 @@ function UploadPersonalDBModal(props) {
         //document.getElementById("selectedfiles").reset();
 
     };
-
-    //console.log(props, "props");
-    console.log(acceptedFiles, "acceptfil");
 
     return (
         <Modal
