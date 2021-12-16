@@ -6,7 +6,13 @@ import InfoIcon from "@material-ui/icons/Info";
 import RedoIcon from "@material-ui/icons/Redo";
 import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import Constant from "../helpers/constant";
+import { toast } from 'react-toastify';
 
+export const TOAST_TYPE = {
+  ERROR: 0,
+  SUCCESS: 1,
+  INFO: 2
+}
 async function mostRecentResCalculation(data, pagetype) {
   try {
     let tempArr = [];
@@ -52,7 +58,7 @@ async function mostRecentResCalculation(data, pagetype) {
             );
           } else {
             tempObj["results"] = (
-              <a href={typeUrl} target="_blank">
+              <a href={typeUrl} target="_blank" rel="noreferrer">
                 {datas.results} {type}
               </a>
             );
@@ -86,11 +92,11 @@ async function mostRecentResCalculation(data, pagetype) {
               process.env.REACT_APP_BASE_URL + mostRecentReportUrl;
             tempObj["report"] = (
               <Fragment>
-                <a href={reportLink} target="_blank">
+                <a href={reportLink} target="_blank" rel="noreferrer">
                   Report
                 </a>
                 <span className="mx-2">|</span>
-                <a href={classicLink} target="_blank">
+                <a href={classicLink} target="_blank" rel="noreferrer">
                   Classic
                 </a>
               </Fragment>
@@ -98,7 +104,7 @@ async function mostRecentResCalculation(data, pagetype) {
           } else if (datas.type !== "GqFolder") {
             tempObj["report"] = (
               <Fragment>
-                <a href={classicLink} target="_blank">
+                <a href={classicLink} target="_blank" rel="noreferrer">
                   Classic
                 </a>
               </Fragment>
@@ -152,10 +158,20 @@ function restrictCharacter(event) {
     return false;
   }
 }
+
+const showToast = (toastType, data, toastRef, autoCloseObject) => {
+  if (!toast.isActive(toastRef.current)) {
+    toastRef.current = (toastType === TOAST_TYPE.ERROR) ? toast.error(data, autoCloseObject)
+      : (toastType === TOAST_TYPE.INFO) ? toast.info(data, autoCloseObject)
+        : (toastType === TOAST_TYPE.SUCCESS) ? toast.success(data, autoCloseObject) : null;
+  }
+}
+
 const UtilsService = {
   mostRecentResCalculation,
   numberWithCommas,
-  restrictCharacter
+  restrictCharacter,
+  showToast
 };
 
 export default UtilsService;

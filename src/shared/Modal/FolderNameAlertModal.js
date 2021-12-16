@@ -20,14 +20,14 @@ const useStyles = makeStyles((theme) => ({
         borderBottom: 'none !important',
         position: 'absolute',
         right: '5px',
-        top: '5px',
+        top: '3px',
         zIndex: '1',
         display: "block !important"
     },
     colorContainer: {
         backgroundColor: '#EEEEEE',
         textAlign: 'left',
-        margin: '15px 0',
+        margin: '15px 0 12px',
         padding: '15px 15px 50px 15px',
         borderRadius: '5px',
     },
@@ -57,9 +57,9 @@ const FolderNameAlertModal = props => {
             <Modal.Body className="appTextColor text-center">
                 <div className={classes.colorContainer}>
                     <div>
-                        <p style={{ textAlign: 'center' }}>{t('folderNameNotAllowed')}</p>
-                        <p style={{ textAlign: 'center' }}>{t('plsTryAgain')}</p>
-                        <Button onClick={props.closeModal} className="mr-2 accountInfo" color="primary" variant="contained">{t('ok')}</Button>
+                        <p style={{ textAlign: 'center', marginBottom: '5px' }}>{t('folderNameNotAllowed')}</p>
+                        <p style={{ textAlign: 'center', marginBottom: '5px' }}>{t('plsTryAgain')}</p>
+                        <Button onClick={props.closeModal} className="mr-2 accountInfo" color="primary" variant="contained">{t('OK')}</Button>
                     </div>
                 </div>
             </Modal.Body>

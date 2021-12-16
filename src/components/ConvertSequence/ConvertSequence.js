@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { useFormik } from 'formik';
 import TextField from '@material-ui/core/TextField';
-import { toast } from 'react-toastify';
+import utilsService, { TOAST_TYPE } from '../../helpers/utils'
 import _ from "lodash";
 
 
@@ -98,11 +98,6 @@ function ConvertSequence() {
     function cncl() {
         history.push('/home');
     }
-    const showToast = (errorInfo) => {
-        if (!toast.isActive(toastRef.current)) {
-            toastRef.current = toast.error(errorInfo);
-        }
-    }
 
     const formik = useFormik({
         initialValues: {
@@ -120,12 +115,12 @@ function ConvertSequence() {
 
             var getResponse = await st26service.convertXml(postData, history, t);
             if (getResponse == 'parsererror') {
-                showToast('The ST.26 data is not correctly structured.\nPlease correct the XML and try again.')
+                utilsService.showToast(TOAST_TYPE.ERROR, 'The ST.26 data is not correctly structured.\nPlease correct the XML and try again.', toastRef)
             } else if (getResponse == 'missing') {
-                showToast('The ST.26 data is not correctly structured.\nEither the moltype or Sequence data  is missing.');
+                utilsService.showToast(TOAST_TYPE.ERROR, 'The ST.26 data is not correctly structured.\nEither the moltype or Sequence data  is missing.', toastRef);
             }
             else if (getResponse == 'empty') {
-                showToast('The ST.26 xml has no sequence data to be parsed.')
+                utilsService.showToast(TOAST_TYPE.ERROR, 'The ST.26 xml has no sequence data to be parsed.', toastRef)
             }
             else {
                 history.push({

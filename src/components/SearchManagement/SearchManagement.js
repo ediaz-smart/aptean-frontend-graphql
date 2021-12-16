@@ -1,7 +1,7 @@
 import DataTable from "react-data-table-component";
 // import movies from "./movies";
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useCallback, useEffect, Fragment } from 'react';
+import React, { useState, useCallback, useEffect, Fragment, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
@@ -37,8 +37,8 @@ import ProgressBar from '../../shared/ProgressBar/Progress';
 import { url } from '../../reducers/url';
 import CustomPagination from '../../shared/CustomPagination';
 import MergeResults from '../MergeResults/MergeResults';
-import FolderNameAlertModal from '../../shared/Modal/FolderNameAlertModal'
-
+import FolderNameAlertModal from '../../shared/Modal/FolderNameAlertModal';
+import utilsService, { TOAST_TYPE } from '../../helpers/utils';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -452,6 +452,7 @@ function SearchManagement(props) {
     const [currentPage, setCurrentPage] = useState(1);
     const [showMergeModal, setShowMergeModal] = useState(false);
     const [isShared, setIsShared] = useState(false);
+    const toastRef = useRef(null)
 
     //Pagination
 
@@ -502,12 +503,11 @@ function SearchManagement(props) {
         const data = [];
         const dataValues = selectData && data.push(selectData.selectedRows[0]);
         if (selectData.selectedCount >= 1 && data && data.length > 0) {
-            toast.success("Successfully Deleted");
+            utilsService.showToast(TOAST_TYPE.SUCCESS, "Successfully Deleted", toastRef)
         }
         else {
-            toast.error("Select Any One Item");
+            utilsService.showToast(TOAST_TYPE.ERROR, "Select Any One Item", toastRef)
         }
-
     }
     const getRowData = (event) => {
     };
@@ -561,7 +561,7 @@ function SearchManagement(props) {
             }
             setDisableDelete(true)
             setTimeout(() => {
-                toast.success('Deleted Successfully');
+                utilsService.showToast(TOAST_TYPE.SUCCESS, 'Deleted Successfully', toastRef)
             }, 3000);
         } else {
             if (type === "record") {
@@ -975,11 +975,11 @@ function SearchManagement(props) {
             }
             // getDefaultSearchResult('folder', defaultTitleId);
             getFolderResultData();
-            toast.success('Folder Moved Successfully');
+            utilsService.showToast(TOAST_TYPE.SUCCESS, 'Folder Moved Successfully', toastRef)
             // }
         } else {
             // getDefaultSearchResult('folder', defaultTitleId);
-            toast.error(getResponse.response_content.message);
+            utilsService.showToast(TOAST_TYPE.ERROR, getResponse.response_content.message, toastRef)
         }
 
 
@@ -1012,11 +1012,11 @@ function SearchManagement(props) {
                     e.target.value = '';
                     setShowNewFolder(false);
                     setAddFolderText(true);
-                    toast.success('Folder Added Successfully');
+                    utilsService.showToast(TOAST_TYPE.SUCCESS, 'Folder Added Successfully', toastRef)
                     // }
                 } else {
                     // getDefaultSearchResult('folder', defaultTitleId);
-                    toast.error(addResp.response_content.message);
+                    utilsService.showToast(TOAST_TYPE.ERROR, addResp.response_content.message, toastRef)
                 }
             }
         }

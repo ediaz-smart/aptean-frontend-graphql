@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { post } from '../../helpers/fetchServicesMethods';
-import { toast } from 'react-toastify';
+import utilsService, { TOAST_TYPE } from '../../helpers/utils'
 import { url } from '../url';
 import { getUserServerInfo } from './userServerDataSlice';
 import { getPageCount } from '../../reducers/slice/comonSlice';
@@ -8,8 +8,6 @@ import { getPageCount } from '../../reducers/slice/comonSlice';
 const initialState = { isLoggedIn: false }
 
 export const submitLogin = (data, history, t, toastRef) => async (dispatch) => {
-    // dispatch(setUser({ GQUSERID: data.GQUSERID, isLoggedIn: true }));
-    // const history = useHistory();
     const postdata = new FormData();
     postdata.append("GQUSERID", data.GQUSERID);
     postdata.append("GQPASSWORD", data.GQPASSWORD);
@@ -18,7 +16,7 @@ export const submitLogin = (data, history, t, toastRef) => async (dispatch) => {
             if (response && response.response_status == 0) {
                 await dispatch(getUserServerInfo());
                 await dispatch(getPageCount());
-                toast.success(t('loginSuccess'));
+                utilsService.showToast(TOAST_TYPE.SUCCESS, t('loginSuccess'), toastRef)
                 localStorage.setItem('User_' + data.GQUSERID, response);
 
                 localStorage.setItem('isLoggedIn', true);
@@ -37,16 +35,8 @@ export const submitLogin = (data, history, t, toastRef) => async (dispatch) => {
             }
         })
         .catch((error) => {
-            if (!toast.isActive(toastRef.current)) {
-                toastRef.current = toast.error('loginFailed');
-                setTimeout(() => {
-                    toast.current = null
-                }, 5000);
-            }
+            utilsService.showToast(TOAST_TYPE.ERROR, t('loginFailed'), toastRef)
             console.log("error::", error);
-
-            // return dispatch(loginError(error));
-            // dispatch(showMessage({ message: error }));
         });
 };
 

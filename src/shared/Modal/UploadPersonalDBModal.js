@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import { useFormik } from 'formik'
 import { useTranslation } from "react-i18next";
 import { supportMail } from '../../config';
-import { toast } from 'react-toastify';
+import utilsService, { TOAST_TYPE } from '../../helpers/utils'
 import { makeStyles } from '@material-ui/core/styles';
 import TextInput from '../../shared/Fields/TextInput';
 import SelectBox from '../../shared/Fields/SelectBox';
@@ -165,12 +165,6 @@ const formatTypeItems = [
     }
 ];
 
-const TOAST_TYPE = {
-    ERROR: 0,
-    SUCCESS: 1,
-    INFO: 2
-}
-
 function UploadPersonalDBModal(props) {
     const classes = useStyles();
     const { t, i18n } = useTranslation('common');
@@ -195,32 +189,21 @@ function UploadPersonalDBModal(props) {
         setSequenceType(event.target.value);
     };
 
-    const showToast = (toastType, data, autoCloseObject) => {
-        if (!toast.isActive(toastRef.current)) {
-            toastRef.current = (toastType === TOAST_TYPE.ERROR) ? toast.error(data, autoCloseObject)
-                : (toastType === TOAST_TYPE.INFO) ? toast.info(data, autoCloseObject)
-                    : (toastType === TOAST_TYPE.SUCCESS) ? toast.success(data, autoCloseObject) : null;
-        }
-    }
-
     async function chckstat(id, channel_id) {
 
         let status = await PersonalDB.channelStatus(id, channel_id);
         if (status && status.response_content && status.response_content.status == "FAILED") {
-            showToast(TOAST_TYPE.ERROR, "Database creation failed", { autoClose: false })
-            // toast.error("Database creation failed", { autoClose: false });
+            utilsService.showToast(TOAST_TYPE.ERROR, "Database creation failed", toastRef, { autoClose: false })
         }
         if (status && status.response_content && status.response_content.status == "FINISHED") {
-            //showToast(TOAST_TYPE.SUCCESS, "Database created successfully", { autoClose: false })
-            toast.success("Database created successfully", { autoClose: false });
+            utilsService.showToast(TOAST_TYPE.SUCCESS, "Database created successfully", toastRef, { autoClose: false })
             setTimeout(function () {
                 window.location.reload(1);
             }, 2000);  //reload screen after 2 seconds of success display message
         }
         if (status && status.response_content && status.response_content.status == "STILL_RUNNING") {
             closeModal();
-            showToast(TOAST_TYPE.INFO, "Please wait. Database is being created", { autoClose: false })
-            // toast.info("Please wait. Database is being created", { autoClose: false });
+            utilsService.showToast(TOAST_TYPE.INFO, "Please wait. Database is being created", toastRef, { autoClose: false })
             setTimeout(function () { chckstat(id, channel_id) }, 8000);
         }
     };
@@ -238,13 +221,11 @@ function UploadPersonalDBModal(props) {
         if (createFolder && createFolder.response_content.uniqdir) {
         }
         else {
-            showToast(TOAST_TYPE.ERROR, "Database : Unique folder error")
-            // toast.error("Database : Unique folder error");
+            utilsService.showToast(TOAST_TYPE.ERROR, "Database : Unique folder error", toastRef)
             closeModal();
         }
         if (dbname == '') {
-            showToast(TOAST_TYPE.ERROR, "You must provide a name for the database")
-            // toast.error("You must provide a name for the database");
+            utilsService.showToast(TOAST_TYPE.ERROR, "You must provide a name for the database", toastRef)
             const input = document.getElementById('dbName');
             input.focus();
             input.select();
@@ -270,11 +251,7 @@ function UploadPersonalDBModal(props) {
                         (recieve.response_content.seq_format == 'fasta' && recieve.response_content.detected_format == "embl+") ||
                         (recieve.response_content.seq_format == 'embl+' && recieve.response_content.detected_format == "fasta")
                     ) {
-                        showToast(TOAST_TYPE.ERROR, "Detected wrong or mixed sequence format files.Please select correct format.", { autoClose: false });
-                        // toast.error("Detected wrong or mixed sequence format files.Please select correct format.",
-                        // { autoClose: false });
-
-                        //closeModal();
+                        utilsService.showToast(TOAST_TYPE.ERROR, "Detected wrong or mixed sequence format files.Please select correct format.", toastRef, { autoClose: false });
                     }
                     else {
 
@@ -289,29 +266,25 @@ function UploadPersonalDBModal(props) {
                                 chckstat(createChannel.response_content.id, createChannel.response_content.channel_id);
                             }
                             else {
-                                showToast(TOAST_TYPE.ERROR, "Channel creation failed")
-                                // toast.error("Channel creation failed");
+                                utilsService.showToast(TOAST_TYPE.ERROR, "Channel creation failed", toastRef)
                                 closeModal();
                             }
 
                         }
                         else {
-                            showToast(TOAST_TYPE.ERROR, "Some sequences do not look like type specified or are of mixed types. Please correct the sequence type.")
-                            // toast.error("Some sequences do not look like type specified or are of mixed types. Please correct the sequence type.");
+                            utilsService.showToast(TOAST_TYPE.ERROR, "Some sequences do not look like type specified or are of mixed types. Please correct the sequence type.", toastRef)
 
                         }
                     }
                 }
                 else {
-                    showToast(TOAST_TYPE.ERROR, "Post file error")
-                    // toast.error("Post file error");
+                    utilsService.showToast(TOAST_TYPE.ERROR, "Post file error", toastRef)
                     closeModal();
                 }
 
             }
             else {
-                showToast(TOAST_TYPE.ERROR, "Database name already exists")
-                // toast.error("Database name already exists");
+                utilsService.showToast(TOAST_TYPE.ERROR, "Database name already exists", toastRef)
                 const input = document.getElementById('dbName');
                 input.focus();
                 input.select();

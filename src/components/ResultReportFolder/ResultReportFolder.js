@@ -13,7 +13,8 @@ import ftAccess from '../../services/ftAccess';
 import { containerWidth } from '../../shared/constants';
 import folderIcon from '../../assets/image/folder.png';
 import Constant from '../../helpers/constant';
-import FolderNameAlertModal from '../../shared/Modal/FolderNameAlertModal'
+import FolderNameAlertModal from '../../shared/Modal/FolderNameAlertModal';
+import utilsService, { TOAST_TYPE } from '../../helpers/utils'
 
 const useStyles = makeStyles(() => ({
   grow: {
@@ -205,6 +206,7 @@ function ResultReportFolder() {
   const folderNameRef = useRef('');
   const [renameFolder, setRenameFolder] = useState(false);
   const [addFolderModalShow, setAddFolderModalShow] = useState(false);
+  const toastRef = useRef(null);
 
   const handleRenameClick = () => {
     setRenameFolder(!renameFolder)
@@ -228,6 +230,8 @@ function ResultReportFolder() {
       if (response && response.response_status === 0) {
         folderNameRef.current = name;
         handleRenameClick()
+      } else {
+        utilsService.showToast(TOAST_TYPE.ERROR, response.response_content.message, toastRef)
       }
     }
   }
