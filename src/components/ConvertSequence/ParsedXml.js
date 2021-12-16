@@ -17,12 +17,9 @@ import _ from "lodash";
 import TextInput from '../../shared/Fields/TextInput';
 import SelectBox from '../../shared/Fields/SelectBox';
 import Constant from '../../helpers/constant';
-import CheckBox from '../../shared/Fields/CheckBox';
 import Validate from '../../helpers/validate';
-import SearchPrompt from '../../shared/Modal/SearchPromptModal'
 import searchResAntibody from '../../services/searchResAntibody';
 import st26service from '../../services/st26service';
-import { PinDropSharp } from '@material-ui/icons';
 
 
 
@@ -59,23 +56,39 @@ const useStyles = makeStyles((theme) => ({
         border: '1px solid #ca751b !important',
         color: 'white !important'
     },
+    buttonDisable: {
+        backgroundColor: '#EEEEEE !important',
+        border: '1px solid #a2a2a3 !important',
+        float: 'right',
+        margin: '4px 4px 4px 4px !important',
+        textTransform: 'none !important',
+        color: '#777777 !important',
+        boxShadow: 'none !important'
+    }
 }));
 
 function ParsedXml(props) {
     const { t, i18n } = useTranslation('common');
     const classes = useStyles();
     const history = useHistory();
-    const [selectData, setSelectData] = useState();
-    const [searchModal, setSearchModal] = useState(false);
-    // const [strategy, setStrategy] = useState('genepast');
     const [authInfo, setAuthInfo] = useState();
-    // const [workflowId, setWorkflowId] = useState();
-    const [patientDBData, setPatientDBData] = useState(Constant.patientSearchDatabases);
     const [disableSearch, setDisableSearch] = React.useState(false);
+    const [blankPage, setBlankPage] = React.useState(false);
     const [formdata, setFormData] = useState({});
     const { workflowId } = useParams();
-    const [searchSeqValue, setSeqType] = useState("nucleotide");
-    const [seqValue, setSeq] = useState(props.location.state[1]);
+    const sequence = [];
+    var ill = 0;
+    if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
+        sequence[0] = props.location.state[0];
+        sequence[1] = props.location.state[1];
+        sequence[2] = props.location.state[2];
+        sequence[3] = props.location.state[3];
+        ill = 1;
+
+    }
+    const [searchSeqValue, setSeqType] = useState(sequence[3] == 0 ? "protein" : "nucleotide");
+    //const [searchSeqValue, setSeqType] = useState(props.location.state[3] == 0 ? "protein" : "nucleotide");
+    const [seqValue, setSeq] = useState(sequence[3] == 0 ? sequence[0] : sequence[1]);
     const userInfo = useSelector(state => state.setUserInfo);
     const [userData, setUserData] = useState();
 
@@ -111,33 +124,64 @@ function ParsedXml(props) {
 
     function ipseq() {
 
-        const seqval = document.getElementById("st26input").value;
-        console.log(searchSeqValue, "type");
-        history.push({
-            pathname: '/ipseqsearch',
-            state: {
-                seq: seqval,
-                type: searchSeqValue
+        const seqval1 = document.getElementById("st26input").value;
+        if (seqval1.length > 0) {
+            var lines = '';
+            lines = seqval1.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i].indexOf('>', 0) == 0) {
+                    lines[i] = lines[i].replace(/[ \t]/g, '_');
+                }
             }
-        });
+            const seqval = lines.join('\n');
+            history.push({
+                pathname: '/ipseqsearch',
+                state: {
+                    seq: seqval,
+                    type: searchSeqValue
+                }
+            });
+
+        }
+        else {
+            toast.error("Cannot submit an empty search");
+        }
     }
 
     function ipseqvar() {
 
-        const seqval = document.getElementById("st26input").value;
-        console.log(searchSeqValue, "type");
-        history.push({
-            pathname: '/ipseqvariation',
-            state: {
-                seq: seqval,
-                type: searchSeqValue
-
+        const seqval1 = document.getElementById("st26input").value;
+        if (seqval1.length > 0) {
+            var lines = '';
+            lines = seqval1.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i].indexOf('>', 0) == 0) {
+                    lines[i] = lines[i].replace(/[ \t]/g, '_');
+                }
             }
-        });
+            const seqval = lines.join('\n');
+            console.log(searchSeqValue, "type");
+            history.push({
+                pathname: '/ipseqvariation',
+                state: {
+                    seq: seqval,
+                    type: searchSeqValue
+
+                }
+            });
+        }
+        else {
+            toast.error("Cannot submit an empty search");
+        }
     }
 
     const handleChangee = (event) => {
         setSeq(event.target.value);
+        setDisableSearch(false);
+        if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) { }
+        else {
+            setDisableSearch(true);
+        }
 
     }
 
@@ -160,12 +204,39 @@ function ParsedXml(props) {
     const handleSeqType = (event) => {
 
         setSeqType(event.target.value);
+        setDisableSearch(false);
+        if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
+            if (event.target.value == "nucleotide") {
+                if (props.location.state[3] > 0) {
+                    setSeq(props.location.state[1]);
+                    setDisableSearch(false);
+                    //console.log(disableSearch,"disvaluenucif");
+                }
+                else {
 
-        if (event.target.value == "nucleotide") {
-            setSeq(props.location.state[1]);
+                    setDisableSearch(true);
+                    setSeq(props.location.state[1]);
+                    //console.log(disableSearch,"disvaluenucelse");
+
+                }
+            }
+            if (event.target.value == "protein") {
+                if (props.location.state[2] > 0) {
+                    setSeq(props.location.state[0]);
+                    setDisableSearch(false);
+                    //console.log(disableSearch,"disvalueprtif");
+                }
+                else {
+                    //document.getElementById("st26input").value='';
+                    setDisableSearch(true);
+                    setSeq(props.location.state[0]);
+                    //console.log(disableSearch,"disvalueprtelse");
+
+                }
+            }
         }
-        if (event.target.value == "protein") {
-            setSeq(props.location.state[0]);
+        else {
+            setDisableSearch(true);
         }
 
     };
@@ -210,7 +281,7 @@ function ParsedXml(props) {
                         </Row>
                         <Row className="mb-2">
                             <h6>
-                                {props.location.state[3]} Nucleotide Sequence and {props.location.state[2]} Protein sequences were found in the ST.26 input</h6>
+                                {sequence[3]} Nucleotide Sequence and {sequence[2]} Protein sequences were found in the ST.26 input</h6>
                         </Row>
                         <Row className="mb-3">
                             <SelectBox
@@ -228,21 +299,24 @@ function ParsedXml(props) {
                         <Row className="mb-3">
 
                             <Col lg="12" md="12" className="p-0 content float-left">
-                                <TextInput
-                                    rows="25"
-                                    multiline={true}
-                                    fullWidth
-                                    id="st26input"
-                                    name="st26input"
-                                    variant="outlined"
-                                    value={seqValue}
-                                    //defaultValue={props.location.state[1]}
-                                    onChange={handleChangee}
-                                    error={formik.touched.st26input && Boolean(formik.errors.st26input)}
-                                    helperText={formik.errors.st26input}
-                                //disabled={authInfo && authInfo.redo}
-                                />
+                                {disableSearch ?
+                                    <p></p>
+                                    : <TextInput
+                                        rows="25"
+                                        multiline={true}
+                                        fullWidth
+                                        id="st26input"
+                                        name="st26input"
+                                        variant="outlined"
+                                        value={seqValue}
+                                        //defaultValue={props.location.state[1]}
+                                        onChange={handleChangee}
+                                        error={formik.touched.st26input && Boolean(formik.errors.st26input)}
+                                        helperText={formik.errors.st26input}
+                                        disabled={disableSearch}
+                                    />
 
+                                }
 
                             </Col>
 
@@ -254,11 +328,14 @@ function ParsedXml(props) {
 
                     <Col lg="12" md="12" className="float-right mb-3">
 
-                        {userData && userData.vmAccess && (props.location.state[3] > 0 || props.location.state[2] > 0) ?
+                        {userData && userData.vmAccess && !disableSearch ?
                             <Button className={classes.searchbutton} color="default" disableRipple={true} onClick={ipseqvar} variant="contained">{t('ipseqvariation')}</Button>
-                            : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">{t('ipseqvariation')}</Button>
+                            : <Button className={classes.buttonDisable} color="default" disableRipple={true} variant="contained">{t('ipseqvariation')}</Button>
                         }
-                        <Button className={classes.searchbutton} color="default" disableRipple={true} onClick={ipseq} style={{ marginRight: '5px' }} variant="contained" >{t('ipseqsearch')}</Button>&nbsp;&nbsp;&nbsp;
+                        {userData && !disableSearch ?
+                            <Button className={classes.searchbutton} color="default" disableRipple={true} onClick={ipseq} style={{ marginRight: '5px' }} variant="contained" >{t('ipseqsearch')}</Button>
+                            : <Button className={classes.buttonDisable} color="default" disableRipple={true} variant="contained">{t('ipseqsearch')}</Button>
+                        }
                         <Button variant="contained" color="primary" className={"text-capitalize mr-2 float-right primaryBtn "} style={{ marginTop: '5px' }} onClick={cncl}>{t('cancel')}</Button>
                     </Col>
                 </Row>

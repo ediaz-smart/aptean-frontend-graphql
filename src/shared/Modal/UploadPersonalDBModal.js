@@ -177,6 +177,9 @@ function UploadPersonalDBModal(props) {
     let mailUrl = "mailto:" + supportMail + "?subject=" + props.subjectText;
     const [formatTypeValue, setFormatType] = useState("fasta");
     const [sequenceTypeValue, setSequenceType] = useState("nucleotide");
+    const [dbValue, setDbValue] = useState("");
+    const [dbError, setDbError] = useState(false);
+
     const toastRef = useRef(null)
 
     const { getRootProps, getInputProps, open, acceptedFiles } = useDropzone({
@@ -208,8 +211,8 @@ function UploadPersonalDBModal(props) {
             // toast.error("Database creation failed", { autoClose: false });
         }
         if (status && status.response_content && status.response_content.status == "FINISHED") {
-            showToast(TOAST_TYPE.SUCCESS, "Database created successfully", { autoClose: false })
-            // toast.success("Database created successfully", { autoClose: false });
+            //showToast(TOAST_TYPE.SUCCESS, "Database created successfully", { autoClose: false })
+            toast.success("Database created successfully", { autoClose: false });
             setTimeout(function () {
                 window.location.reload(1);
             }, 2000);  //reload screen after 2 seconds of success display message
@@ -320,19 +323,49 @@ function UploadPersonalDBModal(props) {
 
     }
 
+    function onChangeAlphaNumericInput(e) {
+
+        //open modal, enter valid name, clear it and press cancel,
+        //next open modal,enter invalid name (it was accepting, so this below if cond)
+        if (typeof (dbValue) === 'undefined') {
+            setDbValue("");
+        }
+
+        const value = e.target.value;
+        const regex = /^[0-9a-zA-Z]+$/; //this will admit letters, numbers
+        if (value.match(regex) || value === "") {
+            setDbValue(value);
+            setDbError(false);
+        }
+        else {
+            setDbError(true);
+        }
+    }
+
     const closeModal = () => {
         acceptedFiles.length = 0;
+        setDbValue();
+        setDbError(false);
         props.onHide();
-        //document.getElementById("selectedfiles").reset();
-
     };
+    const closeModalCancel = () => {
+        acceptedFiles.length = 0;
+        setDbValue();
+        setDbError(false);
+        props.onHide();
+        //window.location.reload();
+    };
+
+
 
     return (
         <Modal
             {...props}
             size="lg"
             aria-labelledby="contained-modal-title-vcente"
+            // onHide={modalClose}
             centered
+            backdrop="static"
             contentClassName={classes.modalClassContent}
             className={classes.modalBoxContent}
         >
@@ -358,10 +391,10 @@ function UploadPersonalDBModal(props) {
                                 name="dbName"
                                 label={t('databaseName')}
                                 variant="outlined"
-                            //value={formik.values.searchDetails ? formik.values.searchDetails : ""}
-                            //onChange={formik.handleChange}
-                            //error={formik.touched.searchDetails && Boolean(formik.errors.searchDetails)}
-                            //helperText={formik.touched.searchDetails && formik.errors.searchDetails}
+                                value={dbValue}
+                                onChange={onChangeAlphaNumericInput}
+                                error={dbError}
+                                helperText={dbError ? "Name is Alphanumeric only" : ""}
                             />
 
                             <SelectBox
@@ -416,7 +449,7 @@ function UploadPersonalDBModal(props) {
                         : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">Upload</Button>
 
                     }
-                    <Button onClick={closeModal} className={classes.buttonStyleCancel} color="default" variant="contained">Cancel</Button>
+                    <Button onClick={closeModalCancel} className={classes.buttonStyleCancel} color="default" variant="contained">Cancel</Button>
 
                     <h6>We support the following formats: .txt, .gz , .bz2 </h6>
                     <h6>Compressing your data file will reduce the data time.</h6>

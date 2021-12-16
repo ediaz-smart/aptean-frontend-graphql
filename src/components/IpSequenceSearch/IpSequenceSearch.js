@@ -570,11 +570,6 @@ function IpSeqSearch(props) {
                 let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [], nucDefaultPatentDb = [], nucMyData = [];
                 let nucFormattedData = await list_to_tree(nucData);
                 let getNucChild = [];
-                if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
-                    console.log(props.location.state, "userrr");
-                    formik.setFieldValue("querySequence", props.location.state.seq);
-                    setSequenceType(props.location.state.type);
-                }
                 if (nucFormattedData && nucFormattedData.length > 0) {
                     getNucChild = nucFormattedData[0].children;
                 }
@@ -610,6 +605,7 @@ function IpSeqSearch(props) {
                     setNucDb(nucDefaultPatentDb);
                 }
             }
+            let proDefDB26 = [];
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
                 let proteinData = resp.response_content.sdb_pro_tree;
                 let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [], proDefaultPatentDb = [], proMyData = [];
@@ -624,6 +620,7 @@ function IpSeqSearch(props) {
                         item.children.filter(i => {
                             if (i.label.includes("Patent sequences")) {
                                 proDefaultPatentDb.push(i.id);
+                                proDefDB26.push(i.id);
                             }
                         });
                     } else if (item && item.id == ':Reference Data') {
@@ -640,6 +637,19 @@ function IpSeqSearch(props) {
                 setProPersonalData(proMyData);
                 // setProDefaultDb(proDefaultPatentDb);
                 // setProDb(proDefaultPatentDb);
+            }
+            //ST26: if it is redirected from convert sequence page
+            if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
+                console.log(props.location.state.type, "typee");
+                formik.setFieldValue("querySequence", props.location.state.seq);
+                setSequenceType(props.location.state.type);
+                if (props.location.state.type == 'nucleotide') {
+                    setProDb([]);
+                }
+                else {
+                    setProDb(proDefDB26);
+                    setNucDb([]);
+                }
             }
 
             if (resp && resp.response_content && resp.response_content && resp && resp.response_content && resp.response_content.group_credits) {

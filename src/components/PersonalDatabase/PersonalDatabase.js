@@ -77,7 +77,8 @@ const useStyles = makeStyles((theme) => ({
         margin: '4px',
         color: 'white',
         backgroundColor: '#008EC5 !important',
-        border: '2px solid #1F4E79 !important',
+        border: '1px solid #1F4E79 !important',
+        borderColor: '#1F4E79',
         boxShadow: 'none',
         '&:hover': {
             boxShadow: 'none',
