@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
         //marginBottom: '10px',
         color: 'white',
         backgroundColor: '#008EC5 !important',
-        border: '2px solid #1F4E79 !important',
+        border: '1px solid #1F4E79 !important',
         borderColor: '#1F4E79',
 
 
@@ -173,6 +173,7 @@ function UploadPersonalDBModal(props) {
     const [sequenceTypeValue, setSequenceType] = useState("nucleotide");
     const [dbValue, setDbValue] = useState("");
     const [dbError, setDbError] = useState(false);
+    const [btnClicked, setBtnClicked] = useState(false);
 
     const toastRef = useRef(null)
 
@@ -183,10 +184,12 @@ function UploadPersonalDBModal(props) {
     });
     const handleFormatType = (event) => {
         setFormatType(event.target.value);
+        setBtnClicked(false);
     };
 
     const handleSequenceType = (event) => {
         setSequenceType(event.target.value);
+        setBtnClicked(false);
     };
 
     async function chckstat(id, channel_id) {
@@ -210,6 +213,7 @@ function UploadPersonalDBModal(props) {
 
     async function uploadDatabase() {
         var i = 0;
+        setBtnClicked(true);
         var formData = new FormData();
         acceptedFiles.forEach(afile => {
             formData.append('file[' + i + ']', afile);
@@ -229,6 +233,7 @@ function UploadPersonalDBModal(props) {
             const input = document.getElementById('dbName');
             input.focus();
             input.select();
+            setBtnClicked(false);
         }
 
         else {
@@ -272,7 +277,9 @@ function UploadPersonalDBModal(props) {
 
                         }
                         else {
+                            setBtnClicked(false);
                             utilsService.showToast(TOAST_TYPE.ERROR, "Some sequences do not look like type specified or are of mixed types. Please correct the sequence type.", toastRef)
+
 
                         }
                     }
@@ -288,6 +295,7 @@ function UploadPersonalDBModal(props) {
                 const input = document.getElementById('dbName');
                 input.focus();
                 input.select();
+                setBtnClicked(false);
 
             }
         }
@@ -319,17 +327,17 @@ function UploadPersonalDBModal(props) {
         acceptedFiles.length = 0;
         setDbValue();
         setDbError(false);
+        setBtnClicked(false);
         props.onHide();
     };
     const closeModalCancel = () => {
         acceptedFiles.length = 0;
         setDbValue();
         setDbError(false);
+        setBtnClicked(false);
         props.onHide();
         //window.location.reload();
     };
-
-
 
     return (
         <Modal
@@ -417,7 +425,7 @@ function UploadPersonalDBModal(props) {
                     <br></br>
 
 
-                    {acceptedFiles.length >= 1 ?
+                    {acceptedFiles.length >= 1 && !btnClicked ?
                         <Button className='accountInfo' color="default" disableRipple={true} onClick={() => uploadDatabase()} variant="contained">Upload</Button>
                         : <Button className='cancelButtonDisable' color="default" disableRipple={true} variant="contained">Upload</Button>
 

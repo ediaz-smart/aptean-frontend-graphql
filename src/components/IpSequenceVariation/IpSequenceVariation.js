@@ -567,9 +567,8 @@ function IpSequenceVariation(props) {
                 let nucleotidePatent = [], nucleotideReferenceData = [], nucDataShardWithMe = [], nucGenBank = [], nucDefaultPatentDb = [], nucMyData = [];
                 let nucFormattedData = await list_to_tree(nucData);
                 let getNucChild = [];
-                if(typeof(props.location.state) !== 'undefined' && props.location.state !== null)
-                {
-                    console.log(props.location.state,"userrr");
+                if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
+                    console.log(props.location.state, "userrr");
                     formik.setFieldValue("querySequence", props.location.state.seq);
                     setSequenceType(props.location.state.type);
                 }
@@ -610,6 +609,7 @@ function IpSequenceVariation(props) {
                     setNucDb(nucDefaultPatentDb);
                 }
             }
+            let proDefDbSt26 = [];
             if (resp && resp.response_content && resp.response_content.sdb_pro_tree && resp.response_content.sdb_pro_tree.length > 0) {
                 let proteinData = resp.response_content.sdb_pro_tree;
                 let proteinPatent = [], proteinReferenceData = [], proDataShardWithMe = [], proMyData = [];
@@ -621,6 +621,11 @@ function IpSequenceVariation(props) {
                 getProChild && getProChild.length > 0 && getProChild.map((item, index) => {
                     if (item && item.id == ':Patents') {
                         proteinPatent = item.children;
+                        item.children.filter(i => {
+                            if (i.label.includes("Patent sequences")) {
+                                proDefDbSt26.push(i.id);
+                            }
+                        });
                     } else if (item && item.id == ':Reference Data') {
                         proteinReferenceData = item.children;
                     } else if (item && item.id == ':Data Shared With Me') {
@@ -645,6 +650,20 @@ function IpSequenceVariation(props) {
             //         setIsSubmitActive(true);
             //     }
             // }
+
+            //ST26: if it is redirected from convert sequence page
+            if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
+                console.log(props.location.state.type, "typee");
+                formik.setFieldValue("querySequence", props.location.state.seq);
+                setSequenceType(props.location.state.type);
+                if (props.location.state.type == 'nucleotide') {
+                    setProDb([]);
+                }
+                else {
+                    setProDb(proDefDbSt26);
+                    setNucDb([]);
+                }
+            }
 
             if (resp && resp.response_content && resp.response_content && resp && resp.response_content && resp.response_content.group_credits) {
                 setCredits(resp.response_content && resp.response_content.group_credits);
@@ -696,6 +715,10 @@ function IpSequenceVariation(props) {
                     setAccGroupName(userInfo.current_user.accounting_group_name)
                 }
                 if (parentId) {
+                    calTextCredits(null, false, 'redo')
+                }
+                if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
+                    console.log("*****setting****");
                     calTextCredits(null, false, 'redo')
                 }
             }

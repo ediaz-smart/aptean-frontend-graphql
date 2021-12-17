@@ -2103,11 +2103,12 @@ function FullTextSearch() {
 			}
 		}
 		queryTxt.replace(/[()]/g, "");
+		queryTxt = queryTxt.replace(/AND\s/g, "");
 		// queryTxt = queryTxt.replace('(', ' ').replace(')', '')
-		queryTxt = queryTxt.trim();
+		// queryTxt = queryTxt.trim()+ "}";
 		// console.log(queryTxt,'queryTxt');
 		var results = lucenequeryparser.parse(queryTxt);
-		// console.log(results,'results');
+		console.log(JSON.stringify(results));
 		setQueryParser(JSON.stringify(results));
 		results = JSON.stringify(results, undefined, 2);
 		results = results.replace(/\n/g, "<br>").replace(/[ ]/g, "&nbsp;");
@@ -2546,53 +2547,54 @@ function FullTextSearch() {
 			let checkRightCount = await countKeys(parseData, "right");
 			// Parsing Object for Autocomplete search
 			let customParseObj = await parseCustomObj(parseData, checkRightCount);
-			setTimeout(async () => {
-				let parseJsonData = JSON.stringify(customParseObj);
-				let searchParam = `&json_query=${parseJsonData}`;
+			//setTimeout(async () => {
+			let parseJsonData = JSON.stringify(customParseObj);
+			let searchParam = `&json_query=${parseJsonData}`;
 
-				pageStart >= 0
-					? (searchParam += `&start=${pageStart}`)
-					: (searchParam += `&start=${searchStartPage}`);
-				searchParam += `&rows=${pageCount}`;
+			pageStart >= 0
+				? (searchParam += `&start=${pageStart}`)
+				: (searchParam += `&start=${searchStartPage}`);
+			searchParam += `&rows=${pageCount}`;
 
-				groupingType ? (searchParam += `&grouping=${groupingType}`) : (searchParam += `&grouping=${grouping}`);
-				if (formName) {
-					searchParam += `&template_name=${formName}`
-				}
+			groupingType ? (searchParam += `&grouping=${groupingType}`) : (searchParam += `&grouping=${grouping}`);
+			if (formName) {
+				searchParam += `&template_name=${formName}`
+			}
 
-				if (isAuthoritySorting) {
-					searchParam += `&Use_authority_sorting=true`;
-					let authorityParam = [configure1, configure2, configure3, configure4, configure5].filter(Boolean).join(",");
+			if (isAuthoritySorting) {
+				searchParam += `&Use_authority_sorting=true`;
+				let authorityParam = [configure1, configure2, configure3, configure4, configure5].filter(Boolean).join(",");
 
-					searchParam += `&Authorities=${authorityParam}`;
-				} else {
-					searchParam += `&Use_authority_sorting=false`;
-				}
+				searchParam += `&Authorities=${authorityParam}`;
+			} else {
+				searchParam += `&Use_authority_sorting=false`;
+			}
 
-				if (isDateSorting) {
-					searchParam += `&Use_date_sorting=true`;
-					searchParam += `&Date_sorting_field=${dateSortingField}`
-					searchParam += `&Date_sorting_dir=${dateSortingDirection}`
-				}
-				const getLocalFT = localStorage.getItem('FTSearchParam');
-				if (getLocalFT) {
-					localStorage.removeItem('FTSearchParam');
-				}
+			if (isDateSorting) {
+				searchParam += `&Use_date_sorting=true`;
+				searchParam += `&Date_sorting_field=${dateSortingField}`
+				searchParam += `&Date_sorting_dir=${dateSortingDirection}`
+			}
+			const getLocalFT = localStorage.getItem('FTSearchParam');
+			if (getLocalFT) {
+				localStorage.removeItem('FTSearchParam');
+			}
 
-				const searchQueryRes = await fullTextService.getFullTextSearchResult(
-					history,
-					searchParam
-				);
-				// if(searchQueryRes) {
-				// 	setDocSearchResult(searchQueryRes.response_content);
-				// }
-				if (searchQueryRes &&
-					searchQueryRes.response_status == 0 &&
-					searchQueryRes.response_content && searchQueryRes.response_content.status == 200) {
-					setDocSearchResult(searchQueryRes.response_content);
-					localStorage.setItem('FTSearchParam', searchParam);
-				}
-			}, 1000);
+			const searchQueryRes = await fullTextService.getFullTextSearchResult(
+				history,
+				searchParam
+			);
+			// if(searchQueryRes) {
+			// 	setDocSearchResult(searchQueryRes.response_content);
+			// }
+			if (searchQueryRes &&
+				searchQueryRes.response_status == 0 &&
+				searchQueryRes.response_content) {
+
+				setDocSearchResult(searchQueryRes.response_content);
+				localStorage.setItem('FTSearchParam', searchParam);
+			}
+			//}, 1000);
 		}
 	}
 

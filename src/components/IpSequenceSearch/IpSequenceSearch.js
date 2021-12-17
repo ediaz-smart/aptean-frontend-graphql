@@ -705,6 +705,10 @@ function IpSeqSearch(props) {
                 if (parentId) {
                     calTextCredits(null, isBothDbSelected, 'redo')
                 }
+                if (typeof (props.location.state) !== 'undefined' && props.location.state !== null) {
+                    console.log(isBothDbSelected, "*****isBoth****");
+                    calTextCredits(null, isBothDbSelected, 'redo')
+                }
             }
             // }, 1000);
 
