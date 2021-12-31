@@ -8,7 +8,7 @@ import searchResSequence from '../../services/searchResSequence';
 import Typography from '@material-ui/core/Typography';
 import SortIcon from "@material-ui/icons/ArrowDownward";
 import RenameContainer from '../../shared/components/RenameContainer'
-import FolderSharedWith from '../Sharing/FolderSharedWith.js';
+// import FolderSharedWith from '../Sharing/FolderSharedWith.js';
 import ftAccess from '../../services/ftAccess';
 import { containerWidth } from '../../shared/constants';
 import folderIcon from '../../assets/image/folder.png';
@@ -314,7 +314,7 @@ function ResultReportFolder() {
           </div>
           <hr />
 
-          {gqUserId != undefined && folderId != undefined &&
+          {/* {gqUserId != undefined && folderId != undefined &&
             <FolderSharedWith
               content='Folder'
               workflowId={folderId}
@@ -323,7 +323,7 @@ function ResultReportFolder() {
               getSharedWithMe={getSharedWith}
             />
           }
-          <hr />
+          <hr /> */}
           <h6 className={"appTextColor loginTitle"} id="resultSharing">Folder Search Result Content</h6>
           <div>
             <p>  Result sets and data volume are distributed within this folder as shown below. </p>

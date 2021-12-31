@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     },
     loginSubmitDis: {
         backgroundColor: '#EEEEEE',
-        borderColor: '#a2a2a3',
+        // borderColor: '#a2a2a3',
         border: '1px solid #CCCCCC',
         float: 'right',
         color: '#777777',

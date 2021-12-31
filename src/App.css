@@ -133,7 +133,7 @@
 
 .cancelButtonDisable {
     background-color: #EEEEEE !important;
-    border: 1px solid #a2a2a3 !important;
+    border: 1px solid #CCCCCC!important;
     float: right;
     text-transform: none;
     margin: 4px 0 !important;
@@ -159,7 +159,7 @@
 
 .cancelButtonAI {
     background-color: #EEEEEE !important;
-    border: 1px solid #a2a2a3 !important;
+    border: 1px solid #CCCCCC !important;
     text-transform: none;
     margin-left: -6px !important;
     text-transform: none !important;
@@ -169,7 +169,7 @@
 
 .cancelButtonCP {
     background-color: #EEEEEE !important;
-    border: 1px solid #a2a2a3 !important;
+    border: 1px solid #CCCCCC !important;
     text-transform: none;
     margin: 4px;
     margin-right: 4px !important;
@@ -182,7 +182,7 @@
 
 .cancelButtonCPM {
     background-color: #EEEEEE !important;
-    border: 1px solid #a2a2a3 !important;
+    border: 1px solid #CCCCCC!important;
     text-transform: none;
     /* margin-left: 42px !important; */
     text-transform: none !important;
@@ -361,7 +361,6 @@
     font-style: italic;
 }
 
-
 .opClass::after,
 .space::after,
 .query::after,
@@ -514,10 +513,12 @@ label {
     color: #777777;
 }
 
-.query, .termquery, .space, .pastequery {
+.query,
+.termquery,
+.space,
+.pastequery {
     color: #000;
 }
-
 
 .autoquery {
     color: #8a6d3b;
@@ -672,6 +673,10 @@ label {
 
 .MuiCheckbox-colorPrimary.Mui-checked {
     color: #337ab7 !important;
+}
+
+.MuiButton-label {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 

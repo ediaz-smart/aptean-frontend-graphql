@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cancelButtonModal: {
         backgroundColor: '#EEEEEE',
-        border: '1px solid #a2a2a3',
+        border: '1px solid #CCCCCC',
         float: 'left',
         textTransform: 'none',
         margin: '4px',

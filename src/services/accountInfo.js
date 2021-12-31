@@ -36,7 +36,7 @@ async function getAccountInfo() {
 
 async function updateUser(id, firstName, lastName, currentPassword) {
 
-    if (id == "" || firstName == "" || lastName == "" || currentPassword == "") {
+    if (id == "" || firstName.trim() == "" || lastName.trim() == "" || currentPassword.trim() == "") {
         console.error("needs all Parameters");
         toast.error("Failed to update info");
         return 1;

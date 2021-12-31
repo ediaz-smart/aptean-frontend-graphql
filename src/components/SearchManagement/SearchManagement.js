@@ -262,7 +262,7 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonStyle: {
         backgroundColor: '#EEEEEE !important',
-        border: '1px solid #a2a2a3 !important',
+        border: '1px solid #CCCCCC !important',
         float: 'right',
         textTransform: 'none !important',
         marginTop: '4px !important',

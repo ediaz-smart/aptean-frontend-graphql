@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
   loginSubmitDis: {
     backgroundColor: '#EEEEEE',
-    border: '1px solid #a2a2a3',
+    border: '1px solid #CCCCCC',
     float: 'right',
     textTransform: 'none',
     margin: '4px',
@@ -55,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
   },
   loginSubmitCancel: {
     backgroundColor: '#0182C5',
-    borderColor: '#1F4E79',
     border: '1px solid #1F4E79',
     color: 'white',
     textTransform: 'capitalize',
@@ -138,18 +137,18 @@ function ChangePassword() {
     onSubmit: async (values) => {
 
       // if (values.newPassword == values.confirmPassword) {
-        const result = await AccountService.updatePass(userId, values.newPassword, values.confirmPassword, values.currentPassword);
-        if (result.response_content.message) {
+      const result = await AccountService.updatePass(userId, values.newPassword, values.confirmPassword, values.currentPassword);
+      if (result.response_content.message) {
 
-          await seterrorMessage(result.response_content.message);
-          setModalShow(true);
-          // toast.error(result.response_content.message);
-        } else {
-          // toast.success("Successfully Updated");
-          // history.push('/home')
+        await seterrorMessage(result.response_content.message);
+        setModalShow(true);
+        // toast.error(result.response_content.message);
+      } else {
+        // toast.success("Successfully Updated");
+        // history.push('/home')
 
-          setmodalShowSaved(true);
-        }
+        setmodalShowSaved(true);
+      }
 
       // }
       // else {

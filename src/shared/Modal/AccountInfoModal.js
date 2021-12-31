@@ -92,9 +92,9 @@ function AccountInfoModal(props) {
 
 			</Modal.Header>
 			<Modal.Body className={classes.modalBody}>
-				{/* <h5>{props.onMessage}</h5> */}
 				<div className={classes.colorContainer}>
-					<h5>The current password was incorrect.</h5>
+					<h5>{props.onMessage}</h5>
+					{/* <h5>The current password was incorrect.</h5> */}
 					<br></br>
 					<h5>Please try again.</h5>
 					{/* <p> 
